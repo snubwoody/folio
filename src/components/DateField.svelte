@@ -20,7 +20,7 @@
 <div class="flex h-full w-full flex-col gap-1">
     <span {...$label} use:label class="text-sm text-text-muted">Date</span>
     <div {...$field} use:field>
-        {#each $segmentContents as seg (seg.part)}
+        {#each $segmentContents as seg (seg)}
             <div {...$segment(seg.part)} use:segment>
             {seg.value}
             </div>
