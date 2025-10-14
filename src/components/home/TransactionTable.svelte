@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { invoke } from "@tauri-apps/api/core";
     import { onMount } from "svelte";
+    import { transactionStore } from "../../lib/transaction.svelte";
+    import Expense from "./Expense.svelte";
 
 	onMount(async()=>{
-		let expenses = await invoke("fetch_expenses");
-		console.log(expenses);
+		await transactionStore.load();
 	});
 </script>
 
@@ -13,26 +14,9 @@
 	<p class="table-heading">Account</p>
 	<p class="table-heading">Date</p>
 	<p class="table-heading">Amount</p>
-
-	<p class="table-cell">Takeout</p>
-	<p class="table-cell">Savings</p>
-	<p class="table-cell">April 25, 2025</p>
-	<p class="table-cell">$ 20.24</p>
-
-	<p class="table-cell">Takeout</p>
-	<p class="table-cell">Savings</p>
-	<p class="table-cell">April 25, 2025</p>
-	<p class="table-cell">$ 20.24</p>
-
-	<p class="table-cell">Takeout</p>
-	<p class="table-cell">Savings</p>
-	<p class="table-cell">April 25, 2025</p>
-	<p class="table-cell">$ 20.24</p>
-
-	<p class="table-cell">Takeout</p>
-	<p class="table-cell">Savings</p>
-	<p class="table-cell">April 25, 2025</p>
-	<p class="table-cell">$ 20.24</p>
+	{#each transactionStore.expenses as expense}
+		<Expense {expense}/>
+	{/each}
 </ul>
 
 <style>
