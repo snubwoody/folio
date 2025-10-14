@@ -5,7 +5,6 @@
 
 @theme{
 	--spacing: 8px;
-
 	--radius-*: initial;
 	--radius-xs: 4px;
 	--radius-sm: 8px;
@@ -15,18 +14,16 @@
 	--radius-2xl: 24px;
 	--radius-3xl: 32px;
 	--radius-full: 99999px;
-
-	--shadow-xs: 0 0 2px 0 rgba(0,0,0,0.05);
-	--shadow-sm: 0 1px 2px -1px rgba(0,0,0,0.1), 0 1px 3px 0px rgba(0,0,0,0.1);
-	--shadow-md: 0 2px 4px -2px rgba(0,0,0,0.1), 0 4px 6px -1px rgba(0,0,0,0.1);
-	--shadow-lg: 0 01px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
-	--shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-
-	--shadow-purple-xs: 0 0 2px 0 rgba(75,25,226,0.05);
-	--shadow-purple-sm: 0 1px 2px -1px rgba(75,25,226,0.1), 0 1px 3px 0px rgba(75,25,226,0.1);
-	--shadow-purple-md: 0 2px 4px -2px rgba(75,25,226,0.1), 0 4px 6px -1px rgba(75,25,226,0.1);
-	--shadow-purple-lg: 0 01px 15px -3px rgba(75,25,226,0.1), 0 4px 6px -4px rgba(75,25,226,0.1);
-	--shadow-purple-xl: 0 20px 25px -5px rgba(75,25,226,0.1), 0 8px 10px -6px rgba(75,25,226,0.1);
+	--shadow-xs: 0 0 2px 0 rgb(0 0 0 / 0.05);
+	--shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 0.1), 0 1px 3px 0px rgb(0 0 0 / 0.1);
+	--shadow-md: 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 4px 6px -1px rgb(0 0 0 / 0.1);
+	--shadow-lg: 0 01px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+	--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+	--shadow-purple-xs: 0 0 2px 0 rgb(75 25 226 / 0.05);
+	--shadow-purple-sm: 0 1px 2px -1px rgb(75 25 226 / 0.1), 0 1px 3px 0px rgb(75 25 226 / 0.1);
+	--shadow-purple-md: 0 2px 4px -2px rgb(75 25 226 / 0.1), 0 4px 6px -1px rgb(75 25 226 / 0.1);
+	--shadow-purple-lg: 0 01px 15px -3px rgb(75 25 226 / 0.1), 0 4px 6px -4px rgb(75 25 226 / 0.1);
+	--shadow-purple-xl: 0 20px 25px -5px rgb(75 25 226 / 0.1), 0 8px 10px -6px rgb(75 25 226 / 0.1);
 }
 
 html,body{
@@ -46,6 +43,7 @@ body{
 	}
 }
 
+/* TODO: move to components layer */
 @utility popup-overlay{
 	box-shadow: var(--shadow-md);
 	padding: 16px;

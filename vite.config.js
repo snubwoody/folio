@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwind from "@tailwindcss/vite";
 
-// @ts-expect-error process is a nodejs global
+// eslint-disable-next-line
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig(async () => ({

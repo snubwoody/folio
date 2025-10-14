@@ -3,6 +3,7 @@ import tseslint from "typescript-eslint";
 import sveltePlugin from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
 
+/** @type {import("eslint".Linter[])} */
 export default [
     // Base JS recommended rules
     js.configs.recommended,

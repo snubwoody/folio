@@ -10,7 +10,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "tauri": "tauri",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
+    "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
   },
   "license": "MIT",
   "dependencies": {
@@ -26,6 +27,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.0",
     "@tailwindcss/vite": "^4.1.14",
     "@tauri-apps/cli": "^2",
+    "@types/node": "^24.7.2",
     "eslint": "^9.37.0",
     "eslint-plugin-svelte": "^3.12.4",
     "postcss-html": "^1.8.0",
