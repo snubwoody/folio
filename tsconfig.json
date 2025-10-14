@@ -10,6 +10,5 @@
     "sourceMap": true,
     "strict": true,
     "moduleResolution": "bundler",
-    "types": ["@types/node"]
   }
 }

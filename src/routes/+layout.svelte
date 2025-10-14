@@ -1,10 +1,13 @@
-<script>
+<script lang="ts">
     import Sidebar from "../components/Sidebar.svelte";
 	import "../styles/global.css";
 	const { children } = $props();
-    import {onMount} from "svelte";
-    onMount(()=>{
-
+    import { onMount } from "svelte";
+    import { accountStore } from "$lib/account.svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
+    onMount(async ()=>{
+        await accountStore.load();
+        await transactionStore.load();
     });
 </script>
 

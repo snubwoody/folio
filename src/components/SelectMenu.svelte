@@ -28,8 +28,12 @@
 	let selectedOption: Option | undefined = $state(defaultValue ? toOption(defaultValue) : undefined);
 	function updateValue(value?: Option){
 	    selectedOption = value;
-	    const item = items.filter(i => toOption(i).value == value?.value)[0];
-	    onChange(item);
+        const filtered = items.filter(i => toOption(i).value == value?.value)
+	    const item = items.find(i => toOption(i).value === value?.value);
+        console.log(item);
+        if(item){
+            onChange?.(item);
+        }
 	}
 </script>
 

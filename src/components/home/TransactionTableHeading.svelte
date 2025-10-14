@@ -1,25 +1,30 @@
 <script lang="ts">
-    import { transactionStore } from "../../lib/transaction.svelte";
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
     import DateField from "../DateField.svelte";
     import SelectMenu from "$components/SelectMenu.svelte";
     import { accountStore } from "../../lib/account.svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
     import type { Account } from "$lib/lib";
 
 	const popover = new Popover();
 
 	let amount = $state("");
 	let account:Account | undefined;
+	let category:Category | undefined;
     let date: string | undefined = $state(undefined);
 	async function createExpense() {
+        console.log(category);
+        
 	    transactionStore.addExpense({
 	        date: date,
 	        amount:amount,
+	        categoryId: category?.id,
 	        currencyCode:"USD",
 	        accountId: account?.id,
 	    });
 	    popover.open = false;
+        
 	}
 </script>
 
@@ -38,9 +43,9 @@
 		/>
 		<SelectMenu
 			label="Category"
-			items={accountStore.accounts}
-			defaultValue={accountStore.accounts[0]}
-			toOption={(a) => {return { label: a.name,value: a.id };}}
+			items={transactionStore.categories}
+			toOption={(a) => {return { label: a.title,value: a.id };}}
+            onChange={(item) => category = item}
 		/>
 		<button class="btn btn-primary w-full" onclick={createExpense}>Add transaction</button>
 	</form>
