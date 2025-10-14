@@ -5,6 +5,8 @@
 	import {Popover} from "melt/builders";
     import TextField from "../TextField.svelte";
     import DateField from "../DateField.svelte";
+    import SelectMenu from "../SelectMenu.svelte";
+    import { accountStore } from "../../lib/account.svelte";
 
 
 	let amount = $state("");
@@ -20,9 +22,23 @@
 <header class="flex items-center justify-between">
 	<p>Expenses</p>
 	<button {...popover.trigger} class="btn btn-primary">New</button>
-	<form {...popover.content} class="popup-overlay space-y-2 bg-white" onsubmit={()=>{}}>
+	<form {...popover.content} class="popup-overlay space-y-2 bg-white max-w-[350px] w-full" onsubmit={()=>{}}>
 		<TextField bind:value={amount} label="Amount"/>
 		<DateField/>
+		<SelectMenu 
+			label="Account"
+			items={accountStore.accounts} 
+			defaultValue={accountStore.accounts[0]}
+			toOption={(a) => {return {label: a.name,value: a.id}}}
+			onChange={(item) => console.log("Updated",item)}
+		/>
+		<SelectMenu 
+			label="Category"
+			items={accountStore.accounts} 
+			defaultValue={accountStore.accounts[0]}
+			toOption={(a) => {return {label: a.name,value: a.id}}}
+			onChange={(item) => console.log("Updated",item)}
+		/>
 		<button class="btn btn-primary w-full">Add transaction</button>
 	</form>
 </header>
