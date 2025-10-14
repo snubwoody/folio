@@ -1,4 +1,6 @@
 name: CI/CD
+env:
+  DATABASE_URL: sqlite://data.db
 on:
   pull_request:
     branches: ["main"]
@@ -47,6 +49,16 @@ jobs:
           path: |
             target/
             ~/.cargo
+      - uses: actions/cache@v4
+        id: cache-sqlx
+        with:
+          key: cargo-sqlx-cache-${{runner.os}} # Permanenly cache sqlx
+          path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
+      - name: Install sqlx-cli
+        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
+        run: cargo install sqlx-cli
       - name: Run tests
-        run: cargo nextest run
+        run: |
+          cd src-tauri
+          cargo nextest run
