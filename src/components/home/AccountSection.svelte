@@ -2,12 +2,20 @@
 	import {Popover} from "melt/builders";
     import TextField from "../TextField.svelte";
     import { scale } from "svelte/transition";
+    import { onMount } from "svelte";
+    import { accountStore } from "../../lib/account.svelte";
 
 	const popover = new Popover();
 	let name = $state("My account");
 	let startingBalance = $state("0.00");
 
+	onMount(async ()=>{
+		await accountStore.load();
+		console.log("hi")
+	})
+
 	async function createAccount() {
+		await accountStore.addAccount(name,startingBalance);
 		popover.open = false;
 	}
 </script>
@@ -15,7 +23,6 @@
 <section>
 	<header class="flex items-center justify-between">
 		<h6>Accounts</h6>
-
 		<button {...popover.trigger} class="icon-btn icon-btn-grey icon-btn-small">
 			<i class="ph ph-plus"></i>
 		</button>
@@ -27,14 +34,12 @@
 		</form>
 	</header>
 	<ul>
-		<li class="shadow-xl">
-			<p>Savings</p>
-			<h6>$ 53.35</h6>
-		</li>
-		<li>
-			<p>Savings</p>
-			<h6>$ 53.35</h6>
-		</li>
+		{#each accountStore.accounts as account}
+			<li class="shadow-purple-sm p-2 rounded-md">
+				<p>{account.name}</p>
+				<h6>$ {account.startingBalance}</h6>
+			</li>
+		{/each}
 	</ul>
 </section>
 
@@ -67,6 +72,7 @@
 	}
 	
 	[data-melt-popover-content][data-open]{
+		/* TODO: Try @startstyle **/
 		opacity: 1;
 		transform: scale(1);
 		animation: animate-popup ease-in-out 100ms;

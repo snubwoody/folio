@@ -4,19 +4,25 @@ pub use error::Error;
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
-use crate::service::{CreateExpense, Expense};
-
-// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+use crate::service::{Account, CreateExpense, Expense};
 
 #[tauri::command]
 async fn create_expense(state:tauri::State<'_,State>) -> Result<(), crate::Error> {
 	let data = CreateExpense::new();
 	Expense::create(data, &state.pool).await;
 	Ok(())
+}
+
+#[tauri::command]
+async fn create_account(state:tauri::State<'_,State>,name: &str, starting_balance: &str) -> Result<(), crate::Error> {
+	let amount = Decimal::from_str(starting_balance)?;
+	Account::create(name,amount,&state.pool).await?;
+	Ok(())
+}
+
+#[tauri::command]
+async fn fetch_accounts(state:tauri::State<'_,State>,) -> Result<Vec<Account>, crate::Error> {
+	service::fetch_accounts(&state.pool).await
 }
 
 
@@ -32,7 +38,12 @@ pub async fn run() {
     tauri::Builder::default()
 		.manage(state)
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet,create_expense,fetch_expenses])
+        .invoke_handler(tauri::generate_handler![
+			create_expense,
+			fetch_expenses,
+			create_account,
+			fetch_accounts
+		])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

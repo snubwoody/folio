@@ -1,7 +1,6 @@
 export type Account = {
 	id: string,
 	name: string,
-	currencyCode: string,
 	startingBalance: number
 }
 
