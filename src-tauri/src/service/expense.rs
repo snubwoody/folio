@@ -3,7 +3,7 @@ use std::str::FromStr;
 use chrono::{Local, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::{SqlitePool, pool};
+use sqlx::SqlitePool;
 use tracing::info;
 
 use crate::service::{Account, Category};

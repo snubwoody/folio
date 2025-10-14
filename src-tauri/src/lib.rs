@@ -3,7 +3,6 @@ mod service;
 pub use error::Error;
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
-use tracing::info;
 
 use crate::service::{Account, CreateExpense, Expense};
 
@@ -26,10 +25,6 @@ async fn create_account(
     Account::create(name, amount, &state.pool).await?;
     Ok(())
 }
-
-async fn create_category(title: &str) {}
-
-async fn delete_category(id: &str) {}
 
 #[tauri::command]
 async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>, crate::Error> {
@@ -72,7 +67,7 @@ impl State {
 }
 
 pub async fn init_database() -> SqlitePool {
-    /// FIXME: don't unwrap
+    // FIXME: don't unwrap
     let pool = sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap();
 
     pool

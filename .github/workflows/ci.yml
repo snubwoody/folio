@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,macos-latest-]
+        os: [windows-latest,macos-latest,ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -47,7 +47,6 @@ jobs:
           path: |
             target/
             ~/.cargo
-      - name: Check formatting
-        run: |
-          cd src-tauri
-          cargo fmt --check
+      - uses: taiki-e/install-action@nextest
+      - name: Run tests
+        run: cargo nextest run

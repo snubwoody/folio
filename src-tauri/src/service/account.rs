@@ -1,4 +1,3 @@
-use crate::init_database;
 use rust_decimal::prelude::*;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
