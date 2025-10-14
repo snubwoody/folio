@@ -3,6 +3,8 @@ use std::io;
 use serde::{Serialize, ser::SerializeStruct};
 use thiserror::Error;
 
+pub type Result<T> = std::result::Result<T,Error>;
+
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("IO Error: {0}")]
@@ -16,7 +18,7 @@ pub enum Error {
 }
 
 impl Serialize for Error {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {

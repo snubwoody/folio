@@ -47,6 +47,7 @@ impl Account {
     }
 
     /// Delete an [`Account`].
+    #[allow(unused)]
     pub async fn delete(id: &str, pool: &SqlitePool) -> Result<(), crate::Error> {
         sqlx::query!("DELETE FROM accounts WHERE id=$1", id)
             .execute(pool)

@@ -2,6 +2,10 @@
     import Sidebar from "../components/Sidebar.svelte";
 	import "../styles/global.css";
 	const { children } = $props();
+    import {onMount} from "svelte";
+    onMount(()=>{
+
+    });
 </script>
 
 <svelte:head>

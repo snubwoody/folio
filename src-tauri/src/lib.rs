@@ -1,16 +1,16 @@
 mod error;
 mod service;
-pub use error::Error;
+pub use error::{Error,Result};
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
-use crate::service::{Account, CreateExpense, Expense};
+use crate::service::{Account, Category, CreateExpense, Expense};
 
 #[tauri::command]
 async fn create_expense(
     state: tauri::State<'_, State>,
     data: CreateExpense,
-) -> Result<(), crate::Error> {
+) -> Result<()> {
     Expense::create(data, &state.pool).await?;
     Ok(())
 }
@@ -20,21 +20,32 @@ async fn create_account(
     state: tauri::State<'_, State>,
     name: &str,
     starting_balance: &str,
-) -> Result<(), crate::Error> {
+) -> Result<()> {
     let amount = Decimal::from_str(starting_balance)?;
     Account::create(name, amount, &state.pool).await?;
     Ok(())
 }
 
 #[tauri::command]
-async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>, crate::Error> {
+async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
     service::fetch_accounts(&state.pool).await
 }
 
 #[tauri::command]
-async fn fetch_expenses(state: tauri::State<'_, State>) -> Result<Vec<Expense>, crate::Error> {
+async fn fetch_expenses(state: tauri::State<'_, State>) -> Result<Vec<Expense>> {
     let expenses = service::fetch_expenses(&state.pool).await?;
     Ok(expenses)
+}
+
+#[tauri::command]
+async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
+    service::fetch_categories(&state.pool).await
+}
+
+#[tauri::command]
+async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<()> {
+    Category::create(title, &state.pool).await?;
+    Ok(())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -48,7 +59,9 @@ pub async fn run() {
             create_expense,
             fetch_expenses,
             create_account,
-            fetch_accounts
+            fetch_accounts,
+            create_category,
+            fetch_categories
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -68,7 +81,5 @@ impl State {
 
 pub async fn init_database() -> SqlitePool {
     // FIXME: don't unwrap
-    let pool = sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap();
-
-    pool
+    sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap()
 }
