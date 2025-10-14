@@ -10,7 +10,7 @@
 		onChange?: (item: T) => void
 	}
 
-	const { label = "Label", items, toOption,defaultValue }: Props = $props();
+	const { label = "Label", items, toOption,onChange,defaultValue }: Props = $props();
 
 	type Option = {
 		/** Label for display purposes. */

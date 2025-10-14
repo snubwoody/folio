@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { invoke } from "@tauri-apps/api/core";
 	import AccountSection from "../components/home/AccountSection.svelte";
     import TransactionsSection from "../components/home/TransactionsSection.svelte";
 </script>

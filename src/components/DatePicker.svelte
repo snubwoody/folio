@@ -48,7 +48,7 @@
 			<i class="ph ph-caret-right"></i>
 		</button>
 		</header>
-		{#each $months as month}
+		{#each $months as month (month)}
 		<table {...$grid} use:grid>
 			<thead aria-hidden="true">
 			<tr>

@@ -41,7 +41,6 @@
 			items={accountStore.accounts}
 			defaultValue={accountStore.accounts[0]}
 			toOption={(a) => {return { label: a.name,value: a.id };}}
-			onChange={(item) => console.log("Updated",item)}
 		/>
 		<button class="btn btn-primary w-full" onclick={createExpense}>Add transaction</button>
 	</form>

@@ -1,6 +1,4 @@
 <nav>
-	<a href="/#">Home</a>
-	<a href="/#">Analytics</a>
 </nav>
 
 <style>
