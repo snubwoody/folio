@@ -1,10 +1,10 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{Decode, SqlitePool};
 
-#[derive(Debug, Default, Serialize, Decode, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 pub struct Category {
-    id: String,
-    title: String,
+    pub id: String,
+    pub title: String,
 }
 
 impl Category {

@@ -1,5 +1,6 @@
 mod error;
 mod service;
+pub use error::Error;
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
