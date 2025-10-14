@@ -7,9 +7,8 @@ use sqlx::SqlitePool;
 use crate::service::{Account, CreateExpense, Expense};
 
 #[tauri::command]
-async fn create_expense(state:tauri::State<'_,State>) -> Result<(), crate::Error> {
-	let data = CreateExpense::new();
-	Expense::create(data, &state.pool).await;
+async fn create_expense(state:tauri::State<'_,State>,data: CreateExpense) -> Result<(), crate::Error> {
+	Expense::create(data, &state.pool).await?;
 	Ok(())
 }
 
@@ -34,6 +33,7 @@ async fn fetch_expenses(state:tauri::State<'_,State>) -> Result<Vec<Expense>, cr
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
+	tracing_subscriber::fmt::init();
 	let state = State::new().await;
     tauri::Builder::default()
 		.manage(state)

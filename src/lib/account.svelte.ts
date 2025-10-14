@@ -17,7 +17,6 @@ export class AccountStore{
 	async load(){
 		// FIXME: check for error
 		const accounts = await invoke("fetch_accounts") as Account[];
-		console.log(accounts);
 		this.accounts = accounts;
 	}
 }

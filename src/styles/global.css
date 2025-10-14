@@ -38,3 +38,18 @@ body{
 	display: grid;
 	grid-template-columns: auto 1fr;
 }
+
+@keyframes animate-popup{
+	from {
+		opacity: 0.8;
+		scale: 0.9;
+	}
+}
+
+@utility popup-overlay{
+	box-shadow: var(--shadow-md);
+	padding: 16px;
+	border-radius: var(--radius-md);
+	transition: all 250ms;
+	/*TODO: animate*/
+}

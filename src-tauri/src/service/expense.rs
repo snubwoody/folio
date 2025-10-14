@@ -4,9 +4,12 @@ use chrono::{Local, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::{pool, SqlitePool};
+use tracing::info;
 
 use crate::service::{Account, Category};
 
+#[derive(Debug,Serialize,Deserialize)]
+#[serde(rename_all="camelCase")]
 pub struct CreateExpense {
     amount: String,
     date: NaiveDate,
@@ -60,6 +63,7 @@ impl Default for CreateExpense {
 
 // TODO: try deleting account and category deps
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all="camelCase")]
 pub struct Expense {
     id: String,
     amount: Decimal,
@@ -93,7 +97,9 @@ impl Expense {
         .fetch_one(pool)
         .await?;
 
-        Self::from_id(&record.id, pool).await
+        let expense = Self::from_id(&record.id, pool).await?;
+		info!(expense=?expense,"Created expense");
+		Ok(expense)
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Result<Self, crate::Error> {

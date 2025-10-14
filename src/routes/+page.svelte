@@ -1,23 +1,12 @@
 <script lang="ts">
 	import { invoke } from "@tauri-apps/api/core";
-    import TransactionTable from "../components/TransactionTable.svelte";
 	import AccountSection from "../components/home/AccountSection.svelte";
-	async function createExpense() {
-		invoke("create_expense");
-	}
+    import TransactionsSection from "../components/home/TransactionsSection.svelte";
 </script>
 
 <main>
 	<AccountSection/>
-	<section>
-		<header>
-			<p>
-				Expenses
-			</p>
-			<button class="btn btn-primary" onclick={createExpense}>New</button>
-		</header>
-		<TransactionTable/>
-	</section>
+	<TransactionsSection/>
 </main>
 
 <style>
