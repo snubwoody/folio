@@ -44,17 +44,6 @@ struct CreateAccount{
 	starting_balance: Decimal
 }
 
-pub async fn create_account(pool: &sqlx::SqlitePool){
-	let amount = dec!(1.0).to_string();
-	sqlx::query!("INSERT INTO accounts(starting_balance) VALUES($1)",amount)
-		.execute(pool)
-		.await
-		.unwrap();
-}
-
-pub fn delete_account(pool: &sqlx::SqlitePool){
-
-}
 
 #[cfg(test)]
 mod test{
