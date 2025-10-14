@@ -1,26 +1,26 @@
 <script lang="ts">
-	import { createDateField,} from '@melt-ui/svelte';
-	
+	import { createDateField } from "@melt-ui/svelte";
+
 	type Props = {
 		onChange?: (year: number,month: number,day: number) => void
 	}
-	
-    const {onChange}: Props = $props();
+
+    const { onChange }: Props = $props();
 	const {
-		elements: { field, segment, label },
-		states: { segmentContents },
-	} = createDateField({locale: "en-US",onValueChange:({next}) => {
-        if(next && onChange){
-            onChange(next.year,next.month,next.day);
-        }
-        return next;
-	}});
+	    elements: { field, segment, label },
+	    states: { segmentContents },
+	} = createDateField({ locale: "en-US",onValueChange:({ next }) => {
+	    if(next && onChange){
+	        onChange(next.year,next.month,next.day);
+	    }
+	    return next;
+	} });
 </script>
 
 <div class="flex h-full w-full flex-col gap-1">
     <span {...$label} use:label class="text-sm text-text-muted">Date</span>
     <div {...$field} use:field>
-        {#each $segmentContents as seg}
+        {#each $segmentContents as seg (seg)}
             <div {...$segment(seg.part)} use:segment>
             {seg.value}
             </div>

@@ -1,33 +1,33 @@
 <script lang="ts">
-	import {createDatePicker,} from "@melt-ui/svelte";
+	import { createDatePicker } from "@melt-ui/svelte";
     import { scale } from "svelte/transition";
 
 	type Props = {
 		onDateChange?: (year?: number,month?: number,day?: number) => void;
 	}
 
-	const {onDateChange}: Props = $props();
+	const { onDateChange }: Props = $props();
 
 	const {
-		elements: {
-			calendar,
-			cell,
-			content,
-			grid,
-			heading,
-			nextButton,
-			prevButton,
-			trigger,
-		},
-		states: { months, headingValue, weekdays, segmentContents,open,value },
-		helpers: { isDateDisabled, isDateUnavailable }
+	    elements: {
+	        calendar,
+	        cell,
+	        content,
+	        grid,
+	        heading,
+	        nextButton,
+	        prevButton,
+	        trigger,
+	    },
+	    states: { months, headingValue, weekdays, open },
+	    helpers: { isDateDisabled, isDateUnavailable },
 	} = createDatePicker({
-		onValueChange: ({next}) => {
-			if (onDateChange){
-				onDateChange(next?.year,next?.month,next?.day)
-			}
-			return next;
-		}
+	    onValueChange: ({ next }) => {
+	        if (onDateChange){
+	            onDateChange(next?.year,next?.month,next?.day);
+	        }
+	        return next;
+	    },
 	});
 </script>
 
@@ -35,7 +35,7 @@
 	<i class="ph ph-calendar"></i>
 </button>
 {#if $open}
-	<div transition:scale={{start:0.8}} {...$content} use:content>
+	<div transition:scale={{ start:0.8 }} {...$content} use:content>
 	<div {...$calendar} use:calendar>
 		<header class="calendar-header">
 		<button class="icon-btn icon-btn-medium icon-btn-primary" {...$prevButton} use:prevButton>
@@ -48,11 +48,11 @@
 			<i class="ph ph-caret-right"></i>
 		</button>
 		</header>
-		{#each $months as month}
+		{#each $months as month (month)}
 		<table {...$grid} use:grid>
 			<thead aria-hidden="true">
 			<tr>
-				{#each $weekdays as day}
+				{#each $weekdays as day (day)}
 				<th>
 					{day}
 				</th>
@@ -60,9 +60,9 @@
 			</tr>
 			</thead>
 			<tbody>
-			{#each month.weeks as days}
+			{#each month.weeks as days (days)}
 				<tr>
-				{#each days as date}
+				{#each days as date (date)}
 					<td
 					role="gridcell"
 					aria-disabled={$isDateDisabled(date) || $isDateUnavailable(date)}>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {Popover} from "melt/builders";
+	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
     import { onMount } from "svelte";
     import { accountStore } from "../../lib/account.svelte";
@@ -9,12 +9,12 @@
 	let startingBalance = $state("0.00");
 
 	onMount(async ()=>{
-		await accountStore.load();
-	})
+	    await accountStore.load();
+	});
 
 	async function createAccount() {
-		await accountStore.addAccount(name,startingBalance);
-		popover.open = false;
+	    await accountStore.addAccount(name,startingBalance);
+	    popover.open = false;
 	}
 </script>
 
@@ -32,7 +32,7 @@
 		</form>
 	</header>
 	<ul>
-		{#each accountStore.accounts as account}
+		{#each accountStore.accounts as account (account.id)}
 			<li class="shadow-purple-sm p-2 rounded-md">
 				<p>{account.name}</p>
 				<h6>$ {account.startingBalance}</h6>

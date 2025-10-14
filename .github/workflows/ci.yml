@@ -7,7 +7,25 @@ on:
     branches: ["main"]
   push: 
     branches: ["main"]
+concurrency:
+  group: ci-${{github.ref}}-${{github.workflow}}
+  cancel-in-progress: true
 jobs:
+  lint-js:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10
+        run_install: false
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: pnpm
+    - run: pnpm install
+    - name: Run pnpm lint
+      run: pnpm lint
   lint:
     runs-on: ubuntu-latest
     steps:

@@ -1,7 +1,7 @@
 <script>
     import Sidebar from "../components/Sidebar.svelte";
 	import "../styles/global.css";
-	const {children} = $props();
+	const { children } = $props();
 </script>
 
 <svelte:head>
