@@ -7,21 +7,17 @@
 	}
 
 	const {expense}: Props = $props();
-	const dateFormatter = new Intl.DateTimeFormat("en-US",{dateStyle:"full"});
-
 	const formatter = new Intl.NumberFormat("en-US",{style: "currency",currency: expense.currencyCode});
-
 	const amount = formatter.format(expense.amount);
 
 	function formatDate(dateStr: string): string{
 		const [year,month,day]: string[] = dateStr.split("-");
 		const date = new Date(Number(year),Number(month)-1,Number(day));
-		console.log(date)
 		return Intl.DateTimeFormat("en-US",{dateStyle: "medium"})
 			.format(date)
 	}
 
-const date = formatDate(expense.date);
+	const date = formatDate(expense.date);
 </script>
 
 <p class="table-cell">{expense.category?.title ?? "Missing category!!"}</p>

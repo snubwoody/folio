@@ -3,13 +3,32 @@ import { invoke } from "@tauri-apps/api/core";
 
 
 export type CreateExpense = {
-
+	amount: string,
+	date: string,
+	accountId?: string,
+	categoryId?: string,
+	currencyCode: string
 } 
 
 export class TransactionStore{
 	expenses: Expense[] = $state([]);
 
-	async addExpense(data: CreateExpense){
+	async addExpense({
+		amount = "0",
+		accountId,
+		categoryId,
+		currencyCode = "USD",
+		date
+	}:CreateExpense
+	){
+		const data: CreateExpense = {
+			amount,
+			accountId,
+			currencyCode,
+			categoryId,
+			date
+		};
+
 		try{
 			await invoke("create_expense",{data})
 		}
