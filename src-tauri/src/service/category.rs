@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use sqlx::{Decode, SqlitePool};
+use sqlx::SqlitePool;
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 pub struct Category {
@@ -17,8 +17,7 @@ impl Category {
         .await
         .unwrap();
 
-        let category = Category::from_id(&record.id, pool).await;
-        category
+        Category::from_id(&record.id, pool).await
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Self {

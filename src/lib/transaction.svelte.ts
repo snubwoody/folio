@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 export type CreateExpense = {
 	amount: string,
-	date: string,
+	date?: string,
 	accountId?: string,
 	categoryId?: string,
 	currencyCode: string

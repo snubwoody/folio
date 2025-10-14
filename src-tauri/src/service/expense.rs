@@ -3,13 +3,13 @@ use std::str::FromStr;
 use chrono::{Local, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::{pool, SqlitePool};
+use sqlx::SqlitePool;
 use tracing::info;
 
 use crate::service::{Account, Category};
 
-#[derive(Debug,Serialize,Deserialize)]
-#[serde(rename_all="camelCase")]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateExpense {
     amount: String,
     date: NaiveDate,
@@ -63,7 +63,7 @@ impl Default for CreateExpense {
 
 // TODO: try deleting account and category deps
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct Expense {
     id: String,
     amount: Decimal,
@@ -98,8 +98,8 @@ impl Expense {
         .await?;
 
         let expense = Self::from_id(&record.id, pool).await?;
-		info!(expense=?expense,"Created expense");
-		Ok(expense)
+        info!(expense=?expense,"Created expense");
+        Ok(expense)
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Result<Self, crate::Error> {
@@ -131,18 +131,18 @@ impl Expense {
 }
 
 /// Fetch all the expenses from the database.
-pub async fn fetch_expenses(pool: &SqlitePool) -> Result<Vec<Expense>,crate::Error>{
-	let records = sqlx::query!("SELECT id from expenses")
-		.fetch_all(pool)
-		.await?;
+pub async fn fetch_expenses(pool: &SqlitePool) -> Result<Vec<Expense>, crate::Error> {
+    let records = sqlx::query!("SELECT id from expenses")
+        .fetch_all(pool)
+        .await?;
 
-	let mut expenses = vec![];
-	for row in records{
-		let expense = Expense::from_id(&row.id, pool).await?;
-		expenses.push(expense);
-	}
+    let mut expenses = vec![];
+    for row in records {
+        let expense = Expense::from_id(&row.id, pool).await?;
+        expenses.push(expense);
+    }
 
-	Ok(expenses)
+    Ok(expenses)
 }
 
 #[cfg(test)]
