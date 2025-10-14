@@ -1,4 +1,4 @@
-import type { Category } from "./transaction.svelte"
+import type { Category } from "./transaction.svelte";
 
 export type Account = {
 	id: string,
