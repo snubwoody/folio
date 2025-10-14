@@ -28,8 +28,10 @@
 	let selectedOption: Option | undefined = $state(defaultValue ? toOption(defaultValue) : undefined);
 	function updateValue(value?: Option){
 	    selectedOption = value;
-	    const item = items.filter(i => toOption(i).value == value?.value)[0];
-	    onChange(item);
+	    const item = items.find(i => toOption(i).value === value?.value);
+	    if(item){
+	        onChange?.(item);
+	    }
 	}
 </script>
 
@@ -57,6 +59,7 @@
 		border-radius: var(--radius-sm);
 		padding: 8px;
 		transition: all 250ms;
+
 		&:hover{
 			background-color: var(--color-neutral-50);
 		}

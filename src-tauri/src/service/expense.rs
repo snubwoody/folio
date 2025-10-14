@@ -19,30 +19,36 @@ pub struct CreateExpense {
 }
 
 impl CreateExpense {
+    #[allow(unused)]
     pub fn new() -> Self {
         Self::default()
     }
 
+    #[allow(unused)]
     pub fn date(mut self, date: NaiveDate) -> Self {
         self.date = date;
         self
     }
 
+    #[allow(unused)]
     pub fn amount(mut self, amount: &str) -> Self {
         self.amount = amount.to_owned();
         self
     }
 
+    #[allow(unused)]
     pub fn account_id(mut self, id: &str) -> Self {
         self.account_id = Some(id.to_owned());
         self
     }
 
+    #[allow(unused)]
     pub fn category_id(mut self, id: &str) -> Self {
         self.category_id = Some(id.to_owned());
         self
     }
 
+    #[allow(unused)]
     pub fn currency_code(mut self, code: &str) -> Self {
         self.currency_code = code.to_owned();
         self
@@ -110,7 +116,7 @@ impl Expense {
         let date = NaiveDate::from_str(&record.transaction_date)?;
         let amount = Decimal::from_str(&record.amount)?;
         let category = match record.category_id {
-            Some(id) => Some(Category::from_id(&id, pool).await),
+            Some(id) => Some(Category::from_id(&id, pool).await?),
             None => None,
         };
 
@@ -152,7 +158,7 @@ mod test {
     #[sqlx::test]
     async fn create_expense(pool: SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("", Decimal::ZERO, &pool).await?;
-        let category = Category::create("", &pool).await;
+        let category = Category::create("", &pool).await?;
         let data = CreateExpense::new()
             .amount("500.2024242")
             .date(NaiveDate::from_ymd_opt(2015, 2, 1).unwrap())

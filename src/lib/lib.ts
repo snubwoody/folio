@@ -1,12 +1,9 @@
+import type { Category } from "./transaction.svelte";
+
 export type Account = {
 	id: string,
 	name: string,
 	startingBalance: number
-}
-
-export type Category = {
-	id: string,
-	title: string
 }
 
 export type Expense = {

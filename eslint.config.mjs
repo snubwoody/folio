@@ -3,7 +3,7 @@ import tseslint from "typescript-eslint";
 import sveltePlugin from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
 
-/** @type {import("eslint".Linter[])} */
+/** @type {import("eslint").Linter.Config[]} */
 export default [
     // Base JS recommended rules
     js.configs.recommended,
@@ -17,11 +17,11 @@ export default [
     // Global ignores
     {
         ignores: [
-            "**/node_modules/**",
+            "**/node_modules",
             "**/dist/**",
             "**/build/**",
-            "**/.svelte-kit/**",
-            "**/target/**",
+            ".svelte-kit",
+            "**/target",
         ],
     },
 

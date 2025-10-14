@@ -3,5 +3,5 @@ mod category;
 mod expense;
 
 pub use account::*;
-pub use category::Category;
+pub use category::*;
 pub use expense::*;
