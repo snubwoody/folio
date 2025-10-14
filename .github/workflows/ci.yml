@@ -27,7 +27,7 @@ jobs:
     - name: Run pnpm lint
       run: pnpm lint
   lint:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4

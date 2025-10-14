@@ -17,11 +17,11 @@ export default [
     // Global ignores
     {
         ignores: [
-            "**/node_modules/**",
+            "**/node_modules",
             "**/dist/**",
             "**/build/**",
-            "**/.svelte-kit/**",
-            "**/target/**",
+            ".svelte-kit",
+            "**/target",
         ],
     },
 
