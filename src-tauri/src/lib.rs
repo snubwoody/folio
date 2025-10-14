@@ -1,7 +1,7 @@
-mod service;
 mod error;
-use sqlx::SqlitePool;
+mod service;
 use rust_decimal::prelude::*;
+use sqlx::SqlitePool;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -18,11 +18,8 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-
 pub async fn init_database() -> SqlitePool {
-	let pool = sqlx::SqlitePool::connect("sqlite://data.db")
-		.await
-		.unwrap();
+    let pool = sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap();
 
-	pool
+    pool
 }
