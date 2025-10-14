@@ -17,7 +17,6 @@ impl Category {
         .await
         .unwrap();
 
-        
         Category::from_id(&record.id, pool).await
     }
 
