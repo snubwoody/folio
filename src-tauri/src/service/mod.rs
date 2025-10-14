@@ -4,3 +4,4 @@ mod expense;
 
 pub use account::Account;
 pub use category::Category;
+pub use expense::*;

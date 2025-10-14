@@ -3,7 +3,7 @@ use std::str::FromStr;
 use chrono::{Local, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{pool, SqlitePool};
 
 use crate::service::{Account, Category};
 
@@ -122,6 +122,21 @@ impl Expense {
             category,
         })
     }
+}
+
+/// Fetch all the expenses from the database.
+pub async fn fetch_expenses(pool: &SqlitePool) -> Result<Vec<Expense>,crate::Error>{
+	let records = sqlx::query!("SELECT id from expenses")
+		.fetch_all(pool)
+		.await?;
+
+	let mut expenses = vec![];
+	for row in records{
+		let expense = Expense::from_id(&row.id, pool).await?;
+		expenses.push(expense);
+	}
+
+	Ok(expenses)
 }
 
 #[cfg(test)]

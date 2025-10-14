@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./text.css";
 @import "./colors.css";
+@import "./button.css";
 
 @theme{
 	--spacing: 8px;

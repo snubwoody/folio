@@ -1,0 +1,40 @@
+
+button{
+	cursor: pointer;
+}
+
+.btn{
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: center;
+	padding: 8px 12px;
+	border-radius: var(--radius-md);
+	transition: all 250ms;
+}
+
+.btn-primary{
+	background-color: var(--color-surface-primary);
+	color: var(--color-white);
+	
+	&:hover{
+		background-color: var(--color-surface-primary-hover);
+	}
+	
+	&:active{
+		background-color: var(--color-surface-primary-active);
+	}
+}
+
+.btn-neutral{
+	background-color: var(--color-neutral-50);
+	
+	&:hover{
+		background-color: var(--color-neutral-100);
+	}
+	
+	&:active{
+		background-color: var(--color-neutral-200);
+	}
+}
+
