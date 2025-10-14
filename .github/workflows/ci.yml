@@ -8,6 +8,18 @@ on:
   push: 
     branches: ["main"]
 jobs:
+  lint-js:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        run_install: false
+    - uses: actions/setup-node@v6
+      with:
+        node-version: 24
+        cache: pnpm
+    - name: Run pnpm lint
+      run: pnpm lint
   lint:
     runs-on: ubuntu-latest
     steps:
