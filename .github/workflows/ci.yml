@@ -1,0 +1,53 @@
+name: CI/CD
+on:
+  pull_request:
+    branches: ["main"]
+  push: 
+    branches: ["main"]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          key: rust-cache-${{runner.os}}-${{hashFiles('Cargo.lock')}}
+          restore-keys: |
+            rust-cache-${{runner.os}}-
+            rust-cache-
+          path: |
+            target/
+            ~/.cargo
+      - name: Run cargo clippy
+        run: |
+          cd src-tauri
+          cargo clippy --all-features --all-targets -- -D warnings
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check formatting
+        run: |
+          cd src-tauri
+          cargo fmt --check
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest,macos-latest-]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          key: rust-cache-${{runner.os}}-${{hashFiles('Cargo.lock')}}
+          restore-keys: |
+            rust-cache-${{runner.os}}-
+            rust-cache-
+          path: |
+            target/
+            ~/.cargo
+      - name: Check formatting
+        run: |
+          cd src-tauri
+          cargo fmt --check
