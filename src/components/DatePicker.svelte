@@ -83,7 +83,7 @@
 <style>
 	.calendar-header{
 		display: flex;
-		padding: 8px 0px;
+		padding: 8px 0;
 		align-items: center;
 		justify-content: space-between;
 	}

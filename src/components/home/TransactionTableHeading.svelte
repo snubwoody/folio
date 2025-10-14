@@ -4,7 +4,7 @@
     import DateField from "../DateField.svelte";
     import SelectMenu from "$components/SelectMenu.svelte";
     import { accountStore } from "../../lib/account.svelte";
-    import { transactionStore } from "$lib/transaction.svelte";
+    import { transactionStore,type Category } from "$lib/transaction.svelte";
     import type { Account } from "$lib/lib";
 
 	const popover = new Popover();
@@ -14,8 +14,6 @@
 	let category:Category | undefined;
     let date: string | undefined = $state(undefined);
 	async function createExpense() {
-        console.log(category);
-        
 	    transactionStore.addExpense({
 	        date: date,
 	        amount:amount,
@@ -24,7 +22,7 @@
 	        accountId: account?.id,
 	    });
 	    popover.open = false;
-        
+
 	}
 </script>
 

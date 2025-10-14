@@ -23,19 +23,19 @@ impl CreateExpense {
     pub fn new() -> Self {
         Self::default()
     }
-    
+
     #[allow(unused)]
     pub fn date(mut self, date: NaiveDate) -> Self {
         self.date = date;
         self
     }
-    
+
     #[allow(unused)]
     pub fn amount(mut self, amount: &str) -> Self {
         self.amount = amount.to_owned();
         self
     }
-    
+
     #[allow(unused)]
     pub fn account_id(mut self, id: &str) -> Self {
         self.account_id = Some(id.to_owned());
@@ -47,7 +47,7 @@ impl CreateExpense {
         self.category_id = Some(id.to_owned());
         self
     }
-    
+
     #[allow(unused)]
     pub fn currency_code(mut self, code: &str) -> Self {
         self.currency_code = code.to_owned();

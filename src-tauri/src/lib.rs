@@ -1,16 +1,13 @@
 mod error;
 mod service;
-pub use error::{Error,Result};
+pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
 use crate::service::{Account, Category, CreateExpense, Expense};
 
 #[tauri::command]
-async fn create_expense(
-    state: tauri::State<'_, State>,
-    data: CreateExpense,
-) -> Result<()> {
+async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
     Expense::create(data, &state.pool).await?;
     Ok(())
 }

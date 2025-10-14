@@ -42,6 +42,7 @@
 
 		&:focus{
 			position: relative;
+
 			/* background-color: aqua; */
 			&::after{
 				content: "";

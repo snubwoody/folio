@@ -19,7 +19,7 @@ impl Category {
         Category::from_id(&record.id, pool).await
     }
 
-    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self>{
+    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let category = sqlx::query_as!(Category, "SELECT * FROM categories WHERE id=$1", id)
             .fetch_one(pool)
             .await?;
@@ -28,13 +28,13 @@ impl Category {
     }
 }
 
-pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>,crate::Error> {
+pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate::Error> {
     let records = sqlx::query!("SELECT id FROM categories")
         .fetch_all(pool)
         .await?;
 
     let mut categories = vec![];
-    for record in records{
+    for record in records {
         let category = Category::from_id(&record.id, pool).await?;
         categories.push(category);
     }
@@ -46,18 +46,20 @@ mod test {
     use super::*;
 
     #[sqlx::test]
-    async fn get_categories(pool: SqlitePool) -> Result<(),crate::Error> {
-        let rows = sqlx::query!("SELECT id FROM categories").fetch_all(&pool).await?;
+    async fn get_categories(pool: SqlitePool) -> Result<(), crate::Error> {
+        let rows = sqlx::query!("SELECT id FROM categories")
+            .fetch_all(&pool)
+            .await?;
         Category::create("", &pool).await?;
         Category::create("", &pool).await?;
         Category::create("", &pool).await?;
         let categories = fetch_categories(&pool).await?;
-        assert_eq!(categories.len(),rows.len() + 3);
+        assert_eq!(categories.len(), rows.len() + 3);
         Ok(())
     }
 
     #[sqlx::test]
-    async fn fetch_category(pool: SqlitePool) -> crate::Result<()>{
+    async fn fetch_category(pool: SqlitePool) -> crate::Result<()> {
         let record = sqlx::query!("INSERT INTO categories(title) VALUES('Rent') RETURNING id")
             .fetch_one(&pool)
             .await?;
