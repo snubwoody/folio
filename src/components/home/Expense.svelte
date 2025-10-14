@@ -9,7 +9,9 @@
 
 	const {expense}: Props = $props();
 	const formatter = new Intl.NumberFormat("en-US",{style: "currency",currency: expense.currencyCode});
+    console.log(expense.amount);
 	const amount = formatter.format(expense.amount);
+    console.log(amount);
 
 	function formatDate(dateStr: string): string{
 		const [year,month,day]: string[] = dateStr.split("-");
