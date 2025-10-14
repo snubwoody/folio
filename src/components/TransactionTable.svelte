@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { invoke } from "@tauri-apps/api/core";
     import { onMount } from "svelte";
-	type Expense = {
-		id: string,
-	}
 
 	onMount(async()=>{
 		let expenses = await invoke("fetch_expenses");
@@ -17,10 +14,25 @@
 	<p class="table-heading">Date</p>
 	<p class="table-heading">Amount</p>
 
-	<p class="table-cell">Category</p>
-	<p class="table-cell">Account</p>
-	<p class="table-cell">Date</p>
-	<p class="table-cell">Amount</p>
+	<p class="table-cell">Takeout</p>
+	<p class="table-cell">Savings</p>
+	<p class="table-cell">April 25, 2025</p>
+	<p class="table-cell">$ 20.24</p>
+
+	<p class="table-cell">Takeout</p>
+	<p class="table-cell">Savings</p>
+	<p class="table-cell">April 25, 2025</p>
+	<p class="table-cell">$ 20.24</p>
+
+	<p class="table-cell">Takeout</p>
+	<p class="table-cell">Savings</p>
+	<p class="table-cell">April 25, 2025</p>
+	<p class="table-cell">$ 20.24</p>
+
+	<p class="table-cell">Takeout</p>
+	<p class="table-cell">Savings</p>
+	<p class="table-cell">April 25, 2025</p>
+	<p class="table-cell">$ 20.24</p>
 </ul>
 
 <style>
@@ -31,10 +43,13 @@
 
 	.table-heading{
 		color: var(--color-text-muted);
+		padding: 12px;
 	}
 
 	.table-cell{
-		border-left: 1px solid var(--color-neutral-50);
+		padding: 12px;
+		border-right: 1px solid var(--color-neutral-50);
 		border-bottom: 1px solid var(--color-neutral-50);
+		border-top: 1px solid var(--color-neutral-50);
 	}
 </style>
