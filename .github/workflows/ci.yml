@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('Cargo.lock')}}
+          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
           restore-keys: |
             rust-cache-${{runner.os}}-
             rust-cache-
@@ -74,7 +74,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('Cargo.lock')}}
+          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
           restore-keys: |
             rust-cache-${{runner.os}}-
             rust-cache-
