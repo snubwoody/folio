@@ -2,22 +2,19 @@
     import type { Expense } from "../../lib/lib";
     import DatePicker from "../DatePicker.svelte";
 
-
 	type Props = {
 		expense: Expense
 	}
 
-	const {expense}: Props = $props();
-	const formatter = new Intl.NumberFormat("en-US",{style: "currency",currency: expense.currencyCode});
-    console.log(expense.amount);
+	const { expense }: Props = $props();
+	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency: expense.currencyCode });
 	const amount = formatter.format(expense.amount);
-    console.log(amount);
 
 	function formatDate(dateStr: string): string{
-		const [year,month,day]: string[] = dateStr.split("-");
-		const date = new Date(Number(year),Number(month)-1,Number(day));
-		return Intl.DateTimeFormat("en-US",{dateStyle: "medium"})
-			.format(date)
+	    const [year,month,day]: string[] = dateStr.split("-");
+	    const date = new Date(Number(year),Number(month)-1,Number(day));
+	    return Intl.DateTimeFormat("en-US",{ dateStyle: "medium" })
+	        .format(date);
 	}
 
 	const date = formatDate(expense.date);

@@ -6,9 +6,9 @@
 	}
 
 	let {
-		label = "Label",
-		placeholder,
-		value = $bindable()
+	    label = "Label",
+	    placeholder,
+	    value = $bindable(),
 	}: Props = $props();
 </script>
 
