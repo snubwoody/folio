@@ -7,6 +7,9 @@ on:
     branches: ["main"]
   push: 
     branches: ["main"]
+concurrency:
+  group: ci-${{github.ref}}-${{github.workflow}}
+  cancel-in-progress: true
 jobs:
   lint-js:
     runs-on: ubuntu-latest
