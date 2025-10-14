@@ -50,6 +50,4 @@ body{
 	box-shadow: var(--shadow-md);
 	padding: 16px;
 	border-radius: var(--radius-md);
-	transition: all 250ms;
-	/*TODO: animate*/
 }

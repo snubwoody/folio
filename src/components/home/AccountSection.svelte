@@ -53,6 +53,4 @@
 		gap: 20px;
 	}
 
-	li{
-	}
 </style>

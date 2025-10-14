@@ -13,7 +13,7 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<p class="text-sm text-text-muted">Label</p>
+	<p class="text-sm text-text-muted">{label}</p>
 	<input bind:value type="text" {placeholder}>
 </div>
 

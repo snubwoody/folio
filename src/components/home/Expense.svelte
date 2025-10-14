@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { Expense } from "../../lib/lib";
+    import DatePicker from "../DatePicker.svelte";
 
 
 	type Props = {
@@ -20,23 +21,16 @@
 	const date = formatDate(expense.date);
 </script>
 
-<p class="table-cell">{expense.category?.title ?? "Missing category!!"}</p>
-<p class="table-cell">{expense.account?.name ?? "Missing account!!"}</p>
-<p class="table-cell">{date}</p>
-<p class="table-cell">{amount}</p>
+<p class="data-cell">{expense.category?.title ?? "Missing category!!"}</p>
+<p class="data-cell">{expense.account?.name ?? "Missing account!!"}</p>
+<li class="data-cell flex items-center justify-between">
+	<p>{date}</p>
+	<DatePicker/>
+</li>
+<p class="data-cell">{amount}</p>
 
 <style>
-	.expense-table{
-		display: grid;
-		grid-template-columns: repeat(4,1fr);
-	}	
-
-	.table-heading{
-		color: var(--color-text-muted);
-		padding: 12px;
-	}
-
-	.table-cell{
+	.data-cell{
 		padding: 12px;
 		border-right: 1px solid var(--color-neutral-50);
 		border-bottom: 1px solid var(--color-neutral-50);

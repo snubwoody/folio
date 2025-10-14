@@ -19,6 +19,14 @@ async fn create_account(state:tauri::State<'_,State>,name: &str, starting_balanc
 	Ok(())
 }
 
+async fn create_category(title: &str){
+
+}
+
+async fn delete_category(id: &str){
+
+}
+
 #[tauri::command]
 async fn fetch_accounts(state:tauri::State<'_,State>,) -> Result<Vec<Account>, crate::Error> {
 	service::fetch_accounts(&state.pool).await

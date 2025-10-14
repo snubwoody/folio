@@ -4,6 +4,7 @@
     import { transactionStore, type CreateExpense } from "../../lib/transaction.svelte";
 	import {Popover} from "melt/builders";
     import TextField from "../TextField.svelte";
+    import DateField from "../DateField.svelte";
 
 
 	let amount = $state("");
@@ -19,9 +20,9 @@
 <header class="flex items-center justify-between">
 	<p>Expenses</p>
 	<button {...popover.trigger} class="btn btn-primary">New</button>
-	<form {...popover.content} class="popoup-overlay" onsubmit={()=>{}}>
+	<form {...popover.content} class="popup-overlay space-y-2 bg-white" onsubmit={()=>{}}>
 		<TextField bind:value={amount} label="Amount"/>
-		<TextField bind:value={amount} label="Amount"/>
+		<DateField/>
 		<button class="btn btn-primary w-full">Add transaction</button>
 	</form>
 </header>
