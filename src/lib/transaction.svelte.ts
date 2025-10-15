@@ -25,10 +25,10 @@ export type EditExpense = {
 	categoryId?: string,
 }
 
-/** Data used for editing an `Income`, 
- * values left as `undefined` or `null`  will be 
+/** Data used for editing an `Income`,
+ * values left as `undefined` or `null`  will be
  * left as their current values.
- * 
+ *
  */
 export type EditIncome = {
     id: string,
@@ -57,7 +57,6 @@ export type Income = {
 	date: string,
 	currencyCode: string
 }
-
 
 export class TransactionStore{
     #expenses: Expense[] = $state([]);
@@ -89,7 +88,7 @@ export class TransactionStore{
     }
     /**
      * Create a new expense.
-     * 
+     *
      * @param opts - The options for creating the new expense.
      */
     async addExpense(opts:CreateExpense){
@@ -119,7 +118,7 @@ export class TransactionStore{
     }
     /**
      * Create a new expense.
-     * 
+     *
      * @param opts - The options for creating the new expense.
      */
     async addIncome(opts:CreateIncome){

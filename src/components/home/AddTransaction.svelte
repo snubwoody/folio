@@ -1,11 +1,4 @@
 <script lang="ts">
-	import { Popover } from "melt/builders";
-    import TextField from "../TextField.svelte";
-    import DateField from "../DateField.svelte";
-    import SelectMenu from "$components/SelectMenu.svelte";
-    import { accountStore } from "../../lib/account.svelte";
-    import { transactionStore,type Category } from "$lib/transaction.svelte";
-    import type { Account } from "$lib/lib";
     import AddExpense from "./AddExpense.svelte";
     import AddIncome from "./AddIncome.svelte";
 
@@ -13,26 +6,7 @@
         activeTab: "Expenses" | "Income"
     }
 
-    const {activeTab}: Props = $props();
-
-	const popover = new Popover();
-
-	let amount = $state("");
-    // TODO: move menu button to a new component
-	let account: Account | undefined;
-	let category: Category | undefined;
-    let date: string | undefined = $state(undefined);
-	async function createExpense() {
-	    transactionStore.addExpense({
-	        date: date,
-	        amount:amount,
-	        categoryId: category?.id,
-	        currencyCode:"USD",
-	        accountId: account?.id,
-	    });
-	    popover.open = false;
-
-	}
+    const { activeTab }: Props = $props();
 </script>
 
 {#if activeTab === "Expenses"}

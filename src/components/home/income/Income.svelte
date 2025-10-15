@@ -1,6 +1,6 @@
 <script lang="ts">
     import { accountStore } from "$lib/account.svelte";
-    import { formatDate} from "$lib/lib";
+    import { formatDate } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { transactionStore, type Income } from "$lib/transaction.svelte";
     import DatePicker from "../../DatePicker.svelte";

@@ -10,7 +10,7 @@ pub use expense::*;
 pub use income::*;
 pub use income_stream::*;
 
-// TODO: 
+// TODO:
 
 // struct BudgetOverview{
 //     amount_spend: f32,
