@@ -9,6 +9,14 @@ export type CreateExpense = {
 	currencyCode: string
 }
 
+export type EditExpense = {
+    id: string,
+	amount?: string,
+	date?: string,
+	accountId?: string,
+	categoryId?: string,
+}
+
 export type Category = {
     id: string,
     title: string
@@ -26,6 +34,11 @@ export function createTransactionStore(){
         get categories(){
             return categories;
         },
+        async editExpense(opts: EditExpense){
+            const { id,...data } = opts;
+            await invoke("edit_expense",{ id,data });
+            await this.load();
+        },
         async addExpense({
             amount = "0",
             accountId,
@@ -34,6 +47,7 @@ export function createTransactionStore(){
             date,
         }:CreateExpense,
         ){
+            // TODO: use default currency code
             const data: CreateExpense = {
                 amount,
                 accountId,
