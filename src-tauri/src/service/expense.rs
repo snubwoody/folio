@@ -8,7 +8,7 @@ use tracing::info;
 
 use crate::service::{Account, Category};
 
-#[derive(Debug, Serialize, Deserialize,Clone,PartialEq, PartialOrd)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateExpense {
     pub amount: String,

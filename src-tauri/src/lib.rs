@@ -1,16 +1,19 @@
-mod error;
 mod analytics;
+mod error;
 mod service;
-use std::{fs, path::PathBuf};
+use std::path::PathBuf;
 
 pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
-use crate::{analytics::SpendingAnalytic, service::{
-    Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
-    IncomeStream,
-}};
+use crate::{
+    analytics::SpendingAnalytic,
+    service::{
+        Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
+        IncomeStream,
+    },
+};
 
 #[tauri::command]
 async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
@@ -37,7 +40,7 @@ async fn edit_income(state: tauri::State<'_, State>, id: String, data: EditIncom
 }
 
 #[tauri::command]
-async fn spending_analytics(state: tauri::State<'_, State>,) -> Result<Vec<SpendingAnalytic>> {
+async fn spending_analytics(state: tauri::State<'_, State>) -> Result<Vec<SpendingAnalytic>> {
     analytics::spending_analytics(&state.pool).await
 }
 
@@ -142,7 +145,7 @@ pub async fn init_database() -> Result<SqlitePool> {
     };
 
     let opts = SqliteConnectOptions::new()
-        .filename(&data_path)
+        .filename(data_path)
         .create_if_missing(true);
     let pool = sqlx::SqlitePool::connect_with(opts).await?;
 

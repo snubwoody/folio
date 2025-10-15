@@ -11,6 +11,12 @@
         await transactionStore.load();
         await analyticsStore.load();
     });
+
+    $effect(()=>{
+        // Make eslint ignore this
+        void transactionStore.expenses;
+        analyticsStore.load();
+    });
 </script>
 
 <svelte:head>

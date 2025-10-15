@@ -12,7 +12,7 @@ export class AnalyticsStore{
     get spendingAnalytics(): SpendingAnalytic[]{
         return this.#spendingAnaltics;
     }
-    
+
     async load(){
         this.#spendingAnaltics = await invoke("spending_analytics") as SpendingAnalytic[];
     }
