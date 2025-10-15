@@ -4,11 +4,17 @@ pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
-use crate::service::{Account, Category, CreateExpense, Expense};
+use crate::service::{Account, Category, CreateExpense, EditExpense, Expense};
 
 #[tauri::command]
 async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
     Expense::create(data, &state.pool).await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn edit_expense(state: tauri::State<'_, State>,id: String, data: EditExpense) -> Result<()> {
+    Expense::update(&id,data, &state.pool).await?;
     Ok(())
 }
 
@@ -55,6 +61,7 @@ pub async fn run() {
         .invoke_handler(tauri::generate_handler![
             create_expense,
             fetch_expenses,
+            edit_expense,
             create_account,
             fetch_accounts,
             create_category,

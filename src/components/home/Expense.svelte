@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { accountStore } from "$lib/account.svelte";
     import { formatDate, type Expense } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
@@ -15,7 +16,13 @@
     const {select,options} = useSelect({
         items: transactionStore.categories,
         toOption: (category) => {return {value: category.id, label: category.title}},
-        onChange: ({ item }) => transactionStore.editExpense({categoryId: item.id}),
+        onChange: ({ item }) => transactionStore.editExpense({id: expense.id,categoryId: item.id}),
+    });
+
+    const {select: accountSelect,options: accountSelectOpts} = useSelect({
+        items: accountStore.accounts,
+        toOption: (account) => {return {value: account.id, label: account.name}},
+        onChange: ({ item }) => transactionStore.editExpense({id: expense.id,accountId: item.id}),
     });
 </script>
 
@@ -31,7 +38,18 @@
         {/each}
     </ul>
 </div>
-<p class="data-cell">{expense.account?.name ?? " "}</p>
+<div class="data-cell flex justify-between items-center">
+    <p>{expense.account?.name ?? " "}</p>
+    <button {...accountSelect.trigger} class="icon-btn icon-btn-small icon-btn-neutral"><i class="ph ph-caret-down"></i></button>
+    <ul {...accountSelect.content} class="popup-overlay space-y-1 w-fit! overflow-auto">
+        {#each accountSelectOpts as  option (option.value)}
+            {@const selected = accountSelect.isSelected(option)}
+            <li {...accountSelect.getOption(option)} data-selected={selected} class="menu-item w-fit min-w-[min-content]">
+                {option.label}
+            </li>
+        {/each}
+    </ul>
+</div>
 <li class="data-cell flex items-center justify-between">
 	<p>{formatDate(expense.date)}</p>
 	<DatePicker/>
