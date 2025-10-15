@@ -1,4 +1,6 @@
 <nav>
+    <a href="/">Home</a>
+    <a href="/analytics">Analytics</a>
 </nav>
 
 <style>

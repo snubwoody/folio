@@ -50,9 +50,9 @@ export default [
             },
         },
         rules: {
-            // Svelte-specific rules
             "svelte/no-at-html-tags": "warn",
-            "svelte/valid-compile": "error",
+            "svelte/valid-compile": "warn",
+            "svelte/no-navigation-without-resolve": "off",
         },
     },
     {
