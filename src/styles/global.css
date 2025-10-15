@@ -49,3 +49,20 @@ body{
 	padding: 16px;
 	border-radius: var(--radius-md);
 }
+
+@layer components{
+    .menu-item{
+        cursor: pointer;
+		border-radius: var(--radius-sm);
+		padding: 8px;
+		transition: all 250ms;
+
+		&:hover{
+			background-color: var(--color-neutral-50);
+		}
+
+		&[data-selected="true"]{
+			background-color: var(--color-neutral-50);
+		}
+	}
+}

@@ -1,5 +1,7 @@
 <script lang="ts">
-    import type { Expense } from "../../lib/lib";
+    import { formatDate, type Expense } from "$lib/lib";
+    import { useSelect } from "$lib/select.svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
     import DatePicker from "../DatePicker.svelte";
 
 	type Props = {
@@ -10,20 +12,28 @@
 	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency: expense.currencyCode });
 	const amount = formatter.format(expense.amount);
 
-	function formatDate(dateStr: string): string{
-	    const [year,month,day]: string[] = dateStr.split("-");
-	    const date = new Date(Number(year),Number(month)-1,Number(day));
-	    return Intl.DateTimeFormat("en-US",{ dateStyle: "medium" })
-	        .format(date);
-	}
-
-	const date = formatDate(expense.date);
+    const {select,options} = useSelect({
+        items: transactionStore.categories,
+        toOption: (category) => {return {value: category.id, label: category.title}},
+        onChange: ({ item }) => transactionStore.editExpense({categoryId: item.id}),
+    });
 </script>
 
-<p class="data-cell">{expense.category?.title ?? "Missing category!!"}</p>
-<p class="data-cell">{expense.account?.name ?? "Missing account!!"}</p>
+<div class="data-cell flex justify-between items-center">
+    <p>{expense.category?.title ?? " "}</p>
+    <button {...select.trigger} class="icon-btn icon-btn-small icon-btn-neutral"><i class="ph ph-caret-down"></i></button>
+    <ul {...select.content} class="popup-overlay space-y-1 w-fit! overflow-auto">
+        {#each options as  option (option.value)}
+            {@const selected = select.isSelected(option)}
+            <li {...select.getOption(option)} data-selected={selected} class="menu-item w-fit min-w-[min-content]">
+                {option.label}
+            </li>
+        {/each}
+    </ul>
+</div>
+<p class="data-cell">{expense.account?.name ?? " "}</p>
 <li class="data-cell flex items-center justify-between">
-	<p>{date}</p>
+	<p>{formatDate(expense.date)}</p>
 	<DatePicker/>
 </li>
 <p class="data-cell">{amount}</p>

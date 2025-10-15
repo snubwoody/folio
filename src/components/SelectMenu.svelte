@@ -19,14 +19,13 @@ from.
 <SelectMenu
     label = "Payment method"
     items={paymentMethods}
-    toOption = {(item) => {id: item.id, label: item.title}}
+    toOption = {(item) => {value: item.id, label: item.title}}
     onChange = {(item) => console.log(item)}
 />
 ```
 -->
 <script lang="ts" generics="T">
     import { useSelect, type SelectOption } from "$lib/select.svelte";
-    import { log } from "console";
 
 	// TODO: add default value
 	type Props = {

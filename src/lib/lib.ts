@@ -15,3 +15,10 @@ export type Expense = {
 	date: string,
 	currencyCode: string
 }
+
+export function formatDate(dateStr: string): string{
+    const [year,month,day]: string[] = dateStr.split("-");
+    const date = new Date(Number(year),Number(month)-1,Number(day));
+    return Intl.DateTimeFormat("en-US",{ dateStyle: "medium" })
+        .format(date);
+}
