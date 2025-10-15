@@ -48,11 +48,12 @@
 			<i class="ph ph-caret-right"></i>
 		</button>
 		</header>
-		{#each $months as month (month)}
+		{#each $months as month (month.value.month)}
 		<table {...$grid} use:grid>
 			<thead aria-hidden="true">
 			<tr>
-				{#each $weekdays as day (day)}
+                <!---FIXME key-->
+				{#each $weekdays as day}
 				<th>
 					{day}
 				</th>

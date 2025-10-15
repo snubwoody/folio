@@ -1,54 +1,74 @@
+<!--
+@component
+A select menu that displays a popup with options for the user to choose
+from.
+
+# Example
+```svelte
+<script>
+    const paymentMethods = [
+        {id: 298024, title: "Apple Pay"},
+        {id: 232353, title: "Klarna"},
+        {id: 368547, title: "Bank"},
+        {id: 869822, title: "Credit card"},
+        {id: 724024, title: "Cash"},
+        {id: 239142, title: "PayPal"},
+    ]
+</script>
+
+<SelectMenu
+    label = "Payment method"
+    items={paymentMethods}
+    toOption = {(item) => {id: item.id, label: item.title}}
+    onChange = {(item) => console.log(item)}
+/>
+```
+-->
 <script lang="ts" generics="T">
-	import { Combobox } from "melt/builders";
+    import { useSelect, type SelectOption } from "$lib/select.svelte";
+    import { log } from "console";
 
 	// TODO: add default value
 	type Props = {
 		label?: string,
 		items: T[],
-		toOption: (item: T) => Option,
+		toOption: (item: T) => SelectOption,
 		defaultValue?: T,
 		onChange?: (item: T) => void
 	}
 
 	const { label = "Label", items, toOption,onChange,defaultValue }: Props = $props();
 
-	type Option = {
-		/** Label for display purposes. */
-		label: string,
-		/** Unique value for identifying. */
-		value: string
-	}
-
-	const options = items.map(i => toOption(i));
-	const combobox = new Combobox<Option>({
-	    value: defaultValue ? toOption(defaultValue):undefined,
-	    onValueChange: (value) => updateValue(value),
-	});
-
-	let selectedOption: Option | undefined = $state(defaultValue ? toOption(defaultValue) : undefined);
-	function updateValue(value?: Option){
-	    selectedOption = value;
-	    const item = items.find(i => toOption(i).value === value?.value);
+	let selectedOption: SelectOption | undefined = $state(defaultValue ? toOption(defaultValue) : undefined);
+	
+    function updateValue(item: T,option: SelectOption){
+	    selectedOption = option;
 	    if(item){
 	        onChange?.(item);
 	    }
 	}
+
+    const {select,options} = useSelect({
+        onChange: ({ item, option }) => updateValue(item, option),
+        items: items,
+        toOption: toOption
+    });
 </script>
 
-<div {...combobox.input} class="space-y-1">
+<div class="space-y-1">
 	<p class="text-sm text-text-muted">{label}</p>
 	<button
-		{...combobox.trigger}
+		{...select.trigger}
 		class="flex w-full items-center justify-between px-1.5 py-1 rounded-md border border-neutral-50"
 	>
 		<p>{selectedOption?.label ?? "Select an option"}</p>
 		<i class="ph ph-caret-down"></i>
 	</button>
 </div>
-<ul {...combobox.content} class="popup-overlay space-y-1">
+<ul {...select.content} class="popup-overlay space-y-1">
 	{#each options as  option (option.value)}
-		{@const selected = combobox.isSelected(option)}
-		<li {...combobox.getOption(option)} data-selected={selected}>
+		{@const selected = select.isSelected(option)}
+		<li {...select.getOption(option)} data-selected={selected}>
 			{option.label}
 		</li>
 	{/each}
