@@ -20,9 +20,10 @@ impl IncomeStream {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let income_stream = sqlx::query_as!(IncomeStream, "SELECT * FROM income_streams WHERE id=$1", id)
-            .fetch_one(pool)
-            .await?;
+        let income_stream =
+            sqlx::query_as!(IncomeStream, "SELECT * FROM income_streams WHERE id=$1", id)
+                .fetch_one(pool)
+                .await?;
 
         Ok(income_stream)
     }

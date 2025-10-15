@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::service::{Account, Category};
+use crate::service::{Account, Category, IncomeStream};
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,12 +37,6 @@ impl Default for CreateIncome {
             currency_code: String::from("USD"),
         }
     }
-}
-
-#[derive(Debug,Clone,Serialize,Deserialize)]
-pub struct IncomeStream{
-    id: String,
-    title: String
 }
 
 // TODO: try deleting account and category deps
@@ -83,14 +77,10 @@ impl Income {
 
         let income = Self::from_id(&record.id, pool).await?;
         info!(income=?income,"Created income");
-        Ok(expense)
+        Ok(income)
     }
 
-    pub async fn update(
-        id: &str,
-        data: EditIncome,
-        pool: &SqlitePool,
-    ) -> Result<(), crate::Error> {
+    pub async fn update(id: &str, data: EditIncome, pool: &SqlitePool) -> Result<(), crate::Error> {
         let expense = Self::from_id(id, pool).await?;
 
         let amount = data.amount.unwrap_or(expense.amount.to_string());
@@ -134,8 +124,8 @@ impl Income {
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
         let amount = Decimal::from_str(&record.amount)?;
-        let category = match record.income_stream {
-            Some(id) => Some(Category::from_id(&id, pool).await?),
+        let income_stream = match record.income_stream {
+            Some(id) => Some(IncomeStream::from_id(&id, pool).await?),
             None => None,
         };
 
@@ -150,24 +140,24 @@ impl Income {
             date,
             amount,
             account,
-            category,
+            income_stream,
         })
     }
 }
 
 /// Fetch all the expenses from the database.
 pub async fn fetch_incomes(pool: &SqlitePool) -> Result<Vec<Income>, crate::Error> {
-    let records = sqlx::query!("SELECT id from expenses")
+    let records = sqlx::query!("SELECT id from incomes")
         .fetch_all(pool)
         .await?;
 
-    let mut expenses = vec![];
+    let mut incomes = vec![];
     for row in records {
-        let expense = Income::from_id(&row.id, pool).await?;
-        expenses.push(expense);
+        let income = Income::from_id(&row.id, pool).await?;
+        incomes.push(income);
     }
 
-    Ok(expenses)
+    Ok(incomes)
 }
 
 #[cfg(test)]
@@ -176,45 +166,45 @@ mod test {
 
     #[sqlx::test]
     async fn update_expense(pool: SqlitePool) -> crate::Result<()> {
-        let expense = Income::create(Default::default(), &pool).await?;
+        let income = Income::create(Default::default(), &pool).await?;
         let account = Account::create("", Decimal::default(), &pool).await?;
-        let category = Category::create("", &pool).await?;
+        let income_stream = IncomeStream::create("", &pool).await?;
         let data = EditIncome {
             date: Some(NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
-            category_id: Some(category.id.clone()),
+            income_stream_id: Some(income_stream.id.clone()),
             account_id: Some(account.id.clone()),
             amount: Some("224.2".to_owned()),
         };
 
-        Income::update(&expense.id, data, &pool).await?;
+        Income::update(&income.id, data, &pool).await?;
 
-        let expense = Income::from_id(&expense.id, &pool).await?;
-        assert_eq!(expense.account.unwrap().id, account.id);
-        assert_eq!(expense.category.unwrap().id, category.id);
-        assert_eq!(expense.amount.to_string(), "224.2");
-        assert_eq!(expense.date.to_string(), "1900-01-01");
+        let income = Income::from_id(&income.id, &pool).await?;
+        assert_eq!(income.account.unwrap().id, account.id);
+        assert_eq!(income.income_stream.unwrap().id, income_stream.id);
+        assert_eq!(income.amount.to_string(), "224.2");
+        assert_eq!(income.date.to_string(), "1900-01-01");
         Ok(())
     }
 
     #[sqlx::test]
     async fn create_expense(pool: SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("", Decimal::ZERO, &pool).await?;
-        let category = Category::create("", &pool).await?;
+        let stream = IncomeStream::create("", &pool).await?;
         let data = CreateIncome {
             amount: String::from("500.2024242"),
             date: NaiveDate::from_ymd_opt(2015, 2, 1).unwrap(),
             currency_code: String::from("XOF"),
             account_id: Some(account.id.clone()),
-            category_id: Some(category.id.clone()),
+            income_stream_id: Some(stream.id.clone()),
         };
 
-        let expense = Income::create(data, &pool).await?;
-        let record = sqlx::query!("SELECT * FROM expenses WHERE id=$1", expense.id)
+        let income = Income::create(data, &pool).await?;
+        let record = sqlx::query!("SELECT * FROM incomes WHERE id=$1", income.id)
             .fetch_one(&pool)
             .await?;
 
         assert_eq!(record.account_id.unwrap(), account.id);
-        assert_eq!(record.category_id.unwrap(), category.id);
+        assert_eq!(record.income_stream.unwrap(), stream.id);
         assert_eq!(record.amount, "500.2024242");
         assert_eq!(record.currency_code, "XOF");
         assert_eq!(record.transaction_date, "2015-02-01");
@@ -224,7 +214,7 @@ mod test {
     #[sqlx::test]
     async fn fetch_expense(pool: SqlitePool) -> Result<(), crate::Error> {
         let record = sqlx::query!(
-            "INSERT INTO expenses(amount,currency_code) VALUES('204.24','ZAR') RETURNING id"
+            "INSERT INTO incomes(amount,currency_code) VALUES('204.24','ZAR') RETURNING id"
         )
         .fetch_one(&pool)
         .await
