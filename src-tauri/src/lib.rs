@@ -4,7 +4,10 @@ pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
-use crate::service::{Account, Category, CreateExpense, EditExpense, Expense};
+use crate::service::{
+    Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
+    IncomeStream,
+};
 
 #[tauri::command]
 async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
@@ -13,8 +16,20 @@ async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> 
 }
 
 #[tauri::command]
+async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Result<()> {
+    Income::create(data, &state.pool).await?;
+    Ok(())
+}
+
+#[tauri::command]
 async fn edit_expense(state: tauri::State<'_, State>, id: String, data: EditExpense) -> Result<()> {
     Expense::update(&id, data, &state.pool).await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn edit_income(state: tauri::State<'_, State>, id: String, data: EditIncome) -> Result<()> {
+    Income::update(&id, data, &state.pool).await?;
     Ok(())
 }
 
@@ -41,13 +56,30 @@ async fn fetch_expenses(state: tauri::State<'_, State>) -> Result<Vec<Expense>> 
 }
 
 #[tauri::command]
+async fn fetch_incomes(state: tauri::State<'_, State>) -> Result<Vec<Income>> {
+    let expenses = service::fetch_incomes(&state.pool).await?;
+    Ok(expenses)
+}
+
+#[tauri::command]
 async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
     service::fetch_categories(&state.pool).await
 }
 
 #[tauri::command]
+async fn fetch_income_streams(state: tauri::State<'_, State>) -> Result<Vec<IncomeStream>> {
+    service::fetch_income_streams(&state.pool).await
+}
+
+#[tauri::command]
 async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<()> {
     Category::create(title, &state.pool).await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<()> {
+    IncomeStream::create(title, &state.pool).await?;
     Ok(())
 }
 
@@ -60,12 +92,17 @@ pub async fn run() {
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             create_expense,
+            create_income,
             fetch_expenses,
+            fetch_incomes,
+            fetch_income_streams,
             edit_expense,
             create_account,
-            fetch_accounts,
             create_category,
-            fetch_categories
+            fetch_accounts,
+            create_income_stream,
+            fetch_categories,
+            edit_income,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
