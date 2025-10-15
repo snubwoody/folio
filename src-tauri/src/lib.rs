@@ -5,7 +5,8 @@ use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
 
 use crate::service::{
-    Account, Category, CreateExpense, CreateIncome, EditExpense, Expense, Income, IncomeStream,
+    Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
+    IncomeStream,
 };
 
 #[tauri::command]
@@ -23,6 +24,12 @@ async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Re
 #[tauri::command]
 async fn edit_expense(state: tauri::State<'_, State>, id: String, data: EditExpense) -> Result<()> {
     Expense::update(&id, data, &state.pool).await?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn edit_income(state: tauri::State<'_, State>, id: String, data: EditIncome) -> Result<()> {
+    Income::update(&id, data, &state.pool).await?;
     Ok(())
 }
 
@@ -95,6 +102,7 @@ pub async fn run() {
             fetch_accounts,
             create_income_stream,
             fetch_categories,
+            edit_income,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
