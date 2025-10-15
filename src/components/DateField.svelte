@@ -1,58 +1,43 @@
 <script lang="ts">
-	import { createDateField } from "@melt-ui/svelte";
-
 	type Props = {
 		onChange?: (year: number,month: number,day: number) => void
 	}
 
     const { onChange }: Props = $props();
-	const {
-	    elements: { field, segment, label },
-	    states: { segmentContents },
-	} = createDateField({ locale: "en-US",onValueChange:({ next }) => {
-	    if(next && onChange){
-	        onChange(next.year,next.month,next.day);
-	    }
-	    return next;
-	} });
+    // The date is always parsed as YYYY-MM-DD regardless of the locale.
+    let selectedDate: string | undefined= $state(undefined);
+
+    $effect(()=>{
+        if (!selectedDate) return;
+        let [year,month,day] = selectedDate.split("-").map(d => parseInt(d));
+        onChange?.(year,month,day);
+    });
 </script>
 
-<div class="flex h-full w-full flex-col gap-1">
-    <span {...$label} use:label class="text-sm text-text-muted">Date</span>
-    <div {...$field} use:field>
-        {#each $segmentContents as seg (seg)}
-            <div {...$segment(seg.part)} use:segment>
-            {seg.value}
-            </div>
-        {/each}
-    </div>
-</div>
+<label class="flex h-full w-full flex-col gap-1">
+    <p class="text-sm text-text-muted">Date</p>
+    <input bind:value={selectedDate} type="date" name="" id="">
+</label>
 
 <style>
-	[data-melt-datefield-field]{
+    input{
 		display: flex;
 		gap: 12px;
 		border: 1px solid var(--color-neutral-50);
 		padding: 8px 12px;
 		border-radius: var(--radius-sm);
+        outline: none;
+        transition: all 150ms;
+
+        &:focus{
+            border-color: var(--color-purple-500);
+        }
 	}
 
-	[data-melt-datefield-segment]{
-		outline: none;
-
-		&:focus{
-			position: relative;
-
-			/* background-color: aqua; */
-			&::after{
-				content: "";
-				position: absolute;
-				height: 1px;
-				width: 100%;
-				bottom: 2px;
-				left: 0;
-				background-color: var(--color-surface-primary);
-			}
-		}
-	}
+    /* Hide default calendar button */
+    input[type="date"]::-webkit-inner-spin-button,
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        display: none;
+        appearance: none;
+    }
 </style>

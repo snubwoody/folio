@@ -35,7 +35,7 @@
 	<i class="ph ph-calendar"></i>
 </button>
 {#if $open}
-	<div transition:scale={{ start:0.8 }} {...$content} use:content>
+	<div transition:scale={{ start:0.8 }} {...$content} use:content class="absolute z-100">
 	    <div {...$calendar} use:calendar>
 		<header class="calendar-header">
             <button class="icon-btn icon-btn-medium icon-btn-primary" {...$prevButton} use:prevButton>
