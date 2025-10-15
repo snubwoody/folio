@@ -3,7 +3,7 @@
     import { formatDate, type Expense } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
-    import DatePicker from "../DatePicker.svelte";
+    import DatePicker from "../../DatePicker.svelte";
 
 	type Props = {
 		expense: Expense
@@ -55,12 +55,3 @@
 	<DatePicker/>
 </li>
 <p class="data-cell">{amount}</p>
-
-<style>
-	.data-cell{
-		padding: 12px;
-		border-right: 1px solid var(--color-neutral-50);
-		border-bottom: 1px solid var(--color-neutral-50);
-		border-top: 1px solid var(--color-neutral-50);
-	}
-</style>

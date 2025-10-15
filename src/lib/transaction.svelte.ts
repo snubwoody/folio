@@ -1,4 +1,4 @@
-import type { Expense } from "./lib";
+import type { Account, Expense } from "./lib";
 import { invoke } from "@tauri-apps/api/core";
 
 export type CreateExpense = {
@@ -6,6 +6,14 @@ export type CreateExpense = {
 	date?: string,
 	accountId?: string,
 	categoryId?: string,
+	currencyCode: string
+}
+
+export type CreateIncome = {
+	amount: string,
+	date?: string,
+	accountId?: string,
+	incomeStreamId?: string,
 	currencyCode: string
 }
 
@@ -17,56 +25,134 @@ export type EditExpense = {
 	categoryId?: string,
 }
 
+/** Data used for editing an `Income`,
+ * values left as `undefined` or `null`  will be
+ * left as their current values.
+ *
+ */
+export type EditIncome = {
+    id: string,
+	amount?: string,
+	date?: string,
+	accountId?: string,
+	incomeStreamId?: string,
+}
+
 export type Category = {
     id: string,
     title: string
 }
 
-export const transactionStore = createTransactionStore();
+export type IncomeStream = {
+    id: string,
+    title: string
+}
 
-export function createTransactionStore(){
-    let expenses: Expense[] = $state([]);
-    let categories: Category[] = $state([]);
-    return {
-        get expenses(){
-            return expenses;
-        },
-        get categories(){
-            return categories;
-        },
-        async editExpense(opts: EditExpense){
-            const { id,...data } = opts;
-            await invoke("edit_expense",{ id,data });
-            await this.load();
-        },
-        async addExpense({
+export type Income = {
+	id: string,
+	amount: number,
+	description: string,
+	incomeStream?: IncomeStream,
+	account?: Account,
+	date: string,
+	currencyCode: string
+}
+
+export class TransactionStore{
+    #expenses: Expense[] = $state([]);
+    #incomes: Income[] = $state([]);
+    #categories: Category[] = $state([]);
+    #incomeStreams: IncomeStream[] = $state([]);
+
+    get expenses(): Expense[]{
+        return this.#expenses;
+    }
+    get incomes(): Income[]{
+        return this.#incomes;
+    }
+    get incomeStreams(): IncomeStream[]{
+        return this.#incomeStreams;
+    }
+    get categories(): IncomeStream[]{
+        return this.#categories;
+    }
+    async editExpense(opts: EditExpense){
+        const { id,...data } = opts;
+        await invoke("edit_expense",{ id,data });
+        await this.load();
+    }
+    async editIncome(opts: EditIncome){
+        const { id,...data } = opts;
+        await invoke("edit_income",{ id,data });
+        await this.load();
+    }
+    /**
+     * Create a new expense.
+     *
+     * @param opts - The options for creating the new expense.
+     */
+    async addExpense(opts:CreateExpense){
+        const {
             amount = "0",
             accountId,
             categoryId,
             currencyCode = "USD",
             date,
-        }:CreateExpense,
-        ){
-            // TODO: use default currency code
-            const data: CreateExpense = {
-                amount,
-                accountId,
-                currencyCode,
-                categoryId,
-                date,
-            };
+        } = opts;
+        // TODO: use default currency code
+        const data: CreateExpense = {
+            amount,
+            accountId,
+            currencyCode,
+            categoryId,
+            date,
+        };
 
-            try{
-                await invoke("create_expense",{ data });
-            }
-            catch(e){
-                console.error(e);
-            }
-            await this.load();
-        },
-        async load(){
-            expenses = await invoke("fetch_expenses") as Expense[];
-            categories = await invoke("fetch_categories") as Category[];
-        },
-    };
+        try{
+            await invoke("create_expense",{ data });
+        }
+        catch(e){
+            console.error(e);
+        }
+        await this.load();
+    }
+    /**
+     * Create a new expense.
+     *
+     * @param opts - The options for creating the new expense.
+     */
+    async addIncome(opts:CreateIncome){
+        // TODO: make amount nullable and currency code nullable on backend
+        const {
+            amount = "0",
+            accountId,
+            incomeStreamId,
+            currencyCode = "USD",
+            date,
+        } = opts;
+        // TODO: use default currency code
+        const data: CreateIncome = {
+            amount,
+            accountId,
+            currencyCode,
+            incomeStreamId,
+            date,
+        };
+
+        try{
+            await invoke("create_income",{ data });
+        }
+        catch(e){
+            console.error(e);
+        }
+        await this.load();
+    }
+    async load(){
+        this.#expenses = await invoke("fetch_expenses") as Expense[];
+        this.#categories = await invoke("fetch_categories") as Category[];
+        this.#incomes = await invoke("fetch_incomes") as Income[];
+        this.#incomeStreams = await invoke("fetch_income_streams") as IncomeStream[];
+    }
 }
+
+export const transactionStore = new TransactionStore();

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { transactionStore } from "../../lib/transaction.svelte";
-    import Expense from "./Expense.svelte";
+    import { transactionStore } from "../../../lib/transaction.svelte";
+    import Income from "./Income.svelte";
 
 	onMount(async()=>{
 	    await transactionStore.load();
@@ -9,12 +9,12 @@
 </script>
 
 <ul class="expense-table">
-	<p class="table-heading">Category</p>
+	<p class="table-heading">Income stream</p>
 	<p class="table-heading">Account</p>
 	<p class="table-heading">Date</p>
 	<p class="table-heading">Amount</p>
-	{#each transactionStore.expenses as expense (expense.id)}
-		<Expense {expense}/>
+	{#each transactionStore.incomes as income (income.id)}
+		<Income {income}/>
 	{/each}
 </ul>
 
