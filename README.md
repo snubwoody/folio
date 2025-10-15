@@ -2,4 +2,4 @@
 
 A free and open source, budgeting app.
 
-![Analytics](./assets/Analytics.png)
+![alt text](assets/Analytics.svg)
