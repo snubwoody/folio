@@ -1,0 +1,25 @@
+product-name = "Folio"
+version = "0.1.0"
+identifier = "com.wakunguma.folio"
+
+[build]
+before-dev-command = "pnpm dev"
+dev-url = "http://localhost:1420"
+before-build-command = "pnpm build"
+frontend-dist = "../build"
+
+[app]
+windows = [{title = "Folio",width = 800, height = 600}]
+security = {csp = "null"}
+enable-gtk-app-id = true
+
+[bundle]
+active = true
+targets = "all"
+icon = [
+    "icons/32x32.png",
+    "icons/128x128.png",
+    "icons/128x128@2x.png",
+    "icons/icon.icns",
+    "icons/icon.ico"
+]
