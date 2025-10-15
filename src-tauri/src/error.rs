@@ -13,6 +13,8 @@ pub enum Error {
     ParseDateError(#[from] chrono::ParseError),
     #[error("Database error: {0}")]
     SqlxError(#[from] sqlx::Error),
+    #[error("Migrate error: {0}")]
+    MigrateError(#[from] sqlx::migrate::MigrateError),
     #[error("Failed to parse decimal: {0}")]
     ParseDecimalError(#[from] rust_decimal::Error),
 }

@@ -1,8 +1,10 @@
 mod error;
 mod service;
+use std::{fs, path::PathBuf};
+
 pub use error::{Error, Result};
 use rust_decimal::prelude::*;
-use sqlx::SqlitePool;
+use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
 use crate::service::{
     Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
@@ -86,7 +88,7 @@ async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Re
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     tracing_subscriber::fmt::init();
-    let state = State::new().await;
+    let state = State::new().await.unwrap();
     tauri::Builder::default()
         .manage(state)
         .plugin(tauri_plugin_opener::init())
@@ -114,31 +116,52 @@ pub struct State {
 }
 
 impl State {
-    pub async fn new() -> Self {
-        let pool = init_database().await;
-        Self { pool }
+    pub async fn new() -> Result<Self> {
+        let pool = init_database().await?;
+        Ok(Self { pool })
     }
 }
 
 // FIXME
-pub async fn init_database() -> SqlitePool {
-    // FIXME: don't unwrap
-    sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap()
-    // TODO: run migrations
+pub async fn init_database() -> Result<SqlitePool> {
+    let data_dir = get_data_dir().unwrap();
+    fs::create_dir_all(&data_dir)?;
+    let data_path = data_dir.join("data.db");
+
+    let opts = SqliteConnectOptions::new()
+        .filename(&data_path)
+        .create_if_missing(true);
+    let pool = sqlx::SqlitePool::connect_with(opts).await?;
+
+    sqlx::migrate!().run(&pool).await?;
+
+    Ok(pool)
+}
+
+/// Get the platform specific data directory;
+pub fn get_data_dir() -> Option<PathBuf> {
+    // TODO: add message at startup on fail
+    let base_dirs = directories::BaseDirs::new()?;
+    let data_dir = base_dirs.data_dir();
+
+    #[cfg(any(windows, target_os = "macos"))]
+    let app_name = "Folio";
+
+    #[cfg(target_os = "linux")]
+    let app_name = "folio";
+
+    Some(data_dir.join(app_name))
 }
 
 #[cfg(test)]
-mod test{
+mod test {
+    use crate::get_data_dir;
 
     #[test]
-    fn setup_data() -> crate::Result<()>{
-        let base_dirs = directories::BaseDirs::new()
-            .unwrap();
-
-        let data_dir = base_dirs.data_dir();
+    fn data_dir() -> crate::Result<()> {
+        let data_dir = get_data_dir();
 
         dbg!(data_dir);
-        
         Ok(())
     }
 }
