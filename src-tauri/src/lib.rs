@@ -124,4 +124,21 @@ impl State {
 pub async fn init_database() -> SqlitePool {
     // FIXME: don't unwrap
     sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap()
+    // TODO: run migrations
+}
+
+#[cfg(test)]
+mod test{
+
+    #[test]
+    fn setup_data() -> crate::Result<()>{
+        let base_dirs = directories::BaseDirs::new()
+            .unwrap();
+
+        let data_dir = base_dirs.data_dir();
+
+        dbg!(data_dir);
+        
+        Ok(())
+    }
 }
