@@ -120,6 +120,7 @@ impl State {
     }
 }
 
+// FIXME
 pub async fn init_database() -> SqlitePool {
     // FIXME: don't unwrap
     sqlx::SqlitePool::connect("sqlite://data.db").await.unwrap()
