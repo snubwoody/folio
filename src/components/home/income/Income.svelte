@@ -16,13 +16,13 @@
     const { select,options } = useSelect({
         items: transactionStore.incomeStreams, // FIXME: income streams
         toOption: (stream) => {return { value: stream.id, label: stream.title };},
-        // onChange: ({ item }) => transactionStore.editExpense({ id: expense.id,categoryId: item.id }),
+        onChange: ({ item }) => transactionStore.editIncome({ id: income.id,incomeStreamId: item.id }),
     });
 
     const { select: accountSelect,options: accountSelectOpts } = useSelect({
         items: accountStore.accounts,
         toOption: (account) => {return { value: account.id, label: account.name };},
-        // onChange: ({ item }) => transactionStore.editExpense({ id: expense.id,accountId: item.id }),
+        onChange: ({ item }) => transactionStore.editIncome({ id: income.id,accountId: item.id }),
     });
 </script>
 

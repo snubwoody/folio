@@ -17,6 +17,19 @@ export type EditExpense = {
 	categoryId?: string,
 }
 
+/** Data used for editing an `Income`, 
+ * values left as `undefined` or `null`  will be 
+ * left as their current values.
+ * 
+ */
+export type EditIncome = {
+    id: string,
+	amount?: string,
+	date?: string,
+	accountId?: string,
+	incomeStreamId?: string,
+}
+
 export type Category = {
     id: string,
     title: string
@@ -47,11 +60,9 @@ export class TransactionStore{
     get expenses(): Expense[]{
         return this.#expenses;
     }
-    
     get incomes(): Income[]{
         return this.#incomes;
     }
-    
     get incomeStreams(): IncomeStream[]{
         return this.#incomeStreams;
     }
@@ -63,6 +74,16 @@ export class TransactionStore{
         await invoke("edit_expense",{ id,data });
         await this.load();
     }
+    async editIncome(opts: EditIncome){
+        const { id,...data } = opts;
+        await invoke("edit_income",{ id,data });
+        await this.load();
+    }
+    /**
+     * Create a new expense.
+     * 
+     * @param opts - The options for creating the new expense.
+     */
     async addExpense(opts:CreateExpense){
         const {
             amount = "0",
@@ -88,7 +109,6 @@ export class TransactionStore{
         }
         await this.load();
     }
-        
     async load(){
         this.#expenses = await invoke("fetch_expenses") as Expense[];
         this.#categories = await invoke("fetch_categories") as Category[];
