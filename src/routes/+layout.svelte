@@ -5,9 +5,11 @@
     import { onMount } from "svelte";
     import { accountStore } from "$lib/account.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
+    import { analyticsStore } from "$lib/analytics.svelte";
     onMount(async ()=>{
         await accountStore.load();
         await transactionStore.load();
+        await analyticsStore.load();
     });
 </script>
 

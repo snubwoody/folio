@@ -8,14 +8,14 @@ use tracing::info;
 
 use crate::service::{Account, Category};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Clone,PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateExpense {
-    amount: String,
-    date: NaiveDate,
-    account_id: Option<String>,
-    category_id: Option<String>,
-    currency_code: String,
+    pub amount: String,
+    pub date: NaiveDate,
+    pub account_id: Option<String>,
+    pub category_id: Option<String>,
+    pub currency_code: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]

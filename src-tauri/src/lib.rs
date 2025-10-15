@@ -1,4 +1,5 @@
 mod error;
+mod analytics;
 mod service;
 use std::{fs, path::PathBuf};
 
@@ -6,10 +7,10 @@ pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
-use crate::service::{
+use crate::{analytics::SpendingAnalytic, service::{
     Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
     IncomeStream,
-};
+}};
 
 #[tauri::command]
 async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
@@ -33,6 +34,11 @@ async fn edit_expense(state: tauri::State<'_, State>, id: String, data: EditExpe
 async fn edit_income(state: tauri::State<'_, State>, id: String, data: EditIncome) -> Result<()> {
     Income::update(&id, data, &state.pool).await?;
     Ok(())
+}
+
+#[tauri::command]
+async fn spending_analytics(state: tauri::State<'_, State>,) -> Result<Vec<SpendingAnalytic>> {
+    analytics::spending_analytics(&state.pool).await
 }
 
 #[tauri::command]
@@ -100,6 +106,7 @@ pub async fn run() {
             fetch_income_streams,
             edit_expense,
             create_account,
+            spending_analytics,
             create_category,
             fetch_accounts,
             create_income_stream,
@@ -122,11 +129,17 @@ impl State {
     }
 }
 
-// FIXME
 pub async fn init_database() -> Result<SqlitePool> {
-    let data_dir = get_data_dir().unwrap();
-    fs::create_dir_all(&data_dir)?;
-    let data_path = data_dir.join("data.db");
+    // FIXME don't unwrap
+    #[cfg(debug_assertions)]
+    let data_path = "data.db";
+
+    #[cfg(not(debug_assertions))]
+    let data_path = {
+        let data_dir = get_data_dir().unwrap();
+        fs::create_dir_all(&data_dir)?;
+        data_dir.join("data.db")
+    };
 
     let opts = SqliteConnectOptions::new()
         .filename(&data_path)
@@ -138,7 +151,7 @@ pub async fn init_database() -> Result<SqlitePool> {
     Ok(pool)
 }
 
-/// Get the platform specific data directory;
+/// Get the platform specific data directory.
 pub fn get_data_dir() -> Option<PathBuf> {
     // TODO: add message at startup on fail
     let base_dirs = directories::BaseDirs::new()?;
