@@ -55,12 +55,3 @@
 	<DatePicker/>
 </li>
 <p class="data-cell">{amount}</p>
-
-<style>
-	.data-cell{
-		padding: 12px;
-		border-right: 1px solid var(--color-neutral-50);
-		border-bottom: 1px solid var(--color-neutral-50);
-		border-top: 1px solid var(--color-neutral-50);
-	}
-</style>

@@ -26,7 +26,7 @@ export function useSelect<T>(options: UseSelectProps<T>){
         }
     };
 
-    const opts = items.map(i => toOption(i));
+    const opts = $derived(items.map(i => toOption(i)));
 
     const select = new Select<SelectOption>({
         value: defaultValue ? toOption(defaultValue):undefined,
