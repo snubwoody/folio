@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Tabs } from "melt/builders";
-    import TransactionTable from "./TransactionTable.svelte";
+    import TransactionTable from "./expense/ExpenseTable.svelte";
     import AddTransaction from "./AddTransaction.svelte";
     import IncomeTable from "./income/IncomeTable.svelte";
     

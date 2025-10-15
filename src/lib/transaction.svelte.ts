@@ -1,4 +1,4 @@
-import type { Expense } from "./lib";
+import type { Account, Expense } from "./lib";
 import { invoke } from "@tauri-apps/api/core";
 
 export type CreateExpense = {
@@ -22,17 +22,40 @@ export type Category = {
     title: string
 }
 
+export type IncomeStream = {
+    id: string,
+    title: string
+}
+
+export type Income = {
+	id: string,
+	amount: number,
+	description: string,
+	incomeStream?: IncomeStream,
+	account?: Account,
+	date: string,
+	currencyCode: string
+}
+
 export const transactionStore = createTransactionStore();
 
 export function createTransactionStore(){
     let expenses: Expense[] = $state([]);
+    let incomes: Income[] = $state([]);
     let categories: Category[] = $state([]);
+    let incomeStreams: IncomeStream[] = $state([]);
     return {
         get expenses(){
             return expenses;
         },
+        get incomes(){
+            return incomes;
+        },
         get categories(){
             return categories;
+        },
+        get incomeStreams(){
+            return incomeStreams;
         },
         async editExpense(opts: EditExpense){
             const { id,...data } = opts;
@@ -67,6 +90,8 @@ export function createTransactionStore(){
         async load(){
             expenses = await invoke("fetch_expenses") as Expense[];
             categories = await invoke("fetch_categories") as Category[];
+            incomes = await invoke("fetch_incomes") as Income[];
+            incomeStreams = await invoke("fetch_income_streams") as IncomeStream[];
         },
     };
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import { transactionStore } from "../../lib/transaction.svelte";
+    import { transactionStore } from "../../../lib/transaction.svelte";
     import Expense from "./Expense.svelte";
 
 	onMount(async()=>{

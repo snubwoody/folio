@@ -3,7 +3,7 @@
     import { formatDate, type Expense } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
-    import DatePicker from "../DatePicker.svelte";
+    import DatePicker from "../../DatePicker.svelte";
 
 	type Props = {
 		expense: Expense
