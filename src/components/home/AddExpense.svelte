@@ -6,14 +6,6 @@
     import { accountStore } from "../../lib/account.svelte";
     import { transactionStore,type Category } from "$lib/transaction.svelte";
     import type { Account } from "$lib/lib";
-    import AddExpense from "./AddExpense.svelte";
-    import AddIncome from "./AddIncome.svelte";
-
-    type Props = {
-        activeTab: "Expenses" | "Income"
-    }
-
-    const {activeTab}: Props = $props();
 
 	const popover = new Popover();
 
@@ -35,9 +27,22 @@
 	}
 </script>
 
-{#if activeTab === "Expenses"}
-     <AddExpense/>
-{:else}
-    <AddIncome/>
-{/if}
+<button {...popover.trigger} class="btn btn-primary ml-auto">New</button>
+<form {...popover.content} class="popup-overlay space-y-2 bg-white max-w-[350px] w-full" onsubmit={()=>{}}>
+    <TextField bind:value={amount} label="Amount"/>
+    <DateField onChange={(year,month,day) => date = `${year}-${month}-${day}`}/>
+    <SelectMenu
+        label="Account"
+        items={accountStore.accounts}
+        toOption={(a) => {return { label: a.name,value: a.id };}}
+        onChange={(item) => account = item}
+    />
+    <SelectMenu
+        label="Category"
+        items={transactionStore.categories}
+        toOption={(a) => {return { label: a.title,value: a.id };}}
+        onChange={(item) => category = item}
+    />
+    <button class="btn btn-primary w-full" onclick={createExpense}>Add transaction</button>
+</form>
 

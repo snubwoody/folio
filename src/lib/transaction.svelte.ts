@@ -9,6 +9,14 @@ export type CreateExpense = {
 	currencyCode: string
 }
 
+export type CreateIncome = {
+	amount: string,
+	date?: string,
+	accountId?: string,
+	incomeStreamId?: string,
+	currencyCode: string
+}
+
 export type EditExpense = {
     id: string,
 	amount?: string,
@@ -103,6 +111,37 @@ export class TransactionStore{
 
         try{
             await invoke("create_expense",{ data });
+        }
+        catch(e){
+            console.error(e);
+        }
+        await this.load();
+    }
+    /**
+     * Create a new expense.
+     * 
+     * @param opts - The options for creating the new expense.
+     */
+    async addIncome(opts:CreateIncome){
+        // TODO: make amount nullable and currency code nullable on backend
+        const {
+            amount = "0",
+            accountId,
+            incomeStreamId,
+            currencyCode = "USD",
+            date,
+        } = opts;
+        // TODO: use default currency code
+        const data: CreateIncome = {
+            amount,
+            accountId,
+            currencyCode,
+            incomeStreamId,
+            date,
+        };
+
+        try{
+            await invoke("create_income",{ data });
         }
         catch(e){
             console.error(e);

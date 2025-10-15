@@ -4,8 +4,10 @@
     import AddTransaction from "./AddTransaction.svelte";
     import IncomeTable from "./income/IncomeTable.svelte";
     
-    const tabIds = ["Expenses", "Income",];
-    const tabs = new Tabs({value: tabIds[0]})
+    type TransactionTab = "Expenses" | "Income";
+    const tabIds: TransactionTab[] = ["Expenses", "Income",];
+    let activeTab = $state(tabIds[0])
+    const tabs = new Tabs<TransactionTab>({value: tabIds[0],onValueChange: (active) => activeTab = active})
 </script>
 
 <section class="space-y-2">
@@ -15,7 +17,7 @@
             {id}
             </button>
         {/each}
-        <AddTransaction/>
+        <AddTransaction {activeTab}/>
     </header>
     {#each tabIds as id}
         <div {...tabs.getContent(id)}>
