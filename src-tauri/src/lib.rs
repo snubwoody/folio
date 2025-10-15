@@ -13,8 +13,8 @@ async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> 
 }
 
 #[tauri::command]
-async fn edit_expense(state: tauri::State<'_, State>,id: String, data: EditExpense) -> Result<()> {
-    Expense::update(&id,data, &state.pool).await?;
+async fn edit_expense(state: tauri::State<'_, State>, id: String, data: EditExpense) -> Result<()> {
+    Expense::update(&id, data, &state.pool).await?;
     Ok(())
 }
 

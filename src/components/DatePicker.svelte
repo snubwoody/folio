@@ -36,48 +36,45 @@
 </button>
 {#if $open}
 	<div transition:scale={{ start:0.8 }} {...$content} use:content>
-	<div {...$calendar} use:calendar>
+	    <div {...$calendar} use:calendar>
 		<header class="calendar-header">
-		<button class="icon-btn icon-btn-medium icon-btn-primary" {...$prevButton} use:prevButton>
-			<i class="ph ph-caret-left"></i>
-		</button>
-		<div {...$heading} use:heading>
-			{$headingValue}
-		</div>
-		<button class="icon-btn icon-btn-medium icon-btn-primary" {...$nextButton} use:nextButton>
-			<i class="ph ph-caret-right"></i>
-		</button>
+            <button class="icon-btn icon-btn-medium icon-btn-primary" {...$prevButton} use:prevButton>
+                <i class="ph ph-caret-left"></i>
+            </button>
+            <div {...$heading} use:heading>
+                {$headingValue}
+            </div>
+            <button class="icon-btn icon-btn-medium icon-btn-primary" {...$nextButton} use:nextButton>
+                <i class="ph ph-caret-right"></i>
+            </button>
 		</header>
 		{#each $months as month (month.value.month)}
-		<table {...$grid} use:grid>
-			<thead aria-hidden="true">
-			<tr>
-                <!---FIXME key-->
-				{#each $weekdays as day}
-				<th>
-					{day}
-				</th>
-				{/each}
-			</tr>
-			</thead>
-			<tbody>
-			{#each month.weeks as days (days)}
-				<tr>
-				{#each days as date (date)}
-					<td
-					role="gridcell"
-					aria-disabled={$isDateDisabled(date) || $isDateUnavailable(date)}>
-					<div {...$cell(date, month.value)} use:cell>
-						{date.day}
-					</div>
-					</td>
-				{/each}
-				</tr>
-			{/each}
-			</tbody>
-		</table>
+            <table {...$grid} use:grid>
+                <thead aria-hidden="true">
+                <tr>
+                    {#each $weekdays as day,i (i)}
+                    <th>{day}</th>
+                    {/each}
+                </tr>
+                </thead>
+                <tbody>
+                {#each month.weeks as days,i (i)}
+                    <tr>
+                    {#each days as date (date)}
+                        <td
+                        role="gridcell"
+                        aria-disabled={$isDateDisabled(date) || $isDateUnavailable(date)}>
+                        <div {...$cell(date, month.value)} use:cell>
+                            {date.day}
+                        </div>
+                        </td>
+                    {/each}
+                    </tr>
+                {/each}
+                </tbody>
+            </table>
 		{/each}
-	</div>
+        </div>
 	</div>
 {/if}
 

@@ -1,4 +1,4 @@
-import { Combobox,Select } from "melt/builders";
+import { Select } from "melt/builders";
 
 export type SelectOption = {
     /** Label for display purposes. */
@@ -15,7 +15,6 @@ type UseSelectProps<T> = {
     onChange?: ({ item, option }: {item: T,option: SelectOption}) => void
 }
 
-
 export function useSelect<T>(options: UseSelectProps<T>){
     const { items,toOption,defaultValue,onChange } = options;
 
@@ -27,14 +26,13 @@ export function useSelect<T>(options: UseSelectProps<T>){
         }
     };
 
-	const opts = items.map(i => toOption(i));
-
+    const opts = items.map(i => toOption(i));
 
     const select = new Select<SelectOption>({
         value: defaultValue ? toOption(defaultValue):undefined,
         onValueChange: (value) => updateValue(value),
     });
 
-    return {select,options: opts};
+    return { select,options: opts };
 }
 

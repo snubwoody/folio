@@ -18,9 +18,9 @@ pub struct CreateExpense {
     currency_code: String,
 }
 
-#[derive(Debug,Serialize,Deserialize,Default)]
-#[serde(rename_all="camelCase")]
-pub struct EditExpense{
+#[derive(Debug, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct EditExpense {
     amount: Option<String>,
     date: Option<NaiveDate>,
     account_id: Option<String>,
@@ -80,21 +80,30 @@ impl Expense {
         Ok(expense)
     }
 
-    pub async fn update(id: &str,data: EditExpense, pool: &SqlitePool) -> Result<(),crate::Error>{
-        let expense = Self::from_id(id,pool).await?;
+    pub async fn update(
+        id: &str,
+        data: EditExpense,
+        pool: &SqlitePool,
+    ) -> Result<(), crate::Error> {
+        let expense = Self::from_id(id, pool).await?;
 
         let amount = data.amount.unwrap_or(expense.amount.to_string());
         let date = data.date.unwrap_or(expense.date);
         let mut account_id = data.account_id;
-        if let Some(account) = expense.account && account_id.is_none(){
+        if let Some(account) = expense.account
+            && account_id.is_none()
+        {
             account_id = Some(account.id)
         }
         let mut category_id = data.category_id;
-        if let Some(category) = expense.category && category_id.is_none(){
+        if let Some(category) = expense.category
+            && category_id.is_none()
+        {
             category_id = Some(category.id)
         }
 
-        sqlx::query!("
+        sqlx::query!(
+            "
             UPDATE expenses 
             SET amount= $1,
              transaction_date= $2,
@@ -106,7 +115,8 @@ impl Expense {
             category_id,
             account_id,
             id
-        ).execute(pool)
+        )
+        .execute(pool)
         .await?;
         Ok(())
     }
@@ -159,25 +169,25 @@ mod test {
     use super::*;
 
     #[sqlx::test]
-    async fn update_expense(pool: SqlitePool) -> crate::Result<()>{
+    async fn update_expense(pool: SqlitePool) -> crate::Result<()> {
         let expense = Expense::create(Default::default(), &pool).await?;
         let account = Account::create("", Decimal::default(), &pool).await?;
         let category = Category::create("", &pool).await?;
-        let data = EditExpense{
+        let data = EditExpense {
             date: Some(NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
             category_id: Some(category.id.clone()),
             account_id: Some(account.id.clone()),
-            amount: Some("224.2".to_owned())
+            amount: Some("224.2".to_owned()),
         };
 
         Expense::update(&expense.id, data, &pool).await?;
 
         let expense = Expense::from_id(&expense.id, &pool).await?;
-        assert_eq!(expense.account.unwrap().id,account.id);
-        assert_eq!(expense.category.unwrap().id,category.id);
-        assert_eq!(expense.amount.to_string(),"224.2");
-        assert_eq!(expense.date.to_string(),"1900-01-01");
-       Ok(()) 
+        assert_eq!(expense.account.unwrap().id, account.id);
+        assert_eq!(expense.category.unwrap().id, category.id);
+        assert_eq!(expense.amount.to_string(), "224.2");
+        assert_eq!(expense.date.to_string(), "1900-01-01");
+        Ok(())
     }
 
     #[sqlx::test]

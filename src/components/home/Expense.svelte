@@ -13,16 +13,16 @@
 	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency: expense.currencyCode });
 	const amount = formatter.format(expense.amount);
 
-    const {select,options} = useSelect({
+    const { select,options } = useSelect({
         items: transactionStore.categories,
-        toOption: (category) => {return {value: category.id, label: category.title}},
-        onChange: ({ item }) => transactionStore.editExpense({id: expense.id,categoryId: item.id}),
+        toOption: (category) => {return { value: category.id, label: category.title };},
+        onChange: ({ item }) => transactionStore.editExpense({ id: expense.id,categoryId: item.id }),
     });
 
-    const {select: accountSelect,options: accountSelectOpts} = useSelect({
+    const { select: accountSelect,options: accountSelectOpts } = useSelect({
         items: accountStore.accounts,
-        toOption: (account) => {return {value: account.id, label: account.name}},
-        onChange: ({ item }) => transactionStore.editExpense({id: expense.id,accountId: item.id}),
+        toOption: (account) => {return { value: account.id, label: account.name };},
+        onChange: ({ item }) => transactionStore.editExpense({ id: expense.id,accountId: item.id }),
     });
 </script>
 

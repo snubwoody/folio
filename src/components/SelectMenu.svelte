@@ -39,18 +39,18 @@ from.
 	const { label = "Label", items, toOption,onChange,defaultValue }: Props = $props();
 
 	let selectedOption: SelectOption | undefined = $state(defaultValue ? toOption(defaultValue) : undefined);
-	
+
     function updateValue(item: T,option: SelectOption){
 	    selectedOption = option;
 	    if(item){
 	        onChange?.(item);
 	    }
-	}
+    }
 
-    const {select,options} = useSelect({
+    const { select,options } = useSelect({
         onChange: ({ item, option }) => updateValue(item, option),
         items: items,
-        toOption: toOption
+        toOption: toOption,
     });
 </script>
 

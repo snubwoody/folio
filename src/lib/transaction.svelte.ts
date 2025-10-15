@@ -35,8 +35,8 @@ export function createTransactionStore(){
             return categories;
         },
         async editExpense(opts: EditExpense){
-            const {id,...data} = opts;
-            await invoke("edit_expense",{id,data});
+            const { id,...data } = opts;
+            await invoke("edit_expense",{ id,data });
             await this.load();
         },
         async addExpense({
