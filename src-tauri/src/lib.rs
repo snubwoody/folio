@@ -130,6 +130,7 @@ pub async fn run() {
             fetch_accounts,
             fetch_budgets,
             create_account,
+            create_budget,
             income_analytics,
             create_income_stream,
             fetch_categories,

@@ -14,6 +14,7 @@ use std::str::FromStr;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::{SqlitePool};
+use tracing::info;
 
 use crate::service::Category;
 
@@ -33,7 +34,10 @@ impl Budget{
             category_id
         ).fetch_one(pool).await?;
 
-        Self::from_id(&record.id, pool).await
+        let budget = Self::from_id(&record.id, pool).await?;
+
+        info!(budget=?budget,"Created budget");
+        Ok(budget)
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self>{

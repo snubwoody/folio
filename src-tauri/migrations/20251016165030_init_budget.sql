@@ -2,5 +2,5 @@
 CREATE TABLE budgets(
     id TEXT NOT NULL DEFAULT (hex(randomblob(8))),
     amount TEXT NOT NULL DEFAULT '0',
-    category_id TEXT NOT NULL REFERENCES categories(id)
+    category_id TEXT NOT NULL UNIQUE REFERENCES categories(id)
 );

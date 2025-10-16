@@ -35,6 +35,12 @@ export type Expense = {
 	currencyCode: string
 }
 
+export type Budget = {
+    id: string,
+    amount: string,
+    category: Category,
+}
+
 export type SpendingAnalytic = {
     category: Category,
     total: string

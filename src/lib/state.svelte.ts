@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { TransactionStore } from "./transaction.svelte";
-import type { IncomeAnalytic, SpendingAnalytic,Category,IncomeStream, Account,Income,Expense } from "./lib";
+import type { IncomeAnalytic, SpendingAnalytic,Category,IncomeStream, Account,Income,Expense, Budget } from "./lib";
 import { AccountStore } from "./account.svelte";
 
 export class AppStore{
@@ -11,9 +11,15 @@ export class AppStore{
     spendingAnaltics: SpendingAnalytic[] = $state([]);
     incomeAnalytics: IncomeAnalytic[] = $state([]);
     accounts: Account[] = $state([]);
+    budgets: Budget[] = $state([]);
 
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
+
+    async createBudget(amount: string,categoryId: string){
+        await invoke("create_budget",{amount,categoryId});
+        await this.load();
+    }
 
     async load(){
         this.expenses = await invoke("fetch_expenses") as Expense[];
@@ -23,6 +29,7 @@ export class AppStore{
         this.incomeAnalytics = await invoke("income_analytics") as IncomeAnalytic[];
         this.spendingAnaltics = await invoke("spending_analytics") as SpendingAnalytic[];
         this.accounts = await invoke("fetch_accounts") as Account[];
+        this.budgets = await invoke("fetch_budgets") as Budget[];
     }
 }
 
