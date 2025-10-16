@@ -1,4 +1,3 @@
-
 // TODO:
 
 // struct BudgetOverview{
@@ -13,30 +12,35 @@ use std::str::FromStr;
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::{SqlitePool};
+use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::service::{Category};
+use crate::service::Category;
 
-
-#[derive(Debug,Clone,Serialize,Deserialize)]
-#[serde(rename_all="camelCase")]
-pub struct Budget{
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Budget {
     id: String,
     amount: Decimal,
     total_spent: Decimal,
     remaining: Decimal,
-    category: Category
+    category: Category,
 }
 
-impl Budget{
-    pub async fn create(amount: Decimal,category_id: &str,pool: &SqlitePool) -> crate::Result<Self>{
+impl Budget {
+    pub async fn create(
+        amount: Decimal,
+        category_id: &str,
+        pool: &SqlitePool,
+    ) -> crate::Result<Self> {
         let amount = amount.to_string();
         let record = sqlx::query!(
             "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
             amount,
             category_id
-        ).fetch_one(pool).await?;
+        )
+        .fetch_one(pool)
+        .await?;
 
         let budget = Self::from_id(&record.id, pool).await?;
 
@@ -44,8 +48,8 @@ impl Budget{
         Ok(budget)
     }
 
-    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self>{
-        let record = sqlx::query!("SELECT * FROM budgets WHERE id=$1",id)
+    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let record = sqlx::query!("SELECT * FROM budgets WHERE id=$1", id)
             .fetch_one(pool)
             .await?;
 
@@ -53,12 +57,17 @@ impl Budget{
         let category = Category::from_id(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
         let remaining = total - total_spent;
-        Ok(Self { id: record.id, amount: total, category,total_spent,remaining })
+        Ok(Self {
+            id: record.id,
+            amount: total,
+            category,
+            total_spent,
+            remaining,
+        })
     }
-
 }
 
-pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>>{
+pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
     let records = sqlx::query!("SELECT id FROM budgets")
         .fetch_all(pool)
         .await?;
@@ -72,32 +81,36 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>>{
 }
 
 #[cfg(test)]
-mod test{
+mod test {
     use rust_decimal::dec;
 
-    use crate::service::fetch_categories;
     use super::*;
+    use crate::service::fetch_categories;
 
     #[sqlx::test]
-    async fn create_budget(pool: SqlitePool) -> crate::Result<()>{
+    async fn create_budget(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("MINE__", &pool).await?;
         let budget = Budget::create(dec!(20.24), category.id.as_str(), &pool).await?;
 
-        assert_eq!(budget.amount,dec!(20.24));
-        assert_eq!(budget.category.title,"MINE__");
+        assert_eq!(budget.amount, dec!(20.24));
+        assert_eq!(budget.category.title, "MINE__");
         Ok(())
     }
 
     #[sqlx::test]
-    async fn get_category(pool: SqlitePool) -> crate::Result<()>{
+    async fn get_category(pool: SqlitePool) -> crate::Result<()> {
         let category_id = &fetch_categories(&pool).await?[0].id;
-        let record = sqlx::query!("INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id","0.2",category_id)
-            .fetch_one(&pool)
-            .await?;
+        let record = sqlx::query!(
+            "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
+            "0.2",
+            category_id
+        )
+        .fetch_one(&pool)
+        .await?;
 
         let budget = Budget::from_id(&record.id, &pool).await?;
-        assert_eq!(budget.amount.to_string(),"0.2");
-        assert_eq!(&budget.category.id,category_id);
+        assert_eq!(budget.amount.to_string(), "0.2");
+        assert_eq!(&budget.category.id, category_id);
         Ok(())
     }
 }

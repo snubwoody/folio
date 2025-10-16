@@ -1,4 +1,4 @@
-use chrono::{Datelike, Local, NaiveDate};
+use chrono::{Datelike, Local};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
@@ -32,13 +32,18 @@ impl Category {
     }
 
     /// Get the total amount spent in the month for the [`Category`].
-    pub async fn total_spent(id: &str,pool: &SqlitePool) -> crate::Result<Decimal>{
+    pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Decimal> {
         let now = Local::now();
-        let total = fetch_expenses(pool).await?
+        let total = fetch_expenses(pool)
+            .await?
             .iter()
-            .filter(|e|e.category.is_some())
-            .filter(|e|e.category.as_ref().unwrap().id == id && e.date.year() == now.year() && e.date.month() == now.month())
-            .fold(Decimal::ZERO, |acc,e|e.amount + acc);
+            .filter(|e| e.category.is_some())
+            .filter(|e| {
+                e.category.as_ref().unwrap().id == id
+                    && e.date.year() == now.year()
+                    && e.date.month() == now.month()
+            })
+            .fold(Decimal::ZERO, |acc, e| e.amount + acc);
         Ok(total)
     }
 }
@@ -58,14 +63,14 @@ pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate:
 
 #[cfg(test)]
 mod test {
-    use rust_decimal::dec;
-    use crate::service::{CreateExpense, Expense};
     use super::*;
+    use crate::service::{CreateExpense, Expense};
+    use rust_decimal::dec;
 
     #[sqlx::test]
-    async fn total_spent(pool: SqlitePool) -> crate::Result<()>{
+    async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("", &pool).await?;
-        let mut data = CreateExpense{
+        let mut data = CreateExpense {
             amount: dec!(20).to_string(),
             category_id: Some(category.id.clone()),
             ..Default::default()
@@ -76,7 +81,7 @@ mod test {
         Expense::create(data.clone(), &pool).await?;
 
         let total = Category::total_spent(&category.id, &pool).await?;
-        assert_eq!(total,dec!(120));
+        assert_eq!(total, dec!(120));
         Ok(())
     }
 

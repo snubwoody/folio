@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
-    import DateField from "../DateField.svelte";
     import SelectMenu from "$components/SelectMenu.svelte";
-    import type { Account, Category, IncomeStream } from "$lib/lib";
+    import type { Category } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
 
 	const popover = new Popover();
@@ -11,7 +10,7 @@
 	let amount = $state("");
 	let category: Category | undefined;
 	async function createBudget() {
-        if (!category) return;
+	    if (!category) return;
 	    appStore.createBudget(amount,category?.id);
 	    popover.open = false;
 

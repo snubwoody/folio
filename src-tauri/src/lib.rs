@@ -10,7 +10,8 @@ use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 use crate::{
     analytics::{IncomeAnalytic, SpendingAnalytic},
     service::{
-        Account, Budget, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income, IncomeStream
+        Account, Budget, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense,
+        Income, IncomeStream,
     },
 };
 
@@ -92,7 +93,11 @@ async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
 }
 
 #[tauri::command]
-async fn create_budget(amount:&str, category_id: &str,state: tauri::State<'_, State>) -> Result<()> {
+async fn create_budget(
+    amount: &str,
+    category_id: &str,
+    state: tauri::State<'_, State>,
+) -> Result<()> {
     // TODO: maybe just pass a decimal
     Budget::create(Decimal::from_str(amount)?, category_id, &state.pool).await?;
     Ok(())

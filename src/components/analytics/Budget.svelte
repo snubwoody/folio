@@ -1,7 +1,5 @@
 <script lang="ts">
-    import { formatAmount, formatDate, type Budget } from "$lib/lib";
-    import { useSelect } from "$lib/select.svelte";
-    import { appStore } from "$lib/state.svelte";
+    import { formatAmount, type Budget } from "$lib/lib";
 
 	type Props = {
 		budget: Budget

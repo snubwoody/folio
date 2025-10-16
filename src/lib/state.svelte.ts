@@ -17,7 +17,7 @@ export class AppStore{
     accountStore = new AccountStore(this);
 
     async createBudget(amount: string,categoryId: string){
-        await invoke("create_budget",{amount,categoryId});
+        await invoke("create_budget",{ amount,categoryId });
         await this.load();
     }
 

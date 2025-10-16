@@ -61,6 +61,6 @@ export function formatDate(dateStr: string): string{
 }
 
 export function formatAmount(amount: string,currency: string = "USD"): string{
-	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency });
+    const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency });
     return formatter.format(parseFloat(amount));
 }
