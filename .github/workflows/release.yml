@@ -1,6 +1,5 @@
 name: Release
 env:
-  DATABASE_URL: sqlite://data.db
   CARGO_TERM_COLOR: always
 on:
   pull_request:
@@ -15,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
+        os: [windows-latest,macos-latest,ubuntu-22.04]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -78,6 +77,8 @@ jobs:
             src-tauri/target/release/bundle/**/*.exe
             src-tauri/target/release/bundle/**/*.dmg
   release:
+    permissions:
+      contents: write
     needs: build
     runs-on: macos-latest
     steps:
@@ -87,4 +88,11 @@ jobs:
           merge-multiple: true
           path: src-tauri/target/release/bundle
       - run: ls -R src-tauri/target/release/bundle
+      - name: Create github release
+        env:
+          GITHUB_TOKEN: ${{github.token}}
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: src-tauri/target/release/bundle/**/*
 
