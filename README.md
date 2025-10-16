@@ -9,14 +9,32 @@
     </p>
 </div>
 
-## About
-Folio is a budgeting app that focus on keeping data local-only. Financial data is quite crucial and private, as such all your data is kept locally.
+## Introduction
+Folio is a free and open source, budgeting app, that focus on keeping data local-only. Financial data is quite crucial and private, as such all your data is kept locally.
 
-## Downloads
+## 💻 Downloads
 
-- Windows
-- Linux
-- MacOS
+Coming soon for:
 
-## License
+- 🪟 **Windows**
+- 🐧 **Linux**
+- 🍎 **macOS**
+
+## 🧰 Build from Source
+To build from source you'll need to have [rust](https://rust-lang.org/) and NodeJS installed.
+```bash
+# Clone the repository
+git clone https://github.com/snubwoody/folio
+
+cd folio
+
+# Install dependencies
+npm install
+
+cargo tauri build
+```
+
+The generated bundle will be in the `target/release/bundle` directory.
+
+## 📃 License
 This project is licenced under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
