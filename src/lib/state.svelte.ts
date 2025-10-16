@@ -1,8 +1,6 @@
-import type Expense from "$components/home/expense/Expense.svelte";
-import type Income from "$components/home/income/Income.svelte";
 import { invoke } from "@tauri-apps/api/core";
 import { TransactionStore } from "./transaction.svelte";
-import type { IncomeAnalytic, SpendingAnalytic,Category,IncomeStream, Account } from "./lib";
+import type { IncomeAnalytic, SpendingAnalytic,Category,IncomeStream, Account,Income,Expense } from "./lib";
 import { AccountStore } from "./account.svelte";
 
 export class AppStore{
