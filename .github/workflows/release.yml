@@ -66,3 +66,25 @@ jobs:
       - run: pnpm install
       - name: Build
         run: pnpm tauri build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: folio-upload-${{ matrix.os }}
+          path: |
+            src-tauri/target/release/bundle/**/*.deb
+            src-tauri/target/release/bundle/**/*.rpm
+            src-tauri/target/release/bundle/**/*.AppImage
+            src-tauri/target/release/bundle/**/*.msi
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.dmg
+  release:
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: folio-upload-*
+          merge-multiple: true
+          path: src-tauri/target/release/bundle
+      - run: ls -R src-tauri/target/release/bundle
+
