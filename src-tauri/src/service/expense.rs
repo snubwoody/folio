@@ -43,12 +43,12 @@ impl Default for CreateExpense {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Expense {
-    id: String,
-    amount: Decimal,
-    date: NaiveDate,
-    account: Option<Account>,
-    category: Option<Category>,
-    currency_code: String,
+    pub id: String,
+    pub amount: Decimal,
+    pub date: NaiveDate,
+    pub account: Option<Account>,
+    pub category: Option<Category>,
+    pub currency_code: String,
 }
 
 impl Expense {

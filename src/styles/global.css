@@ -45,6 +45,8 @@ body{
 
 /* TODO: move to components layer */
 @utility popup-overlay{
+    max-height: 250px;
+    overflow-y: auto;
 	box-shadow: var(--shadow-md);
 	padding: 16px;
 	border-radius: var(--radius-md);
