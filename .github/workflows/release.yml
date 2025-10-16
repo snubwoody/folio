@@ -1,6 +1,7 @@
 name: Release
 env:
   CARGO_TERM_COLOR: always
+  DATABASE_URL: sqlite://data.db
 on:
   pull_request:
     branches: ["main"]
