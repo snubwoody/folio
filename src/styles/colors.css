@@ -14,6 +14,7 @@
 	--color-neutral-800: #3E3E3E;
 	--color-neutral-900: #282828;
 	--color-neutral-950: #171717;
+
 	--color-purple-50: #EBE9FE;
 	--color-purple-100: #D9D6FD;
 	--color-purple-200: #B2AAFB;
@@ -25,6 +26,19 @@
 	--color-purple-800: #20076E;
 	--color-purple-900: #14034E;
 	--color-purple-950: #0A0133;
+
+    --color-blue-50: #E5F2FF;
+	--color-blue-100: #CEE9FF;
+	--color-blue-200: #95D3FF;
+	--color-blue-300: #32BFFF;
+	--color-blue-400: #03A5E0;
+	--color-blue-500: #0088B9;
+	--color-blue-600: #006B92;
+	--color-blue-700: #015170;
+	--color-blue-800: #00374D;
+	--color-blue-900: #002030;
+	--color-blue-950: #00131E;
+
 	--color-red-50: #FEEDED;
 	--color-red-100: #FEDADA;
 	--color-red-200: #FDB4B4;
@@ -36,13 +50,16 @@
 	--color-red-800: #670406;
 	--color-red-900: #400202;
 	--color-red-950: #2C0101;
+
 	--color-text-heading: var(--color-neutral-950);
 	--color-text-body: var(--color-neutral-900);
 	--color-text-muted: var(--color-neutral-600);
 	--color-text-error: var(--color-red-400);
+
 	--color-surface-primary: var(--color-purple-500);
 	--color-surface-primary-hover: var(--color-purple-600);
 	--color-surface-primary-active: var(--color-purple-700);
+
 	--color-surface-error: var(--color-red-500);
 	--color-surface-error-hover: var(--color-red-600);
 	--color-surface-error-active: var(--color-red-700);
