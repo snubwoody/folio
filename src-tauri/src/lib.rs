@@ -140,7 +140,7 @@ pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(not(debug_assertions))]
     let data_path = {
         let data_dir = get_data_dir().unwrap();
-        fs::create_dir_all(&data_dir)?;
+        std::fs::create_dir_all(&data_dir)?;
         data_dir.join("data.db")
     };
 
