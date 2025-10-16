@@ -1,19 +1,14 @@
 <script lang="ts">
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
-    import { onMount } from "svelte";
-    import { accountStore } from "../../lib/account.svelte";
+    import { appStore } from "$lib/state.svelte";
 
 	const popover = new Popover();
 	let name = $state("My account");
 	let startingBalance = $state("0.00");
 
-	onMount(async ()=>{
-	    await accountStore.load();
-	});
-
 	async function createAccount() {
-	    await accountStore.addAccount(name,startingBalance);
+	    await appStore.accountStore.addAccount(name,startingBalance);
 	    popover.open = false;
 	}
 </script>
@@ -32,7 +27,7 @@
 		</form>
 	</header>
 	<ul>
-		{#each accountStore.accounts as account (account.id)}
+		{#each appStore.accounts as account (account.id)}
 			<li class="shadow-purple-sm p-2 rounded-md">
 				<p>{account.name}</p>
 				<h6>$ {account.startingBalance}</h6>

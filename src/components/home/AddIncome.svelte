@@ -3,9 +3,8 @@
     import TextField from "../TextField.svelte";
     import DateField from "../DateField.svelte";
     import SelectMenu from "$components/SelectMenu.svelte";
-    import { accountStore } from "../../lib/account.svelte";
-    import { transactionStore,type IncomeStream } from "$lib/transaction.svelte";
-    import type { Account } from "$lib/lib";
+    import type { Account, IncomeStream } from "$lib/lib";
+    import { appStore } from "$lib/state.svelte";
 
 	const popover = new Popover();
 
@@ -14,7 +13,7 @@
 	let incomeStream: IncomeStream | undefined;
     let date: string | undefined = $state(undefined);
 	async function createIncome() {
-	    transactionStore.addIncome({
+	    appStore.transactions.addIncome({
 	        date: date,
 	        amount:amount,
 	        incomeStreamId: incomeStream?.id,
@@ -32,13 +31,13 @@
     <DateField onChange={(year,month,day) => date = `${year}-${month}-${day}`}/>
     <SelectMenu
         label="Account"
-        items={accountStore.accounts}
+        items={appStore.accounts}
         toOption={(a) => {return { label: a.name,value: a.id };}}
         onChange={(item) => account = item}
     />
     <SelectMenu
         label="Income stream"
-        items={transactionStore.incomeStreams}
+        items={appStore.incomeStreams}
         toOption={(a) => {return { label: a.title,value: a.id };}}
         onChange={(item) => incomeStream = item}
     />

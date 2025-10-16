@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { analyticsStore } from "$lib/analytics.svelte";
+    import { appStore } from "$lib/state.svelte";
 
-    const analytics = analyticsStore.incomeAnalytics.sort((a,b) => parseFloat(a.total) + parseFloat(b.total)).reverse();
+    const analytics = appStore.incomeAnalytics.sort((a,b) => parseFloat(a.total) + parseFloat(b.total)).reverse();
     const total = analytics.reduce((acc,item) => acc + parseFloat(item.total),0);
 
     const purpleShades = [

@@ -1,11 +1,6 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { transactionStore } from "../../../lib/transaction.svelte";
     import Expense from "./Expense.svelte";
-
-	onMount(async()=>{
-	    await transactionStore.load();
-	});
+    import { appStore } from "$lib/state.svelte";
 </script>
 
 <ul class="expense-table">
@@ -13,7 +8,7 @@
 	<p class="table-heading">Account</p>
 	<p class="table-heading">Date</p>
 	<p class="table-heading">Amount</p>
-	{#each transactionStore.expenses as expense (expense.id)}
+	{#each appStore.expenses as expense (expense.id)}
 		<Expense {expense}/>
 	{/each}
 </ul>

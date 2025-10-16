@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { analyticsStore } from "$lib/analytics.svelte";
+    import { appStore } from "$lib/state.svelte";
 
-    const analytics = analyticsStore.spendingAnalytics;
+    const analytics = appStore.spendingAnaltics;
     const total = Math.max(...analytics.map(a => parseFloat(a.total)));
 
     const purpleShades = [
@@ -17,6 +17,7 @@
         "var(--color-purple-900)",
     ];
 
+    console.log(analytics);
 </script>
 
 <section class="space-y-2">

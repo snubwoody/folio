@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { accountStore } from "$lib/account.svelte";
-    import { formatDate } from "$lib/lib";
+    import { formatDate, type Income } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
-    import { transactionStore, type Income } from "$lib/transaction.svelte";
+    import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
 
 	type Props = {
@@ -14,15 +13,15 @@
 	const amount = formatter.format(income.amount);
 
     const { select,options } = useSelect({
-        items: transactionStore.incomeStreams, // FIXME: income streams
+        items: appStore.incomeStreams, // FIXME: income streams
         toOption: (stream) => {return { value: stream.id, label: stream.title };},
-        onChange: ({ item }) => transactionStore.editIncome({ id: income.id,incomeStreamId: item.id }),
+        onChange: ({ item }) => appStore.transactions.editIncome({ id: income.id,incomeStreamId: item.id }),
     });
 
     const { select: accountSelect,options: accountSelectOpts } = useSelect({
-        items: accountStore.accounts,
+        items: appStore.accounts,
         toOption: (account) => {return { value: account.id, label: account.name };},
-        onChange: ({ item }) => transactionStore.editIncome({ id: income.id,accountId: item.id }),
+        onChange: ({ item }) => appStore.transactions.editIncome({ id: income.id,accountId: item.id }),
     });
 </script>
 

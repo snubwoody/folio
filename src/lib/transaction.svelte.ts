@@ -1,5 +1,6 @@
 import type { Account, Expense } from "./lib";
 import { invoke } from "@tauri-apps/api/core";
+import type { AppStore } from "./state.svelte";
 
 export type CreateExpense = {
 	amount: string,
@@ -38,53 +39,22 @@ export type EditIncome = {
 	incomeStreamId?: string,
 }
 
-export type Category = {
-    id: string,
-    title: string
-}
-
-export type IncomeStream = {
-    id: string,
-    title: string
-}
-
-export type Income = {
-	id: string,
-	amount: number,
-	description: string,
-	incomeStream?: IncomeStream,
-	account?: Account,
-	date: string,
-	currencyCode: string
-}
 
 export class TransactionStore{
-    #expenses: Expense[] = $state([]);
-    #incomes: Income[] = $state([]);
-    #categories: Category[] = $state([]);
-    #incomeStreams: IncomeStream[] = $state([]);
+    #rootStore: AppStore;
+    constructor(root: AppStore){
+        this.#rootStore = root;
+    }
 
-    get expenses(): Expense[]{
-        return this.#expenses;
-    }
-    get incomes(): Income[]{
-        return this.#incomes;
-    }
-    get incomeStreams(): IncomeStream[]{
-        return this.#incomeStreams;
-    }
-    get categories(): IncomeStream[]{
-        return this.#categories;
-    }
     async editExpense(opts: EditExpense){
         const { id,...data } = opts;
         await invoke("edit_expense",{ id,data });
-        await this.load();
+        await this.#rootStore.load();
     }
     async editIncome(opts: EditIncome){
         const { id,...data } = opts;
         await invoke("edit_income",{ id,data });
-        await this.load();
+        await this.#rootStore.load();
     }
     /**
      * Create a new expense.
@@ -114,7 +84,7 @@ export class TransactionStore{
         catch(e){
             console.error(e);
         }
-        await this.load();
+        await this.#rootStore.load();
     }
     /**
      * Create a new expense.
@@ -145,14 +115,7 @@ export class TransactionStore{
         catch(e){
             console.error(e);
         }
-        await this.load();
-    }
-    async load(){
-        this.#expenses = await invoke("fetch_expenses") as Expense[];
-        this.#categories = await invoke("fetch_categories") as Category[];
-        this.#incomes = await invoke("fetch_incomes") as Income[];
-        this.#incomeStreams = await invoke("fetch_income_streams") as IncomeStream[];
+        await this.#rootStore.load();
     }
 }
 
-export const transactionStore = new TransactionStore();
