@@ -55,7 +55,5 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-      - name: Run tests
-        run: |
-          cd src-tauri
-          cargo tauri build
+      - name: Build
+        run: pnpm tauri build
