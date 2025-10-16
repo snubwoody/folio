@@ -1,9 +1,28 @@
-import type { Category } from "./transaction.svelte";
 
 export type Account = {
 	id: string,
 	name: string,
 	startingBalance: number
+}
+
+export type Category = {
+    id: string,
+    title: string
+}
+
+export type IncomeStream = {
+    id: string,
+    title: string
+}
+
+export type Income = {
+	id: string,
+	amount: number,
+	description: string,
+	incomeStream?: IncomeStream,
+	account?: Account,
+	date: string,
+	currencyCode: string
 }
 
 export type Expense = {
@@ -14,6 +33,16 @@ export type Expense = {
 	account?: Account,
 	date: string,
 	currencyCode: string
+}
+
+export type SpendingAnalytic = {
+    category: Category,
+    total: string
+}
+
+export type IncomeAnalytic = {
+    stream: IncomeStream,
+    total: string
 }
 
 export function formatDate(dateStr: string): string{

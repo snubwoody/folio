@@ -3,19 +3,9 @@
 	import "../styles/global.css";
 	const { children } = $props();
     import { onMount } from "svelte";
-    import { accountStore } from "$lib/account.svelte";
-    import { transactionStore } from "$lib/transaction.svelte";
-    import { analyticsStore } from "$lib/analytics.svelte";
+    import { appStore } from "$lib/state.svelte";
     onMount(async ()=>{
-        await accountStore.load();
-        await transactionStore.load();
-        await analyticsStore.load();
-    });
-
-    $effect(()=>{
-        // Make eslint ignore this
-        void transactionStore.expenses;
-        analyticsStore.load();
+        await appStore.load();
     });
 </script>
 

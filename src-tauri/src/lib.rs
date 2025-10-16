@@ -8,7 +8,7 @@ use rust_decimal::prelude::*;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
 
 use crate::{
-    analytics::SpendingAnalytic,
+    analytics::{IncomeAnalytic, SpendingAnalytic},
     service::{
         Account, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense, Income,
         IncomeStream,
@@ -42,6 +42,11 @@ async fn edit_income(state: tauri::State<'_, State>, id: String, data: EditIncom
 #[tauri::command]
 async fn spending_analytics(state: tauri::State<'_, State>) -> Result<Vec<SpendingAnalytic>> {
     analytics::spending_analytics(&state.pool).await
+}
+
+#[tauri::command]
+async fn income_analytics(state: tauri::State<'_, State>) -> Result<Vec<IncomeAnalytic>> {
+    analytics::income_analytics(&state.pool).await
 }
 
 #[tauri::command]
@@ -112,6 +117,7 @@ pub async fn run() {
             spending_analytics,
             create_category,
             fetch_accounts,
+            income_analytics,
             create_income_stream,
             fetch_categories,
             edit_income,

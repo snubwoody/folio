@@ -3,9 +3,8 @@
     import TextField from "../TextField.svelte";
     import DateField from "../DateField.svelte";
     import SelectMenu from "$components/SelectMenu.svelte";
-    import { accountStore } from "../../lib/account.svelte";
-    import { transactionStore,type Category } from "$lib/transaction.svelte";
-    import type { Account } from "$lib/lib";
+    import type { Account, Category } from "$lib/lib";
+    import { appStore } from "$lib/state.svelte";
 
 	const popover = new Popover();
 
@@ -15,7 +14,7 @@
 	let category: Category | undefined;
     let date: string | undefined = $state(undefined);
 	async function createExpense() {
-	    transactionStore.addExpense({
+	    appStore.transactions.addExpense({
 	        date: date,
 	        amount:amount,
 	        categoryId: category?.id,
@@ -33,13 +32,13 @@
     <DateField onChange={(year,month,day) => date = `${year}-${month}-${day}`}/>
     <SelectMenu
         label="Account"
-        items={accountStore.accounts}
+        items={appStore.accounts}
         toOption={(a) => {return { label: a.name,value: a.id };}}
         onChange={(item) => account = item}
     />
     <SelectMenu
         label="Category"
-        items={transactionStore.categories}
+        items={appStore.categories}
         toOption={(a) => {return { label: a.title,value: a.id };}}
         onChange={(item) => category = item}
     />

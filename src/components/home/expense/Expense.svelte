@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { accountStore } from "$lib/account.svelte";
     import { formatDate, type Expense } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
-    import { transactionStore } from "$lib/transaction.svelte";
+    import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
 
 	type Props = {
@@ -14,15 +13,15 @@
 	const amount = formatter.format(expense.amount);
 
     const { select,options } = useSelect({
-        items: transactionStore.categories,
+        items: appStore.categories,
         toOption: (category) => {return { value: category.id, label: category.title };},
-        onChange: ({ item }) => transactionStore.editExpense({ id: expense.id,categoryId: item.id }),
+        onChange: ({ item }) => appStore.transactions.editExpense({ id: expense.id,categoryId: item.id }),
     });
 
     const { select: accountSelect,options: accountSelectOpts } = useSelect({
-        items: accountStore.accounts,
+        items: appStore.accounts,
         toOption: (account) => {return { value: account.id, label: account.name };},
-        onChange: ({ item }) => transactionStore.editExpense({ id: expense.id,accountId: item.id }),
+        onChange: ({ item }) => appStore.transactions.editExpense({ id: expense.id,accountId: item.id }),
     });
 </script>
 
