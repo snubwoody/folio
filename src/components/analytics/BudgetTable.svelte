@@ -6,6 +6,8 @@
 <ul class="expense-table">
 	<p class="table-heading">Income stream</p>
 	<p class="table-heading">Total</p>
+	<p class="table-heading">Spent</p>
+	<p class="table-heading">Remaining</p>
 	{#each appStore.budgets as budget (budget.category.id)}
 		<Budget {budget}/>
 	{/each}
@@ -14,7 +16,7 @@
 <style>
 	.expense-table{
 		display: grid;
-		grid-template-columns: repeat(2,1fr);
+		grid-template-columns: repeat(4,1fr);
 	}
 
 	.table-heading{

@@ -16,9 +16,11 @@ use serde::{Deserialize, Serialize};
 use sqlx::{SqlitePool};
 use tracing::info;
 
-use crate::service::{fetch_expenses, Category};
+use crate::service::{Category};
+
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
+#[serde(rename_all="camelCase")]
 pub struct Budget{
     id: String,
     amount: Decimal,

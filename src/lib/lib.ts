@@ -38,6 +38,8 @@ export type Expense = {
 export type Budget = {
     id: string,
     amount: string,
+    totalSpent: string,
+    remaining: string,
     category: Category,
 }
 
@@ -56,4 +58,9 @@ export function formatDate(dateStr: string): string{
     const date = new Date(Number(year),Number(month)-1,Number(day));
     return Intl.DateTimeFormat("en-US",{ dateStyle: "medium" })
         .format(date);
+}
+
+export function formatAmount(amount: string,currency: string = "USD"): string{
+	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency });
+    return formatter.format(parseFloat(amount));
 }
