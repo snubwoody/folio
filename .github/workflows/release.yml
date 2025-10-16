@@ -3,10 +3,8 @@ env:
   CARGO_TERM_COLOR: always
   DATABASE_URL: sqlite://data.db
 on:
-  pull_request:
-    branches: ["main"]
   push: 
-    branches: ["main"]
+    tags: ["v*"]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
@@ -88,8 +86,7 @@ jobs:
           pattern: folio-upload-*
           merge-multiple: true
           path: src-tauri/target/release/bundle
-      - run: ls -R src-tauri/target/release/bundle
-      - name: Create github release
+      - name: Create draft release
         env:
           GITHUB_TOKEN: ${{github.token}}
         uses: softprops/action-gh-release@v1
