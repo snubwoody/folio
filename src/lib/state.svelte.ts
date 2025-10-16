@@ -14,7 +14,6 @@ export class AppStore{
     incomeAnalytics: IncomeAnalytic[] = $state([]);
     accounts: Account[] = $state([]);
 
-
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
 

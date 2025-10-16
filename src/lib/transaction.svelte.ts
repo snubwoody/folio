@@ -1,4 +1,3 @@
-import type { Account, Expense } from "./lib";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppStore } from "./state.svelte";
 
@@ -38,7 +37,6 @@ export type EditIncome = {
 	accountId?: string,
 	incomeStreamId?: string,
 }
-
 
 export class TransactionStore{
     #rootStore: AppStore;

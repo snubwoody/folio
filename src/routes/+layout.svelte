@@ -5,7 +5,7 @@
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
     onMount(async ()=>{
-        await appStore.load()
+        await appStore.load();
     });
 </script>
 

@@ -16,8 +16,6 @@
         "var(--color-purple-800)",
         "var(--color-purple-900)",
     ];
-
-    console.log(analytics);
 </script>
 
 <section class="space-y-2">

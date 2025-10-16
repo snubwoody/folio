@@ -86,9 +86,9 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 
 #[cfg(test)]
 mod test {
-    use rust_decimal::dec;
-    use crate::service::{CreateExpense, CreateIncome, Expense, Income};
     use super::*;
+    use crate::service::{CreateExpense, CreateIncome, Expense, Income};
+    use rust_decimal::dec;
 
     #[sqlx::test]
     async fn get_spending_analytics(pool: SqlitePool) -> crate::Result<()> {

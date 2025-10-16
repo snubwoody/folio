@@ -25,7 +25,6 @@ export type Income = {
 	currencyCode: string
 }
 
-
 export type Expense = {
 	id: string,
 	amount: number,
