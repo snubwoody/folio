@@ -16,12 +16,14 @@ use serde::{Deserialize, Serialize};
 use sqlx::{SqlitePool};
 use tracing::info;
 
-use crate::service::Category;
+use crate::service::{fetch_expenses, Category};
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
 pub struct Budget{
     id: String,
     amount: Decimal,
+    total_spent: Decimal,
+    remaining: Decimal,
     category: Category
 }
 
@@ -45,10 +47,13 @@ impl Budget{
             .fetch_one(pool)
             .await?;
 
+        let total = Decimal::from_str(&record.amount)?;
         let category = Category::from_id(&record.category_id, pool).await?;
-
-        Ok(Self { id: record.id, amount: Decimal::from_str(&record.amount)?, category })
+        let total_spent = Category::total_spent(&category.id, pool).await?;
+        let remaining = total - total_spent;
+        Ok(Self { id: record.id, amount: total, category,total_spent,remaining })
     }
+
 }
 
 pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>>{
