@@ -1,6 +1,7 @@
 
-
-![alt text](assets/Analytics.svg)
+<div align="center">
+    <img style="width:70%; border-radius: 12px;" align="center" src="assets/Analytics.svg"/>
+</div>
 <div align="center">
     <h1>Folio</h1>
     <p>
