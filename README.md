@@ -10,7 +10,8 @@
 </div>
 
 ## Introduction
-Folio is a free and open source, budgeting app, that focus on keeping data local-only. Financial data is quite crucial and private, as such all your data is kept locally.
+Folio is a free and open source, budgeting app, that focus on keeping data local-only. Financial data is quite crucial and private, as such all your data is kept locally, your data 
+is yours and yours only.
 
 ## 💻 Downloads
 
