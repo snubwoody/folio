@@ -9,7 +9,7 @@
 	}
 
 	const { income }: Props = $props();
-	const amount = formatAmount(income.amount,{currency: income.currencyCode});
+	const amount = formatAmount(income.amount,{ currency: income.currencyCode });
 
     const { select,options } = useSelect({
         items: appStore.incomeStreams, // FIXME: income streams

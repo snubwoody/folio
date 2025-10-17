@@ -9,8 +9,7 @@
 	}
 
 	const { expense }: Props = $props();
-	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency: expense.currencyCode });
-	const amount = formatAmount(expense.amount,{currency: expense.currencyCode});
+	const amount = formatAmount(expense.amount,{ currency: expense.currencyCode });
 
     const { select,options } = useSelect({
         items: appStore.categories,

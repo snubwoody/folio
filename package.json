@@ -12,7 +12,7 @@
     "tauri": "tauri",
     "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
     "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix",
-    "test": "vitest --browser.headless",
+    "test": "vitest --browser=chromium",
     "test:browser": "vitest --browser=chromium",
     "test:headless": "vitest --browser.headless run"
   },
