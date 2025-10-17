@@ -64,6 +64,23 @@ jobs:
         run: |
           cd src-tauri
           cargo fmt --check
+  test-frontend:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install
+      - name: Install playwright browsers
+        run: pnpm playwright install --with-deps
+      - name: Run tests
+        run: pnpm test:headless
   test:
     strategy:
       fail-fast: false
