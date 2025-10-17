@@ -4,7 +4,7 @@
 </script>
 
 <ul class="expense-table">
-	<p class="table-heading">Income stream</p>
+	<p class="table-heading">Category</p>
 	<p class="table-heading">Total</p>
 	<p class="table-heading">Spent</p>
 	<p class="table-heading">Remaining</p>

@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { AppStore } from "./state.svelte";
+import { AppError, type ErrorResponse } from "./error";
 
 export type CreateExpense = {
 	amount: string,
@@ -51,7 +52,13 @@ export class TransactionStore{
     }
     async editIncome(opts: EditIncome){
         const { id,...data } = opts;
-        await invoke("edit_income",{ id,data });
+        try{
+            await invoke("edit_income",{ id,data });
+
+        } catch(e){
+            const error = e as ErrorResponse;
+            throw new AppError(error.message);
+        }
         await this.#rootStore.load();
     }
     /**

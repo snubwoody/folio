@@ -24,7 +24,7 @@
     });
 
     function updateDate(year: number,month: number,day: number){
-        appStore.transactions.editExpense({id: expense.id, date: `${year}-${month}-${day}`})   
+        appStore.transactions.editExpense({ id: expense.id, date: `${year}-${month}-${day}` });
     }
 </script>
 

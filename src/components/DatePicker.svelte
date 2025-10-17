@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { createDatePicker, } from "@melt-ui/svelte";
+	import { createDatePicker } from "@melt-ui/svelte";
     import { scale } from "svelte/transition";
-    import {CalendarDate} from "@internationalized/date";
+    import { CalendarDate } from "@internationalized/date";
 
 	type Props = {
 		onDateChange?: (year: number,month: number,day: number) => void;
@@ -23,8 +23,8 @@
 	    states: { months, headingValue, weekdays, open },
 	    helpers: { isDateDisabled, isDateUnavailable },
 	} = createDatePicker({
-        fixedWeeks: true,
-        defaultValue: new CalendarDate(2025,10,10),
+	    fixedWeeks: true,
+	    defaultValue: new CalendarDate(2025,10,10),
 	    onValueChange: ({ next }) => {
 	        if (onDateChange && next){
 	            onDateChange(next.year,next.month,next.day);
