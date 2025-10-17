@@ -1,4 +1,4 @@
-use std::io;
+use std::{io, num::ParseFloatError};
 
 use serde::{Serialize, ser::SerializeStruct};
 use thiserror::Error;
@@ -17,6 +17,8 @@ pub enum Error {
     MigrateError(#[from] sqlx::migrate::MigrateError),
     #[error("Failed to parse decimal: {0}")]
     ParseDecimalError(#[from] rust_decimal::Error),
+    #[error("Failed to parse float: {0}")]
+    ParseFloatError(#[from] ParseFloatError)
 }
 
 impl Serialize for Error {

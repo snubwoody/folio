@@ -4,7 +4,7 @@ mod service;
 mod money;
 use std::path::PathBuf;
 
-pub use money::DECIMAL_SCALE;
+pub use money::{DECIMAL_SCALE,Money};
 pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
@@ -101,7 +101,8 @@ async fn create_budget(
     state: tauri::State<'_, State>,
 ) -> Result<()> {
     // TODO: maybe just pass a decimal
-    Budget::create(Decimal::from_str(amount)?, category_id, &state.pool).await?;
+    // TODO: add from_str
+    Budget::create(Money::from_unscaled(24), category_id, &state.pool).await?;
     Ok(())
 }
 

@@ -3,7 +3,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::service::fetch_expenses;
+use crate::{service::fetch_expenses, Money};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 pub struct Category {
@@ -32,7 +32,7 @@ impl Category {
     }
 
     /// Get the total amount spent in the month for the [`Category`].
-    pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Decimal> {
+    pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();
         let total = fetch_expenses(pool)
             .await?
@@ -43,7 +43,7 @@ impl Category {
                     && e.date.year() == now.year()
                     && e.date.month() == now.month()
             })
-            .fold(Decimal::ZERO, |acc, e| e.amount + acc);
+            .fold(Money::ZERO, |acc, e| e.amount + acc);
         Ok(total)
     }
 }
@@ -81,7 +81,7 @@ mod test {
         Expense::create(data.clone(), &pool).await?;
 
         let total = Category::total_spent(&category.id, &pool).await?;
-        assert_eq!(total, dec!(120));
+        assert_eq!(total, Money::from_unscaled(120));
         Ok(())
     }
 

@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{service::{Account, Category}, DECIMAL_SCALE};
+use crate::{service::{Account, Category}, Money, DECIMAL_SCALE};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -40,11 +40,11 @@ impl Default for CreateExpense {
 }
 
 // TODO: try deleting account and category deps
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Expense {
     pub id: String,
-    pub amount: Decimal,
+    pub amount: Money,
     pub date: NaiveDate,
     pub account: Option<Account>,
     pub category: Option<Category>,
@@ -127,7 +127,7 @@ impl Expense {
             .await?;
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
-        let amount = Decimal::new(record.amount,DECIMAL_SCALE);
+        let amount = Money::new(record.amount);
         let category = match record.category_id {
             Some(id) => Some(Category::from_id(&id, pool).await?),
             None => None,
@@ -217,15 +217,17 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_expense(pool: SqlitePool) -> Result<(), crate::Error> {
+        let amount = Money::from_unscaled(20).inner();
         let record = sqlx::query!(
-            "INSERT INTO expenses(amount,currency_code) VALUES('204.24','ZAR') RETURNING id"
+            "INSERT INTO expenses(amount,currency_code) VALUES($1,'ZAR') RETURNING id",
+            amount
         )
         .fetch_one(&pool)
         .await
         .unwrap();
 
         let expense = Expense::from_id(&record.id, &pool).await?;
-        assert_eq!(expense.amount.to_string(), "204.24");
+        assert_eq!(expense.amount.inner(), 20_000_000);
         assert_eq!(expense.currency_code, "ZAR");
         Ok(())
     }

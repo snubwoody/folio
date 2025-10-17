@@ -1,13 +1,3 @@
-// TODO:
-
-// struct BudgetOverview{
-//     amount_spend: f32,
-//     amount_left: f32,
-//     total_income: f32,
-//     total_expense: f32,
-//     percentage_of_income: f32
-// }
-
 use std::str::FromStr;
 
 use rust_decimal::Decimal;
@@ -15,21 +5,21 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{service::Category, DECIMAL_SCALE};
+use crate::{service::Category, Money};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
     id: String,
-    amount: Decimal,
-    total_spent: Decimal,
-    remaining: Decimal,
+    amount: Money,
+    total_spent: Money,
+    remaining: Money,
     category: Category,
 }
 
 impl Budget {
     pub async fn create(
-        amount: Decimal,
+        amount: Money,
         category_id: &str,
         pool: &SqlitePool,
     ) -> crate::Result<Self> {
@@ -53,7 +43,7 @@ impl Budget {
             .fetch_one(pool)
             .await?;
 
-        let total = Decimal::new(record.amount,DECIMAL_SCALE);
+        let total = Money::new(record.amount);
         let category = Category::from_id(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
         let remaining = total - total_spent;
@@ -90,9 +80,9 @@ mod test {
     #[sqlx::test]
     async fn create_budget(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("MINE__", &pool).await?;
-        let budget = Budget::create(dec!(20.24), category.id.as_str(), &pool).await?;
+        let budget = Budget::create(Money::from_unscaled(20), category.id.as_str(), &pool).await?;
 
-        assert_eq!(budget.amount, dec!(20.24));
+        assert_eq!(budget.amount, Money::from_unscaled(20));
         assert_eq!(budget.category.title, "MINE__");
         Ok(())
     }
