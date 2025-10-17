@@ -1,7 +1,7 @@
 -- Add migration script here
 CREATE TABLE incomes_new(
 	id TEXT PRIMARY KEY NOT NULL DEFAULT (hex(randomBlob(8))),
-	amount TEXT NOT NULL,
+	amount INTEGER NOT NULL DEFAULT 0,
 	transaction_date TEXT NOT NULL DEFAULT (date('now')),
 	account_id TEXT NULL REFERENCES accounts(id),
     income_stream TEXT NULL REFERENCES income_streams(id),
