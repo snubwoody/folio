@@ -22,6 +22,10 @@
         toOption: (account) => {return { value: account.id, label: account.name };},
         onChange: ({ item }) => appStore.transactions.editIncome({ id: income.id,accountId: item.id }),
     });
+
+    function updateDate(year: number,month: number,day: number){
+        appStore.transactions.editIncome({id: income.id, date: `${year}-${month}-${day}`})   
+    }
 </script>
 
 <div class="data-cell flex justify-between items-center">
@@ -50,6 +54,6 @@
 </div>
 <li class="data-cell flex items-center justify-between">
 	<p>{formatDate(income.date)}</p>
-	<DatePicker/>
+	<DatePicker onDateChange={updateDate}/>
 </li>
 <p class="data-cell">{amount}</p>
