@@ -7,18 +7,18 @@
     const nextMonth = new Date(now.getFullYear(),now.getMonth() + 1,1);
     const income = appStore.incomes.filter((income) => {
         const date = new Date(income.date);
-        return date >= startOfMonth && date < nextMonth
+        return date >= startOfMonth && date < nextMonth;
     });
     const expenses = appStore.expenses.filter((expense) => {
         const date = new Date(expense.date);
-        return date >= startOfMonth && date < nextMonth
+        return date >= startOfMonth && date < nextMonth;
     });
     const budgets = appStore.budgets;
     const totalExpenses = $derived.by(()=>expenses.reduce((acc,item) => acc + parseFloat(item.amount),0));
     const totalIncome = $derived.by(()=>income.reduce((acc,item) => acc + parseFloat(item.amount),0));
     const totalBudget = $derived.by(()=>budgets.reduce((acc,item) => acc + parseFloat(item.amount),0));
     // TODO: format large values
-    const percentage = $derived.by(()=>(totalExpenses/totalIncome) * 100)
+    const percentage = $derived.by(()=>(totalExpenses/totalIncome) * 100);
     // FIXME: nan percentage
 </script>
 
