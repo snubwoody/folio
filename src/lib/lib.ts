@@ -17,7 +17,7 @@ export type IncomeStream = {
 
 export type Income = {
 	id: string,
-	amount: number,
+	amount: string,
 	description: string,
 	incomeStream?: IncomeStream,
 	account?: Account,
@@ -27,7 +27,7 @@ export type Income = {
 
 export type Expense = {
 	id: string,
-	amount: number,
+	amount: string,
 	description: string,
 	category?: Category,
 	account?: Account,

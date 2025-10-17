@@ -11,7 +11,9 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "tauri": "tauri",
     "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
-    "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
+    "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix",
+    "test": "vitest --browser=chromium run",
+    "test:headless": "vitest --browser.headless run"
   },
   "license": "MIT",
   "dependencies": {
@@ -28,8 +30,10 @@
     "@tailwindcss/vite": "^4.1.14",
     "@tauri-apps/cli": "^2",
     "@types/node": "^24.7.2",
+    "@vitest/browser": "^3.2.4",
     "eslint": "^9.37.0",
     "eslint-plugin-svelte": "^3.12.4",
+    "playwright": "^1.56.1",
     "postcss-html": "^1.8.0",
     "stylelint": "^16.25.0",
     "stylelint-config-recommended-scss": "^16.0.2",
@@ -40,6 +44,8 @@
     "tailwindcss": "^4.1.14",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.46.1",
-    "vite": "^6.0.3"
+    "vite": "^6.0.3",
+    "vitest": "^3.2.4",
+    "vitest-browser-svelte": "^1.1.0"
   }
 }
