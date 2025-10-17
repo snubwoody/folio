@@ -60,7 +60,18 @@ export function formatDate(dateStr: string): string{
         .format(date);
 }
 
-export function formatAmount(amount: string,currency: string = "USD"): string{
-    const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency });
+export type NumberFormatOpts = {
+    /** Truncate large values */
+    compact?: true,
+    currency?: string
+}
+export function formatAmount(amount: string,opts?: NumberFormatOpts): string{
+    const currency = opts?.currency ?? "USD";
+    let notation: "compact" | "standard"|"scientific" | "engineering" | undefined;
+    if (opts?.compact){
+        notation = "compact";
+    }
+
+    const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency,notation });
     return formatter.format(parseFloat(amount));
 }

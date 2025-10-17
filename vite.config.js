@@ -27,7 +27,6 @@ export default defineConfig(async () => ({
     test: {
         browser: {
             enabled: true,
-            headless: true,
             provider: "playwright",
             // https://vitest.dev/guide/browser/playwright
             instances: [

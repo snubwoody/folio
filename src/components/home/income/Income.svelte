@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { formatDate, type Income } from "$lib/lib";
+    import { formatAmount, formatDate, type Income } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
@@ -9,8 +9,7 @@
 	}
 
 	const { income }: Props = $props();
-	const formatter = new Intl.NumberFormat("en-US",{ style: "currency",currency: income.currencyCode });
-	const amount = formatter.format(income.amount);
+	const amount = formatAmount(income.amount,{currency: income.currencyCode});
 
     const { select,options } = useSelect({
         items: appStore.incomeStreams, // FIXME: income streams
