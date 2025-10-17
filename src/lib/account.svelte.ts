@@ -9,6 +9,7 @@ export class AccountStore{
     }
 
     async addAccount(name: string, startingBalance: string){
+        console.log(startingBalance);
         try{
             await invoke("create_account",{ name,startingBalance });
         }

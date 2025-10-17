@@ -6,8 +6,6 @@ authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
 publish = false
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [lib]
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.

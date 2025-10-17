@@ -18,6 +18,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@internationalized/date": "^3.10.0",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
     "melt": "^0.41.0"
