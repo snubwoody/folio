@@ -1,7 +1,7 @@
 use std::{fmt::Display, ops::{Add, AddAssign, Sub, SubAssign}, str::FromStr};
 
 use rust_decimal::{prelude::*, Decimal};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 
 /// The scale used for all decimals stored in
@@ -9,7 +9,7 @@ use serde::Serialize;
 pub const DECIMAL_SCALE:u32 = 6;
 
 /// A type that stores money with 6 digits after the decimal point.
-#[derive(Debug,Clone,Copy,PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug,Clone,Copy,PartialEq, Eq, PartialOrd, Ord,Default)]
 pub struct Money(i64);
 
 impl Money{
@@ -80,7 +80,7 @@ impl SubAssign for Money{
 
 impl Display for Money{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f,"{}",self.to_string())
+        write!(f,"{}",self.to_decimal())
     }
 }
 
@@ -106,10 +106,22 @@ impl Serialize for Money{
     }
 }
 
+impl<'de> Deserialize<'de> for Money{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::Deserializer<'de> 
+    {
+        let s = String::deserialize(deserializer)?;
+        Money::from_str(&s)
+            .map_err(serde::de::Error::custom)
+    }
+}
+
 #[cfg(test)]
 mod test{
     use std::str::FromStr;
     use rust_decimal::dec;
+    use serde_json::json;
     use super::*;
 
     #[test]
@@ -117,6 +129,13 @@ mod test{
         let money = Money::from_unscaled(20);
         assert_eq!(money.0,20_000000);
     }   
+
+    #[test]
+    fn parse_json() -> crate::Result<()>{
+        let money: Money = serde_json::from_value(json!("19.24")).unwrap();
+        assert_eq!(money.inner(),19_240_000);
+        Ok(())
+    }
 
     #[test]
     fn from_scaled(){

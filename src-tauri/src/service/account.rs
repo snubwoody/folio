@@ -2,15 +2,14 @@ use rust_decimal::prelude::*;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::DECIMAL_SCALE;
+use crate::{Money, DECIMAL_SCALE};
 
-/// TODO: add transaction
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub id: String,
     pub name: String,
-    pub starting_balance: Decimal,
+    pub starting_balance: Money,
 }
 
 // TODO: add fetch
@@ -39,8 +38,7 @@ impl Account {
             .fetch_one(pool)
             .await?;
 
-        dbg!(&record);
-        let starting_balance = Decimal::new(record.starting_balance,DECIMAL_SCALE);
+        let starting_balance = Money::from_scaled(record.starting_balance);
 
         Ok(Self {
             id: record.id,

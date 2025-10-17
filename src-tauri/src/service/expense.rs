@@ -11,7 +11,7 @@ use crate::{service::{Account, Category}, Money, DECIMAL_SCALE};
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateExpense {
-    pub amount: String,
+    pub amount: Money,
     pub date: NaiveDate,
     pub account_id: Option<String>,
     pub category_id: Option<String>,
@@ -21,7 +21,7 @@ pub struct CreateExpense {
 #[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EditExpense {
-    amount: Option<String>,
+    amount: Option<Money>,
     date: Option<NaiveDate>,
     account_id: Option<String>,
     category_id: Option<String>,
@@ -30,7 +30,7 @@ pub struct EditExpense {
 impl Default for CreateExpense {
     fn default() -> Self {
         Self {
-            amount: String::from("0"),
+            amount: Money::ZERO,
             date: Local::now().date_naive(),
             account_id: None,
             category_id: None,
@@ -53,8 +53,8 @@ pub struct Expense {
 
 impl Expense {
     pub async fn create(data: CreateExpense, pool: &SqlitePool) -> Result<Self, crate::Error> {
-        let amount = data.amount.to_string();
         let date = data.date.to_string();
+        let amount = data.amount.inner();
 
         let record = sqlx::query!(
             "INSERT INTO expenses(
@@ -87,7 +87,7 @@ impl Expense {
     ) -> Result<(), crate::Error> {
         let expense = Self::from_id(id, pool).await?;
 
-        let amount = data.amount.unwrap_or(expense.amount.to_string());
+        let amount = data.amount.unwrap_or(expense.amount).inner();
         let date = data.date.unwrap_or(expense.date);
         let mut account_id = data.account_id;
         if let Some(account) = expense.account
@@ -177,7 +177,7 @@ mod test {
             date: Some(NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
             category_id: Some(category.id.clone()),
             account_id: Some(account.id.clone()),
-            amount: Some("224.2".to_owned()),
+            amount: Some(Money::from_f64(224.2)),
         };
 
         Expense::update(&expense.id, data, &pool).await?;
@@ -195,7 +195,7 @@ mod test {
         let account = Account::create("", Decimal::ZERO, &pool).await?;
         let category = Category::create("", &pool).await?;
         let data = CreateExpense {
-            amount: String::from("500.2024242"),
+            amount: Money::from_f64(500.202),
             date: NaiveDate::from_ymd_opt(2015, 2, 1).unwrap(),
             currency_code: String::from("XOF"),
             account_id: Some(account.id.clone()),
@@ -209,7 +209,7 @@ mod test {
 
         assert_eq!(record.account_id.unwrap(), account.id);
         assert_eq!(record.category_id.unwrap(), category.id);
-        assert_eq!(record.amount, 5002024242);
+        assert_eq!(record.amount, 500_202_000);
         assert_eq!(record.currency_code, "XOF");
         assert_eq!(record.transaction_date, "2015-02-01");
         Ok(())

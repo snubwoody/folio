@@ -7,7 +7,7 @@ use tracing::info;
 
 use crate::{service::Category, Money};
 
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone, Serialize,Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
     id: String,
@@ -24,6 +24,7 @@ impl Budget {
         pool: &SqlitePool,
     ) -> crate::Result<Self> {
         let amount = amount.to_string();
+        dbg!(&amount);
         let record = sqlx::query!(
             "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
             amount,
@@ -31,6 +32,7 @@ impl Budget {
         )
         .fetch_one(pool)
         .await?;
+        dbg!(&record);
 
         let budget = Self::from_id(&record.id, pool).await?;
 

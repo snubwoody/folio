@@ -71,13 +71,13 @@ mod test {
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("", &pool).await?;
         let mut data = CreateExpense {
-            amount: dec!(20).to_string(),
+            amount: Money::from_unscaled(20),
             category_id: Some(category.id.clone()),
             ..Default::default()
         };
 
         Expense::create(data.clone(), &pool).await?;
-        data.amount = dec!(100).to_string();
+        data.amount = Money::from_unscaled(100);
         Expense::create(data.clone(), &pool).await?;
 
         let total = Category::total_spent(&category.id, &pool).await?;

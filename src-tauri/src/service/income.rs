@@ -40,7 +40,7 @@ impl Default for CreateIncome {
 }
 
 // TODO: try deleting account and category deps
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Income {
     id: String,

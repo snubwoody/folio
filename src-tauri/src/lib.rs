@@ -7,7 +7,7 @@ use std::path::PathBuf;
 pub use money::{DECIMAL_SCALE,Money};
 pub use error::{Error, Result};
 use rust_decimal::prelude::*;
-use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
+use sqlx::{SqlitePool};
 
 use crate::{
     analytics::{IncomeAnalytic, SpendingAnalytic},
@@ -100,9 +100,7 @@ async fn create_budget(
     category_id: &str,
     state: tauri::State<'_, State>,
 ) -> Result<()> {
-    // TODO: maybe just pass a decimal
-    // TODO: add from_str
-    Budget::create(Money::from_unscaled(24), category_id, &state.pool).await?;
+    Budget::create(Money::from_str(amount)?, category_id, &state.pool).await?;
     Ok(())
 }
 

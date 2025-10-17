@@ -87,19 +87,19 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{CreateExpense, CreateIncome, Expense, Income};
+    use crate::{service::{CreateExpense, CreateIncome, Expense, Income}, Money};
     use rust_decimal::dec;
 
     #[sqlx::test]
     async fn get_spending_analytics(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("MONEY", &pool).await?;
         let mut data = CreateExpense {
-            amount: 20.2.to_string(),
+            amount: Money::from_f64(20.2),
             category_id: Some(category.id.clone()),
             ..Default::default()
         };
         Expense::create(data.clone(), &pool).await?;
-        data.amount = 500.23.to_string();
+        data.amount = Money::from_f64(500.23);
         Expense::create(data.clone(), &pool).await?;
 
         let analytic = SpendingAnalytic::from_id(&category.id, &pool).await?;
