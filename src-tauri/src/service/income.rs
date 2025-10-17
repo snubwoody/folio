@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::service::{Account, IncomeStream};
+use crate::{service::{Account, IncomeStream}, DECIMAL_SCALE};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -53,7 +53,7 @@ pub struct Income {
 
 impl Income {
     pub async fn create(data: CreateIncome, pool: &SqlitePool) -> Result<Self, crate::Error> {
-        let amount = data.amount.to_string();
+        let amount = data.amount;
         let date = data.date.to_string();
 
         let record = sqlx::query!(
@@ -123,7 +123,7 @@ impl Income {
             .await?;
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
-        let amount = Decimal::from_str(&record.amount)?;
+        let amount = Decimal::new(record.amount,DECIMAL_SCALE);
         let income_stream = match record.income_stream {
             Some(id) => Some(IncomeStream::from_id(&id, pool).await?),
             None => None,
@@ -162,6 +162,8 @@ pub async fn fetch_incomes(pool: &SqlitePool) -> Result<Vec<Income>, crate::Erro
 
 #[cfg(test)]
 mod test {
+    use rust_decimal::dec;
+
     use super::*;
 
     #[sqlx::test]
@@ -205,7 +207,7 @@ mod test {
 
         assert_eq!(record.account_id.unwrap(), account.id);
         assert_eq!(record.income_stream.unwrap(), stream.id);
-        assert_eq!(record.amount, "500.2024242");
+        assert_eq!(record.amount, 20);
         assert_eq!(record.currency_code, "XOF");
         assert_eq!(record.transaction_date, "2015-02-01");
         Ok(())

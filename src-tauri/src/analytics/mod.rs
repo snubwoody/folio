@@ -4,7 +4,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::service::{Category, IncomeStream};
+use crate::{service::{Category, IncomeStream}, DECIMAL_SCALE};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
@@ -28,8 +28,8 @@ impl SpendingAnalytic {
         // to avoid false analytics.
         let totals = records
             .iter()
-            .map(|row| Decimal::from_str(&row.amount))
-            .collect::<Result<Vec<_>, _>>()?;
+            .map(|row| Decimal::new(row.amount,DECIMAL_SCALE))
+            .collect::<Vec<_>>();
 
         let total: Decimal = totals.iter().sum();
         let category = Category::from_id(id, pool).await?;
@@ -48,8 +48,8 @@ impl IncomeAnalytic {
         // to avoid false analytics.
         let totals = records
             .iter()
-            .map(|row| Decimal::from_str(&row.amount))
-            .collect::<Result<Vec<_>, _>>()?;
+            .map(|row| Decimal::new(row.amount,DECIMAL_SCALE))
+            .collect::<Vec<_>>();
 
         let total: Decimal = totals.iter().sum();
         let stream = IncomeStream::from_id(id, pool).await?;

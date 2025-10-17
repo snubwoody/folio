@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::service::Category;
+use crate::{service::Category, DECIMAL_SCALE};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -53,7 +53,7 @@ impl Budget {
             .fetch_one(pool)
             .await?;
 
-        let total = Decimal::from_str(&record.amount)?;
+        let total = Decimal::new(record.amount,DECIMAL_SCALE);
         let category = Category::from_id(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
         let remaining = total - total_spent;

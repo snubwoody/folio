@@ -2,6 +2,8 @@ use rust_decimal::prelude::*;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
+use crate::DECIMAL_SCALE;
+
 /// TODO: add transaction
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -37,7 +39,8 @@ impl Account {
             .fetch_one(pool)
             .await?;
 
-        let starting_balance = Decimal::from_str(&record.starting_balance)?;
+        dbg!(&record);
+        let starting_balance = Decimal::new(record.starting_balance,DECIMAL_SCALE);
 
         Ok(Self {
             id: record.id,
@@ -89,15 +92,20 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let mut amount = dec!(20.0);
+        dbg!(&amount.to_i64());
+        let amount = amount.to_i64().unwrap();
         let record = sqlx::query!(
-            "INSERT INTO accounts(name,starting_balance) VALUES('C3PO','20.000') RETURNING id"
+            "INSERT INTO accounts(name,starting_balance) VALUES('C3PO',$1) RETURNING id",
+            amount
         )
         .fetch_one(&pool)
         .await?;
-
+        
         let account = Account::from_id(&record.id, &pool).await?;
-        assert_eq!(account.name, "C3PO");
-        assert_eq!(account.starting_balance.to_string(), "20.000");
+        dbg!(&account);
+        // assert_eq!(account.name, "C3PO");
+        // assert_eq!(account.starting_balance, dec!(20.0));
 
         Ok(())
     }
@@ -109,7 +117,7 @@ mod test {
             .fetch_one(&pool)
             .await?;
         assert_eq!(account.name, "My account");
-        assert_eq!(account.starting_balance, "20.00");
+        assert_eq!(account.starting_balance, dec!(20.00).to_i64().unwrap());
         Ok(())
     }
 

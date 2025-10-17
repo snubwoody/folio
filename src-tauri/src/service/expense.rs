@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::service::{Account, Category};
+use crate::{service::{Account, Category}, DECIMAL_SCALE};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -127,7 +127,7 @@ impl Expense {
             .await?;
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
-        let amount = Decimal::from_str(&record.amount)?;
+        let amount = Decimal::new(record.amount,DECIMAL_SCALE);
         let category = match record.category_id {
             Some(id) => Some(Category::from_id(&id, pool).await?),
             None => None,
@@ -209,7 +209,7 @@ mod test {
 
         assert_eq!(record.account_id.unwrap(), account.id);
         assert_eq!(record.category_id.unwrap(), category.id);
-        assert_eq!(record.amount, "500.2024242");
+        assert_eq!(record.amount, 5002024242);
         assert_eq!(record.currency_code, "XOF");
         assert_eq!(record.transaction_date, "2015-02-01");
         Ok(())

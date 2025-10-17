@@ -1,8 +1,10 @@
 mod analytics;
 mod error;
 mod service;
+mod money;
 use std::path::PathBuf;
 
+pub use money::DECIMAL_SCALE;
 pub use error::{Error, Result};
 use rust_decimal::prelude::*;
 use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
@@ -158,21 +160,22 @@ impl State {
 }
 
 pub async fn init_database() -> Result<SqlitePool> {
-    // FIXME don't unwrap
     #[cfg(debug_assertions)]
-    let data_path = "data.db";
+    let pool = sqlx::SqlitePool::connect("sqlite::memory")
+        .await?;
 
     #[cfg(not(debug_assertions))]
-    let data_path = {
+    let pool = {
         let data_dir = get_data_dir().unwrap();
         std::fs::create_dir_all(&data_dir)?;
-        data_dir.join("data.db")
+        data_dir.join("data.db");
+
+        let opts = SqliteConnectOptions::new()
+            .filename(data_dir)
+            .create_if_missing(true);
+        sqlx::SqlitePool::connect_with(opts).await?
     };
 
-    let opts = SqliteConnectOptions::new()
-        .filename(data_path)
-        .create_if_missing(true);
-    let pool = sqlx::SqlitePool::connect_with(opts).await?;
 
     sqlx::migrate!().run(&pool).await?;
 
