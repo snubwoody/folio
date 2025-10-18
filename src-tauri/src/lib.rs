@@ -157,15 +157,17 @@ impl State {
     }
 }
 
+// TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
     let pool = sqlx::SqlitePool::connect("sqlite::memory:").await?;
 
     #[cfg(not(debug_assertions))]
     let pool = {
+        use sqlx::sqlite::SqliteConnectOptions;
         let data_dir = get_data_dir().unwrap();
         std::fs::create_dir_all(&data_dir)?;
-        data_dir.join("data.db");
+        let data_dir = data_dir.join("data.db");
 
         let opts = SqliteConnectOptions::new()
             .filename(data_dir)
