@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { formatAmount, formatAmountWithoutSymbol, formatDate, getCurrencySymbol, type Expense } from "$lib/lib";
+    import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol, type Expense } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
-
 
 	type Props = {
 		expense: Expense
@@ -12,7 +11,7 @@
 
 	const { expense }: Props = $props();
     const symbol = getCurrencySymbol(expense.currencyCode);
-    let formattedAmount = $derived.by(()=>formatAmountWithoutSymbol(expense.amount,{currency:expense.currencyCode}))
+    let formattedAmount = $derived.by(()=>formatAmountWithoutSymbol(expense.amount,{ currency:expense.currencyCode }));
 
     const { select,options } = useSelect({
         items: appStore.categories,
@@ -31,7 +30,7 @@
     }
 
     async function updateAmount(amount: string){
-        await appStore.transactions.editExpense({id: expense.id, amount})
+        await appStore.transactions.editExpense({ id: expense.id, amount });
     }
 </script>
 

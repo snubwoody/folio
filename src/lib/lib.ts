@@ -87,18 +87,18 @@ export function formatAmountWithoutSymbol(amount: string, opts?: NumberFormatOpt
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency,
-        notation
+        notation,
     });
 
     const parts = formatter.formatToParts(parseFloat(amount));
     // Filter out the currency symbol part
     return parts
-        .filter(part => part.type !== 'currency')
+        .filter(part => part.type !== "currency")
         .map(part => part.value)
-        .join('');
+        .join("");
 }
 
-export function getCurrencySymbol(currencyCode: string = "USD",): string {
+export function getCurrencySymbol(currencyCode: string = "USD"): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: currencyCode,

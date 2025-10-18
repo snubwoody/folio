@@ -25,15 +25,15 @@ export default defineConfig({
         },
     },
     test: {
-        exclude: [ "e2e","node_modules",".vercel","dist" ],
+        exclude: ["e2e","node_modules",".vercel","dist"],
         projects: [
             {
                 extends: true,
                 test: {
                     name: "unit",
                     include: ["src/tests/unit/**/*.test.ts"],
-                    environment: "node"
-                }
+                    environment: "node",
+                },
             },
             {
                 extends: true,
@@ -49,8 +49,8 @@ export default defineConfig({
                             { browser: "webkit" },
                         ],
                     },
-                }
-            }
-        ]
+                },
+            },
+        ],
     },
 });

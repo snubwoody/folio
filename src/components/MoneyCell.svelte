@@ -7,19 +7,16 @@
         onUpdate: (value:string) => void
     }
 
-    let {symbol,amount,onUpdate}:Props = $props();
+    let { symbol,amount,onUpdate }:Props = $props();
 
     let currentAmount = $derived(amount);
     async function updateAmount(){
-        try{
-            const newAmount = parseMoney(currentAmount);
-            if (!newAmount){
-                throw "";
-            }
-            onUpdate(newAmount);
-        } catch(e){
+        const newAmount = parseMoney(currentAmount);
+        if (!newAmount){
             currentAmount = amount;
+            return;
         }
+        onUpdate(newAmount);
     }
 </script>
 
