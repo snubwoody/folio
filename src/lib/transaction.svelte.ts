@@ -47,11 +47,20 @@ export class TransactionStore{
 
     async editExpense(opts: EditExpense){
         const { id,...data } = opts;
-        await invoke("edit_expense",{ id,data });
+        data.amount = data.amount?.replaceAll(",","");
+
+        try{
+            await invoke("edit_expense",{ id,data });
+
+        } catch(e){
+            const error = e as ErrorResponse;
+            throw new AppError(error.message);
+        }
         await this.#rootStore.load();
     }
     async editIncome(opts: EditIncome){
         const { id,...data } = opts;
+        data.amount = data.amount?.replaceAll(",","");
         try{
             await invoke("edit_income",{ id,data });
 
