@@ -2,6 +2,7 @@
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
     import { appStore } from "$lib/state.svelte";
+    import { formatAmount } from "$lib/lib";
 
 	const popover = new Popover();
 	let name = $state("My account");
@@ -30,7 +31,7 @@
 		{#each appStore.accounts as account (account.id)}
 			<li class="shadow-purple-sm p-2 rounded-md">
 				<p>{account.name}</p>
-				<h6>$ {account.startingBalance}</h6>
+				<h6>{formatAmount(account.startingBalance)}</h6>
 			</li>
 		{/each}
 	</ul>

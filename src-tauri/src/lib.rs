@@ -160,7 +160,7 @@ impl State {
 
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
-    let pool = sqlx::SqlitePool::connect("sqlite::memory")
+    let pool = sqlx::SqlitePool::connect("sqlite::memory:")
         .await?;
 
     #[cfg(not(debug_assertions))]
