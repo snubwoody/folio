@@ -1,9 +1,8 @@
 use chrono::{Datelike, Local};
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::service::fetch_expenses;
+use crate::{Money, service::fetch_expenses};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 pub struct Category {
@@ -32,7 +31,7 @@ impl Category {
     }
 
     /// Get the total amount spent in the month for the [`Category`].
-    pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Decimal> {
+    pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();
         let total = fetch_expenses(pool)
             .await?
@@ -43,7 +42,7 @@ impl Category {
                     && e.date.year() == now.year()
                     && e.date.month() == now.month()
             })
-            .fold(Decimal::ZERO, |acc, e| e.amount + acc);
+            .fold(Money::ZERO, |acc, e| e.amount + acc);
         Ok(total)
     }
 }
@@ -65,23 +64,22 @@ pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate:
 mod test {
     use super::*;
     use crate::service::{CreateExpense, Expense};
-    use rust_decimal::dec;
 
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("", &pool).await?;
         let mut data = CreateExpense {
-            amount: dec!(20).to_string(),
+            amount: Money::from_unscaled(20),
             category_id: Some(category.id.clone()),
             ..Default::default()
         };
 
         Expense::create(data.clone(), &pool).await?;
-        data.amount = dec!(100).to_string();
+        data.amount = Money::from_unscaled(100);
         Expense::create(data.clone(), &pool).await?;
 
         let total = Category::total_spent(&category.id, &pool).await?;
-        assert_eq!(total, dec!(120));
+        assert_eq!(total, Money::from_unscaled(120));
         Ok(())
     }
 

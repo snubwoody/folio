@@ -1,10 +1,11 @@
-use std::str::FromStr;
-
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::service::{Category, IncomeStream};
+use crate::{
+    Money,
+    service::{Category, IncomeStream},
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
@@ -28,8 +29,8 @@ impl SpendingAnalytic {
         // to avoid false analytics.
         let totals = records
             .iter()
-            .map(|row| Decimal::from_str(&row.amount))
-            .collect::<Result<Vec<_>, _>>()?;
+            .map(|row| Money::new(row.amount).to_decimal())
+            .collect::<Vec<_>>();
 
         let total: Decimal = totals.iter().sum();
         let category = Category::from_id(id, pool).await?;
@@ -48,8 +49,8 @@ impl IncomeAnalytic {
         // to avoid false analytics.
         let totals = records
             .iter()
-            .map(|row| Decimal::from_str(&row.amount))
-            .collect::<Result<Vec<_>, _>>()?;
+            .map(|row| Money::from_scaled(row.amount).to_decimal())
+            .collect::<Vec<_>>();
 
         let total: Decimal = totals.iter().sum();
         let stream = IncomeStream::from_id(id, pool).await?;
@@ -87,19 +88,22 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{CreateExpense, CreateIncome, Expense, Income};
+    use crate::{
+        Money,
+        service::{CreateExpense, CreateIncome, Expense, Income},
+    };
     use rust_decimal::dec;
 
     #[sqlx::test]
     async fn get_spending_analytics(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("MONEY", &pool).await?;
         let mut data = CreateExpense {
-            amount: 20.2.to_string(),
+            amount: Money::from_f64(20.2),
             category_id: Some(category.id.clone()),
             ..Default::default()
         };
         Expense::create(data.clone(), &pool).await?;
-        data.amount = 500.23.to_string();
+        data.amount = Money::from_f64(500.23);
         Expense::create(data.clone(), &pool).await?;
 
         let analytic = SpendingAnalytic::from_id(&category.id, &pool).await?;
@@ -112,12 +116,12 @@ mod test {
     async fn get_income_analytics(pool: SqlitePool) -> crate::Result<()> {
         let stream = IncomeStream::create("SALARY__", &pool).await?;
         let mut data = CreateIncome {
-            amount: 20.2.to_string(),
+            amount: Money::from_f64(20.2),
             income_stream_id: Some(stream.id.clone()),
             ..Default::default()
         };
         Income::create(data.clone(), &pool).await?;
-        data.amount = 500.23.to_string();
+        data.amount = Money::from_f64(500.23);
         Income::create(data.clone(), &pool).await?;
 
         let analytic = IncomeAnalytic::from_id(&stream.id, &pool).await?;

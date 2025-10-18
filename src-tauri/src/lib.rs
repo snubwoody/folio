@@ -1,11 +1,13 @@
 mod analytics;
 mod error;
+mod money;
 mod service;
 use std::path::PathBuf;
 
 pub use error::{Error, Result};
+pub use money::Money;
 use rust_decimal::prelude::*;
-use sqlx::{SqlitePool, sqlite::SqliteConnectOptions};
+use sqlx::SqlitePool;
 
 use crate::{
     analytics::{IncomeAnalytic, SpendingAnalytic},
@@ -53,10 +55,9 @@ async fn income_analytics(state: tauri::State<'_, State>) -> Result<Vec<IncomeAn
 async fn create_account(
     state: tauri::State<'_, State>,
     name: &str,
-    starting_balance: &str,
+    starting_balance: Money,
 ) -> Result<()> {
-    let amount = Decimal::from_str(starting_balance)?;
-    Account::create(name, amount, &state.pool).await?;
+    Account::create(name, starting_balance, &state.pool).await?;
     Ok(())
 }
 
@@ -98,8 +99,7 @@ async fn create_budget(
     category_id: &str,
     state: tauri::State<'_, State>,
 ) -> Result<()> {
-    // TODO: maybe just pass a decimal
-    Budget::create(Decimal::from_str(amount)?, category_id, &state.pool).await?;
+    Budget::create(Money::from_str(amount)?, category_id, &state.pool).await?;
     Ok(())
 }
 
@@ -157,22 +157,23 @@ impl State {
     }
 }
 
+// TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
-    // FIXME don't unwrap
     #[cfg(debug_assertions)]
-    let data_path = "data.db";
+    let pool = sqlx::SqlitePool::connect("sqlite::memory:").await?;
 
     #[cfg(not(debug_assertions))]
-    let data_path = {
+    let pool = {
+        use sqlx::sqlite::SqliteConnectOptions;
         let data_dir = get_data_dir().unwrap();
         std::fs::create_dir_all(&data_dir)?;
-        data_dir.join("data.db")
-    };
+        let data_dir = data_dir.join("data.db");
 
-    let opts = SqliteConnectOptions::new()
-        .filename(data_path)
-        .create_if_missing(true);
-    let pool = sqlx::SqlitePool::connect_with(opts).await?;
+        let opts = SqliteConnectOptions::new()
+            .filename(data_dir)
+            .create_if_missing(true);
+        sqlx::SqlitePool::connect_with(opts).await?
+    };
 
     sqlx::migrate!().run(&pool).await?;
 

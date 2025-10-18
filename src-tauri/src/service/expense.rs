@@ -1,17 +1,19 @@
 use std::str::FromStr;
 
 use chrono::{Local, NaiveDate};
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::service::{Account, Category};
+use crate::{
+    Money,
+    service::{Account, Category},
+};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateExpense {
-    pub amount: String,
+    pub amount: Money,
     pub date: NaiveDate,
     pub account_id: Option<String>,
     pub category_id: Option<String>,
@@ -21,7 +23,7 @@ pub struct CreateExpense {
 #[derive(Debug, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct EditExpense {
-    amount: Option<String>,
+    amount: Option<Money>,
     date: Option<NaiveDate>,
     account_id: Option<String>,
     category_id: Option<String>,
@@ -30,7 +32,7 @@ pub struct EditExpense {
 impl Default for CreateExpense {
     fn default() -> Self {
         Self {
-            amount: String::from("0"),
+            amount: Money::ZERO,
             date: Local::now().date_naive(),
             account_id: None,
             category_id: None,
@@ -40,11 +42,11 @@ impl Default for CreateExpense {
 }
 
 // TODO: try deleting account and category deps
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Expense {
     pub id: String,
-    pub amount: Decimal,
+    pub amount: Money,
     pub date: NaiveDate,
     pub account: Option<Account>,
     pub category: Option<Category>,
@@ -53,8 +55,8 @@ pub struct Expense {
 
 impl Expense {
     pub async fn create(data: CreateExpense, pool: &SqlitePool) -> Result<Self, crate::Error> {
-        let amount = data.amount.to_string();
         let date = data.date.to_string();
+        let amount = data.amount.inner();
 
         let record = sqlx::query!(
             "INSERT INTO expenses(
@@ -87,7 +89,7 @@ impl Expense {
     ) -> Result<(), crate::Error> {
         let expense = Self::from_id(id, pool).await?;
 
-        let amount = data.amount.unwrap_or(expense.amount.to_string());
+        let amount = data.amount.unwrap_or(expense.amount).inner();
         let date = data.date.unwrap_or(expense.date);
         let mut account_id = data.account_id;
         if let Some(account) = expense.account
@@ -127,7 +129,7 @@ impl Expense {
             .await?;
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
-        let amount = Decimal::from_str(&record.amount)?;
+        let amount = Money::new(record.amount);
         let category = match record.category_id {
             Some(id) => Some(Category::from_id(&id, pool).await?),
             None => None,
@@ -171,13 +173,13 @@ mod test {
     #[sqlx::test]
     async fn update_expense(pool: SqlitePool) -> crate::Result<()> {
         let expense = Expense::create(Default::default(), &pool).await?;
-        let account = Account::create("", Decimal::default(), &pool).await?;
+        let account = Account::create("", Money::default(), &pool).await?;
         let category = Category::create("", &pool).await?;
         let data = EditExpense {
             date: Some(NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
             category_id: Some(category.id.clone()),
             account_id: Some(account.id.clone()),
-            amount: Some("224.2".to_owned()),
+            amount: Some(Money::from_f64(224.2)),
         };
 
         Expense::update(&expense.id, data, &pool).await?;
@@ -185,17 +187,17 @@ mod test {
         let expense = Expense::from_id(&expense.id, &pool).await?;
         assert_eq!(expense.account.unwrap().id, account.id);
         assert_eq!(expense.category.unwrap().id, category.id);
-        assert_eq!(expense.amount.to_string(), "224.2");
+        assert_eq!(expense.amount.inner(), 224_200_000);
         assert_eq!(expense.date.to_string(), "1900-01-01");
         Ok(())
     }
 
     #[sqlx::test]
     async fn create_expense(pool: SqlitePool) -> Result<(), crate::Error> {
-        let account = Account::create("", Decimal::ZERO, &pool).await?;
+        let account = Account::create("", Money::ZERO, &pool).await?;
         let category = Category::create("", &pool).await?;
         let data = CreateExpense {
-            amount: String::from("500.2024242"),
+            amount: Money::from_f64(500.202),
             date: NaiveDate::from_ymd_opt(2015, 2, 1).unwrap(),
             currency_code: String::from("XOF"),
             account_id: Some(account.id.clone()),
@@ -209,7 +211,7 @@ mod test {
 
         assert_eq!(record.account_id.unwrap(), account.id);
         assert_eq!(record.category_id.unwrap(), category.id);
-        assert_eq!(record.amount, "500.2024242");
+        assert_eq!(record.amount, 500_202_000);
         assert_eq!(record.currency_code, "XOF");
         assert_eq!(record.transaction_date, "2015-02-01");
         Ok(())
@@ -217,15 +219,17 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_expense(pool: SqlitePool) -> Result<(), crate::Error> {
+        let amount = Money::from_unscaled(20).inner();
         let record = sqlx::query!(
-            "INSERT INTO expenses(amount,currency_code) VALUES('204.24','ZAR') RETURNING id"
+            "INSERT INTO expenses(amount,currency_code) VALUES($1,'ZAR') RETURNING id",
+            amount
         )
         .fetch_one(&pool)
         .await
         .unwrap();
 
         let expense = Expense::from_id(&record.id, &pool).await?;
-        assert_eq!(expense.amount.to_string(), "204.24");
+        assert_eq!(expense.amount.inner(), 20_000_000);
         assert_eq!(expense.currency_code, "ZAR");
         Ok(())
     }

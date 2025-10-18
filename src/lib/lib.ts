@@ -2,7 +2,7 @@
 export type Account = {
 	id: string,
 	name: string,
-	startingBalance: number
+	startingBalance: string
 }
 
 export type Category = {
