@@ -18,7 +18,7 @@ pub enum Error {
     #[error("Failed to parse decimal: {0}")]
     ParseDecimalError(#[from] rust_decimal::Error),
     #[error("Failed to parse float: {0}")]
-    ParseFloatError(#[from] ParseFloatError)
+    ParseFloatError(#[from] ParseFloatError),
 }
 
 impl Serialize for Error {

@@ -1,9 +1,8 @@
 use chrono::{Datelike, Local};
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{service::fetch_expenses, Money};
+use crate::{Money, service::fetch_expenses};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 pub struct Category {
@@ -65,7 +64,6 @@ pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate:
 mod test {
     use super::*;
     use crate::service::{CreateExpense, Expense};
-    use rust_decimal::dec;
 
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {

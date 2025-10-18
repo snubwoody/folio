@@ -1,13 +1,13 @@
 mod analytics;
 mod error;
-mod service;
 mod money;
+mod service;
 use std::path::PathBuf;
 
-pub use money::{DECIMAL_SCALE,Money};
 pub use error::{Error, Result};
+pub use money::Money;
 use rust_decimal::prelude::*;
-use sqlx::{SqlitePool};
+use sqlx::SqlitePool;
 
 use crate::{
     analytics::{IncomeAnalytic, SpendingAnalytic},
@@ -55,10 +55,9 @@ async fn income_analytics(state: tauri::State<'_, State>) -> Result<Vec<IncomeAn
 async fn create_account(
     state: tauri::State<'_, State>,
     name: &str,
-    starting_balance: &str,
+    starting_balance: Money,
 ) -> Result<()> {
-    let amount = Decimal::from_str(starting_balance)?;
-    Account::create(name, amount, &state.pool).await?;
+    Account::create(name, starting_balance, &state.pool).await?;
     Ok(())
 }
 
@@ -160,8 +159,7 @@ impl State {
 
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
-    let pool = sqlx::SqlitePool::connect("sqlite::memory:")
-        .await?;
+    let pool = sqlx::SqlitePool::connect("sqlite::memory:").await?;
 
     #[cfg(not(debug_assertions))]
     let pool = {
@@ -174,7 +172,6 @@ pub async fn init_database() -> Result<SqlitePool> {
             .create_if_missing(true);
         sqlx::SqlitePool::connect_with(opts).await?
     };
-
 
     sqlx::migrate!().run(&pool).await?;
 

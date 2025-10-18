@@ -1,13 +1,10 @@
-use std::str::FromStr;
-
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{service::Category, Money};
+use crate::{Money, service::Category};
 
-#[derive(Debug, Clone, Serialize,Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
     id: String,
@@ -72,8 +69,6 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
 
 #[cfg(test)]
 mod test {
-    use rust_decimal::dec;
-
     use super::*;
     use crate::service::fetch_categories;
 

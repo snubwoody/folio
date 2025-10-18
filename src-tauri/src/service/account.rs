@@ -1,8 +1,7 @@
-use rust_decimal::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sqlx::SqlitePool;
 
-use crate::{Money, DECIMAL_SCALE};
+use crate::Money;
 
 #[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -16,11 +15,11 @@ pub struct Account {
 impl Account {
     pub async fn create(
         name: &str,
-        starting_balance: Decimal,
+        starting_balance: Money,
         pool: &sqlx::SqlitePool,
     ) -> Result<Self, crate::Error> {
         // TODO: add currency code
-        let balance = starting_balance.to_string();
+        let balance = starting_balance.inner();
         let record = sqlx::query!(
             "INSERT INTO accounts(name,starting_balance) VALUES($1,$2) RETURNING id",
             name,
@@ -79,9 +78,9 @@ mod test {
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
-        Account::create("", Decimal::ZERO, &pool).await?;
-        Account::create("", Decimal::ZERO, &pool).await?;
-        Account::create("", Decimal::ZERO, &pool).await?;
+        Account::create("", Money::ZERO, &pool).await?;
+        Account::create("", Money::ZERO, &pool).await?;
+        Account::create("", Money::ZERO, &pool).await?;
 
         let accounts = fetch_accounts(&pool).await?;
         assert_eq!(accounts.len(), 3);
@@ -90,40 +89,37 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        let mut amount = dec!(20.0);
-        dbg!(&amount.to_i64());
-        let amount = amount.to_i64().unwrap();
+        let amount = Money::from_f64(20.0);
+        let amount = amount.inner();
         let record = sqlx::query!(
             "INSERT INTO accounts(name,starting_balance) VALUES('C3PO',$1) RETURNING id",
             amount
         )
         .fetch_one(&pool)
         .await?;
-        
-        let account = Account::from_id(&record.id, &pool).await?;
-        dbg!(&account);
-        // assert_eq!(account.name, "C3PO");
-        // assert_eq!(account.starting_balance, dec!(20.0));
 
+        let account = Account::from_id(&record.id, &pool).await?;
+        assert_eq!(account.starting_balance.inner(), 20_000_000);
+        assert_eq!(account.name, "C3PO");
         Ok(())
     }
 
     #[sqlx::test]
     async fn create_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        Account::create("My account", dec!(20.00), &pool).await?;
+        Account::create("My account", Money::from_unscaled(20), &pool).await?;
         let account = sqlx::query!("SELECT * FROM accounts")
             .fetch_one(&pool)
             .await?;
         assert_eq!(account.name, "My account");
-        assert_eq!(account.starting_balance, dec!(20.00).to_i64().unwrap());
+        assert_eq!(account.starting_balance, Money::from_unscaled(20).inner());
         Ok(())
     }
 
     #[sqlx::test]
     async fn delete_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        Account::create("My account", dec!(20.00), &pool).await?;
-        Account::create("My account", dec!(20.00), &pool).await?;
-        let account = Account::create("My account", dec!(20.00), &pool).await?;
+        Account::create("My account", Money::ZERO, &pool).await?;
+        Account::create("My account", Money::ZERO, &pool).await?;
+        let account = Account::create("My account", Money::ZERO, &pool).await?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;

@@ -1,12 +1,14 @@
 use std::str::FromStr;
 
 use chrono::{Local, NaiveDate};
-use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{service::{Account, IncomeStream}, Money, DECIMAL_SCALE};
+use crate::{
+    Money,
+    service::{Account, IncomeStream},
+};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -167,7 +169,7 @@ mod test {
     #[sqlx::test]
     async fn update_income(pool: SqlitePool) -> crate::Result<()> {
         let income = Income::create(Default::default(), &pool).await?;
-        let account = Account::create("", Decimal::default(), &pool).await?;
+        let account = Account::create("", Money::default(), &pool).await?;
         let income_stream = IncomeStream::create("", &pool).await?;
         let data = EditIncome {
             date: Some(NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
@@ -188,7 +190,7 @@ mod test {
 
     #[sqlx::test]
     async fn create_income(pool: SqlitePool) -> Result<(), crate::Error> {
-        let account = Account::create("", Decimal::ZERO, &pool).await?;
+        let account = Account::create("", Money::ZERO, &pool).await?;
         let stream = IncomeStream::create("", &pool).await?;
         let data = CreateIncome {
             amount: Money::from_f64(500.2024242),

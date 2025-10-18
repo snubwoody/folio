@@ -1,10 +1,11 @@
-use std::str::FromStr;
-
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{service::{Category, IncomeStream}, DECIMAL_SCALE};
+use crate::{
+    Money,
+    service::{Category, IncomeStream},
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
@@ -28,7 +29,7 @@ impl SpendingAnalytic {
         // to avoid false analytics.
         let totals = records
             .iter()
-            .map(|row| Decimal::new(row.amount,DECIMAL_SCALE))
+            .map(|row| Money::new(row.amount).to_decimal())
             .collect::<Vec<_>>();
 
         let total: Decimal = totals.iter().sum();
@@ -48,7 +49,7 @@ impl IncomeAnalytic {
         // to avoid false analytics.
         let totals = records
             .iter()
-            .map(|row| Decimal::new(row.amount,DECIMAL_SCALE))
+            .map(|row| Money::from_scaled(row.amount).to_decimal())
             .collect::<Vec<_>>();
 
         let total: Decimal = totals.iter().sum();
@@ -87,7 +88,10 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{service::{CreateExpense, CreateIncome, Expense, Income}, Money};
+    use crate::{
+        Money,
+        service::{CreateExpense, CreateIncome, Expense, Income},
+    };
     use rust_decimal::dec;
 
     #[sqlx::test]
