@@ -1,15 +1,17 @@
 <script lang="ts">
-    import { formatAmount, formatDate, type Expense } from "$lib/lib";
+    import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol, type Expense } from "$lib/lib";
     import { useSelect } from "$lib/select.svelte";
     import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
+    import MoneyCell from "$components/MoneyCell.svelte";
 
 	type Props = {
 		expense: Expense
 	}
 
 	const { expense }: Props = $props();
-	const amount = formatAmount(expense.amount,{ currency: expense.currencyCode });
+    const symbol = getCurrencySymbol(expense.currencyCode);
+    let formattedAmount = $derived.by(()=>formatAmountWithoutSymbol(expense.amount,{ currency:expense.currencyCode }));
 
     const { select,options } = useSelect({
         items: appStore.categories,
@@ -25,6 +27,10 @@
 
     function updateDate(year: number,month: number,day: number){
         appStore.transactions.editExpense({ id: expense.id, date: `${year}-${month}-${day}` });
+    }
+
+    async function updateAmount(amount: string){
+        await appStore.transactions.editExpense({ id: expense.id, amount });
     }
 </script>
 
@@ -56,4 +62,8 @@
 	<p>{formatDate(expense.date)}</p>
 	<DatePicker onDateChange={updateDate}/>
 </li>
-<p class="data-cell">{amount}</p>
+<MoneyCell
+    {symbol}
+    amount={formattedAmount}
+    onUpdate={updateAmount}
+/>
