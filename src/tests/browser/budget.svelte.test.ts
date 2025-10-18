@@ -1,5 +1,5 @@
 import { appStore } from "$lib/state.svelte";
-import BudgetOverview from "../components/analytics/BudgetOverview.svelte";
+import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
 import { expect, test,beforeEach } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { formatAmount, type Budget, type Expense,type Income } from "$lib/lib";
@@ -34,7 +34,6 @@ test("Total expenses",async ()=>{
     appStore.expenses = expenses;
 
     const text = formatAmount("170",{ compact: true });
-    console.log(text);
     const page = render(BudgetOverview);
     await expect.element(page.getByText(text)).toBeInTheDocument();
 });
