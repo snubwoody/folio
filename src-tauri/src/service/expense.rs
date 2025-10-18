@@ -185,7 +185,7 @@ mod test {
         let expense = Expense::from_id(&expense.id, &pool).await?;
         assert_eq!(expense.account.unwrap().id, account.id);
         assert_eq!(expense.category.unwrap().id, category.id);
-        assert_eq!(expense.amount.to_string(), "224.2");
+        assert_eq!(expense.amount.inner(), 224_200_000);
         assert_eq!(expense.date.to_string(), "1900-01-01");
         Ok(())
     }

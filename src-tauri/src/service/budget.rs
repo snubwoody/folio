@@ -23,8 +23,7 @@ impl Budget {
         category_id: &str,
         pool: &SqlitePool,
     ) -> crate::Result<Self> {
-        let amount = amount.to_string();
-        dbg!(&amount);
+        let amount = amount.inner();
         let record = sqlx::query!(
             "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
             amount,
@@ -32,7 +31,6 @@ impl Budget {
         )
         .fetch_one(pool)
         .await?;
-        dbg!(&record);
 
         let budget = Self::from_id(&record.id, pool).await?;
 
@@ -92,16 +90,17 @@ mod test {
     #[sqlx::test]
     async fn get_category(pool: SqlitePool) -> crate::Result<()> {
         let category_id = &fetch_categories(&pool).await?[0].id;
+        let amount = Money::from_f64(10.2).inner();
         let record = sqlx::query!(
             "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
-            "0.2",
+            amount,
             category_id
         )
         .fetch_one(&pool)
         .await?;
 
         let budget = Budget::from_id(&record.id, &pool).await?;
-        assert_eq!(budget.amount.to_string(), "0.2");
+        assert_eq!(budget.amount, Money::from_f64(10.2));
         assert_eq!(&budget.category.id, category_id);
         Ok(())
     }

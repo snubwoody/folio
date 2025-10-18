@@ -112,12 +112,12 @@ mod test {
     async fn get_income_analytics(pool: SqlitePool) -> crate::Result<()> {
         let stream = IncomeStream::create("SALARY__", &pool).await?;
         let mut data = CreateIncome {
-            amount: 20.2.to_string(),
+            amount: Money::from_f64(20.2),
             income_stream_id: Some(stream.id.clone()),
             ..Default::default()
         };
         Income::create(data.clone(), &pool).await?;
-        data.amount = 500.23.to_string();
+        data.amount = Money::from_f64(500.23);
         Income::create(data.clone(), &pool).await?;
 
         let analytic = IncomeAnalytic::from_id(&stream.id, &pool).await?;
