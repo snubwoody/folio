@@ -6,6 +6,8 @@ env:
 on:
   push: 
     tags: ["v*"]
+  pull_request:
+    branches: ["main"]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
