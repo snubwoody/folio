@@ -6,8 +6,6 @@ env:
 on:
   push: 
     tags: ["v*"]
-  pull_request:
-    branches: ["main"]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
@@ -90,13 +88,6 @@ jobs:
           merge-multiple: true
           path: src-tauri/target/release/bundle
       - name: Create draft release
-        env:
-          GITHUB_TOKEN: ${{github.token}}
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          files: src-tauri/target/release/bundle/**/*
-      - name: Create draft in another repo
         env:
           GITHUB_TOKEN: ${{secrets.RELEASE_REPO_TOKEN}}
         run: |
