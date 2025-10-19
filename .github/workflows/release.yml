@@ -1,6 +1,7 @@
 name: Release
 env:
   CARGO_TERM_COLOR: always
+  RELEASE_REPO: snubwoody/folio-site
   DATABASE_URL: sqlite://data.db
 on:
   push: 
@@ -88,9 +89,10 @@ jobs:
           path: src-tauri/target/release/bundle
       - name: Create draft release
         env:
-          GITHUB_TOKEN: ${{github.token}}
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          files: src-tauri/target/release/bundle/**/*
+          GITHUB_TOKEN: ${{secrets.RELEASE_REPO_TOKEN}}
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --repo $RELEASE_REPO \
+            --draft \
+            src-tauri/target/release/bundle/**/*
 
