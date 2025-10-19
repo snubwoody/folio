@@ -17,10 +17,8 @@ enable-gtk-app-id = true
 active = true
 targets = "all"
 category = "Finance"
-homepage = "https://www.github.com/snubwoody/folio"
-license = "Apache 2.0"
+# homepage = "https://www.github.com/snubwoody/folio"
 short-description = "A free, privacy focused budgeting app."
-license-file = "../LICENSE"
 icon = [
     "icons/32x32.png",
     "icons/128x128.png",
