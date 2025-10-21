@@ -16,7 +16,7 @@ enable-gtk-app-id = true
 [bundle]
 active = true
 targets = "all"
-category = "Budget"
+category = "Finance"
 # homepage = "https://www.github.com/snubwoody/folio"
 short-description = "A free, privacy focused budgeting app."
 icon = [
