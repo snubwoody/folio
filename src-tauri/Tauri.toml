@@ -1,5 +1,5 @@
 product-name = "Folio"
-version = "0.1.0"
+version = "0.1.1" # TODO: add check
 identifier = "com.wakunguma.folio"
 
 [build]
@@ -16,7 +16,7 @@ enable-gtk-app-id = true
 [bundle]
 active = true
 targets = "all"
-category = "Finance"
+category = "Budget"
 # homepage = "https://www.github.com/snubwoody/folio"
 short-description = "A free, privacy focused budgeting app."
 icon = [
