@@ -2,7 +2,8 @@
 export type Account = {
 	id: string,
 	name: string,
-	startingBalance: string
+	startingBalance: string,
+    balance: string,
 }
 
 export type Category = {
@@ -12,7 +13,7 @@ export type Category = {
 
 export type IncomeStream = {
     id: string,
-    title: string
+    title: string,
 }
 
 export type Income = {
