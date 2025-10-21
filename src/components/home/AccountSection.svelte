@@ -31,7 +31,7 @@
 		{#each appStore.accounts as account (account.id)}
 			<li class="shadow-purple-sm p-2 rounded-md">
 				<p>{account.name}</p>
-				<h6>{formatAmount(account.startingBalance)}</h6>
+				<h6>{formatAmount(account.balance)}</h6>
 			</li>
 		{/each}
 	</ul>

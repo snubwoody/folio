@@ -45,6 +45,7 @@ export class TransactionStore{
         this.#rootStore = root;
     }
 
+    // TODO: return from data base and update local
     async editExpense(opts: EditExpense){
         const { id,...data } = opts;
         data.amount = data.amount?.replaceAll(",","");

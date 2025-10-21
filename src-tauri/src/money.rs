@@ -1,11 +1,10 @@
+use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
 use std::{
     fmt::Display,
     ops::{Add, AddAssign, Sub, SubAssign},
     str::FromStr,
 };
-
-use rust_decimal::Decimal;
-use serde::{Deserialize, Serialize};
 
 /// A type that stores money with 6 digits after the decimal point.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
@@ -14,8 +13,12 @@ pub struct Money(i64);
 impl Money {
     /// The number of digits after the decimal.
     pub const SCALE: u32 = 6;
-    pub const ZERO: Money = Money::from_unscaled(0);
-    pub const ONE: Money = Money::from_unscaled(1);
+    /// The multiplication factor for scaling values.
+    const FACTOR: u32 = 10u32.pow(Self::SCALE);
+
+    pub const ZERO: Money = Money::new(0);
+    pub const MAX: Money = Money::new(i64::MAX);
+    pub const MIN: Money = Money::new(i64::MIN);
 
     pub const fn new(value: i64) -> Self {
         Self::from_scaled(value)
@@ -32,14 +35,15 @@ impl Money {
 
     pub fn from_f64(value: f64) -> Self {
         // TODO: probable precision loss
+        // TODO: test overflow
+
         let scaled = (value * 10f64.powi(Self::SCALE as i32)).round() as i64;
         Self(scaled)
     }
 
     /// Parse and scale an unscaled value.
     pub const fn from_unscaled(value: i64) -> Self {
-        // TODO: test max
-        let scaled = value * 10i64.pow(Money::SCALE);
+        let scaled = value.saturating_mul(Self::FACTOR as i64);
         Self(scaled)
     }
 
@@ -122,6 +126,26 @@ mod test {
     use std::str::FromStr;
 
     #[test]
+    fn saturate_unscaled_overflow() {
+        let max_i64 = i64::MAX;
+        let money = Money::from_unscaled(max_i64);
+        assert_eq!(money.inner(), i64::MAX);
+    }
+
+    #[test]
+    fn saturate_f64_overflow() {
+        let money = Money::from_f64(f64::MAX);
+        assert_eq!(money.inner(), i64::MAX);
+    }
+
+    #[test]
+    fn non_finite() {
+        assert_eq!(Money::from_f64(f64::NAN), Money::ZERO,);
+        assert_eq!(Money::from_f64(f64::INFINITY), Money::MAX,);
+        assert_eq!(Money::from_f64(f64::NEG_INFINITY), Money::MIN,);
+    }
+
+    #[test]
     fn from_unscaled() {
         let money = Money::from_unscaled(20);
         assert_eq!(money.0, 20_000000);
@@ -164,6 +188,13 @@ mod test {
     fn from_str_float() -> crate::Result<()> {
         let money = Money::from_str("150.24706")?;
         assert_eq!(money.0, 150_247_060);
+        Ok(())
+    }
+
+    #[test]
+    fn clip_float_string() -> crate::Result<()> {
+        let money = Money::from_str("150.2470650935093059305930593095")?;
+        assert_eq!(money.0, 150_247_065);
         Ok(())
     }
 

@@ -9,6 +9,7 @@ pub struct Account {
     pub id: String,
     pub name: String,
     pub starting_balance: Money,
+    pub balance: Money,
 }
 
 // TODO: add fetch
@@ -16,7 +17,7 @@ impl Account {
     pub async fn create(
         name: &str,
         starting_balance: Money,
-        pool: &sqlx::SqlitePool,
+        pool: &SqlitePool,
     ) -> Result<Self, crate::Error> {
         // TODO: add currency code
         let balance = starting_balance.inner();
@@ -38,12 +39,38 @@ impl Account {
             .await?;
 
         let starting_balance = Money::from_scaled(record.starting_balance);
+        let balance = Self::calculate_balance(id, pool).await? + starting_balance;
 
         Ok(Self {
             id: record.id,
             name: record.name,
             starting_balance,
+            balance,
         })
+    }
+
+    pub async fn calculate_balance(id: &str, pool: &SqlitePool) -> Result<Money, crate::Error> {
+        let total_expenses = sqlx::query!(
+            "
+                SELECT COALESCE(SUM(amount),0) as total FROM expenses WHERE account_id = $1
+                ",
+            id
+        )
+        .fetch_one(pool)
+        .await?
+        .total;
+
+        let total_income = sqlx::query!(
+            "
+            SELECT COALESCE(SUM(amount),0) as total FROM incomes WHERE account_id = $1",
+            id
+        )
+        .fetch_one(pool)
+        .await?
+        .total;
+
+        let difference = total_income - total_expenses;
+        Ok(Money::from_scaled(difference))
     }
 
     /// Delete an [`Account`].
@@ -75,6 +102,7 @@ pub async fn fetch_accounts(pool: &SqlitePool) -> Result<Vec<Account>, crate::Er
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::service::{CreateExpense, CreateIncome, Expense, Income};
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
@@ -84,6 +112,27 @@ mod test {
 
         let accounts = fetch_accounts(&pool).await?;
         assert_eq!(accounts.len(), 3);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn calculate_account_balance(pool: SqlitePool) -> Result<(), crate::Error> {
+        let account = Account::create("", Money::ZERO, &pool).await?;
+        let data = CreateExpense {
+            amount: Money::from_unscaled(20),
+            account_id: Some(account.id.clone()),
+            ..Default::default()
+        };
+        let income_data = CreateIncome {
+            amount: Money::from_unscaled(50),
+            account_id: Some(account.id.clone()),
+            ..Default::default()
+        };
+        Expense::create(data.clone(), &pool).await?;
+        Expense::create(data, &pool).await?;
+        Income::create(income_data, &pool).await?;
+        let balance = Account::calculate_balance(&account.id, &pool).await?;
+        assert_eq!(balance, Money::from_unscaled(10));
         Ok(())
     }
 

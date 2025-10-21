@@ -3,6 +3,7 @@ import { TransactionStore } from "./transaction.svelte";
 import type { IncomeAnalytic, SpendingAnalytic,Category,IncomeStream, Account,Income,Expense, Budget } from "./lib";
 import { AccountStore } from "./account.svelte";
 
+// TODO: just manage state manually
 export class AppStore{
     expenses: Expense[] = $state([]);
     incomes: Income[] = $state([]);
