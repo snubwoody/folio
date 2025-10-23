@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "0.1.1"
+version = "1.0.0"
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
@@ -22,7 +22,6 @@ tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 rust_decimal = {version = "1.39.0",features = ["macros"] }
-uuid = "1.18.1"
 tokio = { version = "1.47.1", features = ["full"] }
 chrono = {version = "0.4.42",features = ["serde"] }
 thiserror = "2.0.17"
