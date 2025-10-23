@@ -1,5 +1,5 @@
 product-name = "Folio"
-version = "0.2.0" # TODO: add check
+version = "1.1.0"
 identifier = "com.wakunguma.folio"
 
 [build]

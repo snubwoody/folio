@@ -5,7 +5,8 @@
 
 @theme{
 	--spacing: 8px;
-	--radius-*: initial;
+
+    --radius-*: initial;
 	--radius-xs: 4px;
 	--radius-sm: 8px;
 	--radius-md: 12px;
@@ -14,6 +15,7 @@
 	--radius-2xl: 24px;
 	--radius-3xl: 32px;
 	--radius-full: 99999px;
+
 	--shadow-xs: 0 0 2px 0 rgb(0 0 0 / 0.05);
 	--shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 0.1), 0 1px 3px 0px rgb(0 0 0 / 0.1);
 	--shadow-md: 0 2px 4px -2px rgb(0 0 0 / 0.1), 0 4px 6px -1px rgb(0 0 0 / 0.1);
@@ -34,6 +36,7 @@ html,body{
 body{
 	display: grid;
 	grid-template-columns: auto 1fr;
+    overflow-y: hidden;
 }
 
 @keyframes animate-popup{

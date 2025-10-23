@@ -30,5 +30,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 		flex-direction: column;
 		gap: 32px;
 		padding: 40px;
+        overflow-y: auto;
 	}
 </style>

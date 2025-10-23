@@ -11,6 +11,9 @@ importers:
       '@internationalized/date':
         specifier: ^3.10.0
         version: 3.10.0
+      '@lucide/svelte':
+        specifier: ^0.546.0
+        version: 0.546.0(svelte@5.39.12)
       '@tauri-apps/api':
         specifier: ^2
         version: 2.8.0
@@ -54,6 +57,9 @@ importers:
       eslint-plugin-svelte:
         specifier: ^3.12.4
         version: 3.12.4(eslint@9.37.0(jiti@2.6.1))(svelte@5.39.12)
+      phosphor-icons-svelte:
+        specifier: ^2.1.0
+        version: 2.1.0(svelte@5.39.12)
       playwright:
         specifier: ^1.56.1
         version: 1.56.1
@@ -398,6 +404,11 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
+
+  '@lucide/svelte@0.546.0':
+    resolution: {integrity: sha512-qFVQ+BUJH9Swns7cag3Wik7VqKZfN2hwDZ2VazbZJc8VSqI0kgOZCZ2OVwrvNxdkl8Mw9M9H1ROB0BXh/WH/sA==}
+    peerDependencies:
+      svelte: ^5
 
   '@melt-ui/svelte@0.86.6':
     resolution: {integrity: sha512-Jer+M7DgIwT5IHfTayb4Iw/fkkxWNmC/mqn/nMh9JrbPbkxmyabfLQnhJ+JDn5HK77f84j34lubO3iqFtYAfMg==}
@@ -1620,6 +1631,11 @@ packages:
     resolution: {integrity: sha512-//nshmD55c46FuFw26xV/xFAaB5HF9Xdap7HJBBnrKdAd6/GxDBaNA1870O79+9ueg61cZLSVc+OaFlfmObYVQ==}
     engines: {node: '>= 14.16'}
 
+  phosphor-icons-svelte@2.1.0:
+    resolution: {integrity: sha512-gTNxjkc3Wth5stZuVrMWrP07Obv5wUxg9zAqe2tujnLIKa+RaVWNgjOzR+Y9RE3l7bV1PN7dGcBAWR+ps7HA+Q==}
+    peerDependencies:
+      svelte: '>= 5'
+
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -2330,6 +2346,10 @@ snapshots:
       hookified: 1.12.1
 
   '@keyv/serialize@1.1.1': {}
+
+  '@lucide/svelte@0.546.0(svelte@5.39.12)':
+    dependencies:
+      svelte: 5.39.12
 
   '@melt-ui/svelte@0.86.6(svelte@5.39.12)':
     dependencies:
@@ -3482,6 +3502,10 @@ snapshots:
   pathe@2.0.3: {}
 
   pathval@2.0.1: {}
+
+  phosphor-icons-svelte@2.1.0(svelte@5.39.12):
+    dependencies:
+      svelte: 5.39.12
 
   picocolors@1.1.1: {}
 

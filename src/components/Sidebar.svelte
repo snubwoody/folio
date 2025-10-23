@@ -14,9 +14,24 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
+
+<script>
+    import IconButton from "$components/button/IconButton.svelte";
+    import Home from "@lucide/svelte/icons/house";
+    import Chart from "@lucide/svelte/icons/chart-no-axes-combined";
+    import Settings from "@lucide/svelte/icons/settings";
+</script>
+
 <nav>
-    <a href="/">Home</a>
-    <a href="/analytics">Analytics</a>
+    <IconButton href="/" variant="ghost">
+        <Home size="20"/>
+    </IconButton>
+    <IconButton href="/analytics" variant="ghost">
+        <Chart size="20"/>
+    </IconButton>
+    <IconButton variant="neutral" class="mt-auto">
+        <Settings size="20" class="w-3"/>
+    </IconButton>
 </nav>
 
 <style>

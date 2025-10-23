@@ -14,6 +14,7 @@ export default {
         "alpha-value-notation": "number",
         "import-notation": "string",
         "custom-property-pattern": null,
+        "custom-property-empty-line-before": null,
         // Ignore tailind @ rules
         "at-rule-no-unknown": [true,{ ignoreAtRules: ["utility","theme"] }],
         // Relax some rules for Svelte
