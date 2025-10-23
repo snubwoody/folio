@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {type Snippet} from "svelte";
+    import { type Snippet } from "svelte";
     import "$styles/icon-btn.css";
 
     type Style = "primary" | "ghost" | "neutral";
@@ -33,6 +33,3 @@
     </button>
 {/if}
 
-<style>
-
-</style>
