@@ -1,0 +1,52 @@
+.icon-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 250ms;
+    width: fit-content;
+}
+
+.icon-btn-primary{
+    background: var(--color-surface-primary);
+    color: var(--color-white);
+
+    &:hover{
+        background: var(--color-surface-primary-hover);
+    }
+
+    &:active{
+        background: var(--color-surface-primary-active);
+    }
+}
+
+.icon-btn-ghost{
+    &:hover{
+        background: var(--color-neutral-50);
+    }
+
+    &:active{
+        background: var(--color-neutral-100);
+    }
+}
+
+.icon-btn-neutral{
+    background: var(--color-neutral-50);
+
+    &:hover{
+        background: var(--color-neutral-100);
+    }
+
+    &:active{
+        background: var(--color-neutral-200);
+    }
+}
+
+.icon-btn-small{
+    padding: 4px;
+    border-radius: var(--radius-sm);
+}
+
+.icon-btn-medium{
+    padding: 8px;
+    border-radius: var(--radius-sm);
+}

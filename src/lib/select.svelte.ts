@@ -29,6 +29,7 @@ type UseSelectProps<T> = {
     onChange?: ({ item, option }: {item: T,option: SelectOption}) => void
 }
 
+// TODO: maybe make component
 export function useSelect<T>(options: UseSelectProps<T>){
     const { items,toOption,defaultValue,onChange } = options;
 

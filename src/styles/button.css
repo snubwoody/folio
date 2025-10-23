@@ -40,62 +40,6 @@ button{
             background-color: var(--color-neutral-200);
         }
     }
-
-    .icon-btn{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 250ms;
-    }
-    
-    .icon-btn-small{
-        padding: 8px;
-        border-radius: var(--radius-sm);
-    }
-    
-    
-    .icon-btn-medium{
-        padding: 4px;
-        border-radius: var(--radius-xs);
-    }
-    
-    .icon-btn-primary{
-        background-color: var(--color-surface-primary);
-        color: var(--color-white);
-    
-        &:hover{
-            background-color: var(--color-surface-primary-hover);
-        }
-        
-        &:active{
-            background-color: var(--color-surface-primary-active);
-        }
-    }
-    
-    .icon-btn-grey{
-        background-color: var(--color-neutral-50);
-        color: var(--color-text-body);
-    
-        &:hover{
-            background-color: var(--color-neutral-100);
-        }
-        
-        &:active{
-            background-color: var(--color-neutral-200);
-        }
-    }
-    
-    .icon-btn-neutral{
-        color: var(--color-text-body);
-    
-        &:hover{
-            background-color: var(--color-neutral-50);
-        }
-        
-        &:active{
-            background-color: var(--color-neutral-100);
-        }
-    }
 }
 
 
