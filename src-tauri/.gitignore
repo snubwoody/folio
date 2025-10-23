@@ -6,6 +6,9 @@
 # will have schema files for capabilities auto-completion
 /gen/schemas
 
+# Generated when installing msix
+microsoft.system.package.metadata
+
 *.exe
 *.dll
 
