@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+    xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+    xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+    xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+    IgnorableNamespaces="uap rescap">
+
+    <Identity Name=""
+              Version="1.0.0.0"
+              Publisher=""
+              ProcessorArchitecture="x64" />
+    <Properties>
+        <DisplayName>Folio - Budgeting app</DisplayName>
+        <PublisherDisplayName>Wakunguma</PublisherDisplayName>
+        <Logo>icons\icon.png</Logo>
+    </Properties>
+
+    <Dependencies>
+        <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />
+    </Dependencies>
+
+    <Resources>
+        <Resource Language="en-GB" />
+    </Resources>
+
+    <Applications>
+        <Application Id="Folio"
+                     Executable="folio.exe"
+                     EntryPoint="Windows.FullTrustApplication">
+            <uap:VisualElements
+                DisplayName="Folio"
+                Description="A free, privacy focused budgeting app."
+                BackgroundColor="transparent"
+                Square150x150Logo="icons\icon.png"
+                Square44x44Logo="icons\64x64.png">
+                <uap:DefaultTile Wide310x150Logo="icons\icon.png" />
+                <uap:SplashScreen Image="icons\icon.png" />
+            </uap:VisualElements>
+        </Application>
+    </Applications>
+
+    <Capabilities>
+        <rescap:Capability Name="runFullTrust" />
+    </Capabilities>
+</Package>
