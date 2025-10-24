@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use std::str::FromStr;
 
-use chrono::{Local, NaiveDate};
+use chrono::{DateTime, Local, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
@@ -65,11 +65,13 @@ pub struct Income {
     account: Option<Account>,
     income_stream: Option<IncomeStream>,
     currency_code: String,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 impl Income {
     pub async fn create(data: CreateIncome, pool: &SqlitePool) -> Result<Self, crate::Error> {
         let amount = data.amount.inner();
+        let now = Utc::now().timestamp();
         let date = data.date.to_string();
 
         let record = sqlx::query!(
@@ -78,15 +80,17 @@ impl Income {
 				transaction_date,
 				account_id,
 				income_stream,
-				currency_code
+				currency_code,
+                    created_at
 			)
-			VALUES($1,$2,$3,$4,$5)
+			VALUES($1,$2,$3,$4,$5,$6)
 			RETURNING id",
             amount,
             date,
             data.account_id,
             data.income_stream_id,
-            data.currency_code
+            data.currency_code,
+            now,
         )
         .fetch_one(pool)
         .await?;
@@ -140,6 +144,9 @@ impl Income {
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
         let amount = Money::from_scaled(record.amount);
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
         let income_stream = match record.income_stream {
             Some(id) => Some(IncomeStream::from_id(&id, pool).await?),
             None => None,
@@ -157,6 +164,7 @@ impl Income {
             amount,
             account,
             income_stream,
+            created_at,
         })
     }
 }
@@ -206,6 +214,8 @@ mod test {
     async fn create_income(pool: SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("", Money::ZERO, &pool).await?;
         let stream = IncomeStream::create("", &pool).await?;
+        let now = Utc::now().timestamp();
+
         let data = CreateIncome {
             amount: Money::from_f64(500.2024242),
             date: NaiveDate::from_ymd_opt(2015, 2, 1).unwrap(),
@@ -223,6 +233,7 @@ mod test {
         assert_eq!(record.income_stream.unwrap(), stream.id);
         assert_eq!(record.amount, 500_202_424);
         assert_eq!(record.currency_code, "XOF");
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.transaction_date, "2015-02-01");
         Ok(())
     }
@@ -236,8 +247,7 @@ mod test {
             amount
         )
         .fetch_one(&pool)
-        .await
-        .unwrap();
+        .await?;
 
         let income = Income::from_id(&record.id, &pool).await?;
         assert_eq!(income.amount.inner(), 200_000_000);

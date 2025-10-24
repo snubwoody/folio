@@ -44,16 +44,15 @@ impl Category {
             .fetch_one(pool)
             .await?;
 
-        let created_at = record.created_at
-            .map_or(None,|t| DateTime::from_timestamp(t,0),);
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
 
-
-        let category = Category{
+        let category = Category {
             id: record.id,
             title: record.title,
             created_at,
         };
-
 
         Ok(category)
     }

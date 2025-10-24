@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use std::str::FromStr;
 
-use chrono::{Local, NaiveDate};
+use chrono::{DateTime, Local, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
@@ -65,10 +65,12 @@ pub struct Expense {
     pub account: Option<Account>,
     pub category: Option<Category>,
     pub currency_code: String,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 impl Expense {
     pub async fn create(data: CreateExpense, pool: &SqlitePool) -> Result<Self, crate::Error> {
+        let now = Utc::now().timestamp();
         let date = data.date.to_string();
         let amount = data.amount.inner();
 
@@ -78,15 +80,17 @@ impl Expense {
 				transaction_date,
 				account_id,
 				category_id,
-				currency_code
+				currency_code,
+                 created_at
 			)
-			VALUES($1,$2,$3,$4,$5)
+			VALUES($1,$2,$3,$4,$5,$6)
 			RETURNING id",
             amount,
             date,
             data.account_id,
             data.category_id,
-            data.currency_code
+            data.currency_code,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -144,6 +148,9 @@ impl Expense {
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
         let amount = Money::new(record.amount);
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
         let category = match record.category_id {
             Some(id) => Some(Category::from_id(&id, pool).await?),
             None => None,
@@ -161,6 +168,7 @@ impl Expense {
             amount,
             account,
             category,
+            created_at,
         })
     }
 }
@@ -208,6 +216,7 @@ mod test {
 
     #[sqlx::test]
     async fn create_expense(pool: SqlitePool) -> Result<(), crate::Error> {
+        let now = Utc::now().timestamp();
         let account = Account::create("", Money::ZERO, &pool).await?;
         let category = Category::create("", &pool).await?;
         let data = CreateExpense {
@@ -224,6 +233,7 @@ mod test {
             .await?;
 
         assert_eq!(record.account_id.unwrap(), account.id);
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.category_id.unwrap(), category.id);
         assert_eq!(record.amount, 500_202_000);
         assert_eq!(record.currency_code, "XOF");

@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
@@ -27,6 +28,7 @@ pub struct Budget {
     total_spent: Money,
     remaining: Money,
     category: Category,
+    created_at: Option<DateTime<Utc>>,
 }
 
 impl Budget {
@@ -36,10 +38,12 @@ impl Budget {
         pool: &SqlitePool,
     ) -> crate::Result<Self> {
         let amount = amount.inner();
+        let now = Utc::now().timestamp();
         let record = sqlx::query!(
-            "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
+            "INSERT INTO budgets(amount,category_id,created_at) VALUES ($1,$2,$3) RETURNING id",
             amount,
-            category_id
+            category_id,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -59,12 +63,16 @@ impl Budget {
         let category = Category::from_id(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
         let remaining = total - total_spent;
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
         Ok(Self {
             id: record.id,
             amount: total,
             category,
             total_spent,
             remaining,
+            created_at,
         })
     }
 }
@@ -89,11 +97,13 @@ mod test {
 
     #[sqlx::test]
     async fn create_budget(pool: SqlitePool) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
         let category = Category::create("MINE__", &pool).await?;
         let budget = Budget::create(Money::from_unscaled(20), category.id.as_str(), &pool).await?;
 
         assert_eq!(budget.amount, Money::from_unscaled(20));
         assert_eq!(budget.category.title, "MINE__");
+        assert!(budget.created_at.unwrap().timestamp() >= now);
         Ok(())
     }
 

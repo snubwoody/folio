@@ -42,6 +42,7 @@ export class AppStore{
         this.incomes = await invoke("fetch_incomes") as Income[];
         this.incomeStreams = await invoke("fetch_income_streams") as IncomeStream[];
         this.incomeAnalytics = await invoke("income_analytics") as IncomeAnalytic[];
+        // TODO: get this on demand
         this.spendingAnaltics = await invoke("spending_analytics") as SpendingAnalytic[];
         this.accounts = await invoke("fetch_accounts") as Account[];
         this.budgets = await invoke("fetch_budgets") as Budget[];
