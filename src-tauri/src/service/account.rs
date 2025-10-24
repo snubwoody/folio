@@ -36,11 +36,13 @@ impl Account {
         pool: &SqlitePool,
     ) -> Result<Self, crate::Error> {
         // TODO: add currency code
+        let now = Utc::now().timestamp();
         let balance = starting_balance.inner();
         let record = sqlx::query!(
-            "INSERT INTO accounts(name,starting_balance) VALUES($1,$2) RETURNING id",
+            "INSERT INTO accounts(name,starting_balance,created_at) VALUES($1,$2,$3) RETURNING id",
             name,
-            balance
+            balance,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -56,15 +58,13 @@ impl Account {
 
         let starting_balance = Money::from_scaled(record.starting_balance);
         let balance = Self::calculate_balance(id, pool).await? + starting_balance;
-
-        // NaiveDateTime::parse_from_str(&*record.created_at.unwrap(),"%Y-%m-%d %H:%M:%S");
-
+        let created_at = record.created_at.map_or(None,|t|DateTime::from_timestamp(t,0));
         Ok(Self {
             id: record.id,
             name: record.name,
             starting_balance,
             balance,
-            created_at: None
+            created_at
         })
     }
 
@@ -174,10 +174,12 @@ mod test {
 
     #[sqlx::test]
     async fn create_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let now = Utc::now().timestamp();
         Account::create("My account", Money::from_unscaled(20), &pool).await?;
         let account = sqlx::query!("SELECT * FROM accounts")
             .fetch_one(&pool)
             .await?;
+        assert!(account.created_at.unwrap() >= now);
         assert_eq!(account.name, "My account");
         assert_eq!(account.starting_balance, Money::from_unscaled(20).inner());
         Ok(())

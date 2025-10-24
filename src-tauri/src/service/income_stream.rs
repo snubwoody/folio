@@ -1,3 +1,4 @@
+use std::time::{SystemTime,UNIX_EPOCH};
 use chrono::{DateTime, Utc};
 // Copyright (C) 2025 Wakunguma Kalimukwa
 //
@@ -25,9 +26,11 @@ pub struct IncomeStream {
 
 impl IncomeStream {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let now = Utc::now().timestamp();
         let record = sqlx::query!(
-            "INSERT INTO income_streams(title) VALUES($1) RETURNING id",
-            title
+            "INSERT INTO income_streams(title,created_at) VALUES($1,$2) RETURNING id",
+            title,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -101,12 +104,12 @@ mod test {
 
     #[sqlx::test]
     async fn create_income_stream(pool: SqlitePool) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
         let stream = IncomeStream::create("my---stream", &pool).await?;
-        let record = sqlx::query!("SELECT title FROM income_streams WHERE id=$1", stream.id)
+        let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", stream.id)
             .fetch_one(&pool)
-            .await
-            .unwrap();
-
+            .await?;
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.title, "my---stream");
         Ok(())
     }

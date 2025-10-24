@@ -27,10 +27,11 @@ pub struct Category {
 
 impl Category {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        // TODO: insert created at
+        let now = Utc::now().timestamp();
         let record = sqlx::query!(
-            "INSERT INTO categories(title) VALUES($1) RETURNING id",
-            title
+            "INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING id",
+            title,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -136,12 +137,13 @@ mod test {
 
     #[sqlx::test]
     async fn create_category(pool: SqlitePool) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
         let category = Category::create("Ent", &pool).await?;
-        let record = sqlx::query!("SELECT title FROM categories WHERE id=$1", category.id)
+        let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
             .fetch_one(&pool)
-            .await
-            .unwrap();
+            .await?;
 
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.title, "Ent");
         Ok(())
     }
