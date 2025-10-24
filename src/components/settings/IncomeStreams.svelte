@@ -4,7 +4,15 @@
     import Delete from "@lucide/svelte/icons/trash-2";
     import { appStore } from "$lib/state.svelte";
 
-    // TODO: order by created_by
+    let incomeStreams = $derived.by(() => {
+        return appStore.incomeStreams
+            .toSorted(
+                (a, b) =>
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime(),
+            )
+            .reverse();
+    });
 </script>
 
 <div class="space-y-4">
@@ -21,7 +29,7 @@
         <p class="text-sm">Income streams are used for organising incomes.</p>
     </header>
     <ul class="space-y-2">
-        {#each appStore.incomeStreams as stream (stream.id)}
+        {#each incomeStreams as stream (stream.id)}
             <li class="flex items-center justify-between">
                 <p>{stream.title}</p>
                 <IconButton

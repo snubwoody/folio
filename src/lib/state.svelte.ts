@@ -25,7 +25,6 @@ import type {
     Budget,
 } from "./lib";
 import { AccountStore } from "./account.svelte";
-import type { Cat } from "@lucide/svelte";
 
 // TODO: just manage state manually
 export class AppStore {

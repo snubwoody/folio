@@ -3,6 +3,16 @@
     import Plus from "@lucide/svelte/icons/plus";
     import Delete from "@lucide/svelte/icons/trash-2";
     import { appStore } from "$lib/state.svelte";
+
+    let categories = $derived.by(() => {
+        return appStore.categories
+            .toSorted(
+                (a, b) =>
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime(),
+            )
+            .reverse();
+    });
 </script>
 
 <div class="space-y-4">
@@ -19,7 +29,7 @@
         <p class="text-sm">Categories are used for organising expenses.</p>
     </header>
     <ul class="space-y-2">
-        {#each appStore.categories as category (category.id)}
+        {#each categories as category (category.id)}
             <li class="flex items-center justify-between">
                 <p>{category.title}</p>
                 <IconButton
