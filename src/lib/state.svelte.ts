@@ -46,14 +46,16 @@ export class AppStore {
     }
 
     /**
-     * Delete a category from the user store, this all transactions
-     * referrencing this category will have a null field.
+     * Delete a category from the user store. Any transactions
+     * referrencing this category will have their category field
+     * set to `null`.
      *
      * @param id The id of the budget to delete
      */
     async deleteCategory(id: string) {
         await invoke("delete_category", { id });
         this.categories = this.categories.filter((c) => c.id !== id);
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
     }
 
     async load() {
