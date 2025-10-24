@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
+pub mod command;
 mod error;
 mod money;
 pub mod service;
@@ -25,109 +26,12 @@ use sqlx::SqlitePool;
 
 use crate::{
     analytics::{IncomeAnalytic, SpendingAnalytic},
+    command::*,
     service::{
         Account, Budget, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense,
         Income, IncomeStream,
     },
 };
-
-#[tauri::command]
-async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
-    Expense::create(data, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Result<()> {
-    Income::create(data, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn edit_expense(state: tauri::State<'_, State>, id: String, data: EditExpense) -> Result<()> {
-    Expense::update(&id, data, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn edit_income(state: tauri::State<'_, State>, id: String, data: EditIncome) -> Result<()> {
-    Income::update(&id, data, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn spending_analytics(state: tauri::State<'_, State>) -> Result<Vec<SpendingAnalytic>> {
-    analytics::spending_analytics(&state.pool).await
-}
-
-#[tauri::command]
-async fn income_analytics(state: tauri::State<'_, State>) -> Result<Vec<IncomeAnalytic>> {
-    analytics::income_analytics(&state.pool).await
-}
-
-#[tauri::command]
-async fn create_account(
-    state: tauri::State<'_, State>,
-    name: &str,
-    starting_balance: Money,
-) -> Result<()> {
-    Account::create(name, starting_balance, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
-    service::fetch_accounts(&state.pool).await
-}
-
-#[tauri::command]
-async fn fetch_expenses(state: tauri::State<'_, State>) -> Result<Vec<Expense>> {
-    let expenses = service::fetch_expenses(&state.pool).await?;
-    Ok(expenses)
-}
-
-#[tauri::command]
-async fn fetch_incomes(state: tauri::State<'_, State>) -> Result<Vec<Income>> {
-    let expenses = service::fetch_incomes(&state.pool).await?;
-    Ok(expenses)
-}
-
-#[tauri::command]
-async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
-    service::fetch_categories(&state.pool).await
-}
-
-#[tauri::command]
-async fn fetch_income_streams(state: tauri::State<'_, State>) -> Result<Vec<IncomeStream>> {
-    service::fetch_income_streams(&state.pool).await
-}
-
-#[tauri::command]
-async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
-    service::fetch_budgets(&state.pool).await
-}
-
-#[tauri::command]
-async fn create_budget(
-    amount: &str,
-    category_id: &str,
-    state: tauri::State<'_, State>,
-) -> Result<()> {
-    Budget::create(Money::from_str(amount)?, category_id, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<()> {
-    Category::create(title, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<()> {
-    IncomeStream::create(title, &state.pool).await?;
-    Ok(())
-}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {

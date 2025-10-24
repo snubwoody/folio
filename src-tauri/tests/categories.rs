@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-use folio_lib::service::{Category, CreateExpense, Expense};
+use folio_lib::service::{Category, CreateExpense, CreateIncome, Expense};
 use folio_lib::{Money, Result};
 use sqlx::SqlitePool;
 
@@ -24,10 +24,10 @@ async fn delete_category_from_expense(pool: SqlitePool) -> Result<()> {
         ..Default::default()
     };
     let expense = Expense::create(data, &pool).await?;
+    assert!(expense.category.is_some());
     Category::delete(&category.id, &pool).await?;
-    dbg!(&expense);
 
     let expense = Expense::from_id(&expense.id, &pool).await?;
-    dbg!(&expense);
+    assert!(expense.category.is_none());
     Ok(())
 }
