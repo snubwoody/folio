@@ -1,14 +1,27 @@
 <script lang="ts">
+    import General from "./General.svelte";
+    import IncomeStreams from "./IncomeStreams.svelte";
+    import Categories from "./Categories.svelte";
+    import MenuItem from "./MenuItem.svelte";
+    let selectedIndex = $state(0);
+
+
 </script>
 
 <div class="settings-panel">
     <aside>
-        <p>General</p>
-        <p>Categories</p>
-        <p>Income streams</p>
+        <MenuItem bind:selectedIndex index={0}>General</MenuItem>
+        <MenuItem bind:selectedIndex index={1}>Categories</MenuItem>
+        <MenuItem bind:selectedIndex index={2}>Income streams</MenuItem>
     </aside>
     <main>
-
+        {#if selectedIndex === 0 }
+            <General/>
+        {:else if selectedIndex === 1}
+            <Categories/>
+        {:else if selectedIndex === 2}
+            <IncomeStreams/>
+        {/if}
     </main>
 </div>
 
