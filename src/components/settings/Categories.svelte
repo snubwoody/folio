@@ -10,19 +10,22 @@
         <div class="flex items-center justify-between">
             <h6>Categories</h6>
             <IconButton variant="neutral">
-                <Plus/>
+                <Plus />
             </IconButton>
         </div>
         <p class="text-sm">Categories are used for organising expenses.</p>
     </header>
     <ul class="space-y-2">
         {#each appStore.categories as category (category.id)}
-             <li class="flex items-center justify-between">
-                 <p>{category.title}</p>
-                 <IconButton variant="ghost">
-                     <Delete/>
-                 </IconButton>
-             </li>
+            <li class="flex items-center justify-between">
+                <p>{category.title}</p>
+                <IconButton
+                    onclick={() => appStore.deleteCategory(category.id)}
+                    variant="ghost"
+                >
+                    <Delete />
+                </IconButton>
+            </li>
         {/each}
     </ul>
 </div>

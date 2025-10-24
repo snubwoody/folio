@@ -14,11 +14,20 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import { TransactionStore } from "./transaction.svelte";
-import type { IncomeAnalytic, SpendingAnalytic,Category,IncomeStream, Account,Income,Expense, Budget } from "./lib";
+import type {
+    IncomeAnalytic,
+    SpendingAnalytic,
+    Category,
+    IncomeStream,
+    Account,
+    Income,
+    Expense,
+    Budget,
+} from "./lib";
 import { AccountStore } from "./account.svelte";
 
 // TODO: just manage state manually
-export class AppStore{
+export class AppStore {
     expenses: Expense[] = $state([]);
     incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
@@ -31,21 +40,38 @@ export class AppStore{
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
 
-    async createBudget(amount: string,categoryId: string){
-        await invoke("create_budget",{ amount,categoryId });
+    async createBudget(amount: string, categoryId: string) {
+        await invoke("create_budget", { amount, categoryId });
         await this.load();
     }
 
-    async load(){
-        this.expenses = await invoke("fetch_expenses") as Expense[];
-        this.categories = await invoke("fetch_categories") as Category[];
-        this.incomes = await invoke("fetch_incomes") as Income[];
-        this.incomeStreams = await invoke("fetch_income_streams") as IncomeStream[];
-        this.incomeAnalytics = await invoke("income_analytics") as IncomeAnalytic[];
+    /**
+     * Delete a category from the user store, this all transactions
+     * referrencing this category will have a null field.
+     *
+     * @param id The id of the budget to delete
+     */
+    async deleteCategory(id: string) {
+        await invoke("delete_category", { id });
+        this.categories = this.categories.filter((c) => c.id !== id);
+    }
+
+    async load() {
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.categories = (await invoke("fetch_categories")) as Category[];
+        this.incomes = (await invoke("fetch_incomes")) as Income[];
+        this.incomeStreams = (await invoke(
+            "fetch_income_streams",
+        )) as IncomeStream[];
+        this.incomeAnalytics = (await invoke(
+            "income_analytics",
+        )) as IncomeAnalytic[];
         // TODO: get this on demand
-        this.spendingAnaltics = await invoke("spending_analytics") as SpendingAnalytic[];
-        this.accounts = await invoke("fetch_accounts") as Account[];
-        this.budgets = await invoke("fetch_budgets") as Budget[];
+        this.spendingAnaltics = (await invoke(
+            "spending_analytics",
+        )) as SpendingAnalytic[];
+        this.accounts = (await invoke("fetch_accounts")) as Account[];
+        this.budgets = (await invoke("fetch_budgets")) as Budget[];
     }
 }
 
