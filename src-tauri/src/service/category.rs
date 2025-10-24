@@ -57,6 +57,22 @@ impl Category {
         Ok(category)
     }
 
+    pub async fn edit(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        sqlx::query!("UPDATE categories SET title=$1 WHERE id=$2", title, id)
+            .execute(pool)
+            .await?;
+
+        Self::from_id(id, pool).await
+    }
+
+    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
+        sqlx::query!("DELETE FROM categories WHERE id=$1", id)
+            .execute(pool)
+            .await?;
+
+        Ok(())
+    }
+
     /// Get the total amount spent in the month for the [`Category`].
     pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();

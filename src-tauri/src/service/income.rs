@@ -55,17 +55,16 @@ impl Default for CreateIncome {
     }
 }
 
-// TODO: try deleting account and category deps
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Income {
-    id: String,
-    amount: Money,
-    date: NaiveDate,
-    account: Option<Account>,
-    income_stream: Option<IncomeStream>,
-    currency_code: String,
-    pub created_at: Option<DateTime<Utc>>,
+    pub id: String,
+    pub amount: Money,
+    pub date: NaiveDate,
+    pub account: Option<Account>,
+    pub income_stream: Option<IncomeStream>,
+    pub currency_code: String,
+    pub created_at: DateTime<Utc>,
 }
 
 impl Income {
@@ -120,10 +119,10 @@ impl Income {
 
         sqlx::query!(
             "
-            UPDATE incomes 
+            UPDATE incomes
             SET amount= $1,
              transaction_date= $2,
-             income_stream=$3, 
+             income_stream=$3,
              account_id=$4
             WHERE id=$5",
             amount,
@@ -144,9 +143,7 @@ impl Income {
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
         let amount = Money::from_scaled(record.amount);
-        let created_at = record
-            .created_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
+        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
         let income_stream = match record.income_stream {
             Some(id) => Some(IncomeStream::from_id(&id, pool).await?),
             None => None,
@@ -233,7 +230,7 @@ mod test {
         assert_eq!(record.income_stream.unwrap(), stream.id);
         assert_eq!(record.amount, 500_202_424);
         assert_eq!(record.currency_code, "XOF");
-        assert!(record.created_at.unwrap() >= now);
+        assert!(record.created_at >= now);
         assert_eq!(record.transaction_date, "2015-02-01");
         Ok(())
     }
