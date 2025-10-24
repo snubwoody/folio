@@ -1,5 +1,5 @@
-import {beforeEach,test,expect} from "vitest";
-import {appStore} from "$lib/state.svelte";
+import { beforeEach,test,expect } from "vitest";
+import { appStore } from "$lib/state.svelte";
 import Sidebar from "$components/Sidebar.svelte";
 import { render } from "vitest-browser-svelte";
 
@@ -22,8 +22,8 @@ test("Default to general section", async () => {
 
 test("Show categories", async () => {
     appStore.categories = [
-        {id:"1", title:"Rent"},
-        {id:"2", title:"Groceries"},
+        { id:"1", title:"Rent" },
+        { id:"2", title:"Groceries" },
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
@@ -36,8 +36,8 @@ test("Show categories", async () => {
 
 test("Show income streams", async () => {
     appStore.incomeStreams = [
-        {id:"1", title:"Salary"},
-        {id:"2", title:"Dividends"},
+        { id:"1", title:"Salary" },
+        { id:"2", title:"Dividends" },
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
