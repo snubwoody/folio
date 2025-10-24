@@ -147,6 +147,9 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
 }
 
 #[tauri::command]
-pub async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<IncomeStream> {
+pub async fn create_income_stream(
+    state: tauri::State<'_, State>,
+    title: &str,
+) -> Result<IncomeStream> {
     IncomeStream::create(title, &state.pool).await
 }
