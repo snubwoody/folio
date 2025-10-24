@@ -61,6 +61,15 @@ export class AppStore {
         )) as IncomeAnalytic[];
     }
 
+    async editCategory(id: string, title: string) {
+        await invoke("edit_category", { id, title });
+        this.categories = (await invoke("fetch_categories")) as Category[];
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.incomeAnalytics = (await invoke(
+            "income_analytics",
+        )) as IncomeAnalytic[];
+    }
+
     /**
      * Delete an income stream from the user store. Any transactions
      * referrencing this income stream will have their referencing field

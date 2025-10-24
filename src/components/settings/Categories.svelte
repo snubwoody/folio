@@ -3,6 +3,7 @@
     import Plus from "@lucide/svelte/icons/plus";
     import Delete from "@lucide/svelte/icons/trash-2";
     import { appStore } from "$lib/state.svelte";
+    import Category from "./Category.svelte";
 
     let categories = $derived.by(() => {
         return appStore.categories
@@ -30,15 +31,7 @@
     </header>
     <ul class="space-y-2">
         {#each categories as category (category.id)}
-            <li class="flex items-center justify-between">
-                <p>{category.title}</p>
-                <IconButton
-                    onclick={() => appStore.deleteCategory(category.id)}
-                    variant="ghost"
-                >
-                    <Delete />
-                </IconButton>
-            </li>
+            <Category {category} />
         {/each}
     </ul>
 </div>
