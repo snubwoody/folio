@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import IconButton from "$components/button/IconButton.svelte";
     import Home from "@lucide/svelte/icons/house";
     import Chart from "@lucide/svelte/icons/chart-no-axes-combined";
-    import SettingsButton from "$components/settings/SettingsButton.svelte"
+    import SettingsButton from "$components/settings/SettingsButton.svelte";
 </script>
 
 <nav>

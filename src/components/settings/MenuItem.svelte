@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {type Snippet} from "svelte";
+    import { type Snippet } from "svelte";
 
     type Props = {
         children: Snippet,
@@ -10,7 +10,7 @@
     let {
         children,
         index,
-        selectedIndex = $bindable()
+        selectedIndex = $bindable(),
     }:Props = $props();
 
     let selected = $derived(index === selectedIndex);

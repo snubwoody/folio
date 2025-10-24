@@ -18,7 +18,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { type Snippet } from "svelte";
     import "$styles/icon-btn.css";
-    import type {HTMLButtonAttributes} from "svelte/elements";
+    import type { HTMLButtonAttributes } from "svelte/elements";
 
     type Style = "primary" | "ghost" | "neutral";
     type Size = "small" | "medium";
@@ -50,5 +50,4 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {@render children()}
     </button>
 {/if}
-
 

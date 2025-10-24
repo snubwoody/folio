@@ -18,12 +18,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Settings from "@lucide/svelte/icons/settings";
     import IconButton from "$components/button/IconButton.svelte";
-    import {createDialog} from "@melt-ui/svelte";
+    import { createDialog } from "@melt-ui/svelte";
     import SettingsPanel from "$components/settings/SettingsPanel.svelte";
 
     const {
-        elements: {trigger,portalled,overlay,content,},
-        states: {open}
+        elements: { trigger,portalled,overlay,content },
+        states: { open },
     }= createDialog();
 </script>
 
@@ -48,6 +48,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             opacity: 0;
         }
     }
+
     [data-melt-dialog-portalled] {
         position: fixed;
         inset: 0;
@@ -59,7 +60,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     [data-melt-dialog-overlay]{
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.1);
+        background: rgb(0 0 0 / 0.1);
         animation: fade-in 250ms linear;
     }
 
