@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
 	type Props = {
-		label: string,
+		label?: string,
 		value: string,
 		placeholder?: string
 	}

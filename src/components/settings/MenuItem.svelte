@@ -22,8 +22,6 @@
 
 <style>
     button{
-        width: fit-content;
-
         display: flex;
         padding: 4px 12px;
         transition: all 250ms;

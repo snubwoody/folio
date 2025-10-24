@@ -70,5 +70,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         z-index: 200;
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-md);
+        overflow: hidden;
     }
 </style>

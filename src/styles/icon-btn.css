@@ -44,9 +44,19 @@
 .icon-btn-small{
     padding: 4px;
     border-radius: var(--radius-sm);
+
+    svg{
+        width: 16px;
+        height: 16px;
+    }
 }
 
 .icon-btn-medium{
     padding: 8px;
     border-radius: var(--radius-sm);
+
+    svg{
+        width: 16px;
+        height: 16px;
+    }
 }

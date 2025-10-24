@@ -4,8 +4,6 @@
     import Categories from "./Categories.svelte";
     import MenuItem from "./MenuItem.svelte";
     let selectedIndex = $state(0);
-
-
 </script>
 
 <div class="settings-panel">
@@ -14,7 +12,7 @@
         <MenuItem bind:selectedIndex index={1}>Categories</MenuItem>
         <MenuItem bind:selectedIndex index={2}>Income streams</MenuItem>
     </aside>
-    <main>
+    <main class="overflow-y-auto">
         {#if selectedIndex === 0 }
             <General/>
         {:else if selectedIndex === 1}
@@ -27,7 +25,8 @@
 
 <style>
     .settings-panel {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto 1fr;
         height: 100%;
     }
 
@@ -38,7 +37,7 @@
 
     aside{
         display: flex;
-        width: fit-content;
+        width: 100%;
         flex-direction: column;
         gap: 8px;
         padding: 24px 16px;
