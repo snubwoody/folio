@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use chrono::{DateTime, NaiveDateTime, Utc};
 use serde::Serialize;
 use sqlx::SqlitePool;
-
 use crate::Money;
 
 #[derive(Debug, Serialize, Clone, PartialEq)]
@@ -25,6 +25,7 @@ pub struct Account {
     pub name: String,
     pub starting_balance: Money,
     pub balance: Money,
+    pub created_at: Option<DateTime<Utc>>
 }
 
 // TODO: add fetch
@@ -56,11 +57,14 @@ impl Account {
         let starting_balance = Money::from_scaled(record.starting_balance);
         let balance = Self::calculate_balance(id, pool).await? + starting_balance;
 
+        // NaiveDateTime::parse_from_str(&*record.created_at.unwrap(),"%Y-%m-%d %H:%M:%S");
+
         Ok(Self {
             id: record.id,
             name: record.name,
             starting_balance,
             balance,
+            created_at: None
         })
     }
 

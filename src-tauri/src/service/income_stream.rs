@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 // Copyright (C) 2025 Wakunguma Kalimukwa
 //
 // This program is free software: you can redistribute it and/or modify
@@ -19,6 +20,7 @@ use sqlx::SqlitePool;
 pub struct IncomeStream {
     pub id: String,
     pub title: String,
+    pub created_at: Option<DateTime<Utc>>
 }
 
 impl IncomeStream {
@@ -34,10 +36,22 @@ impl IncomeStream {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let income_stream =
-            sqlx::query_as!(IncomeStream, "SELECT * FROM income_streams WHERE id=$1", id)
+        let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", id)
                 .fetch_one(pool)
                 .await?;
+
+        let created_at = match record.created_at{
+            Some(timestamp) => {
+                DateTime::from_timestamp(timestamp,0)
+            },
+            None => None
+        };
+
+        let income_stream = IncomeStream{
+            id: record.id,
+            title: record.title,
+            created_at
+        };
 
         Ok(income_stream)
     }
