@@ -23,14 +23,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	}
 
 	let {
-	    label = "Label",
+	    label,
 	    placeholder,
 	    value = $bindable(),
 	}: Props = $props();
 </script>
 
 <div class="flex flex-col gap-1">
-	<p class="text-sm text-text-muted">{label}</p>
+    {#if label}
+        <p class="text-sm text-text-muted">{label}</p>
+    {/if}
 	<input bind:value type="text" {placeholder}>
 </div>
 

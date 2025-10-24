@@ -31,8 +31,14 @@
         height: 100%;
     }
 
+    main{
+        width: 100%;
+        padding: 40px;
+    }
+
     aside{
         display: flex;
+        width: fit-content;
         flex-direction: column;
         gap: 8px;
         padding: 24px 16px;
