@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-use chrono::{Datelike, Local};
+use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
@@ -22,13 +22,16 @@ use crate::{Money, service::fetch_expenses};
 pub struct Category {
     pub id: String,
     pub title: String,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 impl Category {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let now = Utc::now().timestamp();
         let record = sqlx::query!(
-            "INSERT INTO categories(title) VALUES($1) RETURNING id",
-            title
+            "INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING id",
+            title,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -37,9 +40,19 @@ impl Category {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let category = sqlx::query_as!(Category, "SELECT * FROM categories WHERE id=$1", id)
+        let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", id)
             .fetch_one(pool)
             .await?;
+
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
+
+        let category = Category {
+            id: record.id,
+            title: record.title,
+            created_at,
+        };
 
         Ok(category)
     }
@@ -123,12 +136,13 @@ mod test {
 
     #[sqlx::test]
     async fn create_category(pool: SqlitePool) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
         let category = Category::create("Ent", &pool).await?;
-        let record = sqlx::query!("SELECT title FROM categories WHERE id=$1", category.id)
+        let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
             .fetch_one(&pool)
-            .await
-            .unwrap();
+            .await?;
 
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.title, "Ent");
         Ok(())
     }

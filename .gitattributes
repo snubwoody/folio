@@ -7,3 +7,6 @@
 *.ico binary
 *.webp binary
 *.jpg binary
+*.exe binary
+*.dll binary
+*.msix binary

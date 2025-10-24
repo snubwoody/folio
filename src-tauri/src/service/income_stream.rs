@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 // Copyright (C) 2025 Wakunguma Kalimukwa
 //
 // This program is free software: you can redistribute it and/or modify
@@ -19,13 +20,16 @@ use sqlx::SqlitePool;
 pub struct IncomeStream {
     pub id: String,
     pub title: String,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 impl IncomeStream {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let now = Utc::now().timestamp();
         let record = sqlx::query!(
-            "INSERT INTO income_streams(title) VALUES($1) RETURNING id",
-            title
+            "INSERT INTO income_streams(title,created_at) VALUES($1,$2) RETURNING id",
+            title,
+            now
         )
         .fetch_one(pool)
         .await?;
@@ -34,10 +38,20 @@ impl IncomeStream {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let income_stream =
-            sqlx::query_as!(IncomeStream, "SELECT * FROM income_streams WHERE id=$1", id)
-                .fetch_one(pool)
-                .await?;
+        let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", id)
+            .fetch_one(pool)
+            .await?;
+
+        let created_at = match record.created_at {
+            Some(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            None => None,
+        };
+
+        let income_stream = IncomeStream {
+            id: record.id,
+            title: record.title,
+            created_at,
+        };
 
         Ok(income_stream)
     }
@@ -87,12 +101,12 @@ mod test {
 
     #[sqlx::test]
     async fn create_income_stream(pool: SqlitePool) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
         let stream = IncomeStream::create("my---stream", &pool).await?;
-        let record = sqlx::query!("SELECT title FROM income_streams WHERE id=$1", stream.id)
+        let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", stream.id)
             .fetch_one(&pool)
-            .await
-            .unwrap();
-
+            .await?;
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.title, "my---stream");
         Ok(())
     }
