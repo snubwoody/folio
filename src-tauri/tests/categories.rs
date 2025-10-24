@@ -1,6 +1,5 @@
-use chrono::NaiveDate;
-use folio_lib::service::{Category, CreateExpense, CreateIncome, Expense};
-use folio_lib::{Money, Result};
+use folio_lib::Result;
+use folio_lib::service::{Category, CreateExpense, Expense};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
@@ -13,6 +12,19 @@ async fn delete_category(pool: SqlitePool) -> Result<()> {
         .await?;
 
     assert!(record.is_none());
+    Ok(())
+}
+
+#[sqlx::test]
+async fn edit_category(pool: SqlitePool) -> Result<()> {
+    let category = Category::create("__", &pool).await?;
+    let category = Category::edit(&category.id, "__MINE__", &pool).await?;
+
+    let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
+        .fetch_one(&pool)
+        .await?;
+
+    assert_eq!(record.title, "__MINE__");
     Ok(())
 }
 

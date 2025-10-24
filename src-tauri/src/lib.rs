@@ -19,19 +19,10 @@ mod money;
 pub mod service;
 use std::path::PathBuf;
 
+use crate::command::*;
 pub use error::{Error, Result};
 pub use money::Money;
-use rust_decimal::prelude::*;
 use sqlx::SqlitePool;
-
-use crate::{
-    analytics::{IncomeAnalytic, SpendingAnalytic},
-    command::*,
-    service::{
-        Account, Budget, Category, CreateExpense, CreateIncome, EditExpense, EditIncome, Expense,
-        Income, IncomeStream,
-    },
-};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -48,6 +39,7 @@ pub async fn run() {
             fetch_income_streams,
             edit_expense,
             create_account,
+            delete_category,
             spending_analytics,
             create_category,
             fetch_accounts,
