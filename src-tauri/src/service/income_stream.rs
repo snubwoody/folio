@@ -37,6 +37,22 @@ impl IncomeStream {
         IncomeStream::from_id(&record.id, pool).await
     }
 
+    pub async fn edit(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        sqlx::query!("UPDATE income_streams SET title=$1 WHERE id=$2", title, id)
+            .execute(pool)
+            .await?;
+
+        Self::from_id(id, pool).await
+    }
+
+    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
+        sqlx::query!("DELETE FROM income_streams WHERE id=$1", id)
+            .execute(pool)
+            .await?;
+
+        Ok(())
+    }
+
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", id)
             .fetch_one(pool)

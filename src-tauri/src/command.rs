@@ -31,6 +31,29 @@ pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Resu
 }
 
 #[tauri::command]
+pub async fn edit_category(
+    state: tauri::State<'_, State>,
+    id: String,
+    title: String,
+) -> Result<Category> {
+    Category::edit(&id, &title, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn edit_income_stream(
+    state: tauri::State<'_, State>,
+    id: String,
+    title: String,
+) -> Result<IncomeStream> {
+    IncomeStream::edit(&id, &title, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn delete_income_stream(state: tauri::State<'_, State>, id: String) -> Result<()> {
+    IncomeStream::delete(&id, &state.pool).await
+}
+
+#[tauri::command]
 pub async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Result<()> {
     Income::create(data, &state.pool).await?;
     Ok(())

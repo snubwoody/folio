@@ -40,6 +40,7 @@ pub async fn run() {
             edit_expense,
             create_account,
             delete_category,
+            edit_category,
             spending_analytics,
             create_category,
             fetch_accounts,
@@ -48,6 +49,7 @@ pub async fn run() {
             create_budget,
             income_analytics,
             create_income_stream,
+            delete_income_stream,
             fetch_categories,
             edit_income,
         ])
