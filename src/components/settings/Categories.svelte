@@ -1,7 +1,6 @@
 <script lang="ts">
     import IconButton from "$components/button/IconButton.svelte";
     import Plus from "@lucide/svelte/icons/plus";
-    import Delete from "@lucide/svelte/icons/trash-2";
     import { appStore } from "$lib/state.svelte";
     import Category from "./Category.svelte";
 

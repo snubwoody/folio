@@ -1,9 +1,9 @@
-import { test, expect, vi } from "vitest";
+import { test, expect } from "vitest";
 import { appStore } from "$lib/state.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 
 test("Delete category", async () => {
-    mockIPC((cmd, arg) => {
+    mockIPC((cmd) => {
         if (cmd === "delete_category") {
             return;
         }
@@ -11,12 +11,12 @@ test("Delete category", async () => {
             return [];
         }
     });
-    appStore.categories = [{ id: "id-1", title: "" }];
+    appStore.categories = [{ id: "id-1", title: "", createdAt: "" }];
     appStore.expenses = [
         { id: "id-1", amount: "", date: "", description: "", currencyCode: "" },
     ];
     appStore.spendingAnaltics = [
-        { category: { id: "", title: "" }, total: "" },
+        { category: { id: "", title: "", createdAt: "" }, total: "" },
     ];
 
     await appStore.deleteCategory("id-1");
