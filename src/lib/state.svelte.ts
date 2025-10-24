@@ -25,6 +25,7 @@ import type {
     Budget,
 } from "./lib";
 import { AccountStore } from "./account.svelte";
+import type { Cat } from "@lucide/svelte";
 
 // TODO: just manage state manually
 export class AppStore {
@@ -50,12 +51,61 @@ export class AppStore {
      * referrencing this category will have their category field
      * set to `null`.
      *
-     * @param id The id of the budget to delete
+     * @param id The id of the {@link Category} to delete
      */
     async deleteCategory(id: string) {
         await invoke("delete_category", { id });
         this.categories = this.categories.filter((c) => c.id !== id);
         this.expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.incomeAnalytics = (await invoke(
+            "income_analytics",
+        )) as IncomeAnalytic[];
+    }
+
+    /**
+     * Delete an income stream from the user store. Any transactions
+     * referrencing this income stream will have their referencing field
+     * set to `null`.
+     *
+     * @param id The id of the {@link IncomeStream} to delete
+     */
+    async deleteIncomeStream(id: string) {
+        await invoke("delete_income_stream", { id });
+        this.incomeStreams = this.incomeStreams.filter((c) => c.id !== id);
+        this.incomes = (await invoke("fetch_incomes")) as Expense[];
+        this.incomeAnalytics = (await invoke(
+            "income_analytics",
+        )) as IncomeAnalytic[];
+    }
+
+    /**
+     * Create a new {@link Category}.
+     *
+     * @param title The title of the category
+     */
+    async createCategory(title: string = "New category") {
+        const category = (await invoke("create_category", {
+            title,
+        })) as Category;
+        this.categories.push(category);
+        this.spendingAnaltics = (await invoke(
+            "spending_analytics",
+        )) as SpendingAnalytic[];
+    }
+
+    /**
+     * Create a new {@link IncomeStream}.
+     *
+     * @param title The title of the income stream
+     */
+    async createIncomeStream(title: string = "New income stream") {
+        const stream = (await invoke("create_income_stream", {
+            title,
+        })) as IncomeStream;
+        this.incomeStreams.push(stream);
+        this.spendingAnaltics = (await invoke(
+            "spending_analytics",
+        )) as SpendingAnalytic[];
     }
 
     async load() {

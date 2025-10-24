@@ -9,7 +9,10 @@
     <header class="space-y-0.5">
         <div class="flex items-center justify-between">
             <h6>Categories</h6>
-            <IconButton variant="neutral">
+            <IconButton
+                onclick={() => appStore.createCategory()}
+                variant="neutral"
+            >
                 <Plus />
             </IconButton>
         </div>

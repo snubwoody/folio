@@ -11,8 +11,11 @@
     <header class="space-y-0.5">
         <div class="flex items-center justify-between">
             <h6>Income streams</h6>
-            <IconButton variant="neutral">
-                <Plus/>
+            <IconButton
+                onclick={() => appStore.createIncomeStream()}
+                variant="neutral"
+            >
+                <Plus />
             </IconButton>
         </div>
         <p class="text-sm">Income streams are used for organising incomes.</p>
@@ -21,8 +24,11 @@
         {#each appStore.incomeStreams as stream (stream.id)}
             <li class="flex items-center justify-between">
                 <p>{stream.title}</p>
-                <IconButton variant="ghost">
-                    <Delete/>
+                <IconButton
+                    onclick={() => appStore.deleteIncomeStream(stream.id)}
+                    variant="ghost"
+                >
+                    <Delete />
                 </IconButton>
             </li>
         {/each}
