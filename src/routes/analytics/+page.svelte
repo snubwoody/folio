@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SpendingAnalytics from "$components/analytics/SpendingAnalytics.svelte";
 </script>
 
-<main class="space-y-5 px-4 py-7">
+<main class="space-y-5 px-4 py-7 overflow-y-auto">
     <BudgetOverview/>
     <div class="divider"></div>
     <IncomeAnalytics/>

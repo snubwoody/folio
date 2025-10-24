@@ -11,6 +11,7 @@ microsoft.system.package.metadata
 
 *.exe
 *.dll
+*.msix
 
 # Database files
 /*.db*
