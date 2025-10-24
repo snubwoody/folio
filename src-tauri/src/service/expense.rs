@@ -65,7 +65,7 @@ pub struct Expense {
     pub account: Option<Account>,
     pub category: Option<Category>,
     pub currency_code: String,
-    pub created_at: Option<DateTime<Utc>>,
+    pub created_at: DateTime<Utc>,
 }
 
 impl Expense {
@@ -124,10 +124,10 @@ impl Expense {
 
         sqlx::query!(
             "
-            UPDATE expenses 
+            UPDATE expenses
             SET amount= $1,
              transaction_date= $2,
-             category_id=$3, 
+             category_id=$3,
              account_id=$4
             WHERE id=$5",
             amount,
@@ -148,9 +148,8 @@ impl Expense {
 
         let date = NaiveDate::from_str(&record.transaction_date)?;
         let amount = Money::new(record.amount);
-        let created_at = record
-            .created_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
+        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
+
         let category = match record.category_id {
             Some(id) => Some(Category::from_id(&id, pool).await?),
             None => None,
@@ -233,7 +232,7 @@ mod test {
             .await?;
 
         assert_eq!(record.account_id.unwrap(), account.id);
-        assert!(record.created_at.unwrap() >= now);
+        assert!(record.created_at >= now);
         assert_eq!(record.category_id.unwrap(), category.id);
         assert_eq!(record.amount, 500_202_000);
         assert_eq!(record.currency_code, "XOF");

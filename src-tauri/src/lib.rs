@@ -12,10 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-mod analytics;
+pub mod analytics;
 mod error;
 mod money;
-mod service;
+pub mod service;
 use std::path::PathBuf;
 
 pub use error::{Error, Result};
@@ -174,7 +174,7 @@ impl State {
 // TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
-    let pool = sqlx::SqlitePool::connect("sqlite::memory:").await?;
+    let pool = sqlx::SqlitePool::connect("sqlite://data.db").await?;
 
     #[cfg(not(debug_assertions))]
     let pool = {
