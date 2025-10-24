@@ -27,7 +27,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }= createDialog();
 </script>
 
-<div {...$trigger} use:trigger class="mt-auto">
+<div {...$trigger} use:trigger class="mt-auto" aria-label="Open settings">
     <IconButton variant="neutral" class="mt-auto">
         <Settings size="20" class="w-3"/>
     </IconButton>

@@ -6,7 +6,7 @@
     let selectedIndex = $state(0);
 </script>
 
-<div class="settings-panel">
+<div aria-label="Settings panel" class="settings-panel">
     <aside>
         <MenuItem bind:selectedIndex index={0}>General</MenuItem>
         <MenuItem bind:selectedIndex index={1}>Categories</MenuItem>
