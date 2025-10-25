@@ -12,42 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-import { Select } from "melt/builders";
 
 export type SelectOption = {
     /** Label for display purposes. */
-    label: string,
+    label: string;
     /** Unique value for identifying. */
-    value: string
-}
-
-// TODO: add default value
-type UseSelectProps<T> = {
-    items: T[],
-    toOption: (item: T) => SelectOption,
-    defaultValue?: T,
-    onChange?: ({ item, option }: {item: T,option: SelectOption}) => void
-}
-
-// TODO: maybe make component
-export function useSelect<T>(options: UseSelectProps<T>){
-    const { items,toOption,defaultValue,onChange } = options;
-
-    // TODO: test this;
-    const  updateValue = (value?: SelectOption) => {
-        const item = items.find(i => toOption(i).value === value?.value);
-        if(item && value){
-            onChange?.({ item:item,option:value });
-        }
-    };
-
-    const opts = $derived(items.map(i => toOption(i)));
-
-    const select = new Select<SelectOption>({
-        value: defaultValue ? toOption(defaultValue):undefined,
-        onValueChange: (value) => updateValue(value),
-    });
-
-    return { select,options: opts };
-}
-
+    value: string;
+};

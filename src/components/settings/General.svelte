@@ -7,5 +7,5 @@
         <p>Currency code</p>
         <p class="text-text-muted text-sm">The ISO currency code</p>
     </div>
-    <TextField value="USD"/>
+    <TextField value="USD" />
 </div>
