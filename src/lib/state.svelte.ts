@@ -56,9 +56,9 @@ export class AppStore {
         await invoke("delete_category", { id });
         this.categories = this.categories.filter((c) => c.id !== id);
         this.expenses = (await invoke("fetch_expenses")) as Expense[];
-        this.incomeAnalytics = (await invoke(
-            "income_analytics",
-        )) as IncomeAnalytic[];
+        this.spendingAnaltics = (await invoke(
+            "spending_analytics",
+        )) as SpendingAnalytic[];
     }
 
     async editCategory(id: string, title: string) {

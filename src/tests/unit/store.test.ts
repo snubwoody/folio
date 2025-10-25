@@ -1,6 +1,10 @@
-import { test, expect } from "vitest";
+import { test, expect, afterEach } from "vitest";
 import { appStore } from "$lib/state.svelte";
-import { mockIPC } from "@tauri-apps/api/mocks";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+
+afterEach(() => {
+    clearMocks();
+});
 
 test("Delete category", async () => {
     mockIPC((cmd) => {
