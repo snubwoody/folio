@@ -15,11 +15,11 @@ test("Open settings panel", async () => {
         .toBeInTheDocument();
 });
 
-test("Default to general section", async () => {
+test("Default to categories section", async () => {
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
-    const selected = await page
-        .getByText("General")
+    const selected = page
+        .getByRole("button", { name: "Categories" })
         .query()
         ?.getAttribute("data-selected");
     expect(selected).toBe("true");
@@ -32,7 +32,7 @@ test("Show categories", async () => {
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
-    await page.getByText("Categories").click();
+    // await page.getByText("Categories").click();
 
     const items = page.getByRole("listitem").all();
     expect(items).toHaveLength(2);

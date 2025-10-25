@@ -1,5 +1,4 @@
 <script lang="ts">
-    import General from "./General.svelte";
     import IncomeStreams from "./IncomeStreams.svelte";
     import Categories from "./Categories.svelte";
     import MenuItem from "./MenuItem.svelte";
@@ -8,17 +7,18 @@
 
 <div aria-label="Settings panel" class="settings-panel">
     <aside>
-        <MenuItem bind:selectedIndex index={0}>General</MenuItem>
-        <MenuItem bind:selectedIndex index={1}>Categories</MenuItem>
-        <MenuItem bind:selectedIndex index={2}>Income streams</MenuItem>
+        <!-- <MenuItem bind:selectedIndex index={0}>General</MenuItem> -->
+        <MenuItem bind:selectedIndex index={0}>Categories</MenuItem>
+        <MenuItem bind:selectedIndex index={1}>Income streams</MenuItem>
     </aside>
     <main class="overflow-y-auto">
-        {#if selectedIndex === 0 }
-            <General/>
+        <!-- Temporarily disabled -->
+        {#if selectedIndex === -1}
+            <!-- <General/> -->
+        {:else if selectedIndex === 0}
+            <Categories />
         {:else if selectedIndex === 1}
-            <Categories/>
-        {:else if selectedIndex === 2}
-            <IncomeStreams/>
+            <IncomeStreams />
         {/if}
     </main>
 </div>
@@ -30,12 +30,12 @@
         height: 100%;
     }
 
-    main{
+    main {
         width: 100%;
         padding: 40px;
     }
 
-    aside{
+    aside {
         display: flex;
         width: 100%;
         flex-direction: column;
