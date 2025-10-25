@@ -42,6 +42,8 @@ from.
 -->
 <script lang="ts" generics="T">
     import { Select } from "melt/builders";
+    import IconButton from "$components/button/IconButton.svelte";
+    import ChevronDown from "@lucide/svelte/icons/chevron-down";
     import { type SelectOption } from "$lib/select.svelte";
 
     type Props = {
@@ -82,17 +84,12 @@ from.
     });
 </script>
 
-<div class="space-y-1">
-    <p class="text-sm text-text-muted">{label}</p>
-    <button
-        {...select.trigger}
-        class="flex w-full items-center justify-between px-1.5 py-1 rounded-md border border-neutral-50"
-    >
-        <p>{selectedOption?.label ?? "Select an option"}</p>
-        <i class="ph ph-caret-down"></i>
-    </button>
+<div {...select.trigger} class="space-y-1">
+    <IconButton variant="ghost">
+        <ChevronDown />
+    </IconButton>
 </div>
-<ul {...select.content} class="popup-overlay space-y-1">
+<ul {...select.content} class="popup-overlay space-y-1 w-fit!">
     {#each options as option (option.value)}
         {@const selected = select.isSelected(option)}
         <li {...select.getOption(option)} data-selected={selected}>
