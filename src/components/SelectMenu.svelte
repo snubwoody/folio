@@ -41,7 +41,8 @@ from.
 ```
 -->
 <script lang="ts" generics="T">
-    import { useSelect, type SelectOption } from "$lib/select.svelte";
+    import { Select } from "melt/builders";
+    import { type SelectOption } from "$lib/select.svelte";
 
     // TODO: add default value
     type Props = {
@@ -64,17 +65,21 @@ from.
         defaultValue ? toOption(defaultValue) : undefined,
     );
 
-    function updateValue(item: T, option: SelectOption) {
-        selectedOption = option;
-        if (item) {
-            onChange?.(item);
-        }
-    }
+    const options = $derived(items.map((i) => toOption(i)));
 
-    const { select, options } = useSelect({
-        onChange: ({ item, option }) => updateValue(item, option),
-        items: items,
-        toOption: toOption,
+    const onValueChange = (value?: SelectOption) => {
+        const item = items.find((i) => toOption(i).value === value?.value);
+        if (!item) {
+            return;
+        }
+
+        selectedOption = toOption(item);
+        onChange?.(item);
+    };
+
+    const select = new Select<SelectOption>({
+        value: defaultValue ? toOption(defaultValue) : undefined,
+        onValueChange: onValueChange,
     });
 </script>
 
