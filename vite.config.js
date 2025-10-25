@@ -6,7 +6,7 @@ import tailwind from "@tailwindcss/vite";
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig({
-    plugins: [sveltekit(),tailwind()],
+    plugins: [sveltekit(), tailwind()],
     // Prevent Vite from obscuring rust errors
     clearScreen: false,
     server: {
@@ -25,19 +25,19 @@ export default defineConfig({
         },
     },
     test: {
-        exclude: ["e2e","node_modules",".vercel","dist"],
+        exclude: ["e2e", "node_modules", ".vercel", "dist"],
         projects: [
             {
                 extends: true,
                 test: {
                     name: "unit",
                     include: ["src/tests/unit/**/*.test.ts"],
-                    environment: "node",
+                    environment: "jsdom",
                 },
             },
             {
                 extends: true,
-                test:{
+                test: {
                     include: ["src/tests/browser/**/*.test.ts"],
                     name: "browser",
                     browser: {

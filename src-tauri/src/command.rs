@@ -142,13 +142,14 @@ pub async fn create_budget(
 }
 
 #[tauri::command]
-pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<()> {
-    Category::create(title, &state.pool).await?;
-    Ok(())
+pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
+    Category::create(title, &state.pool).await
 }
 
 #[tauri::command]
-pub async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<()> {
-    IncomeStream::create(title, &state.pool).await?;
-    Ok(())
+pub async fn create_income_stream(
+    state: tauri::State<'_, State>,
+    title: &str,
+) -> Result<IncomeStream> {
+    IncomeStream::create(title, &state.pool).await
 }

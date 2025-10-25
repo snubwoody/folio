@@ -19,6 +19,7 @@ use sqlx::SqlitePool;
 use crate::{Money, service::fetch_expenses};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
+#[serde(rename_all = "camelCase")]
 pub struct Category {
     pub id: String,
     pub title: String,

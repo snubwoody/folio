@@ -17,6 +17,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
+#[serde(rename_all = "camelCase")]
 pub struct IncomeStream {
     pub id: String,
     pub title: String,
