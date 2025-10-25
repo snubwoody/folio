@@ -47,24 +47,13 @@ from.
     import { type SelectOption } from "$lib/select.svelte";
 
     type Props = {
-        label?: string;
         items: T[];
         toOption: (item: T) => SelectOption;
         defaultValue?: T;
         onChange?: (item: T) => void;
     };
 
-    const {
-        label = "Label",
-        items,
-        toOption,
-        onChange,
-        defaultValue,
-    }: Props = $props();
-
-    let selectedOption: SelectOption | undefined = $state(
-        defaultValue ? toOption(defaultValue) : undefined,
-    );
+    const { items, toOption, onChange, defaultValue }: Props = $props();
 
     const options = $derived(items.map((i) => toOption(i)));
 
@@ -74,7 +63,6 @@ from.
             return;
         }
 
-        selectedOption = toOption(item);
         onChange?.(item);
     };
 
