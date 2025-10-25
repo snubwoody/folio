@@ -7,7 +7,6 @@
         type Category,
         type Account,
     } from "$lib/lib";
-    import { useSelect } from "$lib/select.svelte";
     import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
@@ -24,18 +23,6 @@
             currency: expense.currencyCode,
         }),
     );
-
-    const { select: accountSelect, options: accountSelectOpts } = useSelect({
-        items: appStore.accounts,
-        toOption: (account) => {
-            return { value: account.id, label: account.name };
-        },
-        onChange: ({ item }) =>
-            appStore.transactions.editExpense({
-                id: expense.id,
-                accountId: item.id,
-            }),
-    });
 
     function updateDate(year: number, month: number, day: number) {
         appStore.transactions.editExpense({
