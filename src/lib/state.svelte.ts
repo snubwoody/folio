@@ -45,6 +45,16 @@ export class AppStore {
         await this.load();
     }
 
+    async editBudget(id: string, amount: string) {
+        await invoke("edit_budget", { id, amount });
+        await this.load();
+    }
+
+    async deleteBudget(id: string) {
+        await invoke("delete_budget", { id });
+        await this.load();
+    }
+
     /**
      * Delete a category from the user store. Any transactions
      * referrencing this category will have their category field

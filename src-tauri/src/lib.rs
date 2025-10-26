@@ -61,6 +61,8 @@ pub async fn run() {
             fetch_budgets,
             create_account,
             create_budget,
+            edit_budget,
+            delete_budget,
             income_analytics,
             create_income_stream,
             delete_income_stream,
