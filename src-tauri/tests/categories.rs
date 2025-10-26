@@ -1,5 +1,7 @@
 use folio_lib::Result;
-use folio_lib::service::{Category, CreateExpense, CreateIncome, Expense, Income, IncomeStream};
+use folio_lib::service::{
+    Budget, Category, CreateExpense, CreateIncome, Expense, Income, IncomeStream,
+};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
@@ -8,6 +10,20 @@ async fn delete_category(pool: SqlitePool) -> Result<()> {
     Category::delete(&category.id, &pool).await?;
 
     let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
+        .fetch_optional(&pool)
+        .await?;
+
+    assert!(record.is_none());
+    Ok(())
+}
+
+#[sqlx::test]
+async fn delete_category_with_budget(pool: SqlitePool) -> Result<()> {
+    let category = Category::create("__", &pool).await?;
+    let budget = Budget::create(Default::default(), &category.id, &pool).await?;
+    Category::delete(&category.id, &pool).await?;
+
+    let record = sqlx::query!("SELECT * FROM budgets WHERE id=$1", budget.id)
         .fetch_optional(&pool)
         .await?;
 
