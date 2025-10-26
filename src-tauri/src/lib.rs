@@ -20,12 +20,13 @@ mod error;
 mod money;
 pub mod service;
 use std::path::PathBuf;
-
+use std::sync::{Arc, Mutex};
 use crate::command::*;
 pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;
 use tauri::{WebviewUrl, WebviewWindowBuilder};
+use crate::settings::Settings;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -78,12 +79,21 @@ pub async fn run() {
 #[derive(Clone)]
 pub struct State {
     pool: SqlitePool,
+    settings: Arc<Mutex<Settings>>,
 }
 
 impl State {
     pub async fn new() -> Result<Self> {
         let pool = init_database().await?;
-        Ok(Self { pool })
+        #[cfg(debug_assertions)]
+        let mut path = PathBuf::from(".");
+
+        #[cfg(not(debug_assertions))]
+        let mut path = get_data_dir().unwrap();
+        path = path.join("settings.json");
+
+        let settings = Settings::open(path)?;
+        Ok(Self { pool,settings: Arc::new(Mutex::new(settings)) })
     }
 }
 

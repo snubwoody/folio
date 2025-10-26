@@ -18,6 +18,24 @@ use crate::{
     service::{self, *},
 };
 use std::str::FromStr;
+use iso_currency::{Currency, IntoEnumIterator};
+use crate::settings::Settings;
+
+#[tauri::command]
+pub fn settings(state: tauri::State<'_,State>) -> Settings {
+    state.settings.lock().unwrap().clone()
+}
+
+#[tauri::command]
+pub async fn set_currency_code(state: tauri::State<'_,State>,currency: Currency) -> Result<()> {
+    state.settings.lock().unwrap().set_currency_code(currency)?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn currencies() -> Vec<Currency> {
+    Currency::iter().collect()
+}
 
 #[tauri::command]
 pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
