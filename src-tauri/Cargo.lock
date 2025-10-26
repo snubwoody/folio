@@ -1146,10 +1146,11 @@ checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
 
 [[package]]
 name = "folio"
-version = "1.1.0"
+version = "1.2.0"
 dependencies = [
  "chrono",
  "directories",
+ "iso_currency",
  "rust_decimal",
  "serde",
  "serde_json",
@@ -1158,6 +1159,7 @@ dependencies = [
  "tauri-build",
  "tauri-plugin-opener",
  "tauri-plugin-os",
+ "tempfile",
  "thiserror 2.0.17",
  "tokio",
  "tracing",
@@ -2035,6 +2037,27 @@ checksum = "173609498df190136aa7dea1a91db051746d339e18476eed5ca40521f02d7aa5"
 dependencies = [
  "is-docker",
  "once_cell",
+]
+
+[[package]]
+name = "iso_country"
+version = "0.1.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20633e788d3948ea7336861fdb09ec247f5dae4267e8f0743fa97de26c28624d"
+dependencies = [
+ "lazy_static",
+]
+
+[[package]]
+name = "iso_currency"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fed4b3f0921193400b1df556228bfd917c57c7fa38bda904d552653c5c3b641b"
+dependencies = [
+ "iso_country",
+ "proc-macro2",
+ "quote",
+ "serde",
 ]
 
 [[package]]

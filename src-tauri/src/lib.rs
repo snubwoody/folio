@@ -14,6 +14,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
+mod settings;
+
 mod error;
 mod money;
 pub mod service;

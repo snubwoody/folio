@@ -27,6 +27,8 @@ pub enum Error {
     ParseDateError(#[from] chrono::ParseError),
     #[error("Database error: {0}")]
     SqlxError(#[from] sqlx::Error),
+    #[error("Failed to parse JSON file: {0}")]
+    SerdeJsonError(#[from] serde_json::Error),
     #[error("Migrate error: {0}")]
     MigrateError(#[from] sqlx::migrate::MigrateError),
     #[error("Failed to parse decimal: {0}")]
