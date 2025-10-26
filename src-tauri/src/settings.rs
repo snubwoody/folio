@@ -2,6 +2,7 @@ use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 use iso_currency::Currency;
 use serde::{Serialize, Deserialize};
+use sqlx::SqlitePool;
 
 #[derive(Debug,Clone,Serialize,Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -54,6 +55,16 @@ impl Settings{
         serde_json::to_writer_pretty(file, &self)?;
         Ok(())
     }
+}
+
+pub async fn set_currency_code(currency: Currency,pool: &SqlitePool, settings: &mut Settings) -> crate::Result<()> {
+    settings.set_currency_code(currency)?;
+    let code = currency.to_string();
+    sqlx::query!("UPDATE expenses SET currency_code=$1",code)
+        .execute(pool).await?;
+    sqlx::query!("UPDATE incomes SET currency_code=$1",code)
+        .execute(pool).await?;
+    Ok(())
 }
 
 #[cfg(test)]

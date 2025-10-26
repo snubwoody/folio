@@ -23,6 +23,7 @@ import type {
     Income,
     Expense,
     Budget,
+    Settings
 } from "./lib";
 import { AccountStore } from "./account.svelte";
 
@@ -37,6 +38,7 @@ export class AppStore {
     accounts: Account[] = $state([]);
     budgets: Budget[] = $state([]);
 
+    settings: Settings = $state({currencyCode: "USD"});
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
 
@@ -142,6 +144,7 @@ export class AppStore {
         )) as SpendingAnalytic[];
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
+        this.settings = (await invoke("settings")) as Settings;
     }
 }
 

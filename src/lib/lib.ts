@@ -69,6 +69,10 @@ export type IncomeAnalytic = {
     total: string;
 };
 
+export type Settings = {
+    currencyCode: string;
+}
+
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
     const date = new Date(Number(year), Number(month) - 1, Number(day));
@@ -81,6 +85,7 @@ export type NumberFormatOpts = {
     currency?: string;
 };
 export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
+    // TODO: use currency
     const currency = opts?.currency ?? "USD";
     let notation:
         | "compact"
