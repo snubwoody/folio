@@ -17,8 +17,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { formatAmountWithoutSymbol } from "$lib/lib";
     import MoneyCell from "$components/MoneyCell.svelte";
+    import IconButton from "$components/button/IconButton.svelte";
     import { formatAmount, type Budget } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
+    import { Trash2 } from "@lucide/svelte";
 
     type Props = {
         budget: Budget;
@@ -36,9 +38,29 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     $inspect(budget);
 </script>
 
-<div class="data-cell flex justify-between items-center">
+<div class="data-cell flex justify-between items-center relative">
     <p>{budget.category?.title ?? " "}</p>
+    <IconButton
+        class="delete-btn"
+        size="small"
+        variant="ghost"
+        onclick={() => appStore.deleteBudget(budget.id)}
+    >
+        <Trash2 />
+    </IconButton>
 </div>
 <MoneyCell symbol="$" amount={formattedAmount} onUpdate={updateAmount} />
 <p class="data-cell">{formatAmount(budget.totalSpent)}</p>
 <p class="data-cell">{formatAmount(budget.remaining)}</p>
+
+<style>
+    :global(.delete-btn) {
+        position: absolute;
+        left: -24px;
+        opacity: 0;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+</style>
