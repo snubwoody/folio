@@ -15,19 +15,30 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
+    import { formatAmountWithoutSymbol } from "$lib/lib";
+    import MoneyCell from "$components/MoneyCell.svelte";
     import { formatAmount, type Budget } from "$lib/lib";
+    import { appStore } from "$lib/state.svelte";
 
-	type Props = {
-		budget: Budget
-	}
+    type Props = {
+        budget: Budget;
+    };
 
-	const { budget }: Props = $props();
+    const { budget }: Props = $props();
     // FIXME: use app currency code;
+    let formattedAmount = $derived.by(() =>
+        formatAmountWithoutSymbol(budget.amount),
+    );
+
+    async function updateAmount(amount: string) {
+        await appStore.editBudget(budget.id, amount);
+    }
+    $inspect(budget);
 </script>
 
 <div class="data-cell flex justify-between items-center">
     <p>{budget.category?.title ?? " "}</p>
 </div>
-<p class="data-cell">{formatAmount(budget.amount)}</p>
+<MoneyCell symbol="$" amount={formattedAmount} onUpdate={updateAmount} />
 <p class="data-cell">{formatAmount(budget.totalSpent)}</p>
 <p class="data-cell">{formatAmount(budget.remaining)}</p>

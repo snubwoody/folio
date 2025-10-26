@@ -136,9 +136,23 @@ pub async fn create_budget(
     amount: &str,
     category_id: &str,
     state: tauri::State<'_, State>,
-) -> Result<()> {
-    Budget::create(Money::from_str(amount)?, category_id, &state.pool).await?;
+) -> Result<Budget> {
+    Budget::create(Money::from_str(amount)?, category_id, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn delete_budget(id: String, state: tauri::State<'_, State>) -> Result<()> {
+    Budget::delete(&id, &state.pool).await?;
     Ok(())
+}
+
+#[tauri::command]
+pub async fn edit_budget(
+    id: String,
+    amount: Money,
+    state: tauri::State<'_, State>,
+) -> Result<Budget> {
+    Budget::edit(&id, amount, &state.pool).await
 }
 
 #[tauri::command]
