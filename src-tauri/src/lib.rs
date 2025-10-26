@@ -30,13 +30,16 @@ pub async fn run() {
     tracing_subscriber::fmt::init();
     let state = State::new().await.unwrap();
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .manage(state)
         .setup(|app| {
             let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
                 .title("Folio")
                 .resizable(true)
-                .decorations(false)
                 .maximized(true);
+
+            #[cfg(windows)]
+            let builder = builder.decorations(false);
 
             builder.build().unwrap();
             Ok(())

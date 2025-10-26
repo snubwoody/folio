@@ -17,15 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Sidebar from "../components/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
-    import { getCurrentWindow } from "@tauri-apps/api/window";
     import "../styles/global.css";
     const { children } = $props();
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
     onMount(async () => {
         await appStore.load();
-        // await window.setDecorations(false);
-        // console.log(window);
     });
 </script>
 

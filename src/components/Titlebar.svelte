@@ -4,42 +4,57 @@
     import dismiss from "$assets/fluent_dismiss.svg";
     import subtract from "$assets/fluent_subtract.svg";
     import squareMultiple from "$assets/fluent_square_multiple.svg";
+    import { platform } from "@tauri-apps/plugin-os";
     const window = getCurrentWindow();
-    let maximised = $state(false);
+    let maximised = $state(true);
+    const currentPlatform = platform();
+
     $effect(() => {
-        window.isMaximized().then((val) => (maximised = val));
+        window.onResized(() => {
+            window.isMaximized().then((val) => (maximised = val));
+        });
     });
 </script>
 
-<div class="title-bar">
-    <div class="w-full" onmousedown={() => window.startDragging()}>
-        <p class="mr-auto">Folio</p>
+<!--- Use system defaults on all other platforms -->
+{#if currentPlatform === "windows"}
+    <div class="title-bar">
+        <div
+            aria-hidden="true"
+            class="w-full"
+            onmousedown={() => window.startDragging()}
+        >
+            <p class="mr-auto">Folio</p>
+        </div>
+        <button
+            id="minimize-btn"
+            aria-label="Minimise"
+            onclick={() => window.minimize()}
+        >
+            <img src={subtract} alt="" />
+        </button>
+        <button
+            id="maximize-btn"
+            aria-label="Maximize"
+            onclick={() => {
+                window.toggleMaximize();
+            }}
+        >
+            {#if maximised}
+                <img src={squareMultiple} alt="" />
+            {:else}
+                <img src={square} alt="" />
+            {/if}
+        </button>
+        <button
+            id="close-btn"
+            aria-label="Close"
+            onclick={() => window.close()}
+        >
+            <img src={dismiss} alt="" />
+        </button>
     </div>
-    <button
-        id="minimize-btn"
-        aria-label="Minimise"
-        onclick={() => window.minimize()}
-    >
-        <img src={subtract} alt="" />
-    </button>
-    <button
-        id="maximize-btn"
-        aria-label="Maximize"
-        onclick={() => {
-            window.toggleMaximize();
-            maximised = !maximised;
-        }}
-    >
-        {#if maximised}
-            <img src={squareMultiple} alt="" />
-        {:else}
-            <img src={square} alt="" />
-        {/if}
-    </button>
-    <button id="close-btn" aria-label="Close" onclick={() => window.close()}>
-        <img src={dismiss} alt="" />
-    </button>
-</div>
+{/if}
 
 <style lang="ts">
     .title-bar {
