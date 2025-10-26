@@ -16,11 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import Sidebar from "../components/Sidebar.svelte";
-	import "../styles/global.css";
-	const { children } = $props();
+    import Titlebar from "$components/Titlebar.svelte";
+    import "../styles/global.css";
+    const { children } = $props();
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
-    onMount(async ()=>{
+    onMount(async () => {
         await appStore.load();
     });
 </script>
@@ -28,15 +29,34 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <!---FIXME: remove icon url-->
 <svelte:head>
     <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+        rel="stylesheet"
+        type="text/css"
+        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
     />
     <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
+        rel="stylesheet"
+        type="text/css"
+        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
     />
 </svelte:head>
-<Sidebar/>
-{@render children()}
+
+<Titlebar />
+<main class="flex">
+    <Sidebar />
+    {@render children()}
+</main>
+
+<style>
+    :global(body) {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        overflow: hidden;
+    }
+
+    main {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        overflow-y: hidden;
+        height: 100%;
+    }
+</style>

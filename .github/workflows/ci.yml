@@ -5,28 +5,28 @@ env:
 on:
   pull_request:
     branches: ["main"]
-  push: 
+  push:
     branches: ["main"]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
 jobs:
-  lint-js:
+  lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 10
-        run_install: false
-    - uses: actions/setup-node@v6
-      with:
-        node-version: 24
-        cache: pnpm
-    - run: pnpm install
-    - name: Run pnpm lint
-      run: pnpm check && pnpm lint
-  lint:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install
+      - name: Run pnpm lint
+        run: pnpm check && pnpm lint
+  clippy:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -85,7 +85,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -133,7 +133,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -181,7 +181,7 @@ jobs:
     needs:
       - format
       - lint
-      - lint-js
+      - clippy
       - build
       - test
       - test-frontend

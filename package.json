@@ -1,6 +1,6 @@
 {
     "name": "folio",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "",
     "type": "module",
     "private": true,
@@ -23,6 +23,7 @@
         "@lucide/svelte": "^0.546.0",
         "@tauri-apps/api": "^2",
         "@tauri-apps/plugin-opener": "^2",
+        "@tauri-apps/plugin-os": "~2",
         "melt": "^0.41.0"
     },
     "devDependencies": {

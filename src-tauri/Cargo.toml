@@ -17,7 +17,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["config-toml"] }
+tauri = { version = "2", features = ["config-toml","test"] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -28,6 +28,7 @@ thiserror = "2.0.17"
 tracing-subscriber = "0.3.20"
 tracing = "0.1.41"
 directories = "6.0.0"
+tauri-plugin-os = "2"
 
 [dependencies.sqlx]
 version = "0.8"

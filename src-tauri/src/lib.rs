@@ -23,13 +23,27 @@ use crate::command::*;
 pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;
+use tauri::{WebviewUrl, WebviewWindowBuilder};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     tracing_subscriber::fmt::init();
     let state = State::new().await.unwrap();
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .manage(state)
+        .setup(|app| {
+            let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
+                .title("Folio")
+                .resizable(true)
+                .maximized(true);
+
+            #[cfg(windows)]
+            let builder = builder.decorations(false);
+
+            builder.build().unwrap();
+            Ok(())
+        })
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
             create_expense,

@@ -20,6 +20,9 @@ importers:
       '@tauri-apps/plugin-opener':
         specifier: ^2
         version: 2.5.0
+      '@tauri-apps/plugin-os':
+        specifier: ~2
+        version: 2.3.1
       melt:
         specifier: ^0.41.0
         version: 0.41.0(@floating-ui/dom@1.7.4)(svelte@5.39.12)
@@ -789,6 +792,9 @@ packages:
 
   '@tauri-apps/plugin-opener@2.5.0':
     resolution: {integrity: sha512-B0LShOYae4CZjN8leiNDbnfjSrTwoZakqKaWpfoH6nXiJwt6Rgj6RnVIffG3DoJiKsffRhMkjmBV9VeilSb4TA==}
+
+  '@tauri-apps/plugin-os@2.3.1':
+    resolution: {integrity: sha512-ty5V8XDUIFbSnrk3zsFoP3kzN+vAufYzalJSlmrVhQTImIZa1aL1a03bOaP2vuBvfR+WDRC6NgV2xBl8G07d+w==}
 
   '@testing-library/dom@10.4.1':
     resolution: {integrity: sha512-o4PXJQidqJl82ckFaXUeoAW+XysPLauYI43Abki5hABd853iMhitooc6znOnczgbTYmEP6U6/y1ZyKAIsvMKGg==}
@@ -2803,6 +2809,10 @@ snapshots:
       '@tauri-apps/cli-win32-x64-msvc': 2.8.4
 
   '@tauri-apps/plugin-opener@2.5.0':
+    dependencies:
+      '@tauri-apps/api': 2.8.0
+
+  '@tauri-apps/plugin-os@2.3.1':
     dependencies:
       '@tauri-apps/api': 2.8.0
 
