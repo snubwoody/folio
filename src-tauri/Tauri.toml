@@ -1,5 +1,5 @@
 product-name = "Folio"
-version = "1.1.0"
+version = "1.2.0"
 identifier = "com.wakunguma.folio"
 
 [build]
@@ -9,7 +9,7 @@ before-build-command = "pnpm build"
 frontend-dist = "../build"
 
 [app]
-windows = [{title = "Folio",width = 800, height = 600}]
+# windows = [{title = "Folio",width = 800, height = 600}]
 security = {csp = "null"}
 enable-gtk-app-id = true
 
