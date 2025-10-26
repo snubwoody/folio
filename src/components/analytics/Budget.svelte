@@ -35,7 +35,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     async function updateAmount(amount: string) {
         await appStore.editBudget(budget.id, amount);
     }
-    $inspect(budget);
 </script>
 
 <div class="data-cell flex justify-between items-center relative">
