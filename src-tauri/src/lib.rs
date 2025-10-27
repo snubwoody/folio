@@ -21,6 +21,7 @@ mod money;
 pub mod service;
 use std::path::PathBuf;
 use std::sync::{Arc,};
+use sqlx::sqlite::SqliteConnectOptions;
 use tokio::sync::Mutex;
 use crate::command::*;
 pub use error::{Error, Result};
@@ -103,8 +104,16 @@ impl State {
 
 // TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
+
+    // TODO: combine these
     #[cfg(debug_assertions)]
-    let pool = sqlx::SqlitePool::connect("sqlite://data.db").await?;
+    let pool = {
+        let opts = SqliteConnectOptions::new()
+            .filename("./sqlite.db")
+            .create_if_missing(true);
+
+        sqlx::SqlitePool::connect_with(opts).await?
+    };
 
     #[cfg(not(debug_assertions))]
     let pool = {
