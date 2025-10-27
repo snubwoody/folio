@@ -19,16 +19,16 @@ mod settings;
 mod error;
 mod money;
 pub mod service;
-use std::path::PathBuf;
-use std::sync::{Arc,};
-use sqlx::sqlite::SqliteConnectOptions;
-use tokio::sync::Mutex;
 use crate::command::*;
+use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;
+use sqlx::sqlite::SqliteConnectOptions;
+use std::path::PathBuf;
+use std::sync::Arc;
 use tauri::{WebviewUrl, WebviewWindowBuilder};
-use crate::settings::Settings;
+use tokio::sync::Mutex;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -98,13 +98,15 @@ impl State {
         path = path.join("settings.json");
 
         let settings = Settings::open(path)?;
-        Ok(Self { pool,settings: Arc::new(Mutex::new(settings)) })
+        Ok(Self {
+            pool,
+            settings: Arc::new(Mutex::new(settings)),
+        })
     }
 }
 
 // TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
-
     // TODO: combine these
     #[cfg(debug_assertions)]
     let pool = {

@@ -12,21 +12,25 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-use crate::{Money, Result, State, analytics::{self, IncomeAnalytic, SpendingAnalytic}, service::{self, *}, };
-use std::str::FromStr;
-use iso_currency::{Currency, IntoEnumIterator};
 use crate::settings::Settings;
+use crate::{
+    Money, Result, State,
+    analytics::{self, IncomeAnalytic, SpendingAnalytic},
+    service::{self, *},
+};
+use iso_currency::{Currency, IntoEnumIterator};
+use std::str::FromStr;
 
 #[tauri::command]
-pub async fn settings(state: tauri::State<'_,State>) -> Result<Settings> {
+pub async fn settings(state: tauri::State<'_, State>) -> Result<Settings> {
     let settings = state.settings.lock().await.clone();
     Ok(settings)
 }
 
 #[tauri::command]
-pub async fn set_currency_code(state: tauri::State<'_,State>,currency: Currency) -> Result<()> {
+pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currency) -> Result<()> {
     let mut settings = state.settings.lock().await;
-    crate::settings::set_currency_code(currency,&state.pool,&mut settings).await?;
+    crate::settings::set_currency_code(currency, &state.pool, &mut settings).await?;
     Ok(())
 }
 
