@@ -24,6 +24,7 @@
         }),
     );
 
+
     function updateDate(year: number, month: number, day: number) {
         appStore.transactions.editExpense({
             id: expense.id,

@@ -27,9 +27,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	let category: Category | undefined;
 	async function createBudget() {
 	    if (!category) return;
-	    appStore.createBudget(amount,category?.id);
+	    await appStore.createBudget(amount,category?.id);
 	    popover.open = false;
-
 	}
     // TODO: filter categories that don't have budgets
 </script>

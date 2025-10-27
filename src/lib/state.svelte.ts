@@ -47,6 +47,13 @@ export class AppStore {
         await this.load();
     }
 
+    async setCurrencyCode(currency: string) {
+        await invoke("set_currency_code", { currency });
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.incomes = (await invoke("fetch_incomes")) as Income[];
+        this.settings = (await invoke("settings")) as Settings;
+    }
+
     async editBudget(id: string, amount: string) {
         await invoke("edit_budget", { id, amount });
         await this.load();

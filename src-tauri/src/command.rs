@@ -18,13 +18,14 @@ use iso_currency::{Currency, IntoEnumIterator};
 use crate::settings::Settings;
 
 #[tauri::command]
-pub fn settings(state: tauri::State<'_,State>) -> Settings {
-    state.settings.lock().unwrap().clone()
+pub async fn settings(state: tauri::State<'_,State>) -> Result<Settings> {
+    let settings = state.settings.lock().await.clone();
+    Ok(settings)
 }
 
 #[tauri::command]
 pub async fn set_currency_code(state: tauri::State<'_,State>,currency: Currency) -> Result<()> {
-    let mut settings = state.settings.lock().unwrap();
+    let mut settings = state.settings.lock().await;
     crate::settings::set_currency_code(currency,&state.pool,&mut settings).await?;
     Ok(())
 }
@@ -37,7 +38,7 @@ pub fn currencies() -> Vec<Currency> {
 #[tauri::command]
 pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
     let mut data = data;
-    data.currency_code = state.settings.lock().unwrap().currency_code().to_string();
+    data.currency_code = state.settings.lock().await.currency_code().to_string();
     Expense::create(data, &state.pool).await?;
     Ok(())
 }
@@ -73,7 +74,7 @@ pub async fn delete_income_stream(state: tauri::State<'_, State>, id: String) ->
 #[tauri::command]
 pub async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Result<()> {
     let mut data = data;
-    data.currency_code = state.settings.lock().unwrap().currency_code().to_string();
+    data.currency_code = state.settings.lock().await.currency_code().to_string();
     Income::create(data, &state.pool).await?;
     Ok(())
 }

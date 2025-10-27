@@ -13,5 +13,6 @@ microsoft.system.package.metadata
 *.dll
 *.msix
 
-# Database files
+# Local files
 /*.db*
+settings.json

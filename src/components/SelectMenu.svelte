@@ -50,13 +50,15 @@ from.
         toOption: (item: T) => SelectOption;
         defaultValue?: T;
         onChange?: (item: T) => void;
+        class?: string
     };
 
     const {
-        label = "Label",
+        label,
         items,
         toOption,
         onChange,
+        class: className,
         defaultValue,
     }: Props = $props();
 
@@ -82,8 +84,10 @@ from.
     });
 </script>
 
-<div class="space-y-1">
-    <p class="text-sm text-text-muted">{label}</p>
+<div class={`space-y-1 ${className}`}>
+    {#if label}
+        <p class="text-sm text-text-muted">{label}</p>
+    {/if}
     <button
         {...select.trigger}
         class="flex w-full items-center justify-between px-1.5 py-1 rounded-md border border-neutral-50"
@@ -106,6 +110,7 @@ from.
         border-radius: var(--radius-sm);
         padding: 8px;
         transition: all 250ms;
+        cursor: pointer;
 
         &:hover {
             background-color: var(--color-neutral-50);

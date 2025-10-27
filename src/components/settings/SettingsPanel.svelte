@@ -1,5 +1,6 @@
 <script lang="ts">
     import IncomeStreams from "./IncomeStreams.svelte";
+    import General from "./General.svelte";
     import Categories from "./Categories.svelte";
     import MenuItem from "./MenuItem.svelte";
     let selectedIndex = $state(0);
@@ -7,17 +8,17 @@
 
 <div aria-label="Settings panel" class="settings-panel">
     <aside>
-        <!-- <MenuItem bind:selectedIndex index={0}>General</MenuItem> -->
-        <MenuItem bind:selectedIndex index={0}>Categories</MenuItem>
-        <MenuItem bind:selectedIndex index={1}>Income streams</MenuItem>
+         <MenuItem bind:selectedIndex index={0}>General</MenuItem>
+        <MenuItem bind:selectedIndex index={1}>Categories</MenuItem>
+        <MenuItem bind:selectedIndex index={2}>Income streams</MenuItem>
     </aside>
     <main class="overflow-y-auto">
         <!-- Temporarily disabled -->
-        {#if selectedIndex === -1}
-            <!-- <General/> -->
-        {:else if selectedIndex === 0}
-            <Categories />
+        {#if selectedIndex === 0}
+             <General/>
         {:else if selectedIndex === 1}
+            <Categories />
+        {:else if selectedIndex === 2}
             <IncomeStreams />
         {/if}
     </main>

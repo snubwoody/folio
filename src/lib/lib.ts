@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+import {invoke} from "@tauri-apps/api/core";
+
 export type Account = {
     id: string;
     name: string;
@@ -153,4 +155,8 @@ export function parseMoney(value: string): string | undefined {
     const amount = parseFloat(value);
     if (!isNaN(amount)) return amount.toString();
     return undefined;
+}
+
+export async function getCurrencies(){
+    return await invoke("currencies") as string[];
 }

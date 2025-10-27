@@ -20,7 +20,8 @@ mod error;
 mod money;
 pub mod service;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc,};
+use tokio::sync::Mutex;
 use crate::command::*;
 pub use error::{Error, Result};
 pub use money::Money;
@@ -65,6 +66,9 @@ pub async fn run() {
             create_account,
             create_budget,
             edit_budget,
+            currencies,
+            set_currency_code,
+            settings,
             delete_budget,
             income_analytics,
             create_income_stream,
