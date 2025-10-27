@@ -49,8 +49,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </IconButton>
 </div>
 <MoneyCell symbol="$" amount={formattedAmount} onUpdate={updateAmount} />
-<p class="data-cell">{formatAmount(budget.totalSpent,{currency: appStore.settings.currencyCode})}</p>
-<p class="data-cell">{formatAmount(budget.remaining,{currency: appStore.settings.currencyCode})}</p>
+<p class="data-cell">{formatAmount(budget.totalSpent,{ currency: appStore.settings.currencyCode })}</p>
+<p class="data-cell">{formatAmount(budget.remaining,{ currency: appStore.settings.currencyCode })}</p>
 
 <style>
     :global(.delete-btn) {

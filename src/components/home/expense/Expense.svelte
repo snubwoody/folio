@@ -17,13 +17,12 @@
     };
 
     const { expense }: Props = $props();
-    const symbol = getCurrencySymbol(appStore.settings.currencyCode);
+    const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
     let formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(expense.amount, {
             currency: appStore.settings.currencyCode,
         }),
     );
-
 
     function updateDate(year: number, month: number, day: number) {
         appStore.transactions.editExpense({

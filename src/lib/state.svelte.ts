@@ -23,7 +23,7 @@ import type {
     Income,
     Expense,
     Budget,
-    Settings
+    Settings,
 } from "./lib";
 import { AccountStore } from "./account.svelte";
 
@@ -38,7 +38,7 @@ export class AppStore {
     accounts: Account[] = $state([]);
     budgets: Budget[] = $state([]);
 
-    settings: Settings = $state({currencyCode: "USD"});
+    settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
 
