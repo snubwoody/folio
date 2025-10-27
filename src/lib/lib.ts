@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+import { invoke } from "@tauri-apps/api/core";
+
 export type Account = {
     id: string;
     name: string;
@@ -69,6 +71,10 @@ export type IncomeAnalytic = {
     total: string;
 };
 
+export type Settings = {
+    currencyCode: string;
+}
+
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
     const date = new Date(Number(year), Number(month) - 1, Number(day));
@@ -81,6 +87,7 @@ export type NumberFormatOpts = {
     currency?: string;
 };
 export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
+    // TODO: use currency
     const currency = opts?.currency ?? "USD";
     let notation:
         | "compact"
@@ -148,4 +155,8 @@ export function parseMoney(value: string): string | undefined {
     const amount = parseFloat(value);
     if (!isNaN(amount)) return amount.toString();
     return undefined;
+}
+
+export async function getCurrencies(){
+    return await invoke("currencies") as string[];
 }

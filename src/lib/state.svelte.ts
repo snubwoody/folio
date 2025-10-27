@@ -23,6 +23,7 @@ import type {
     Income,
     Expense,
     Budget,
+    Settings,
 } from "./lib";
 import { AccountStore } from "./account.svelte";
 
@@ -37,12 +38,20 @@ export class AppStore {
     accounts: Account[] = $state([]);
     budgets: Budget[] = $state([]);
 
+    settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
 
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
         await this.load();
+    }
+
+    async setCurrencyCode(currency: string) {
+        await invoke("set_currency_code", { currency });
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.incomes = (await invoke("fetch_incomes")) as Income[];
+        this.settings = (await invoke("settings")) as Settings;
     }
 
     async editBudget(id: string, amount: string) {
@@ -142,6 +151,7 @@ export class AppStore {
         )) as SpendingAnalytic[];
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
+        this.settings = (await invoke("settings")) as Settings;
     }
 }
 

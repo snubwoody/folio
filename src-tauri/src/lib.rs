@@ -14,16 +14,21 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
+mod settings;
+
 mod error;
 mod money;
 pub mod service;
-use std::path::PathBuf;
-
 use crate::command::*;
+use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;
+use sqlx::sqlite::SqliteConnectOptions;
+use std::path::PathBuf;
+use std::sync::Arc;
 use tauri::{WebviewUrl, WebviewWindowBuilder};
+use tokio::sync::Mutex;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -62,6 +67,9 @@ pub async fn run() {
             create_account,
             create_budget,
             edit_budget,
+            currencies,
+            set_currency_code,
+            settings,
             delete_budget,
             income_analytics,
             create_income_stream,
@@ -76,19 +84,38 @@ pub async fn run() {
 #[derive(Clone)]
 pub struct State {
     pool: SqlitePool,
+    settings: Arc<Mutex<Settings>>,
 }
 
 impl State {
     pub async fn new() -> Result<Self> {
         let pool = init_database().await?;
-        Ok(Self { pool })
+        #[cfg(debug_assertions)]
+        let mut path = PathBuf::from(".");
+
+        #[cfg(not(debug_assertions))]
+        let mut path = get_data_dir().unwrap();
+        path = path.join("settings.json");
+
+        let settings = Settings::open(path)?;
+        Ok(Self {
+            pool,
+            settings: Arc::new(Mutex::new(settings)),
+        })
     }
 }
 
 // TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
+    // TODO: combine these
     #[cfg(debug_assertions)]
-    let pool = sqlx::SqlitePool::connect("sqlite://data.db").await?;
+    let pool = {
+        let opts = SqliteConnectOptions::new()
+            .filename("./sqlite.db")
+            .create_if_missing(true);
+
+        sqlx::SqlitePool::connect_with(opts).await?
+    };
 
     #[cfg(not(debug_assertions))]
     let pool = {

@@ -41,18 +41,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <section class="flex items-center justify-between">
     <div>
         <h5>Montly budget</h5>
-        <h3>{formatAmount(totalBudget.toString(),{ compact: true })}</h3>
+        <h3>{formatAmount(totalBudget.toString(),{ compact: true,currency: appStore.settings.currencyCode })}</h3>
     </div>
     <div>
         <h5>Expenses</h5>
-        <h3>{formatAmount(totalExpenses.toString(),{ compact: true })}</h3>
+        <h3>{formatAmount(totalExpenses.toString(),{ compact: true,currency: appStore.settings.currencyCode })}</h3>
         {#if totalIncome > 0 && totalExpenses > 0}
             <p class="text-sm">{percentage.toFixed(0)}% of income</p>
         {/if}
     </div>
     <div>
         <h5>Income</h5>
-        <h3>{formatAmount(totalIncome.toString(),{ compact: true })}</h3>
+        <h3>{formatAmount(totalIncome.toString(),{ compact: true,currency: appStore.settings.currencyCode })}</h3>
     </div>
 </section>
 

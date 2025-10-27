@@ -12,15 +12,37 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+use crate::settings::Settings;
 use crate::{
     Money, Result, State,
     analytics::{self, IncomeAnalytic, SpendingAnalytic},
     service::{self, *},
 };
+use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 
 #[tauri::command]
+pub async fn settings(state: tauri::State<'_, State>) -> Result<Settings> {
+    let settings = state.settings.lock().await.clone();
+    Ok(settings)
+}
+
+#[tauri::command]
+pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currency) -> Result<()> {
+    let mut settings = state.settings.lock().await;
+    crate::settings::set_currency_code(currency, &state.pool, &mut settings).await?;
+    Ok(())
+}
+
+#[tauri::command]
+pub fn currencies() -> Vec<Currency> {
+    Currency::iter().collect()
+}
+
+#[tauri::command]
 pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
+    let mut data = data;
+    data.currency_code = state.settings.lock().await.currency_code().to_string();
     Expense::create(data, &state.pool).await?;
     Ok(())
 }
@@ -55,6 +77,8 @@ pub async fn delete_income_stream(state: tauri::State<'_, State>, id: String) ->
 
 #[tauri::command]
 pub async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Result<()> {
+    let mut data = data;
+    data.currency_code = state.settings.lock().await.currency_code().to_string();
     Income::create(data, &state.pool).await?;
     Ok(())
 }

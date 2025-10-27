@@ -3,6 +3,7 @@
 
 - Added custom title bar on windows ([#55](https://github.com/snubwoody/folio/pull/55)).
 - Added the ability to edit and delete budgets ([#56](https://github.com/snubwoody/folio/pull/55)).
+- Added support for changing currencies ([#59](https://github.com/snubwoody/folio/pull/59)).
 
 ## 1.1.0 - 24-10-2025
 

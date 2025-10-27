@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "1.1.0"
+version = "1.2.0"
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
@@ -16,6 +16,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
+[dev-dependencies]
+tempfile = "3.23.0"
+
 [dependencies]
 tauri = { version = "2", features = ["config-toml", "test"] }
 tauri-plugin-opener = "2"
@@ -29,6 +32,7 @@ tracing-subscriber = "0.3.20"
 tracing = "0.1.41"
 directories = "6.0.0"
 tauri-plugin-os = "2"
+iso_currency = {version = "0.5.3",features = ["with-serde", "iterator"] }
 
 [dependencies.sqlx]
 version = "0.8"

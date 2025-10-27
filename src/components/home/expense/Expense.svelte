@@ -17,10 +17,10 @@
     };
 
     const { expense }: Props = $props();
-    const symbol = getCurrencySymbol(expense.currencyCode);
+    const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
     let formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(expense.amount, {
-            currency: expense.currencyCode,
+            currency: appStore.settings.currencyCode,
         }),
     );
 
