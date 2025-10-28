@@ -11,9 +11,6 @@ importers:
       '@internationalized/date':
         specifier: ^3.10.0
         version: 3.10.0
-      '@lucide/svelte':
-        specifier: ^0.546.0
-        version: 0.546.0(svelte@5.39.12)
       '@tauri-apps/api':
         specifier: ^2
         version: 2.8.0
@@ -23,9 +20,6 @@ importers:
       '@tauri-apps/plugin-os':
         specifier: ~2
         version: 2.3.1
-      melt:
-        specifier: ^0.41.0
-        version: 0.41.0(@floating-ui/dom@1.7.4)(svelte@5.39.12)
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.7
@@ -33,9 +27,9 @@ importers:
       '@eslint/js':
         specifier: ^9.37.0
         version: 9.37.0
-      '@melt-ui/svelte':
-        specifier: ^0.86.6
-        version: 0.86.6(svelte@5.39.12)
+      '@lucide/svelte':
+        specifier: ^0.546.0
+        version: 0.546.0(svelte@5.39.12)
       '@sveltejs/adapter-static':
         specifier: ^3.0.6
         version: 3.0.10(@sveltejs/kit@2.46.5(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.39.12)(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)))(svelte@5.39.12)(vite@6.3.6(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)))
@@ -69,6 +63,9 @@ importers:
       jsdom:
         specifier: ^27.0.1
         version: 27.0.1(postcss@8.5.6)
+      melt:
+        specifier: ^0.41.0
+        version: 0.41.0(@floating-ui/dom@1.7.4)(svelte@5.39.12)
       phosphor-icons-svelte:
         specifier: ^2.1.0
         version: 2.1.0(svelte@5.39.12)
@@ -524,11 +521,6 @@ packages:
 
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
-
-  '@melt-ui/svelte@0.86.6':
-    resolution: {integrity: sha512-Jer+M7DgIwT5IHfTayb4Iw/fkkxWNmC/mqn/nMh9JrbPbkxmyabfLQnhJ+JDn5HK77f84j34lubO3iqFtYAfMg==}
-    peerDependencies:
-      svelte: ^3.0.0 || ^4.0.0 || ^5.0.0-next.118
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1841,11 +1833,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.6:
-    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -2950,16 +2937,6 @@ snapshots:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
-
-  '@melt-ui/svelte@0.86.6(svelte@5.39.12)':
-    dependencies:
-      '@floating-ui/core': 1.7.3
-      '@floating-ui/dom': 1.7.4
-      '@internationalized/date': 3.10.0
-      dequal: 2.0.3
-      focus-trap: 7.6.5
-      nanoid: 5.1.6
-      svelte: 5.39.12
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -4225,8 +4202,6 @@ snapshots:
   ms@2.1.3: {}
 
   nanoid@3.3.11: {}
-
-  nanoid@5.1.6: {}
 
   natural-compare@1.4.0: {}
 

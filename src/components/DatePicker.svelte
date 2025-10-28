@@ -34,7 +34,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <DatePicker.Root bind:value>
     <DatePicker.Label />
     <DatePicker.Input>
-        {#snippet children({ children })}
+        {#snippet children({})}
             <DatePicker.Trigger>
                 <button
                     id="calendar-button"
@@ -100,9 +100,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </DatePicker.Root>
 
 <style>
-    [data-disabled] {
-        color: var(--color-text-muted);
-    }
+
 
     :global([data-calendar-root]) {
         padding: 12px;
@@ -138,6 +136,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         &[data-selected] {
             background-color: var(--color-surface-primary);
             color: var(--color-white);
+        }
+
+        &[data-disabled] {
+            color: var(--color-text-muted);
+            background: transparent;
         }
     }
 </style>
