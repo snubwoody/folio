@@ -18,29 +18,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Settings from "@lucide/svelte/icons/settings";
     import IconButton from "$components/button/IconButton.svelte";
-    import { createDialog } from "@melt-ui/svelte";
+    // import { createDialog } from "@melt-ui/svelte";
+    import { Dialog } from "bits-ui";
     import SettingsPanel from "$components/settings/SettingsPanel.svelte";
 
-    const {
-        elements: { trigger,portalled,overlay,content },
-        states: { open },
-    }= createDialog();
 </script>
 
-<div {...$trigger} use:trigger class="mt-auto" aria-label="Open settings">
-    <IconButton variant="neutral" class="mt-auto">
-        <Settings size="20" class="w-3"/>
-    </IconButton>
-</div>
-
-{#if $open}
-    <div {...$portalled} use:portalled>
-        <div {...$overlay} use:overlay></div>
-        <div {...$content} use:content>
+<Dialog.Root>
+    <Dialog.Trigger class="mt-auto" aria-label="Open settings">
+        <IconButton variant="ghost" class="mt-auto">
+            <Settings size="20" class="w-3"/>
+        </IconButton>
+    </Dialog.Trigger>
+    <Dialog.Portal>
+        <Dialog.Content class="settings-portal">
             <SettingsPanel/>
-        </div>
-    </div>
-{/if}
+        </Dialog.Content>
+    </Dialog.Portal>
+</Dialog.Root>
 
 <style>
     @keyframes fade-in{
@@ -49,24 +44,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }
     }
 
-    [data-melt-dialog-portalled] {
+    :global(.settings-portal){
         position: fixed;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    [data-melt-dialog-overlay]{
-        position: fixed;
-        inset: 0;
-        background: rgb(0 0 0 / 0.1);
-        animation: fade-in 250ms linear;
-    }
-
-    [data-melt-dialog-content]{
-        width: 70vw;
-        height: 70vh;
+        inset: 6rem 12rem;
         background: var(--color-white);
         z-index: 200;
         border-radius: var(--radius-lg);

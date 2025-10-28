@@ -20,16 +20,15 @@
     },
     "dependencies": {
         "@internationalized/date": "^3.10.0",
-        "@lucide/svelte": "^0.546.0",
         "@tauri-apps/api": "^2",
         "@tauri-apps/plugin-opener": "^2",
-        "@tauri-apps/plugin-os": "~2",
-        "melt": "^0.41.0"
+        "@tauri-apps/plugin-os": "~2"
     },
     "devDependencies": {
+        "@lucide/svelte": "^0.546.0",
+        "melt": "^0.41.0",
         "@changesets/cli": "^2.29.7",
         "@eslint/js": "^9.37.0",
-        "@melt-ui/svelte": "^0.86.6",
         "@sveltejs/adapter-static": "^3.0.6",
         "@sveltejs/kit": "^2.9.0",
         "@sveltejs/vite-plugin-svelte": "^5.0.0",
@@ -37,6 +36,7 @@
         "@tauri-apps/cli": "^2",
         "@types/node": "^24.7.2",
         "@vitest/browser": "^3.2.4",
+        "bits-ui": "^2.14.1",
         "eslint": "^9.37.0",
         "eslint-plugin-svelte": "^3.12.4",
         "jsdom": "^27.0.1",
