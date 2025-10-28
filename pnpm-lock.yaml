@@ -28,9 +28,6 @@ importers:
       '@tauri-apps/plugin-os':
         specifier: ~2
         version: 2.3.1
-      melt:
-        specifier: ^0.41.0
-        version: 0.41.0(@floating-ui/dom@1.7.4)(svelte@5.39.12)
     devDependencies:
       '@eslint/js':
         specifier: ^9.37.0
@@ -68,6 +65,9 @@ importers:
       jsdom:
         specifier: ^27.0.1
         version: 27.0.1(postcss@8.5.6)
+      melt:
+        specifier: ^0.41.0
+        version: 0.41.0(@floating-ui/dom@1.7.4)(svelte@5.39.12)
       phosphor-icons-svelte:
         specifier: ^2.1.0
         version: 2.1.0(svelte@5.39.12)
