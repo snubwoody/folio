@@ -15,10 +15,10 @@ export default defineConfig({
         host: host || false,
         hmr: host
             ? {
-                protocol: "ws",
-                host,
-                port: 1421,
-            }
+                  protocol: "ws",
+                  host,
+                  port: 1421,
+              }
             : undefined,
         watch: {
             ignored: ["**/src-tauri/**"],
@@ -43,6 +43,10 @@ export default defineConfig({
                     browser: {
                         enabled: true,
                         provider: "playwright",
+                        api: {
+                            host: "127.0.0.1",
+                            port: 4040,
+                        },
                         instances: [
                             { browser: "chromium" },
                             { browser: "firefox" },
