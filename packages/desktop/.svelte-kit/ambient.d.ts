@@ -102,12 +102,6 @@ declare module '$env/static/private' {
 	export const SHLVL: string;
 	export const SystemDrive: string;
 	export const SystemRoot: string;
-	export const TAURI_CLI_VERBOSITY: string;
-	export const TAURI_ENV_ARCH: string;
-	export const TAURI_ENV_FAMILY: string;
-	export const TAURI_ENV_PLATFORM: string;
-	export const TAURI_ENV_PLATFORM_VERSION: string;
-	export const TAURI_ENV_TARGET_TRIPLE: string;
 	export const TEMP: string;
 	export const TERM: string;
 	export const TERM_PROGRAM: string;
@@ -228,12 +222,6 @@ declare module '$env/dynamic/private' {
 		SHLVL: string;
 		SystemDrive: string;
 		SystemRoot: string;
-		TAURI_CLI_VERBOSITY: string;
-		TAURI_ENV_ARCH: string;
-		TAURI_ENV_FAMILY: string;
-		TAURI_ENV_PLATFORM: string;
-		TAURI_ENV_PLATFORM_VERSION: string;
-		TAURI_ENV_TARGET_TRIPLE: string;
 		TEMP: string;
 		TERM: string;
 		TERM_PROGRAM: string;
