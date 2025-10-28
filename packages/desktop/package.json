@@ -1,9 +1,23 @@
 {
-    "name": "folio",
+    "name": "@folio/desktop",
     "version": "1.2.0",
     "description": "",
     "type": "module",
     "private": true,
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+        "tauri": "tauri",
+        "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
+        "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix",
+        "test": "vitest --browser=chromium",
+        "test:browser": "vitest --browser=chromium",
+        "test:headless": "vitest --browser.headless run",
+        "test:unit": "vitest --project unit run"
+    },
     "dependencies": {
         "@internationalized/date": "^3.10.0",
         "@lucide/svelte": "^0.546.0",
