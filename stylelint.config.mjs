@@ -1,7 +1,7 @@
 /** @type {import('stylelint').Config} */
 export default {
     extends: ["stylelint-config-standard"],
-    ignoreFiles: ["build/**","**/target/**"],
+    ignoreFiles: ["**/build/**", "**/target/**"],
     overrides: [
         {
             // For Svelte <style> blocks
@@ -16,7 +16,7 @@ export default {
         "custom-property-pattern": null,
         "custom-property-empty-line-before": null,
         // Ignore tailind @ rules
-        "at-rule-no-unknown": [true,{ ignoreAtRules: ["utility","theme"] }],
+        "at-rule-no-unknown": [true, { ignoreAtRules: ["utility", "theme"] }],
         // Relax some rules for Svelte
         "selector-pseudo-class-no-unknown": [
             true,

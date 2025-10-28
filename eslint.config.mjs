@@ -5,27 +5,18 @@ import svelteParser from "svelte-eslint-parser";
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
-    // Base JS recommended rules
     js.configs.recommended,
-
-    // TypeScript configs
     ...tseslint.configs.recommended,
-
-    // Svelte configs
     ...sveltePlugin.configs["flat/recommended"],
-
-    // Global ignores
     {
         ignores: [
             "**/node_modules",
-            "**/dist/**",
-            "**/build/**",
-            ".svelte-kit",
+            "**/dist",
+            "**/build",
+            "**/.svelte-kit",
             "**/target",
         ],
     },
-
-    // TypeScript files
     {
         files: ["**/*.ts", "**/*.tsx"],
         languageOptions: {
@@ -35,12 +26,9 @@ export default [
             },
         },
         rules: {
-            // Add any custom TS rules here
             "@typescript-eslint/no-unused-vars": ["warn"],
         },
     },
-
-    // Svelte files
     {
         files: ["**/*.svelte"],
         languageOptions: {
@@ -57,9 +45,9 @@ export default [
     },
     {
         rules: {
-            "indent": ["warn", 4],
-            "quotes": ["warn", "double"],
-            "semi": ["error", "always"],
+            indent: ["warn", 4],
+            quotes: ["warn", "double"],
+            semi: ["error", "always"],
             "comma-dangle": ["warn", "always-multiline"],
             "object-curly-spacing": ["warn", "always"],
             "array-bracket-spacing": ["warn", "never"],
