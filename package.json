@@ -37,6 +37,7 @@
         "@tauri-apps/cli": "^2",
         "@types/node": "^24.7.2",
         "@vitest/browser": "^3.2.4",
+        "bits-ui": "^2.14.1",
         "eslint": "^9.37.0",
         "eslint-plugin-svelte": "^3.12.4",
         "jsdom": "^27.0.1",
