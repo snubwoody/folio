@@ -34,16 +34,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <DatePicker.Root bind:value>
     <DatePicker.Label />
     <DatePicker.Input>
-        {#snippet children({})}
-            <DatePicker.Trigger>
-                <button
-                    id="calendar-button"
-                    class="icon-btn icon-btn-ghost icon-btn-medium"
-                >
-                    <CalendarDays />
-                </button>
-            </DatePicker.Trigger>
-        {/snippet}
+        <DatePicker.Trigger>
+            <button
+                id="calendar-button"
+                class="icon-btn icon-btn-ghost icon-btn-medium"
+            >
+                <CalendarDays />
+            </button>
+        </DatePicker.Trigger>
     </DatePicker.Input>
     <DatePicker.Content>
         <DatePicker.Calendar>
@@ -100,7 +98,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </DatePicker.Root>
 
 <style>
-
 
     :global([data-calendar-root]) {
         padding: 12px;
