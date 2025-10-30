@@ -1,0 +1,111 @@
+---
+import Button from "@components/Button.astro";
+import WindowsLogo from "phosphor-astro/WindowsLogo.astro";
+import AppleLogo from "phosphor-astro/AppleLogo.astro";
+import LinuxLogo from "phosphor-astro/LinuxLogo.astro";
+import {type DownloadLinks} from "../../lib/downloads";
+
+type Props = {
+    downloadLinks: DownloadLinks
+}
+
+const {downloadLinks}:Props = Astro.props;
+
+const {
+    appImage,
+    deb,
+    rpm,
+    exe,
+    msi,
+    dmg,
+} = downloadLinks;
+---
+
+<ul>
+    <li class="flex gap-1 ">
+        <header>
+            <WindowsLogo width={20}/>
+            <h6>Windows</h6>
+        </header>
+        <div>
+            <Button href={msi} variant="bordered">
+                Windows (Msi)
+            </Button>
+            <Button href={exe} variant="bordered">
+                Windows (Exe)
+            </Button>
+        </div>
+    </li>
+    <li class="flex gap-1 max-md:border-y md:border-x border-neutral-100">
+        <header>
+            <AppleLogo  width={20}/>
+            <h6>MacOS</h6>
+        </header>
+        <div>
+            <Button href={dmg} variant="bordered">
+                MacOS (Dmg)
+            </Button>
+        </div>
+    </li>
+    <li class="flex gap-1 ">
+        <header>
+            <LinuxLogo width={20}/>
+            <h6>Linux</h6>
+        </header>
+        <div>
+            <Button href={appImage} variant="bordered">
+                Linux (AppImage)
+            </Button>
+            <Button href={deb} variant="bordered">
+                Linux (Deb)
+            </Button>
+            <Button href={rpm} variant="bordered">
+                Linux (Rpm)
+            </Button>
+        </div>
+    </li>
+</ul>
+
+<style>
+    ul{
+        display: flex;
+        width: 100%;
+        max-width: 1450px;
+
+        @media (width < 768px) {
+            flex-direction: column;
+        }
+    }
+
+    li{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 0 16px;
+
+        @media (width < 768px) {
+            padding: 36px 24px;
+        }
+
+        header{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        div{
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+
+            button{
+                width: 100%;
+            }
+        }
+    }
+
+    h6{
+        font-weight: var(--font-weight-medium);
+    }
+</style>

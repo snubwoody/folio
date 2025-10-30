@@ -1,0 +1,93 @@
+---
+import type {HTMLAttributes} from "astro/types";
+type Variant = "primary" | "secondary" | "neutral" | "bordered";
+type Size = "medium";
+
+type Props = {
+	variant?: Variant,
+	size?: Size,
+	/**
+	 * Converts the button into a link
+	 */
+	href?: string
+} & HTMLAttributes<"button">;
+
+const {
+	variant = "primary",
+	size = "medium",
+	href,
+	class: userClass,
+	...rest
+}: Props = Astro.props;
+
+// TODO: test passing in a custom class
+const buttonVariant = `btn-${variant} ${userClass}`;
+---
+
+{href ?
+<a {href} class={`btn ${buttonVariant}`} {...rest}>
+	<slot/>
+</a>
+	:
+<button class={`btn ${buttonVariant}`} {...rest}>
+	<slot/>
+</button>
+	}
+
+<style>
+	.btn{
+		display: flex;
+		gap: 8px;
+		align-items: center;
+		justify-content: center;
+		transition: all 250ms;
+		border-radius: var(--radius-md);
+		padding: 8px 12px;
+		cursor: pointer;
+
+		svg{
+			width: 16px;
+			aspect-ratio: 1;
+		}
+	}
+
+
+	.btn-primary{
+		background-color: var(--color-surface-primary);
+		color: var(--color-white);
+
+		&:hover{
+			background-color: var(--color-surface-primary-hover);
+		}
+
+		&:active{
+			background-color: var(--color-surface-primary-active);
+		}
+	}
+
+	.btn-secondary{
+		background-color: var(--color-neutral-950);
+		color: var(--color-white);
+
+		&:hover{
+			background-color: var(--color-neutral-900);
+		}
+
+		&:active{
+			background-color: var(--color-neutral-800);
+		}
+	}
+
+	.btn-bordered{
+		border: 1px solid var(--color-neutral-50);
+
+		&:hover{
+			background-color: var(--color-neutral-25);
+		}
+
+		&:active{
+			background-color: var(--color-neutral-50);
+		}
+	}
+
+</style>

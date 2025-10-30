@@ -1,0 +1,56 @@
+
+@theme {
+	--text-*: initial;
+
+	--text-h1: 4rem;
+	--text-h2: 3.5rem;
+	--text-h3: 3rem;
+	--text-h4: 2.25rem;
+	--text-h5: 1.5625rem;
+	--text-h6: 1.125rem;
+	--text-body: 1rem;
+	--text-sm: .8125rem;
+	--text-xs: .625rem;
+
+	--text-h1--line-height: 1;
+	--text-h2--line-height: 1;
+	--text-h3--line-height: 1;
+	--text-h4--line-height: 1.25;
+	--text-h5--line-height: 1.25;
+	--text-h6--line-height: 1.5;
+	--text-body--line-height: 1.5;
+	--text-sm--line-height: 1.5;
+	--text-xs--line-height: 1.5;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src:
+		  url("/fonts/Satoshi-Variable.woff2") format("woff2"),
+	  url("/fonts/Satoshi-Variable.woff") format("woff"),
+	  url("/fonts/Satoshi-Variable.ttf") format("truetype");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base{
+	body{
+		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		font-family: "Satoshi",sans-serif;
+		color: var(--color-text-body);
+		font-weight: 400;
+	}
+
+	h1{ @apply text-h1};
+	h2{ @apply text-h2};
+	h3{ @apply text-h3};
+	h4{ @apply text-h4};
+	h5{ @apply text-h5};
+	h6{ @apply text-h6};
+	p{ @apply text-body};
+
+	h1,h2,h3,h4,h5,h6{
+		color: var(--color-text-heading);
+	}
+}
