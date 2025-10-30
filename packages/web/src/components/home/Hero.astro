@@ -1,0 +1,55 @@
+---
+import Button from "@components/Button.astro"
+import Screenshot from "@assets/Screenshot.png";
+import Image from "astro/components/Image.astro";
+import WindowsLogo from "phosphor-astro/WindowsLogoFill.astro";
+---
+
+<section>
+	<div class="info-section">
+		<h1>Folio</h1>
+		<p>
+			A free, privacy-focused budgeting app. Track expenses, manage budgets, and 
+			analyze your spending all while keeping your financial data private and under your complete control.
+		</p>
+		<div data-platform="Windows" class="flex items-center gap-4">
+			<Button id="download-button" href="/downloads">
+				<WindowsLogo id="windows-logo"/>
+				<p>Download for Windows</p>
+			</Button>
+			<a href="/downloads" class="text-purple-500">Other platforms</a>
+		</div>
+	</div>
+	<Image src={Screenshot} alt="App screenshot"/>
+</section>
+<script src="../../scripts/get-download-links.ts"/>
+
+
+<style>
+	section{
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 64px;
+		padding: 88px 0px;
+	}
+
+	img{
+		width: 100%;
+		max-width: 1000px;
+		box-shadow: var(--shadow-purple-md);
+		border-radius: var(--radius-lg);
+	}
+
+	.info-section{
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		align-items: center;
+
+		p{
+			max-width: 75ch;
+			text-align: center;
+		}
+	}
+</style>

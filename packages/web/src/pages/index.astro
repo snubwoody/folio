@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@layout/BaseLayout.astro"
+import About from "@components/home/About.astro"
+import Hero from "@components/home/Hero.astro";
+import IncomeStreams from "../components/home/IncomeStreams.astro";
+import Categories from "../components/home/Categories.astro";
+---
+
+<BaseLayout>
+	<Hero/>
+	<About/>
+	<Categories/>
+	<IncomeStreams/>
+	<script src="../scripts/observe.js"/>
+</BaseLayout>

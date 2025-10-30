@@ -1,0 +1,30 @@
+---
+import "@styles/global.css";
+import Navbar from "@components/Navbar.astro";
+---
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Folio - Budgeting made simple</title>
+		<link rel="icon" href="/logo.svg">
+	</head>
+	<body>
+		<Navbar/>
+		<slot/>
+	</body>
+</html>
+
+<style>
+	html,body{
+		width: 100%;
+		height: 100%;
+	}
+
+	body{
+		display: grid;
+		grid-template-rows: auto 1fr;
+	}
+</style>

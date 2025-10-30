@@ -1,0 +1,89 @@
+---
+type Bar = {
+    title: string
+    percentage: number,
+    color: string
+}
+
+const bars: Bar[] = [
+    {title: "Rent",percentage: 100,color:"--color-purple-500"},
+    {title: "Groceries",percentage: 50,color:"--color-purple-200"},
+    {title: "Movies",percentage: 10,color:"--color-purple-500"},
+    {title: "Subscriptions",percentage: 20,color:"--color-purple-700"},
+    {title: "Clothing",percentage: 25,color:"--color-purple-800"},
+    {title: "Fuel",percentage: 30,color:"--color-purple-50"},
+    {title: "Tips",percentage: 5,color:"--color-purple-950"},
+]
+---
+
+<section>
+    <div class="w-full p-8">
+        <h4 data-observe>Use categories to know exactly where your money is going</h4>
+    </div>
+    <div class="bg-neutral-25 w-full">
+        <ul>
+            {bars.map(bar =>
+                <li data-observe class="bar-title">{bar.title}</li>
+                <li data-observe
+                    style={`--width:${bar.percentage}%;background: var(${bar.color});`}
+                    class="graph-bar"
+                ></li>
+            )}
+        </ul>
+    </div>
+</section>
+
+<style>
+    section{
+        display: flex;
+        align-items: center;
+        gap: 48px;
+
+        @media (width < 1024px) {
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+
+    ul{
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 16px;
+        padding: 80px 64px;
+    }
+
+    .bar-title{
+        opacity: 0;
+        transition: all 1s;
+
+        &[data-visible="true"]{
+            opacity: 1;
+        }
+    }
+
+    .graph-bar{
+        height: 16px;
+        border-radius: var(--radius-xs);
+        width: 0;
+        transition: width 450ms;
+
+        &[data-visible="true"]{
+            width: var(--width);
+        }
+    }
+
+    h4{
+        max-width: 75ch;
+        opacity: 0;
+        transition: all 250ms;
+
+        &[data-visible="true"]{
+            opacity: 1;
+        }
+
+        @media (width < 1024px) {
+            text-align: center;
+        }
+    }
+</style>

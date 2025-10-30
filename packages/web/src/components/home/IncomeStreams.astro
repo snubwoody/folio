@@ -1,0 +1,67 @@
+---
+
+---
+
+<section>
+    <ul>
+        <li>
+            <div class="income-bar bg-blue-700"></div>
+            <p class="mt-1 mb-0.5">Salary</p>
+            <p class="text-sm text-text-muted">60%</p>
+        </li>
+        <li>
+            <div class="income-bar bg-blue-500"></div>
+            <p class="mt-1 mb-0.5">Dividends</p>
+            <p class="text-sm text-text-muted">30%</p>
+        </li>
+        <li>
+            <div class="income-bar bg-blue-200"></div>
+            <p class="mt-1 mb-0.5">Donations</p>
+            <p class="text-sm text-text-muted">10%</p>
+        </li>
+    </ul>
+    <h4>Income streams let you keep track of where you money is coming from</h4>
+</section>
+
+<style>
+    section{
+        display: grid;
+        gap: 40px;
+        place-items: center;
+        padding: 64px 40px;
+        background: var(--color-neutral-25);
+    }
+
+    ul{
+        width: 100%;
+        display: flex;
+        gap: 16px;
+
+
+
+    }
+
+    li{
+        flex: 1;
+
+        &:nth-child(1){
+            flex: 6;
+        }
+
+        &:nth-child(2){
+            flex: 3;
+        }
+
+    }
+
+    .income-bar{
+        border-radius: var(--radius-xs);
+        height: 16px;
+        width: 100%;
+    }
+
+    h4{
+        max-width: 75ch;
+        text-align: center;
+    }
+</style>

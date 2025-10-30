@@ -1,0 +1,22 @@
+{
+  "name": "@folio/web",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "vitest run",
+    "test:headless": "vitest run"
+  },
+  "dependencies": {
+    "@astrojs/node": "^9.5.0",
+    "@astrojs/sitemap": "^3.6.0",
+    "@astrojs/vercel": "^8.2.10",
+    "astro": "^5.14.4",
+    "phosphor-astro": "^2.1.0",
+    "sharp": "^0.34.4",
+    "zod": "^4.1.12"
+  }
+}
