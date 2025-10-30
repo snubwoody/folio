@@ -37,7 +37,7 @@ jobs:
             rust-cache-${{runner.os}}-
             rust-cache-
           path: |
-            target/
+            packages/desktop/src-tauri/target/
             ~/.cargo
       - uses: actions/cache@v4
         id: cache-sqlx
