@@ -14,6 +14,7 @@ export default [
             "**/dist",
             "**/build",
             "**/.svelte-kit",
+            "**/.astro",
             "**/target",
         ],
     },

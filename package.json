@@ -2,6 +2,10 @@
     "name": "folio",
     "type": "module",
     "private": true,
+    "scripts": {
+        "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
+        "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
+    },
     "dependencies": {
         "@lucide/svelte": "^0.546.0"
     },

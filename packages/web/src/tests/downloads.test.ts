@@ -1,5 +1,5 @@
-import {test,expect} from "vitest";
-import {getLatestRelease,getDownloadLinks} from "../lib/downloads.ts";
+import { test,expect } from "vitest";
+import { getLatestRelease,getDownloadLinks } from "../lib/downloads.ts";
 
 test("Get latest release",async ()=>{
     const info = await getLatestRelease();

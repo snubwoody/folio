@@ -1,6 +1,6 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import vercel from "@astrojs/vercel";
 import node from "@astrojs/node";
@@ -9,9 +9,9 @@ import node from "@astrojs/node";
 export default defineConfig({
     prefetch: true,
     vite: {
-      plugins: [tailwindcss(),sitemap()],
+        plugins: [tailwindcss(),sitemap()],
     },
     adapter: !(process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview") ? node({
-      mode: "standalone"
-    }) : vercel()
+        mode: "standalone",
+    }) : vercel(),
 });
