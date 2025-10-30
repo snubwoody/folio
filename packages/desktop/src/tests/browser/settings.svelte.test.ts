@@ -1,8 +1,8 @@
-import { beforeEach, test, expect, afterEach } from "vitest";
+import { beforeEach, test, expect } from "vitest";
 import { appStore } from "$lib/state.svelte";
 import Sidebar from "$components/Sidebar.svelte";
 import { render } from "vitest-browser-svelte";
-import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 beforeEach(() => {
     appStore.categories = [];
@@ -18,10 +18,6 @@ mockIPC((cmd) => {
     if (cmd === "currencies") {
         return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
     }
-});
-
-afterEach(()=>{
-    clearMocks();
 });
 
 test("Open settings panel", async () => {
