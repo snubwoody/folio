@@ -20,6 +20,41 @@ use crate::{
 };
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
+use tauri::{
+    App, Builder, EventLoopMessage, WebviewUrl, WebviewWindowBuilder, Wry, generate_handler,
+};
+
+pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
+    app.invoke_handler(tauri::generate_handler![
+        create_expense,
+        create_income,
+        fetch_expenses,
+        fetch_incomes,
+        fetch_income_streams,
+        edit_expense,
+        create_account,
+        delete_category,
+        edit_category,
+        spending_analytics,
+        create_category,
+        fetch_accounts,
+        edit_account,
+        delete_account,
+        fetch_budgets,
+        create_account,
+        create_budget,
+        edit_budget,
+        currencies,
+        set_currency_code,
+        settings,
+        delete_budget,
+        income_analytics,
+        create_income_stream,
+        delete_income_stream,
+        fetch_categories,
+        edit_income,
+    ])
+}
 
 #[tauri::command]
 pub async fn settings(state: tauri::State<'_, State>) -> Result<Settings> {
@@ -182,6 +217,20 @@ pub async fn edit_budget(
 #[tauri::command]
 pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
     Category::create(title, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
+    Account::delete(&id, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn edit_account(
+    state: tauri::State<'_, State>,
+    id: String,
+    opts: EditAccount,
+) -> Result<Account> {
+    Account::edit(&id, opts, &state.pool).await
 }
 
 #[tauri::command]

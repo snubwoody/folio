@@ -19,7 +19,6 @@ mod settings;
 mod error;
 mod money;
 pub mod service;
-use crate::command::*;
 use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;
@@ -27,57 +26,37 @@ use sqlx::SqlitePool;
 use sqlx::sqlite::SqliteConnectOptions;
 use std::path::PathBuf;
 use std::sync::Arc;
-use tauri::{WebviewUrl, WebviewWindowBuilder};
+use tauri::{
+    App, Builder, EventLoopMessage, WebviewUrl, WebviewWindowBuilder, Wry, generate_handler,
+};
 use tokio::sync::Mutex;
+
+fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
+    let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
+        .title("Folio")
+        .resizable(true)
+        .maximized(true);
+
+    #[cfg(windows)]
+    let builder = builder.decorations(false);
+
+    builder.build().unwrap();
+    Ok(())
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     tracing_subscriber::fmt::init();
     let state = State::new().await.unwrap();
-    tauri::Builder::default()
+    let app = tauri::Builder::default()
         .plugin(tauri_plugin_os::init())
         .manage(state)
-        .setup(|app| {
-            let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
-                .title("Folio")
-                .resizable(true)
-                .maximized(true);
+        .setup(setup_app)
+        .plugin(tauri_plugin_opener::init());
 
-            #[cfg(windows)]
-            let builder = builder.decorations(false);
+    let app = command::handlers(app);
 
-            builder.build().unwrap();
-            Ok(())
-        })
-        .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![
-            create_expense,
-            create_income,
-            fetch_expenses,
-            fetch_incomes,
-            fetch_income_streams,
-            edit_expense,
-            create_account,
-            delete_category,
-            edit_category,
-            spending_analytics,
-            create_category,
-            fetch_accounts,
-            fetch_budgets,
-            create_account,
-            create_budget,
-            edit_budget,
-            currencies,
-            set_currency_code,
-            settings,
-            delete_budget,
-            income_analytics,
-            create_income_stream,
-            delete_income_stream,
-            fetch_categories,
-            edit_income,
-        ])
-        .run(tauri::generate_context!())
+    app.run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
