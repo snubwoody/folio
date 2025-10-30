@@ -1,9 +1,8 @@
-import {beforeEach, test, expect, afterEach} from "vitest";
+import { beforeEach, test, expect, afterEach } from "vitest";
 import { appStore } from "$lib/state.svelte";
 import Sidebar from "$components/Sidebar.svelte";
 import { render } from "vitest-browser-svelte";
-import {clearMocks, mockIPC} from "@tauri-apps/api/mocks";
-import type {Account} from "$lib/lib";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 
 beforeEach(() => {
     appStore.categories = [];
@@ -45,8 +44,8 @@ test("Default to general section", async () => {
 
 test("Show accounts", async () => {
     appStore.accounts = [
-        {id: "1",name: "Account 1", startingBalance: "24.00",balance: "0.0"},
-        {id: "2",name: "Account 2", startingBalance: "254.35",balance: "0.0"}
+        { id: "1",name: "Account 1", startingBalance: "24.00",balance: "0.0" },
+        { id: "2",name: "Account 2", startingBalance: "254.35",balance: "0.0" },
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
@@ -57,7 +56,7 @@ test("Show accounts", async () => {
 
 test("Show account starting balance", async () => {
     appStore.accounts = [
-        {id: "1",name: "Account 1", startingBalance: "24.25",balance: "0.0"},
+        { id: "1",name: "Account 1", startingBalance: "24.25",balance: "0.0" },
     ];
     appStore.settings.currencyCode = "CAD";
     const page = render(Sidebar);

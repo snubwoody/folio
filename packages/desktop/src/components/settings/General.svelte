@@ -1,9 +1,9 @@
 <script lang="ts">
-    import {formatAmount, getCurrencies} from "$lib/lib.js";
+    import { formatAmount, getCurrencies } from "$lib/lib.js";
     import SelectMenu from "$components/SelectMenu.svelte";
     import { appStore } from "$lib/state.svelte";
     import IconButton from "$components/button/IconButton.svelte";
-    import {Trash2} from "@lucide/svelte";
+    import { Trash2 } from "@lucide/svelte";
 
     let currencies: string[] = $state([]);
     $effect(()=>{
@@ -31,12 +31,12 @@
     <section class="space-y-1">
         <h6>Accounts</h6>
         <ul class="space-y-2">
-            {#each appStore.accounts as account}
+            {#each appStore.accounts as account (account.id)}
                 <li class="flex items-center justify-between">
                     <div class="space-y-0.5">
                         <p>{account.name}</p>
                         <p class="text-sm">
-                            Starting balance: {formatAmount(account.startingBalance,{currency:appStore.settings.currencyCode})}
+                            Starting balance: {formatAmount(account.startingBalance,{ currency:appStore.settings.currencyCode })}
                         </p>
                     </div>
                     <IconButton variant="ghost">
