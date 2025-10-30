@@ -116,7 +116,7 @@ importers:
         specifier: ^2
         version: 2.8.4
 
-  packages/folio-site:
+  packages/web:
     dependencies:
       '@astrojs/node':
         specifier: ^9.5.0
@@ -127,9 +127,6 @@ importers:
       '@astrojs/vercel':
         specifier: ^8.2.10
         version: 8.2.11(@sveltejs/kit@2.46.5(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.43.0)(vite@6.4.1(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)))(svelte@5.43.0)(vite@6.4.1(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)))(astro@5.15.2(@types/node@24.7.2)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.6.3))(rollup@4.52.4)(svelte@5.43.0)
-      '@tailwindcss/vite':
-        specifier: ^4.1.14
-        version: 4.1.14(vite@6.4.1(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1))
       astro:
         specifier: ^5.14.4
         version: 5.15.2(@types/node@24.7.2)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.6.3)
@@ -139,16 +136,9 @@ importers:
       sharp:
         specifier: ^0.34.4
         version: 0.34.4
-      tailwindcss:
-        specifier: ^4.1.14
-        version: 4.1.16
       zod:
         specifier: ^4.1.12
         version: 4.1.12
-    devDependencies:
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/debug@4.1.12)(@types/node@24.7.2)(@vitest/browser@3.2.4)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(lightningcss@1.30.1)
 
 packages:
 
@@ -4709,13 +4699,6 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.1.14
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.14
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.14
-
-  '@tailwindcss/vite@4.1.14(vite@6.4.1(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1))':
-    dependencies:
-      '@tailwindcss/node': 4.1.14
-      '@tailwindcss/oxide': 4.1.14
-      tailwindcss: 4.1.14
-      vite: 6.4.1(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)
 
   '@tailwindcss/vite@4.1.14(vite@7.1.11(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1))':
     dependencies:
