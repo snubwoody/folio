@@ -1,4 +1,3 @@
-/* eslint-env browser */
 const elements = document.querySelectorAll("[data-observe]");
 
 const observer = new IntersectionObserver((entries) => {

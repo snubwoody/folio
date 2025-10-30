@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import sveltePlugin from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
+import globals from "globals";
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
@@ -15,6 +16,9 @@ export default [
             "**/build",
             "**/.svelte-kit",
             "**/.astro",
+            "**/.vscode",
+            "**/.github",
+            "**/.idea",
             "**/target",
         ],
     },
@@ -28,6 +32,14 @@ export default [
         },
         rules: {
             "@typescript-eslint/no-unused-vars": ["warn"],
+        },
+    },
+    {
+        files: ["**/*.js"],
+        languageOptions: {
+            globals:{
+                ...globals.browser,
+            },
         },
     },
     {

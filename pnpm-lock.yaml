@@ -11,6 +11,9 @@ importers:
       '@lucide/svelte':
         specifier: ^0.546.0
         version: 0.546.0(svelte@5.43.0)
+      globals:
+        specifier: ^16.4.0
+        version: 16.4.0
     devDependencies:
       '@changesets/cli':
         specifier: ^2.29.7
