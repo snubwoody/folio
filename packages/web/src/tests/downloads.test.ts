@@ -1,9 +1,11 @@
 
 // FIXME: no longer valid
-// test("Get latest release",async ()=>{
-//     const info = await getLatestRelease();
-//     expect(info.author.login).toBe("snubwoody");
-// });
+import { getLatestRelease } from "@lib/downloads.ts";
+import { test } from "vitest";
+test("Get latest release",async ()=>{
+    await getLatestRelease();
+});
+
 //
 // test("Get rpm download",async ()=>{
 //     const downloadLinks = await getDownloadLinks();
