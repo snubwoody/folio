@@ -16,9 +16,10 @@ mockIPC((cmd) => {
         return { currencyCode: "USD" };
     }
     if (cmd === "currencies") {
-        return  ["USD","CAD","ZAR","ZMW","TSH"];
+        return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
     }
 });
+
 test("Open settings panel", async () => {
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
@@ -35,6 +36,28 @@ test("Default to general section", async () => {
         .query()
         ?.getAttribute("data-selected");
     expect(selected).toBe("true");
+});
+
+test("Show accounts", async () => {
+    appStore.accounts = [
+        { id: "1",name: "Account 1", startingBalance: "24.00",balance: "0.0" },
+        { id: "2",name: "Account 2", startingBalance: "254.35",balance: "0.0" },
+    ];
+    const page = render(Sidebar);
+    await page.getByLabelText("Open settings").click();
+    expect(page.getByRole("heading", { name: "Accounts" })).toBeInTheDocument();
+    expect(page.getByText("Account 1")).toBeInTheDocument();
+    expect(page.getByText("Account 2")).toBeInTheDocument();
+});
+
+test("Show account starting balance", async () => {
+    appStore.accounts = [
+        { id: "1",name: "Account 1", startingBalance: "24.25",balance: "0.0" },
+    ];
+    appStore.settings.currencyCode = "CAD";
+    const page = render(Sidebar);
+    await page.getByLabelText("Open settings").click();
+    expect(page.getByText("Starting balance: CA$24.25")).toBeInTheDocument();
 });
 
 test("Show categories", async () => {

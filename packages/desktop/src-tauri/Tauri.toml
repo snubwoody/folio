@@ -3,7 +3,7 @@ version = "1.2.0"
 identifier = "com.wakunguma.folio"
 
 [build]
-before-dev-command = "pnpm --filter @folio/desktop build"
+before-dev-command = "pnpm --filter @folio/desktop dev"
 dev-url = "http://localhost:1420"
 before-build-command = "pnpm --filter @folio/desktop build"
 frontend-dist = "../build"

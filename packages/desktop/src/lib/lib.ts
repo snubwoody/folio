@@ -87,7 +87,7 @@ export type NumberFormatOpts = {
     currency?: string;
 };
 export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
-    // TODO: use currency
+    // TODO: use appStore currency
     const currency = opts?.currency ?? "USD";
     let notation:
         | "compact"
