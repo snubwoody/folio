@@ -15,8 +15,31 @@
 
 use crate::Money;
 use chrono::{DateTime, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
+
+// TODO: test the command input
+#[derive(Debug,Default,Serialize,Deserialize)]
+pub struct EditAccount{
+    name: Option<String>,
+    starting_balance: Option<Money>
+}
+
+impl EditAccount{
+    pub fn new() -> Self{
+        Self::default()
+    }
+
+    pub fn name(mut self, name:&str) -> Self{
+        self.name = Some(name.to_owned());
+        self
+    }
+
+    pub fn starting_balance(mut self, money: Money) -> Self{
+        self.starting_balance = Some(money);
+        self
+    }
+}
 
 #[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -48,6 +71,18 @@ impl Account {
         .await?;
 
         Self::from_id(&record.id, pool).await
+    }
+
+    pub async fn edit(id: &str,opts: EditAccount, pool: &SqlitePool) -> Result<Self,crate::Error>{
+        let account = Self::from_id(id, pool).await?;
+        let starting_balance = opts.starting_balance.unwrap_or(account.starting_balance).inner();
+        let name = opts.name.unwrap_or(account.name);
+
+        sqlx::query!("UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3",name,starting_balance,id)
+            .execute(pool)
+            .await?;
+
+        Self::from_id(id, pool).await
     }
 
     /// Fetch the [`Account`] from the database.
@@ -202,6 +237,48 @@ mod test {
             .fetch_all(&pool)
             .await?;
         assert_eq!(records.len(), 2);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let account = Account::create("My account", Money::ZERO, &pool).await?;
+        let data = CreateExpense{
+            account_id: Some(account.id.clone()),
+            ..Default::default()
+        };
+        Expense::create(data, &pool).await?;
+        let records = sqlx::query!("SELECT * FROM accounts")
+            .fetch_all(&pool)
+            .await?;
+        assert_eq!(records.len(), 1);
+
+        Account::delete(&account.id, &pool).await?;
+        let records = sqlx::query!("SELECT * FROM accounts")
+            .fetch_all(&pool)
+            .await?;
+        assert_eq!(records.len(), 0);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn delete_account_with_income(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let account = Account::create("My account", Money::ZERO, &pool).await?;
+        let data = CreateIncome{
+            account_id: Some(account.id.clone()),
+            ..Default::default()
+        };
+        Income::create(data, &pool).await?;
+        let records = sqlx::query!("SELECT * FROM accounts")
+            .fetch_all(&pool)
+            .await?;
+        assert_eq!(records.len(), 1);
+
+        Account::delete(&account.id, &pool).await?;
+        let records = sqlx::query!("SELECT * FROM accounts")
+            .fetch_all(&pool)
+            .await?;
+        assert_eq!(records.len(), 0);
         Ok(())
     }
 }
