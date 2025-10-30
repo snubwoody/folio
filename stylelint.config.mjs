@@ -1,7 +1,7 @@
 /** @type {import('stylelint').Config} */
 export default {
     extends: ["stylelint-config-standard"],
-    ignoreFiles: ["**/build/**", "**/target/**","**/dist/**",],
+    ignoreFiles: ["**/build/**", "**/target/**","**/dist/**"],
     overrides: [
         {
             // For Svelte <style> blocks
