@@ -26,9 +26,7 @@ use sqlx::SqlitePool;
 use sqlx::sqlite::SqliteConnectOptions;
 use std::path::PathBuf;
 use std::sync::Arc;
-use tauri::{
-    App, Builder, EventLoopMessage, WebviewUrl, WebviewWindowBuilder, Wry, generate_handler,
-};
+use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
 
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {

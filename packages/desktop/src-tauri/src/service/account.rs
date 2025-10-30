@@ -19,23 +19,23 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
 // TODO: test the command input
-#[derive(Debug,Default,Serialize,Deserialize)]
-pub struct EditAccount{
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct EditAccount {
     name: Option<String>,
-    starting_balance: Option<Money>
+    starting_balance: Option<Money>,
 }
 
-impl EditAccount{
-    pub fn new() -> Self{
+impl EditAccount {
+    pub fn new() -> Self {
         Self::default()
     }
 
-    pub fn name(mut self, name:&str) -> Self{
+    pub fn name(mut self, name: &str) -> Self {
         self.name = Some(name.to_owned());
         self
     }
 
-    pub fn starting_balance(mut self, money: Money) -> Self{
+    pub fn starting_balance(mut self, money: Money) -> Self {
         self.starting_balance = Some(money);
         self
     }
@@ -73,14 +73,26 @@ impl Account {
         Self::from_id(&record.id, pool).await
     }
 
-    pub async fn edit(id: &str,opts: EditAccount, pool: &SqlitePool) -> Result<Self,crate::Error>{
+    pub async fn edit(
+        id: &str,
+        opts: EditAccount,
+        pool: &SqlitePool,
+    ) -> Result<Self, crate::Error> {
         let account = Self::from_id(id, pool).await?;
-        let starting_balance = opts.starting_balance.unwrap_or(account.starting_balance).inner();
+        let starting_balance = opts
+            .starting_balance
+            .unwrap_or(account.starting_balance)
+            .inner();
         let name = opts.name.unwrap_or(account.name);
 
-        sqlx::query!("UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3",name,starting_balance,id)
-            .execute(pool)
-            .await?;
+        sqlx::query!(
+            "UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3",
+            name,
+            starting_balance,
+            id
+        )
+        .execute(pool)
+        .await?;
 
         Self::from_id(id, pool).await
     }
@@ -243,7 +255,7 @@ mod test {
     #[sqlx::test]
     async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("My account", Money::ZERO, &pool).await?;
-        let data = CreateExpense{
+        let data = CreateExpense {
             account_id: Some(account.id.clone()),
             ..Default::default()
         };
@@ -264,7 +276,7 @@ mod test {
     #[sqlx::test]
     async fn delete_account_with_income(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("My account", Money::ZERO, &pool).await?;
-        let data = CreateIncome{
+        let data = CreateIncome {
             account_id: Some(account.id.clone()),
             ..Default::default()
         };

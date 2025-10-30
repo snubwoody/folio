@@ -20,9 +20,7 @@ use crate::{
 };
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
-use tauri::{
-    App, Builder, EventLoopMessage, WebviewUrl, WebviewWindowBuilder, Wry, generate_handler,
-};
+use tauri::{Builder, Wry};
 
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
     app.invoke_handler(tauri::generate_handler![
