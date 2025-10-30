@@ -55,7 +55,7 @@ impl Default for CreateExpense {
     }
 }
 
-// TODO: try deleting account and category deps
+// TODO: try deleting account deps
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Expense {
