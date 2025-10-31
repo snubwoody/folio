@@ -201,6 +201,8 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - run: pnpm install
+      - uses: cargo-bins/cargo-binstall@main
+      - run: cargo 
       - name: Build
         run: pnpm -F desktop tauri build
       - name: Build msix
