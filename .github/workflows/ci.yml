@@ -147,7 +147,7 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           cargo nextest run --locked
-  build-test:
+  bundle:
     strategy:
       fail-fast: false
       matrix:
@@ -209,32 +209,34 @@ jobs:
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
       - run: cargo install cargo-packager --locked
-      - name: Build
+      - name: Build app
         run: |
           cd packages/desktop/src-tauri
-          pnpm -F desktop tauri build --no-bundle
+          pnpm --filter @folio/desktop build
           cargo build --release
       - name: Bundle
-        run: cargo packager --release
-      - name: Build msix
+        run: |
+          cd packages/desktop/src-tauri
+          cargo packager --release
+      - name: Bundle msix
         if: ${{runner.os == 'Windows'}}
         run: |
           cd packages/desktop/src-tauri
           cp target/release/folio.exe target/release/folio_lib.dll msix 
-          makeappx /d msix /p target/release/bundle/folio_x64.msix
+          makeappx /d msix /p target/release/folio_x64.msix
       - run: ls packages/desktop/src-tauri/target/release
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: folio-upload-${{ matrix.os }}
           path: |
-            packages/desktop/src-tauri/target/release/bundle/**/*.deb
-            packages/desktop/src-tauri/target/release/bundle/**/*.rpm
-            packages/desktop/src-tauri/target/release/bundle/**/*.AppImage
-            packages/desktop/src-tauri/target/release/bundle/**/*.msi
-            packages/desktop/src-tauri/target/release/bundle/**/*.msix
-            packages/desktop/src-tauri/target/release/bundle/**/*.exe
-            packages/desktop/src-tauri/target/release/bundle/**/*.dmg
+            packages/desktop/src-tauri/target/release/**/*.deb
+            packages/desktop/src-tauri/target/release/**/*.rpm
+            packages/desktop/src-tauri/target/release/**/*.AppImage
+            packages/desktop/src-tauri/target/release/**/*.msix
+            packages/desktop/src-tauri/target/release/**/*-setup.exe
+            packages/desktop/src-tauri/target/release/**/*.dmg
+            packages/desktop/src-tauri/target/release/**/PKGBUILD
   pass:
     needs:
       - format
@@ -243,6 +245,7 @@ jobs:
       - test
       - test-frontend
       - build-frontend
+      - bundle
     runs-on: ubuntu-latest
     steps:
       - name: Complete

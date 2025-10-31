@@ -40,6 +40,7 @@ features = ["runtime-tokio", "sqlite", "uuid", "chrono", "rust_decimal", "migrat
 
 [package.metadata.packager]
 product-name = "Folio"
+category="Finance"
 publisher = "Wakunguma Kalimukwa"
 identifier="com.wakunguma.folio"
 formats = [
@@ -61,3 +62,7 @@ resources = [
     "icons/*",
     "../../../CHANGELOG.md"
 ]
+
+[package.metadata.packager.linux]
+generate-desktop-entry = true
+
