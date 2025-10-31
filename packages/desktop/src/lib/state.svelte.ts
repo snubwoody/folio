@@ -16,7 +16,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { TransactionStore } from "./transaction.svelte";
 import type {
     IncomeAnalytic,
-    SpendingAnalytic,
     Category,
     IncomeStream,
     Account,
@@ -37,7 +36,6 @@ export class AppStore {
     
     budgets: Budget[] = $state([]);
     incomeAnalytics: IncomeAnalytic[] = $state([]);
-    spendingAnaltics: SpendingAnalytic[] = $state([]);
     
     settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
@@ -76,9 +74,6 @@ export class AppStore {
         await invoke("delete_category", { id });
         this.categories = this.categories.filter((c) => c.id !== id);
         this.expenses = (await invoke("fetch_expenses")) as Expense[];
-        this.spendingAnaltics = (await invoke(
-            "spending_analytics",
-        )) as SpendingAnalytic[];
     }
 
     async editCategory(id: string, title: string) {
@@ -119,9 +114,6 @@ export class AppStore {
             title,
         })) as Category;
         this.categories.push(category);
-        this.spendingAnaltics = (await invoke(
-            "spending_analytics",
-        )) as SpendingAnalytic[];
     }
 
     async deleteAccount(id: string) {
@@ -139,9 +131,6 @@ export class AppStore {
             title,
         })) as IncomeStream;
         this.incomeStreams.push(stream);
-        this.spendingAnaltics = (await invoke(
-            "spending_analytics",
-        )) as SpendingAnalytic[];
     }
 
     async load() {
@@ -154,10 +143,6 @@ export class AppStore {
         this.incomeAnalytics = (await invoke(
             "income_analytics",
         )) as IncomeAnalytic[];
-        // TODO: get this on demand
-        this.spendingAnaltics = (await invoke(
-            "spending_analytics",
-        )) as SpendingAnalytic[];
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;

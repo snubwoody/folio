@@ -61,11 +61,6 @@ export type Budget = {
     category: Category;
 };
 
-export type SpendingAnalytic = {
-    category: Category;
-    total: string;
-};
-
 export type IncomeAnalytic = {
     stream: IncomeStream;
     total: string;
