@@ -164,13 +164,14 @@ jobs:
           node-version: 24
           cache: pnpm
       - uses: actions/cache@v4
+        name: Cache rust
         with:
           key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
           restore-keys: |
             rust-cache-${{runner.os}}-
             rust-cache-
           path: |
-            target/
+            packages/desktop/src-tauri/target/
             ~/.cargo
       - uses: actions/cache@v4
         id: cache-sqlx
@@ -183,7 +184,7 @@ jobs:
         run: cargo install sqlx-cli
       - name: Setup database
         run: |
-          cd src-tauri
+          cd packages/desktop/src-tauri
           cargo sqlx database create
           cargo sqlx migrate run
       - name: Install system dependencies
@@ -201,7 +202,7 @@ jobs:
             librsvg2-dev
       - run: pnpm install
       - name: Build
-        run: pnpm tauri build
+        run: pnpm -F desktop tauri build
       - name: Build msix
         if: ${{runner.os == 'Windows'}}
         run: |
