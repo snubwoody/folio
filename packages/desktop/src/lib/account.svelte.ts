@@ -38,7 +38,7 @@ export class AccountStore {
 
     async editAccount(id: string, opts: EditAccount) {
         try {
-            await invoke("edit_account", { id, opts});
+            await invoke("edit_account", { id, opts });
         } catch (e) {
             console.error(e);
         }

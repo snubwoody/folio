@@ -22,30 +22,3 @@
         <Delete />
     </IconButton>
 </li>
-
-<style>
-    :global(.inline-text-field) {
-        position: relative;
-
-        &::after {
-            position: absolute;
-            content: "";
-            height: 1px;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            background-color: transparent;
-            transition: all 250ms;
-        }
-
-        &:focus-within {
-            &::after {
-                background-color: black;
-            }
-        }
-
-        input {
-            outline: none;
-        }
-    }
-</style>

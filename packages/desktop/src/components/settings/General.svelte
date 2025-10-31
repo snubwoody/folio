@@ -1,9 +1,7 @@
 <script lang="ts">
-    import { formatAmount, getCurrencies } from "$lib/lib.js";
+    import { getCurrencies } from "$lib/lib.js";
     import SelectMenu from "$components/SelectMenu.svelte";
     import { appStore } from "$lib/state.svelte";
-    import IconButton from "$components/button/IconButton.svelte";
-    import { Trash2 } from "@lucide/svelte";
     import Account from "./general/Account.svelte";
 
     let currencies: string[] = $state([]);
@@ -13,7 +11,6 @@
                 currencies = c;
             });
     });
-
 
 </script>
 

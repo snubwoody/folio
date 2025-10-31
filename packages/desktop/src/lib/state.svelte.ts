@@ -124,7 +124,7 @@ export class AppStore {
     }
 
     async deleteAccount(id: string) {
-        await invoke("delete_account",{id});
+        await invoke("delete_account",{ id });
         await this.load();
     }
 

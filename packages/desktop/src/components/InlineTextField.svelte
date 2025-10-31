@@ -5,13 +5,13 @@
         class?: string,
     };
 
-    const { onChange, value, class: userClass}: Props = $props();
+    const { onChange, value, class: userClass }: Props = $props();
 
     let inner = $state(value ?? "");
 
     const update = () => {
-        onChange?.(inner)
-    }
+        onChange?.(inner);
+    };
 </script>
 
 <label class="inline-text-field">

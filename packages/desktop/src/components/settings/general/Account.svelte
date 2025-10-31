@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { formatAmount, formatAmountWithoutSymbol, getCurrencies, getCurrencySymbol  } from "$lib/lib.js";
+    import { formatAmountWithoutSymbol, getCurrencySymbol  } from "$lib/lib.js";
     import { appStore } from "$lib/state.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
-    import type {Account} from "$lib/lib";
+    import type { Account } from "$lib/lib";
     import InlineTextField from "$components/InlineTextField.svelte";
 
     interface Props{
@@ -17,18 +17,18 @@
 
 <li class="flex items-center justify-between">
     <div class="space-y-0.5">
-        <InlineTextField 
+        <InlineTextField
             value={account.name}
-            onChange={(value) => appStore.accountStore.editAccount(account.id, {name: value})}
+            onChange={(value) => appStore.accountStore.editAccount(account.id, { name: value })}
         />
         <div class="flex gap-0.5 items-center">
             <p class="text-sm">
                 Starting balance: {symbol}
             </p>
-            <InlineTextField 
-                class="text-sm" 
+            <InlineTextField
+                class="text-sm"
                 value={amount}
-                onChange={(value) => appStore.accountStore.editAccount(account.id, {startingBalance: value})}
+                onChange={(value) => appStore.accountStore.editAccount(account.id, { startingBalance: value })}
             />
         </div>
     </div>
