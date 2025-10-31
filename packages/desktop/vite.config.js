@@ -26,6 +26,8 @@ export default defineConfig({
     },
     test: {
         exclude: ["e2e", "node_modules", ".vercel", "dist"],
+        // eslint-disable-next-line no-undef
+        reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
         projects: [
             {
                 extends: true,
@@ -43,6 +45,7 @@ export default defineConfig({
                     browser: {
                         enabled: true,
                         provider: "playwright",
+                        screenshotFailures: false,
                         api: {
                             host: "127.0.0.1",
                             port: 4040,
