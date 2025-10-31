@@ -4,8 +4,7 @@ env:
   RELEASE_REPO: snubwoody/folio-site
   DATABASE_URL: sqlite://data.db
 on:
-  push: 
-    tags: ["v*"]
+  workflow_dispatch:
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true

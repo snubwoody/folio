@@ -147,6 +147,79 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           cargo nextest run --locked
+  build-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest,macos-latest,ubuntu-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/cache@v4
+        with:
+          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
+          restore-keys: |
+            rust-cache-${{runner.os}}-
+            rust-cache-
+          path: |
+            target/
+            ~/.cargo
+      - uses: actions/cache@v4
+        id: cache-sqlx
+        with:
+          key: cargo-sqlx-cache-${{runner.os}} # Permanenly cache sqlx
+          path: ~/.cargo/bin
+      - uses: taiki-e/install-action@nextest
+      - name: Install sqlx-cli
+        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
+        run: cargo install sqlx-cli
+      - name: Setup database
+        run: |
+          cd src-tauri
+          cargo sqlx database create
+          cargo sqlx migrate run
+      - name: Install system dependencies
+        if: ${{runner.os == 'Linux'}}
+        run: |
+          sudo apt update
+          sudo apt install libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+      - run: pnpm install
+      - name: Build
+        run: pnpm tauri build
+      - name: Build msix
+        if: ${{runner.os == 'Windows'}}
+        run: |
+          cd packages/desktop/src-tauri
+          cp target/release/folio.exe target/release/folio_lib.dll msix 
+          makeappx /d msix /p target/release/bundle/folio_x64.msix
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: folio-upload-${{ matrix.os }}
+          path: |
+            src-tauri/target/release/bundle/**/*.deb
+            src-tauri/target/release/bundle/**/*.rpm
+            src-tauri/target/release/bundle/**/*.AppImage
+            src-tauri/target/release/bundle/**/*.msi
+            src-tauri/target/release/bundle/**/*.msix
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.dmg
   pass:
     needs:
       - format
