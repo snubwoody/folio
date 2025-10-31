@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { formatAmount } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
-    import {isThisMonth} from "date-fns";
+    import { isThisMonth } from "date-fns";
 
     const income = appStore.incomes.filter((income) => {
         const date = new Date(income.date);
