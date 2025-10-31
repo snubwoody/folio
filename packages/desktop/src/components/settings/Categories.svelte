@@ -5,7 +5,7 @@
     import Category from "./Category.svelte";
 
     let categories = $derived.by(() => {
-        return appStore.categories
+        return (appStore.categories ?? [])
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -

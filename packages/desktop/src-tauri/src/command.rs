@@ -47,6 +47,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         settings,
         delete_budget,
         income_analytics,
+        edit_income_stream,
         create_income_stream,
         delete_income_stream,
         fetch_categories,
