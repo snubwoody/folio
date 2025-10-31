@@ -2,4 +2,4 @@
 "@folio/desktop": patch
 ---
 
-Use bits-ui in DatePicker component
+feat(desktop): use bits-ui in DatePicker component

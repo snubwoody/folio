@@ -46,7 +46,6 @@ export type Income = {
 export type Expense = {
     id: string;
     amount: string;
-    description: string;
     category?: Category;
     account?: Account;
     date: string;
@@ -59,11 +58,6 @@ export type Budget = {
     totalSpent: string;
     remaining: string;
     category: Category;
-};
-
-export type SpendingAnalytic = {
-    category: Category;
-    total: string;
 };
 
 export type IncomeAnalytic = {

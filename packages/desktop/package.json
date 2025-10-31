@@ -20,7 +20,8 @@
         "@internationalized/date": "^3.10.0",
         "@tauri-apps/api": "^2",
         "@tauri-apps/plugin-opener": "^2",
-        "@tauri-apps/plugin-os": "~2"
+        "@tauri-apps/plugin-os": "~2",
+        "date-fns": "^4.1.0"
     },
     "devDependencies": {
         "@tauri-apps/cli": "^2"
