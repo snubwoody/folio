@@ -82,11 +82,7 @@ export class AppStore {
 
     async editCategory(id: string, title: string) {
         await invoke("edit_category", { id, title });
-        this.categories = (await invoke("fetch_categories")) as Category[];
-        this.expenses = (await invoke("fetch_expenses")) as Expense[];
-        this.incomeAnalytics = (await invoke(
-            "income_analytics",
-        )) as IncomeAnalytic[];
+        await this.load();
     }
 
     /**
@@ -125,6 +121,11 @@ export class AppStore {
         this.spendingAnaltics = (await invoke(
             "spending_analytics",
         )) as SpendingAnalytic[];
+    }
+
+    async deleteAccount(id: string) {
+        await invoke("delete_account",{ id });
+        await this.load();
     }
 
     /**

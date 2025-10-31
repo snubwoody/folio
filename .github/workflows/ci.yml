@@ -65,6 +65,9 @@ jobs:
           cd packages/desktop/src-tauri
           cargo fmt --check
   test-frontend:
+    permissions:
+      pull-requests: write
+      checks: write
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
