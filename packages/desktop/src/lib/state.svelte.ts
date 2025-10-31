@@ -89,10 +89,9 @@ export class AppStore {
         )) as IncomeAnalytic[];
     }
 
-    
     /**
      * Edit an income stream.
-     * 
+     *
      * @param id The id of the {@link IncomeStream} to edit
      * @param title The new title
      */

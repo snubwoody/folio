@@ -21,6 +21,7 @@
         />
     </div>
     <IconButton
+        aria-label="Delete"
         onclick={() => appStore.deleteIncomeStream(stream.id)}
         variant="ghost"
     >
