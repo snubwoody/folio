@@ -46,7 +46,6 @@ export type Income = {
 export type Expense = {
     id: string;
     amount: string;
-    description: string;
     category?: Category;
     account?: Account;
     date: string;

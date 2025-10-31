@@ -34,7 +34,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         "var(--color-purple-900)",
     ];
 
-    $inspect(appStore.expenses);
 </script>
 
 <section class="space-y-2">
