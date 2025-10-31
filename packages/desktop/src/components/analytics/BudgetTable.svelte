@@ -17,7 +17,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { appStore } from "$lib/state.svelte";
     import Budget from "./Budget.svelte";
-    $inspect(appStore.budgets);
 </script>
 
 <ul class="expense-table">
