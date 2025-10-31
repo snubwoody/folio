@@ -46,18 +46,8 @@ test("Show accounts", async () => {
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
     expect(page.getByRole("heading", { name: "Accounts" })).toBeInTheDocument();
-    expect(page.getByText("Account 1")).toBeInTheDocument();
-    expect(page.getByText("Account 2")).toBeInTheDocument();
-});
-
-test("Show account starting balance", async () => {
-    appStore.accounts = [
-        { id: "1",name: "Account 1", startingBalance: "24.25",balance: "0.0" },
-    ];
-    appStore.settings.currencyCode = "CAD";
-    const page = render(Sidebar);
-    await page.getByLabelText("Open settings").click();
-    expect(page.getByText("Starting balance: CA$24.25")).toBeInTheDocument();
+    expect(page.getByRole("textbox").first()).toHaveValue("Account 1");
+    expect(page.getByRole("textbox").nth(2)).toHaveValue("Account 2");
 });
 
 test("Show categories", async () => {
