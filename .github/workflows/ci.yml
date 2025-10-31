@@ -200,29 +200,33 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-      - run: pnpm install
-      - uses: cargo-bins/cargo-binstall@main
-      - run: cargo 
+      - run: pnpm install --frozen-lockfile
+      - run: cargo install cargo-packager --locked
+        
+      - run: cargo build --release
       - name: Build
-        run: pnpm -F desktop tauri build
+        run: pnpm -F desktop tauri build --no-bundle
+      - name: Bundle
+        run: cargo packager --release
       - name: Build msix
         if: ${{runner.os == 'Windows'}}
         run: |
           cd packages/desktop/src-tauri
           cp target/release/folio.exe target/release/folio_lib.dll msix 
           makeappx /d msix /p target/release/bundle/folio_x64.msix
+      - run: ls packages/desktop/src-tauri/target/release
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: folio-upload-${{ matrix.os }}
           path: |
-            src-tauri/target/release/bundle/**/*.deb
-            src-tauri/target/release/bundle/**/*.rpm
-            src-tauri/target/release/bundle/**/*.AppImage
-            src-tauri/target/release/bundle/**/*.msi
-            src-tauri/target/release/bundle/**/*.msix
-            src-tauri/target/release/bundle/**/*.exe
-            src-tauri/target/release/bundle/**/*.dmg
+            packages/desktop/src-tauri/target/release/bundle/**/*.deb
+            packages/desktop/src-tauri/target/release/bundle/**/*.rpm
+            packages/desktop/src-tauri/target/release/bundle/**/*.AppImage
+            packages/desktop/src-tauri/target/release/bundle/**/*.msi
+            packages/desktop/src-tauri/target/release/bundle/**/*.msix
+            packages/desktop/src-tauri/target/release/bundle/**/*.exe
+            packages/desktop/src-tauri/target/release/bundle/**/*.dmg
   pass:
     needs:
       - format
