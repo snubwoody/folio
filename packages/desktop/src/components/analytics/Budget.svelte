@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const { budget }: Props = $props();
     // FIXME: use app currency code;
     let formattedAmount = $derived.by(() =>
-        formatAmountWithoutSymbol(appStore.settings.currencyCode),
+        formatAmountWithoutSymbol(budget.amount),
     );
 
     async function updateAmount(amount: string) {
@@ -51,7 +51,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <MoneyCell symbol="$" amount={formattedAmount} onUpdate={updateAmount} />
 <p class="data-cell">{formatAmount(budget.totalSpent,{ currency: appStore.settings.currencyCode })}</p>
 <p class="data-cell">{formatAmount(budget.remaining,{ currency: appStore.settings.currencyCode })}</p>
-
 <style>
     :global(.delete-btn) {
         position: absolute;
