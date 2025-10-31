@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { formatAmountWithoutSymbol } from "$lib/lib";
+    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import MoneyCell from "$components/MoneyCell.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { formatAmount, type Budget } from "$lib/lib";
@@ -27,9 +27,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     };
 
     const { budget }: Props = $props();
-    // FIXME: use app currency code;
     let formattedAmount = $derived.by(() =>
-        formatAmountWithoutSymbol(appStore.settings.currencyCode),
+        formatAmountWithoutSymbol(budget.amount),
     );
 
     async function updateAmount(amount: string) {
@@ -48,10 +47,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <Trash2 />
     </IconButton>
 </div>
-<MoneyCell symbol="$" amount={formattedAmount} onUpdate={updateAmount} />
+<MoneyCell symbol={getCurrencySymbol(appStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
 <p class="data-cell">{formatAmount(budget.totalSpent,{ currency: appStore.settings.currencyCode })}</p>
 <p class="data-cell">{formatAmount(budget.remaining,{ currency: appStore.settings.currencyCode })}</p>
-
 <style>
     :global(.delete-btn) {
         position: absolute;

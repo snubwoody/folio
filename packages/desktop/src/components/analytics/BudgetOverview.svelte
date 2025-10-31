@@ -30,6 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         return date >= startOfMonth && date < nextMonth;
     });
     const budgets = appStore.budgets;
+    // FIXME: broken state
     const totalExpenses = $derived.by(()=>expenses.reduce((acc,item) => acc + parseFloat(item.amount),0));
     const totalIncome = $derived.by(()=>income.reduce((acc,item) => acc + parseFloat(item.amount),0));
     const totalBudget = $derived.by(()=>budgets.reduce((acc,item) => acc + parseFloat(item.amount),0));
