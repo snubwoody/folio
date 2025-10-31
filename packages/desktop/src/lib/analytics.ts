@@ -7,7 +7,7 @@ export type SpendingAnalytic = {
 
 /**
  * Calculates the amount spent per category.
- * @param expenses An array of expenses. 
+ * @param expenses An array of expenses.
  */
 export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalytic[] => {
     expenses = expenses.filter(expense => expense.category !== null);

@@ -2,4 +2,4 @@
 "@folio/desktop": minor
 ---
 
-Add accounts section to settings panel
+feat(desktop): add accounts section to settings panel
