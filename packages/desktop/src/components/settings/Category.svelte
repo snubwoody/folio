@@ -30,7 +30,7 @@
 </li>
 
 <style>
-    .inline-text-field {
+    :global(.inline-text-field) {
         position: relative;
 
         &::after {
