@@ -20,6 +20,7 @@ use sqlx::SqlitePool;
 
 // TODO: test the command input
 #[derive(Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct EditAccount {
     name: Option<String>,
     starting_balance: Option<Money>,

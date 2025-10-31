@@ -1,10 +1,11 @@
 <script lang="ts">
     interface Props {
         onChange?: (value:string) => void,
-        value?: string
+        value?: string,
+        class?: string,
     };
 
-    const { onChange, value}: Props = $props();
+    const { onChange, value, class: userClass}: Props = $props();
 
     let inner = $state(value ?? "");
 
@@ -18,6 +19,7 @@
         type="text"
         bind:value={inner}
         onblur={update}
+        class={`${userClass}`}
     />
 </label>
 
