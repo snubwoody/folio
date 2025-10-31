@@ -174,13 +174,15 @@ jobs:
             packages/desktop/src-tauri/target/
             ~/.cargo
       - uses: actions/cache@v4
-        id: cache-sqlx
+        id: cache-cargo-bin
+        name: Cache cargo binaries
         with:
-          key: cargo-sqlx-cache-${{runner.os}} # Permanenly cache sqlx
+          key: cargo-bin-cache-${{runner.os}} 
+          restore-keys: cargo-sqlx-cache
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install sqlx-cli
-        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli
       - name: Setup database
         run: |
@@ -202,10 +204,11 @@ jobs:
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
       - run: cargo install cargo-packager --locked
-        
-      - run: cargo build --release
       - name: Build
-        run: pnpm -F desktop tauri build --no-bundle
+        run: |
+          cd packages/desktop/src-tauri
+          pnpm -F desktop tauri build --no-bundle
+          cargo build --release
       - name: Bundle
         run: cargo packager --release
       - name: Build msix

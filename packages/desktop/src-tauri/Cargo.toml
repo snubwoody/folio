@@ -58,5 +58,6 @@ your finances without compromising your data. All your financial data
 stays on your device - no tracking, just simple budgeting.
 """
 resources = [
-    "icons/*"
+    "icons/*",
+    "../../../CHANGELOG.md"
 ]
