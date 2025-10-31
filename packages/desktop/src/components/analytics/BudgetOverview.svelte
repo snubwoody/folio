@@ -17,17 +17,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { formatAmount } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
+    import { isThisMonth } from "date-fns";
 
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(),now.getMonth(),1);
-    const nextMonth = new Date(now.getFullYear(),now.getMonth() + 1,1);
     const income = appStore.incomes.filter((income) => {
         const date = new Date(income.date);
-        return date >= startOfMonth && date < nextMonth;
+        return isThisMonth(date);
     });
     const expenses = appStore.expenses.filter((expense) => {
         const date = new Date(expense.date);
-        return date >= startOfMonth && date < nextMonth;
+        return isThisMonth(date);
     });
     const budgets = appStore.budgets;
     // FIXME: broken state
