@@ -89,6 +89,18 @@ export class AppStore {
         )) as IncomeAnalytic[];
     }
 
+    
+    /**
+     * Edit an income stream.
+     * 
+     * @param id The id of the {@link IncomeStream} to edit
+     * @param title The new title
+     */
+    async editIncomeStream(id: string, title: string) {
+        await invoke("edit_income_stream", { id, title });
+        await this.load();
+    }
+
     /**
      * Delete an income stream from the user store. Any transactions
      * referrencing this income stream will have their referencing field
@@ -98,11 +110,7 @@ export class AppStore {
      */
     async deleteIncomeStream(id: string) {
         await invoke("delete_income_stream", { id });
-        this.incomeStreams = this.incomeStreams.filter((c) => c.id !== id);
-        this.incomes = (await invoke("fetch_incomes")) as Expense[];
-        this.incomeAnalytics = (await invoke(
-            "income_analytics",
-        )) as IncomeAnalytic[];
+        await this.load();
     }
 
     /**

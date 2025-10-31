@@ -3,6 +3,7 @@
     import Plus from "@lucide/svelte/icons/plus";
     import Delete from "@lucide/svelte/icons/trash-2";
     import { appStore } from "$lib/state.svelte";
+    import IncomeStream from "./IncomeStream.svelte";
 
     let incomeStreams = $derived.by(() => {
         return appStore.incomeStreams
@@ -30,15 +31,7 @@
     </header>
     <ul class="space-y-2">
         {#each incomeStreams as stream (stream.id)}
-            <li class="flex items-center justify-between">
-                <p>{stream.title}</p>
-                <IconButton
-                    onclick={() => appStore.deleteIncomeStream(stream.id)}
-                    variant="ghost"
-                >
-                    <Delete />
-                </IconButton>
-            </li>
+            <IncomeStream {stream}/>
         {/each}
     </ul>
 </div>
