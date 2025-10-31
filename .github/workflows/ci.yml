@@ -174,17 +174,20 @@ jobs:
             packages/desktop/src-tauri/target/
             ~/.cargo
       - uses: actions/cache@v4
+        id: cache-sqlx
+        name: Cache sqlx
+        with:
+          key: cargo-sqlx-cache-${{runner.os}} 
+          path: ~/.cargo/bin
+      - uses: actions/cache@v4
         id: cache-cargo-bin
         name: Cache cargo binaries
         with:
-          key: cargo-bin-cache-${{runner.os}} 
-          restore-keys: |
-            cargo-sqlx-cache-${{runner.os}}
-            cargo-sqlx-cache-
+          key: cargo-bin-cache-${{runner.os}}  # Temp duplicate
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install sqlx-cli
-        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli
       - name: Setup database
         run: |
