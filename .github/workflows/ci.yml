@@ -178,7 +178,9 @@ jobs:
         name: Cache cargo binaries
         with:
           key: cargo-bin-cache-${{runner.os}} 
-          restore-keys: cargo-sqlx-cache
+          restore-keys: |
+            cargo-sqlx-cache-${{runner.os}}
+            cargo-sqlx-cache-
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install sqlx-cli
