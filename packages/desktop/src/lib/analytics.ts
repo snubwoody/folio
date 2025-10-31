@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import type { Expense,Category } from "./lib";
-import {isThisMonth} from "date-fns";
+import { isThisMonth } from "date-fns";
 
 export type SpendingAnalytic = {
     category: Category,
@@ -52,7 +52,7 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
             .filter(expense => expense.category.id === id)
             .reduce((previous,current) => previous + parseFloat(current.amount),0);
 
-        analytics.push({category,total});
+        analytics.push({ category,total });
     }
     return analytics;
 };

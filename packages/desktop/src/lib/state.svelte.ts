@@ -33,10 +33,10 @@ export class AppStore {
     categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
     accounts: Account[] = $state([]);
-    
+
     budgets: Budget[] = $state([]);
     incomeAnalytics: IncomeAnalytic[] = $state([]);
-    
+
     settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);

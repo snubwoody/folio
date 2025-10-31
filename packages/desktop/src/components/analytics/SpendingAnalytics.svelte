@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { appStore } from "$lib/state.svelte";
 
     const analytics = $derived.by(() => calculateSpendingAnalytics(appStore.expenses));
-    const total = Math.max(...analytics.map(a => a.total));
+    const total = $derived(Math.max(...analytics.map(a => a.total)));
 
     const purpleShades = [
         "var(--color-purple-50)",
