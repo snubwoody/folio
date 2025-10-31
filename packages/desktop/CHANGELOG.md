@@ -4,9 +4,9 @@
 
 ### Minor Changes
 
-- a15a728: refactor: calculate spending analytics in frontend
-- 71af8a7: feat: add accounts section to settings panel
+- refactor: calculate spending analytics in frontend ([#74](https://github.com/snubwoody/folio/pull/74))
+- feat: add accounts section to settings panel ([#66](https://github.com/snubwoody/folio/pull/66))
 
 ### Patch Changes
 
-- 2b57c4e: feat: use bits-ui in DatePicker component
+- refactor: replace @melt-ui/svelte with bits-ui ([#64](https://github.com/snubwoody/folio/pull/64))
