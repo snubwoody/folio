@@ -127,6 +127,11 @@ export class AppStore {
         )) as SpendingAnalytic[];
     }
 
+    async deleteAccount(id: string) {
+        await invoke("delete_account",{id});
+        await this.load();
+    }
+
     /**
      * Create a new {@link IncomeStream}.
      *

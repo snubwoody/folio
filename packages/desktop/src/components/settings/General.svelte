@@ -4,6 +4,7 @@
     import { appStore } from "$lib/state.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
+    import Account from "./general/Account.svelte";
 
     let currencies: string[] = $state([]);
     $effect(()=>{
@@ -12,6 +13,8 @@
                 currencies = c;
             });
     });
+
+
 </script>
 
 <div class="space-y-2">
@@ -21,7 +24,7 @@
             <p class="text-text-muted text-sm">The ISO currency code</p>
         </div>
         <SelectMenu
-            class="w-full max-w-[96px]"
+            class="w-full max-w-12"
             defaultValue={appStore.settings.currencyCode}
             items={currencies}
             onChange={(c) => appStore.setCurrencyCode(c)}
@@ -32,17 +35,7 @@
         <h6>Accounts</h6>
         <ul class="space-y-2">
             {#each appStore.accounts as account (account.id)}
-                <li class="flex items-center justify-between">
-                    <div class="space-y-0.5">
-                        <p>{account.name}</p>
-                        <p class="text-sm">
-                            Starting balance: {formatAmount(account.startingBalance,{ currency:appStore.settings.currencyCode })}
-                        </p>
-                    </div>
-                    <IconButton variant="ghost">
-                        <Trash2/>
-                    </IconButton>
-                </li>
+                <Account {account}/>
             {/each}
         </ul>
     </section>
