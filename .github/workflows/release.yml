@@ -1,7 +1,6 @@
 name: Release
 env:
   CARGO_TERM_COLOR: always
-  RELEASE_REPO: snubwoody/folio-site
   DATABASE_URL: sqlite://data.db
 on:
   workflow_dispatch:
@@ -12,8 +11,15 @@ jobs:
   build:
     strategy:
       fail-fast: false
+      
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
+        include:
+          - os: windows-latest
+            formats: nsis
+          - os: macos-latest
+            formats: dmg
+          - os: ubuntu-latest
+            formats: deb,pacman
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +32,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - uses: actions/cache@v4
+        name: Cache rust
         with:
           key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
           restore-keys: |
@@ -39,13 +46,22 @@ jobs:
         with:
           key: cargo-sqlx-cache-${{runner.os}} # Permanenly cache sqlx
           path: ~/.cargo/bin
+      - uses: actions/cache@v4
+        id: cache-cargo-bin
+        name: Cache cargo binaries
+        with:
+          key: cargo-cargo-bin-cache-${{runner.os}}
+          path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install sqlx-cli
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli
+      - name: Install cargo packager
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+        run: cargo install cargo-packager --locked
       - name: Setup database
         run: |
-          cd src-tauri
+          cd packages/desktop/src-tauri
           cargo sqlx database create
           cargo sqlx migrate run
       - name: Install system dependencies
@@ -61,20 +77,28 @@ jobs:
             libssl-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev
-      - run: pnpm install
-      - name: Build
-        run: pnpm tauri build
+      - run: pnpm install --frozen-lockfile
+      - name: Build app
+        run: |
+          cd packages/desktop/src-tauri
+          pnpm --filter @folio/desktop build
+          cargo build --release
+      - name: Bundle
+        run: |
+          cd packages/desktop/src-tauri
+          cargo packager --release --formats ${{matrix.formats}}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: folio-upload-${{ matrix.os }}
           path: |
-            src-tauri/target/release/bundle/**/*.deb
-            src-tauri/target/release/bundle/**/*.rpm
-            src-tauri/target/release/bundle/**/*.AppImage
-            src-tauri/target/release/bundle/**/*.msi
-            src-tauri/target/release/bundle/**/*.exe
-            src-tauri/target/release/bundle/**/*.dmg
+            packages/desktop/src-tauri/target/release/**/*.deb
+            packages/desktop/src-tauri/target/release/**/*.rpm
+            packages/desktop/src-tauri/target/release/**/*.PKGBUILD
+            packages/desktop/src-tauri/target/release/**/*.msi
+            packages/desktop/src-tauri/target/release/**/*-setup.exe
+            packages/desktop/src-tauri/target/release/**/*.dmg
+            packages/desktop/src-tauri/target/release/**/*.tar.gz
   release:
     permissions:
       contents: write
@@ -85,13 +109,12 @@ jobs:
         with:
           pattern: folio-upload-*
           merge-multiple: true
-          path: src-tauri/target/release/bundle
+          path: packages/desktop/src-tauri/target/release/
       - name: Create draft release
         env:
-          GITHUB_TOKEN: ${{secrets.RELEASE_REPO_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           gh release create ${{ github.ref_name }} \
-            --repo $RELEASE_REPO \
             --draft \
-            src-tauri/target/release/bundle/**/*
+            packages/desktop/src-tauri/target/release/**/*
 

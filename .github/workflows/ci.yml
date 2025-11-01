@@ -192,9 +192,6 @@ jobs:
           key: cargo-bin-cache-${{runner.os}}  # Temp duplicate
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
-      - name: Install windows 10 SDK
-        run: choco install windows-sdk-10.1
-        if: ${{runner.os == 'Windows'}}
       - name: Install sqlx-cli
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli
@@ -228,26 +225,6 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           cargo packager --release --formats ${{matrix.formats}}
-      - name: Bundle msix
-        if: ${{runner.os == 'Windows'}}
-        run: |
-          cd packages/desktop/src-tauri
-          cp target/release/folio_lib.dll msix/ 
-          cp target/release/folio.exe msix/ 
-          makeappx pack /d msix /p target/release/folio_x64.msix
-      - run: ls packages/desktop/src-tauri/target/release
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: folio-upload-${{ matrix.os }}
-          path: |
-            packages/desktop/src-tauri/target/release/**/*.deb
-            packages/desktop/src-tauri/target/release/**/*.rpm
-            packages/desktop/src-tauri/target/release/**/*.AppImage
-            packages/desktop/src-tauri/target/release/**/*.msix
-            packages/desktop/src-tauri/target/release/**/*-setup.exe
-            packages/desktop/src-tauri/target/release/**/*.dmg
-            packages/desktop/src-tauri/target/release/**/PKGBUILD
   pass:
     needs:
       - format
@@ -256,7 +233,6 @@ jobs:
       - test
       - test-frontend
       - build-frontend
-      - bundle
     runs-on: ubuntu-latest
     steps:
       - name: Complete
