@@ -154,7 +154,7 @@ jobs:
         include:
           - os: windows-latest
             formats: nsis
-          - os: windows-latest
+          - os: ubuntu-latest
             formats: deb,appimage,pkgbuild
           - os: macos-latest
             formats: dmg
