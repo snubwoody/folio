@@ -192,7 +192,9 @@ jobs:
           key: cargo-bin-cache-${{runner.os}}  # Temp duplicate
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
-      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
+      - name: Install windows 10 SDK
+        run: choco install windows-sdk-10.1
+        if: ${{runner.os == 'Windows'}}
       - name: Install sqlx-cli
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli
