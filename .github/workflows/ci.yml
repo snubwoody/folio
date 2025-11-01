@@ -155,7 +155,7 @@ jobs:
           - os: windows-latest
             formats: nsis
           - os: ubuntu-latest
-            formats: deb,appimage,pkgbuild
+            formats: deb,appimage,pacman
           - os: macos-latest
             formats: dmg
     runs-on: ${{matrix.os}}
@@ -215,6 +215,7 @@ jobs:
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
       - run: cargo install cargo-packager --locked
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
       - name: Build app
         run: |
           cd packages/desktop/src-tauri
@@ -230,7 +231,7 @@ jobs:
           cd packages/desktop/src-tauri
           cp target/release/folio_lib.dll msix/ 
           cp target/release/folio.exe msix/ 
-          makeappx /d msix /p target/release/folio_x64.msix
+          makeappx pack /d msix /p target/release/folio_x64.msix
       - run: ls packages/desktop/src-tauri/target/release
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
