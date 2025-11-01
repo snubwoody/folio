@@ -151,7 +151,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
+        include:
+          - os: windows-latest
+            formats: nsis
+          - os: windows-latest
+            formats: deb,appimage,pkgbuild
+          - os: macos-latest
+            formats: dmg
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -217,12 +223,13 @@ jobs:
       - name: Bundle
         run: |
           cd packages/desktop/src-tauri
-          cargo packager --release
+          cargo packager --release --formats ${{matrix.formats}}
       - name: Bundle msix
         if: ${{runner.os == 'Windows'}}
         run: |
           cd packages/desktop/src-tauri
-          cp target/release/folio.exe target/release/folio_lib.dll msix 
+          cp target/release/folio_lib.dll msix/ 
+          cp target/release/folio.exe msix/ 
           makeappx /d msix /p target/release/folio_x64.msix
       - run: ls packages/desktop/src-tauri/target/release
       - name: Upload artifacts
