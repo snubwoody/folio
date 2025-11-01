@@ -155,7 +155,7 @@ jobs:
           - os: windows-latest
             formats: nsis
           - os: ubuntu-latest
-            formats: deb,appimage,pacman
+            formats: deb,pacman
           - os: macos-latest
             formats: dmg
     runs-on: ${{matrix.os}}
