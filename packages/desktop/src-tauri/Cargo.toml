@@ -37,3 +37,46 @@ iso_currency = {version = "0.5.3",features = ["with-serde", "iterator"] }
 [dependencies.sqlx]
 version = "0.8"
 features = ["runtime-tokio", "sqlite", "uuid", "chrono", "rust_decimal", "migrate", "macros"]
+
+[package.metadata.packager]
+product-name = "Folio"
+category="Finance"
+publisher = "Wakunguma Kalimukwa"
+identifier="com.wakunguma.folio"
+formats = [
+    "appimage",
+    "dmg",
+    "nsis",
+    "deb",
+    "pacman",
+]
+license-file="../../../LICENSE"
+homepage = "https://www.github.com/snubwoody/folio"
+description = "A free, privacy focused budgeting app."
+long-description = """
+Folio is a privacy-focused budgeting application that helps you manage
+your finances without compromising your data. All your financial data
+stays on your device - no tracking, just simple budgeting.
+"""
+resources = [
+    "icons/*",
+    "../../../CHANGELOG.md"
+]
+
+[package.metadata.packager.linux]
+generate-desktop-entry = true
+
+[package.metadata.packager.pacman]
+depends=[
+    "cairo", 
+    "desktop-file-utils",
+    "gdk-pixbuf2", 
+    "glib2", 
+    "gtk3", 
+    "hicolor-icon-theme", 
+    "libsoup", 
+    "pango", 
+    "webkit2gtk-4.1"
+]
+
+

@@ -147,6 +147,84 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           cargo nextest run --locked
+  bundle:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            formats: nsis
+          - os: ubuntu-latest
+            formats: deb,pacman
+          - os: macos-latest
+            formats: dmg
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: actions/cache@v4
+        name: Cache rust
+        with:
+          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
+          restore-keys: |
+            rust-cache-${{runner.os}}-
+            rust-cache-
+          path: |
+            packages/desktop/src-tauri/target/
+            ~/.cargo
+      - uses: actions/cache@v4
+        id: cache-sqlx
+        name: Cache sqlx
+        with:
+          key: cargo-sqlx-cache-${{runner.os}} 
+          path: ~/.cargo/bin
+      - uses: actions/cache@v4
+        id: cache-cargo-bin
+        name: Cache cargo binaries
+        with:
+          key: cargo-bin-cache-${{runner.os}}  # Temp duplicate
+          path: ~/.cargo/bin
+      - uses: taiki-e/install-action@nextest
+      - name: Install sqlx-cli
+        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
+        run: cargo install sqlx-cli
+      - name: Setup database
+        run: |
+          cd packages/desktop/src-tauri
+          cargo sqlx database create
+          cargo sqlx migrate run
+      - name: Install system dependencies
+        if: ${{runner.os == 'Linux'}}
+        run: |
+          sudo apt update
+          sudo apt install libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+      - run: pnpm install --frozen-lockfile
+      - run: cargo install cargo-packager --locked
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+      - name: Build app
+        run: |
+          cd packages/desktop/src-tauri
+          pnpm --filter @folio/desktop build
+          cargo build --release
+      - name: Bundle
+        run: |
+          cd packages/desktop/src-tauri
+          cargo packager --release --formats ${{matrix.formats}}
   pass:
     needs:
       - format
