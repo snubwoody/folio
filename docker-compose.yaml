@@ -1,6 +1,6 @@
 services:
-  ubuntu:
-    build:
+  web:
+    build: 
       context: .
-      dockerfile: Dockerfile.ubuntu
-    image: folio-ubuntu
+      dockerfile: Dockerfile.web
+    image: folio/website
