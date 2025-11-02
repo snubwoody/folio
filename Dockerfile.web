@@ -10,7 +10,14 @@ RUN pnpm install --frozen-lockfile
 
 RUN pnpm -F web build
 
+
+FROM node:alpine AS runner
+COPY --from=builder /app/packages/web/dist /app
+COPY --from=builder /app/node_modules /app/node_modules
+
+WORKDIR /app
 ENV HOST=0.0.0.0
 ENV PORT=4321
 EXPOSE 4321
-CMD [ "node","packages/web/dist/server/entry.mjs" ]
+CMD [ "node","server/entry.mjs" ]
+
