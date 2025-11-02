@@ -5,10 +5,18 @@
     "scripts": {
         "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
         "dev:desktop": "pnpm -F desktop tauri dev",
+        "dev:web": "pnpm -F web dev",
         "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
     },
     "dependencies": {
-        "@lucide/svelte": "^0.546.0"
+        "@lucide/svelte": "^0.546.0",
+        "@astrojs/node": "^9.5.0",
+        "@astrojs/sitemap": "^3.6.0",
+        "@astrojs/vercel": "^8.2.10",
+        "astro": "^5.14.4",
+        "phosphor-astro": "^2.1.0",
+        "sharp": "^0.34.4",
+        "zod": "^4.1.12"
     },
     "devDependencies": {
         "globals": "^16.4.0",

@@ -1,0 +1,29 @@
+FROM node:alpine AS base
+
+WORKDIR /app
+RUN npm install -g pnpm
+
+FROM base AS prod-deps
+
+COPY . .
+RUN pnpm install --frozen-lockfile --prod
+
+FROM base AS builder 
+
+COPY . .
+
+RUN pnpm install --frozen-lockfile
+
+RUN pnpm -F web build
+
+
+FROM base AS runner
+COPY --from=builder /app/packages/web/dist /app
+COPY --from=prod-deps /app/node_modules /app/node_modules
+
+WORKDIR /app
+ENV HOST=0.0.0.0
+ENV PORT=8080
+EXPOSE 8080
+CMD [ "node","server/entry.mjs" ]
+

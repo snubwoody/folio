@@ -1,9 +1,8 @@
 .changeset/
 .git/
 .github/
-target/
+**/target/
 .idea/
 .vscode/
-node_modules/
-Dockerfile*
+**/node_modules/
 docker-compose.yaml

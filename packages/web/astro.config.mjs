@@ -12,7 +12,7 @@ export default defineConfig({
     vite: {
         plugins: [tailwindcss(),sitemap()],
     },
-    adapter: !(process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === "preview") ? node({
+    adapter: node({
         mode: "standalone",
-    }) : vercel(),
+    }),
 });
