@@ -1,8 +1,14 @@
-FROM node:alpine AS builder 
+FROM node:alpine AS base
 
 WORKDIR /app
-
 RUN npm install -g pnpm
+
+FROM base AS prod-deps
+
+COPY . .
+RUN pnpm install --frozen-lockfile --prod
+
+FROM base AS builder 
 
 COPY . .
 
@@ -11,9 +17,9 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm -F web build
 
 
-FROM node:alpine AS runner
+FROM base AS runner
 COPY --from=builder /app/packages/web/dist /app
-COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=prod-deps /app/node_modules /app/node_modules
 
 WORKDIR /app
 ENV HOST=0.0.0.0
