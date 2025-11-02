@@ -1,4 +1,4 @@
-name: Release
+name: Release Folio desktop
 env:
   CARGO_TERM_COLOR: always
   DATABASE_URL: sqlite://data.db
