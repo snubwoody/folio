@@ -5,4 +5,4 @@ services:
       dockerfile: Dockerfile.web
     image: folio/website
     ports:
-      - 4321:4321
+      - 8080:8080

@@ -1,15 +1,11 @@
-# fly.toml app configuration file generated for folio-twilight-sound-2018 on 2025-11-02T12:01:07-07:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
-app = 'folio'
-primary_region = 'sjc'
+app = 'folio-website'
+primary_region = 'yyz'
 
 [build]
+  dockerfile = 'Dockerfile.web'
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
@@ -17,6 +13,7 @@ primary_region = 'sjc'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
+  size = 'shared-cpu-1x'
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
