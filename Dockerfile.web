@@ -1,11 +1,16 @@
-FROM node:alpine 
+FROM node:alpine AS builder 
 
-WORKDIR /usr/src/app
-
-COPY . .
+WORKDIR /app
 
 RUN npm install -g pnpm
+
+COPY . .
 
 RUN pnpm install --frozen-lockfile
 
 RUN pnpm -F web build
+
+ENV HOST=0.0.0.0
+ENV PORT=4321
+EXPOSE 4321
+CMD [ "node","packages/web/dist/server/entry.mjs" ]

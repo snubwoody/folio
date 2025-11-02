@@ -4,3 +4,5 @@ services:
       context: .
       dockerfile: Dockerfile.web
     image: folio/website
+    ports:
+      - 4321:4321
