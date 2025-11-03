@@ -225,7 +225,7 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           pnpm --filter @folio/desktop build
-          cargo build --release
+          cargo build --release --locked
       - name: Bundle
         run: |
           cd packages/desktop/src-tauri

@@ -5,7 +5,7 @@
     import Account from "./general/Account.svelte";
 
     let currencies: string[] = $state([]);
-    $effect(()=>{
+    $effect(() => {
         getCurrencies()
             .then((c) => {
                 currencies = c;
@@ -25,7 +25,9 @@
             defaultValue={appStore.settings.currencyCode}
             items={currencies}
             onChange={(c) => appStore.setCurrencyCode(c)}
-            toOption={(item) => {return { label: item,value: item };}}
+            toOption={(item) => {
+                return { label: item,value: item };
+            }}
         />
     </div>
     <section class="space-y-1">

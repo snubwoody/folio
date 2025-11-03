@@ -11,11 +11,11 @@ export type ReleaseInfo = {
     draft: boolean,
     prerelease: boolean,
     immutable: boolean,
-}
+};
 
 export type ReleaseAuthor = {
     login: string,
-}
+};
 
 export type Asset = {
     url: string,
@@ -25,7 +25,7 @@ export type Asset = {
     size: number,
     digest: string,
     browser_download_url: string
-}
+};
 
 export type DownloadLinks = {
     dmg: string
@@ -77,6 +77,6 @@ export const getDownloadLinks = async (): Promise<DownloadLinks> => {
         appImage: map.get("appImage")!.browser_download_url,
         dmg: map.get("dmg")!.browser_download_url,
         deb: map.get("deb")!.browser_download_url,
-        rpm: map.get("rpm")!.browser_download_url,
+        rpm: map.get("rpm")!.browser_download_url
     };
 };

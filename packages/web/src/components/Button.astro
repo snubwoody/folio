@@ -4,12 +4,12 @@ type Variant = "primary" | "secondary" | "neutral" | "bordered";
 type Size = "medium";
 
 type Props = {
-	variant?: Variant,
-	size?: Size,
-	/**
+    variant?: Variant,
+    size?: Size,
+    /**
 	 * Converts the button into a link
 	 */
-	href?: string
+    href?: string
 } & HTMLAttributes<"button">;
 
 const {

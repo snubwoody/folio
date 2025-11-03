@@ -17,15 +17,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
 	type Props = {
-		label?: string,
-		value: string,
-		placeholder?: string
-	}
+	    label?: string,
+	    value: string,
+	    placeholder?: string
+	};
 
 	let {
 	    label,
 	    placeholder,
-	    value = $bindable(),
+	    value = $bindable()
 	}: Props = $props();
 </script>
 

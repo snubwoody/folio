@@ -4,12 +4,12 @@
     import { appStore } from "$lib/state.svelte";
     import IncomeStream from "./IncomeStream.svelte";
 
-    let incomeStreams = $derived.by(() => {
+    const incomeStreams = $derived.by(() => {
         return (appStore.incomeStreams ?? [])
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime(),
+                    new Date(b.createdAt).getTime()
             )
             .reverse();
     });

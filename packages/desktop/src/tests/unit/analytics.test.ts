@@ -6,7 +6,7 @@ test("Calculate spending analytics",() => {
 
     const categories: Category[] = [
         { id: "1",title: "Rent",createdAt: "" },
-        { id: "2",title: "Entertainment",createdAt: "" },
+        { id: "2",title: "Entertainment",createdAt: "" }
     ];
 
     const date = new Date().toISOString();
@@ -16,22 +16,22 @@ test("Calculate spending analytics",() => {
             amount: "200",
             currencyCode: "CAD",
             date,
-            category: categories[0],
+            category: categories[0]
         },
         {
             id: "",
             amount: "250",
             currencyCode: "CAD",
             date,
-            category: categories[0],
+            category: categories[0]
         },
         {
             id: "",
             amount: "10.25",
             currencyCode: "CAD",
             date,
-            category: categories[1],
-        },
+            category: categories[1]
+        }
     ];
 
     const analytics = calculateSpendingAnalytics(expenses);
@@ -45,7 +45,7 @@ test("Skip malformed dates",() => {
 
     const categories: Category[] = [
         { id: "1",title: "Rent",createdAt: "" },
-        { id: "2",title: "Entertainment",createdAt: "" },
+        { id: "2",title: "Entertainment",createdAt: "" }
     ];
 
     const date = new Date();
@@ -56,22 +56,22 @@ test("Skip malformed dates",() => {
             amount: "200",
             currencyCode: "CAD",
             date: date.toISOString(),
-            category: categories[0],
+            category: categories[0]
         },
         {
             id: "",
             amount: "250",
             currencyCode: "CAD",
             date: date.toISOString(),
-            category: categories[1],
+            category: categories[1]
         },
         {
             id: "",
             amount: "10.25",
             currencyCode: "CAD",
             date: "not-a-date",
-            category: categories[1],
-        },
+            category: categories[1]
+        }
     ];
 
     const analytics = calculateSpendingAnalytics(expenses);
@@ -81,7 +81,7 @@ test("Skip malformed dates",() => {
 test("Filter by current month",() => {
 
     const categories: Category[] = [
-        { id: "1",title: "Rent",createdAt: "" },
+        { id: "1",title: "Rent",createdAt: "" }
     ];
 
     const past = new Date(2000).toISOString();
@@ -94,22 +94,22 @@ test("Filter by current month",() => {
             amount: "200",
             currencyCode: "CAD",
             date: today,
-            category: categories[0],
+            category: categories[0]
         },
         {
             id: "",
             amount: "250",
             currencyCode: "CAD",
             date: past,
-            category: categories[0],
+            category: categories[0]
         },
         {
             id: "",
             amount: "10.25",
             currencyCode: "CAD",
             date: future,
-            category: categories[0],
-        },
+            category: categories[0]
+        }
     ];
 
     const analytics = calculateSpendingAnalytics(expenses);

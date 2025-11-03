@@ -59,11 +59,11 @@ from.
         toOption,
         onChange,
         class: className,
-        defaultValue,
+        defaultValue
     }: Props = $props();
 
     let selectedOption: SelectOption | undefined = $state(
-        defaultValue ? toOption(defaultValue) : undefined,
+        defaultValue ? toOption(defaultValue) : undefined
     );
 
     const options = $derived(items.map((i) => toOption(i)));
@@ -80,7 +80,7 @@ from.
 
     const select = new Select<SelectOption>({
         value: defaultValue ? toOption(defaultValue) : undefined,
-        onValueChange: onValueChange,
+        onValueChange: onValueChange
     });
 </script>
 

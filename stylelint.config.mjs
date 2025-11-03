@@ -6,8 +6,8 @@ export default {
         {
             // For Svelte <style> blocks
             files: ["**/*.svelte"],
-            customSyntax: "postcss-html",
-        },
+            customSyntax: "postcss-html"
+        }
     ],
     rules: {
         "color-no-invalid-hex": true,
@@ -21,8 +21,8 @@ export default {
         "selector-pseudo-class-no-unknown": [
             true,
             {
-                ignorePseudoClasses: ["global"],
-            },
-        ],
-    },
+                ignorePseudoClasses: ["global"]
+            }
+        ]
+    }
 };

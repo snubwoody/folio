@@ -4,7 +4,7 @@
 
     type Props = {
         activeTab: "Expenses" | "Income"
-    }
+    };
 
     const { activeTab }: Props = $props();
 </script>

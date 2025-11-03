@@ -5,15 +5,15 @@
         children: Snippet,
         index: number,
         selectedIndex:number
-    }
+    };
 
     let {
         children,
         index,
-        selectedIndex = $bindable(),
+        selectedIndex = $bindable()
     }:Props = $props();
 
-    let selected = $derived(index === selectedIndex);
+    const selected = $derived(index === selectedIndex);
 </script>
 
 <button onclick={() => selectedIndex = index} data-selected={selected}>
