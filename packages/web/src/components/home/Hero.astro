@@ -20,7 +20,7 @@ import WindowsLogo from "phosphor-astro/WindowsLogoFill.astro";
             <a href="/downloads" class="text-purple-500">Other platforms</a>
         </div>
     </div>
-    <Image src={Screenshot} alt="App screenshot"/>
+    <Image src={Screenshot} alt="App screenshot" class="max-sm:hidden"/>
 </section>
 <script src="../../scripts/get-download-links.ts"/>
 
@@ -30,7 +30,7 @@ import WindowsLogo from "phosphor-astro/WindowsLogoFill.astro";
 		flex-direction: column;
 		align-items: center;
 		gap: 64px;
-		padding: 88px 0px;
+		padding: 88px 64px;
 	}
 
 	img{
