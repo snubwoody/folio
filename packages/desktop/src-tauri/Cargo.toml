@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "1.2.0"
+version = "1.2.1"
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
@@ -60,6 +60,7 @@ stays on your device - no tracking, just simple budgeting.
 """
 resources = [
     "icons/*",
+    "../build",
     "../../../CHANGELOG.md"
 ]
 
@@ -67,7 +68,7 @@ resources = [
 generate-desktop-entry = true
 
 [package.metadata.packager.pacman]
-depends=[
+depends= [
     "cairo", 
     "desktop-file-utils",
     "gdk-pixbuf2", 

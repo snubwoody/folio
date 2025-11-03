@@ -81,8 +81,7 @@ jobs:
       - name: Build app
         run: |
           cd packages/desktop/src-tauri
-          pnpm --filter @folio/desktop build
-          cargo build --release
+          pnpm --filter @folio/desktop tauri build --no-bundle
       - name: Bundle
         run: |
           cd packages/desktop/src-tauri
@@ -109,12 +108,12 @@ jobs:
         with:
           pattern: folio-upload-*
           merge-multiple: true
-          path: packages/desktop/src-tauri/target/release/
+          path: artifacts
       - name: Create draft release
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           gh release create ${{ github.ref_name }} \
             --draft \
-            packages/desktop/src-tauri/target/release/**/*
+            artifacts/**/*
 

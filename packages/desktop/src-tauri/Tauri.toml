@@ -1,5 +1,4 @@
 product-name = "Folio"
-version = "1.2.0"
 identifier = "com.wakunguma.folio"
 
 [build]
