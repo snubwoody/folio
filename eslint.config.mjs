@@ -2,12 +2,14 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import sveltePlugin from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
+import astro from "eslint-plugin-astro";
 import globals from "globals";
 
 /** @type {import("eslint").Linter.Config[]} */
 export default [
     js.configs.recommended,
     ...tseslint.configs.recommended,
+    ...astro.configs.recommended,
     ...sveltePlugin.configs["flat/recommended"],
     {
         ignores: [
