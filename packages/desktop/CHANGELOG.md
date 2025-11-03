@@ -1,5 +1,11 @@
 # @folio/desktop
 
+## 1.2.1
+
+### Patch changes
+
+- fix: include build when bundling app ([#84](https://github.com/snubwoody/folio/pull/81))
+
 ## 1.2.0
 
 ### Minor Changes

@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import type { Expense,Category } from "./lib";
-import { isThisMonth } from "date-fns";
+import { isThisMonth, parseISO } from "date-fns";
 
 export type SpendingAnalytic = {
     category: Category,
@@ -29,10 +29,10 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
     expenses = expenses
         .filter(expense => expense.category !== null)
         .filter(expense => {
+            console.log(expense.date);
             // TODO: test malformed dates
             try{
-                const date = Date.parse(expense.date);
-                return isThisMonth(date);
+                return isThisMonth(parseISO(expense.date));
             } catch{
                 return false;
             }
