@@ -4,15 +4,11 @@ import sveltePlugin from "eslint-plugin-svelte";
 import svelteParser from "svelte-eslint-parser";
 import astro from "eslint-plugin-astro";
 import globals from "globals";
+import stylistic from "@stylistic/eslint-plugin";
+import { defineConfig, globalIgnores } from "eslint/config"
 
-/** @type {import("eslint").Linter.Config[]} */
-export default [
-    js.configs.recommended,
-    ...tseslint.configs.recommended,
-    ...astro.configs.recommended,
-    ...sveltePlugin.configs["flat/recommended"],
-    {
-        ignores: [
+export default defineConfig([
+    globalIgnores([
             "**/node_modules",
             "**/dist",
             "**/build",
@@ -22,8 +18,11 @@ export default [
             "**/.github",
             "**/.idea",
             "**/target",
-        ],
-    },
+    ]),
+    js.configs.recommended,
+    tseslint.configs.recommended,
+    astro.configs.recommended,
+    sveltePlugin.configs.recommended,
     {
         files: ["**/*.ts", "**/*.tsx"],
         languageOptions: {
@@ -59,15 +58,28 @@ export default [
         },
     },
     {
+        files: ["**/*.{js,mjs,cjs,ts,astro,svelte,json}"],
+        plugins: {
+            // js,
+            "@stylistic":stylistic
+        },
         rules: {
-            indent: ["warn", 4],
-            quotes: ["warn", "double"],
-            semi: ["error", "always"],
-            "comma-dangle": ["warn", "always-multiline"],
+            // indent: ["warn", 4],
+            // quotes: ["warn", "double"],
+            // semi: ["error", "always"],
             "object-curly-spacing": ["warn", "always"],
             "array-bracket-spacing": ["warn", "never"],
             "no-trailing-spaces": "warn",
+            "no-unused-vars": "warn",
+            "prefer-const": "warn",
+            "no-empty": "warn",
             "no-multiple-empty-lines": ["warn", { max: 1 }],
+            "@stylistic/indent": ["warn", 4],
+            "@stylistic/quotes": ["warn", "double"],
+            "@stylistic/semi": ["error"],
+            "@stylistic/arrow-spacing": ["warn"],
+            "@stylistic/brace-style": ["error"],
+            "@stylistic/comma-dangle": ["error","never"]
         },
     },
-];
+]);
