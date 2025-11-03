@@ -58,7 +58,7 @@ export default defineConfig([
         }
     },
     {
-        files: ["**/*.{js,mjs,cjs,ts,astro,svelte,json}"],
+        files: ["**/*.{js,mjs,cjs,ts,astro,svelte}"],
         plugins: {
             // js,
             "@stylistic":stylistic
