@@ -1,9 +1,11 @@
 
 ## 1.2.1 - 2-11-2025
 
-- Fixed bug with 
+- Fixed bug preventing application from being launched.
 
 ## 1.2.0 - 31-10-2025
+
+> This build is broken please opt for v1.2.1
 
 ### New features
 
