@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "1.2.0"
+version = "1.2.1"
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
