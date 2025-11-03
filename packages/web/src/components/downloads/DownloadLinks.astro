@@ -3,13 +3,13 @@ import Button from "@components/Button.astro";
 import WindowsLogo from "phosphor-astro/WindowsLogo.astro";
 import AppleLogo from "phosphor-astro/AppleLogo.astro";
 import LinuxLogo from "phosphor-astro/LinuxLogo.astro";
-import {type DownloadLinks} from "../../lib/downloads";
+import { type DownloadLinks } from "../../lib/downloads";
 
 type Props = {
     downloadLinks: DownloadLinks
 }
 
-const {downloadLinks}:Props = Astro.props;
+const { downloadLinks }:Props = Astro.props;
 
 const {
     appImage,

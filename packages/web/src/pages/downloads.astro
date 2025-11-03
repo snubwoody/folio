@@ -1,9 +1,7 @@
 ---
-import BaseLayout from "@layout/BaseLayout.astro"
-import Button from "../components/Button.astro";
-import WindowsLogoFill from "phosphor-astro/WindowsLogoFill.astro";
+import BaseLayout from "@layout/BaseLayout.astro";
 import DownloadLinks from "@components/downloads/DownloadLinks.astro";
-import {getDownloadLinks} from "../lib/downloads";
+import { getDownloadLinks } from "../lib/downloads";
 
 export const prerender = false;
 const downloadLinks = await getDownloadLinks();
@@ -21,5 +19,4 @@ const downloadLinks = await getDownloadLinks();
         <DownloadLinks {downloadLinks}/>
     </main>
 </BaseLayout>
-
 
