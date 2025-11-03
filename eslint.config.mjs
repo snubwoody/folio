@@ -65,13 +65,13 @@ export default defineConfig([
             js,
             "@stylistic":stylistic
         },
-        rules: {    
+        rules: {
             "no-unused-vars": "off",
+            "prefer-const": "off",
             "@typescript-eslint/no-unused-vars": ["warn"],
             "object-curly-spacing": ["warn", "always"],
             "array-bracket-spacing": ["warn", "never"],
             "no-trailing-spaces": "warn",
-            "prefer-const": "warn",
             "no-empty": "warn",
             "no-multiple-empty-lines": ["warn", { max: 1 }],
             "@stylistic/indent": ["warn", 4],
