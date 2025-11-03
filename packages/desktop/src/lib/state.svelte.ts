@@ -22,7 +22,7 @@ import type {
     Income,
     Expense,
     Budget,
-    Settings,
+    Settings
 } from "./lib";
 import { AccountStore } from "./account.svelte";
 
@@ -111,7 +111,7 @@ export class AppStore {
      */
     async createCategory(title: string = "New category") {
         const category = (await invoke("create_category", {
-            title,
+            title
         })) as Category;
         this.categories.push(category);
     }
@@ -128,7 +128,7 @@ export class AppStore {
      */
     async createIncomeStream(title: string = "New income stream") {
         const stream = (await invoke("create_income_stream", {
-            title,
+            title
         })) as IncomeStream;
         this.incomeStreams.push(stream);
     }
@@ -138,10 +138,10 @@ export class AppStore {
         this.categories = (await invoke("fetch_categories")) as Category[];
         this.incomes = (await invoke("fetch_incomes")) as Income[];
         this.incomeStreams = (await invoke(
-            "fetch_income_streams",
+            "fetch_income_streams"
         )) as IncomeStream[];
         this.incomeAnalytics = (await invoke(
-            "income_analytics",
+            "income_analytics"
         )) as IncomeAnalytic[];
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];

@@ -4,12 +4,12 @@
     import { appStore } from "$lib/state.svelte";
     import Category from "./Category.svelte";
 
-    let categories = $derived.by(() => {
+    const categories = $derived.by(() => {
         return (appStore.categories ?? [])
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime(),
+                    new Date(b.createdAt).getTime()
             )
             .reverse();
     });

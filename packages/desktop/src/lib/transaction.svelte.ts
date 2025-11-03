@@ -17,28 +17,28 @@ import type { AppStore } from "./state.svelte";
 import { AppError, type ErrorResponse } from "./error";
 
 export type CreateExpense = {
-	amount: string,
-	date?: string,
-	accountId?: string,
-	categoryId?: string,
-	currencyCode: string
-}
+    amount: string,
+    date?: string,
+    accountId?: string,
+    categoryId?: string,
+    currencyCode: string
+};
 
 export type CreateIncome = {
-	amount: string,
-	date?: string,
-	accountId?: string,
-	incomeStreamId?: string,
-	currencyCode: string
-}
+    amount: string,
+    date?: string,
+    accountId?: string,
+    incomeStreamId?: string,
+    currencyCode: string
+};
 
 export type EditExpense = {
     id: string,
-	amount?: string,
-	date?: string,
-	accountId?: string,
-	categoryId?: string,
-}
+    amount?: string,
+    date?: string,
+    accountId?: string,
+    categoryId?: string,
+};
 
 /** Data used for editing an `Income`,
  * values left as `undefined` or `null`  will be
@@ -47,11 +47,11 @@ export type EditExpense = {
  */
 export type EditIncome = {
     id: string,
-	amount?: string,
-	date?: string,
-	accountId?: string,
-	incomeStreamId?: string,
-}
+    amount?: string,
+    date?: string,
+    accountId?: string,
+    incomeStreamId?: string,
+};
 
 export class TransactionStore{
     #rootStore: AppStore;
@@ -96,7 +96,7 @@ export class TransactionStore{
             accountId,
             categoryId,
             currencyCode = "USD",
-            date,
+            date
         } = opts;
         // TODO: use default currency code
         const data: CreateExpense = {
@@ -104,13 +104,12 @@ export class TransactionStore{
             accountId,
             currencyCode,
             categoryId,
-            date,
+            date
         };
 
         try{
             await invoke("create_expense",{ data });
-        }
-        catch(e){
+        } catch(e){
             console.error(e);
         }
         await this.#rootStore.load();
@@ -127,7 +126,7 @@ export class TransactionStore{
             accountId,
             incomeStreamId,
             currencyCode = "USD",
-            date,
+            date
         } = opts;
         // TODO: use default currency code
         const data: CreateIncome = {
@@ -135,13 +134,12 @@ export class TransactionStore{
             accountId,
             currencyCode,
             incomeStreamId,
-            date,
+            date
         };
 
         try{
             await invoke("create_income",{ data });
-        }
-        catch(e){
+        } catch(e){
             console.error(e);
         }
         await this.#rootStore.load();

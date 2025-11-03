@@ -67,7 +67,7 @@ export type IncomeAnalytic = {
 
 export type Settings = {
     currencyCode: string;
-}
+};
 
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
@@ -96,7 +96,7 @@ export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency,
-        notation,
+        notation
     });
     return formatter.format(parseFloat(amount));
 }
@@ -104,7 +104,7 @@ export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
 // FIXME: join with above
 export function formatAmountWithoutSymbol(
     amount: string,
-    opts?: NumberFormatOpts,
+    opts?: NumberFormatOpts
 ): string {
     const currency = opts?.currency ?? "USD";
     let notation:
@@ -120,7 +120,7 @@ export function formatAmountWithoutSymbol(
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency,
-        notation,
+        notation
     });
 
     const parts = formatter.formatToParts(parseFloat(amount));
@@ -134,7 +134,7 @@ export function formatAmountWithoutSymbol(
 export function getCurrencySymbol(currencyCode: string = "USD"): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: currencyCode,
+        currency: currencyCode
     });
     const parts = formatter.formatToParts(1);
     const currencyPart = parts.find((part) => part.type === "currency");

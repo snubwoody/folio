@@ -5,7 +5,7 @@
         getCurrencySymbol,
         type Expense,
         type Category,
-        type Account,
+        type Account
     } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
@@ -18,16 +18,16 @@
 
     const { expense }: Props = $props();
     const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
-    let formattedAmount = $derived.by(() =>
+    const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(expense.amount, {
-            currency: appStore.settings.currencyCode,
-        }),
+            currency: appStore.settings.currencyCode
+        })
     );
 
     function updateDate(year: number, month: number, day: number) {
         appStore.transactions.editExpense({
             id: expense.id,
-            date: `${year}-${month}-${day}`,
+            date: `${year}-${month}-${day}`
         });
     }
 
@@ -38,14 +38,14 @@
     async function editCategory(item: Category) {
         await appStore.transactions.editExpense({
             id: expense.id,
-            categoryId: item.id,
+            categoryId: item.id
         });
     }
 
     async function editAccount(item: Account) {
         await appStore.transactions.editExpense({
             id: expense.id,
-            accountId: item.id,
+            accountId: item.id
         });
     }
 </script>

@@ -27,8 +27,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     };
 
     const { budget }: Props = $props();
-    let formattedAmount = $derived.by(() =>
-        formatAmountWithoutSymbol(budget.amount),
+    const formattedAmount = $derived.by(() =>
+        formatAmountWithoutSymbol(budget.amount)
     );
 
     async function updateAmount(amount: string) {

@@ -21,9 +21,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         amount: string,
         symbol: string,
         onUpdate: (value:string) => void
-    }
+    };
 
-    let { symbol,amount,onUpdate }:Props = $props();
+    const { symbol,amount,onUpdate }:Props = $props();
 
     let currentAmount = $derived(amount);
     async function updateAmount(){

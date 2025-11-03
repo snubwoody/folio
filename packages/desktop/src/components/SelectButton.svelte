@@ -68,7 +68,7 @@ from.
 
     const select = new Select<SelectOption>({
         value: defaultValue ? toOption(defaultValue) : undefined,
-        onValueChange: onValueChange,
+        onValueChange: onValueChange
     });
 </script>
 

@@ -41,7 +41,7 @@ test("Default to general section", async () => {
 test("Show accounts", async () => {
     appStore.accounts = [
         { id: "1",name: "Account 1", startingBalance: "24.00",balance: "0.0" },
-        { id: "2",name: "Account 2", startingBalance: "254.35",balance: "0.0" },
+        { id: "2",name: "Account 2", startingBalance: "254.35",balance: "0.0" }
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
@@ -53,7 +53,7 @@ test("Show accounts", async () => {
 test("Show categories", async () => {
     appStore.categories = [
         { id: "1", title: "Rent", createdAt: new Date().toUTCString() },
-        { id: "2", title: "Groceries", createdAt: new Date().toUTCString() },
+        { id: "2", title: "Groceries", createdAt: new Date().toUTCString() }
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
@@ -66,7 +66,7 @@ test("Show categories", async () => {
 test("Show income streams", async () => {
     appStore.incomeStreams = [
         { id: "1", title: "Salary", createdAt: "" },
-        { id: "2", title: "Dividends", createdAt: "" },
+        { id: "2", title: "Dividends", createdAt: "" }
     ];
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();

@@ -10,11 +10,11 @@
 
     const { category }: Props = $props();
 
-    let title: string = $state(category.title);
+    const title: string = $state(category.title);
 </script>
 
 <li class="flex items-center justify-between">
-    <InlineTextField value={title} onChange={(value)=>appStore.editCategory(category.id,value)}/>
+    <InlineTextField value={title} onChange={(value) => appStore.editCategory(category.id,value)}/>
     <IconButton
         onclick={() => appStore.deleteCategory(category.id)}
         variant="ghost"

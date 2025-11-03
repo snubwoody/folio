@@ -5,19 +5,19 @@ import svelteParser from "svelte-eslint-parser";
 import astro from "eslint-plugin-astro";
 import globals from "globals";
 import stylistic from "@stylistic/eslint-plugin";
-import { defineConfig, globalIgnores } from "eslint/config"
+import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
     globalIgnores([
-            "**/node_modules",
-            "**/dist",
-            "**/build",
-            "**/.svelte-kit",
-            "**/.astro",
-            "**/.vscode",
-            "**/.github",
-            "**/.idea",
-            "**/target",
+        "**/node_modules",
+        "**/dist",
+        "**/build",
+        "**/.svelte-kit",
+        "**/.astro",
+        "**/.vscode",
+        "**/.github",
+        "**/.idea",
+        "**/target"
     ]),
     js.configs.recommended,
     tseslint.configs.recommended,
@@ -28,34 +28,34 @@ export default defineConfig([
         languageOptions: {
             parser: tseslint.parser,
             parserOptions: {
-                project: "./tsconfig.json",
-            },
+                project: "./tsconfig.json"
+            }
         },
         rules: {
-            "@typescript-eslint/no-unused-vars": ["warn"],
-        },
+            "@typescript-eslint/no-unused-vars": ["warn"]
+        }
     },
     {
         files: ["**/*.js"],
         languageOptions: {
             globals:{
-                ...globals.browser,
-            },
-        },
+                ...globals.browser
+            }
+        }
     },
     {
         files: ["**/*.svelte"],
         languageOptions: {
             parser: svelteParser,
             parserOptions: {
-                parser: tseslint.parser,
-            },
+                parser: tseslint.parser
+            }
         },
         rules: {
             "svelte/no-at-html-tags": "warn",
             "svelte/valid-compile": "warn",
-            "svelte/no-navigation-without-resolve": "off",
-        },
+            "svelte/no-navigation-without-resolve": "off"
+        }
     },
     {
         files: ["**/*.{js,mjs,cjs,ts,astro,svelte,json}"],
@@ -64,9 +64,6 @@ export default defineConfig([
             "@stylistic":stylistic
         },
         rules: {
-            // indent: ["warn", 4],
-            // quotes: ["warn", "double"],
-            // semi: ["error", "always"],
             "object-curly-spacing": ["warn", "always"],
             "array-bracket-spacing": ["warn", "never"],
             "no-trailing-spaces": "warn",
@@ -80,6 +77,6 @@ export default defineConfig([
             "@stylistic/arrow-spacing": ["warn"],
             "@stylistic/brace-style": ["error"],
             "@stylistic/comma-dangle": ["error","never"]
-        },
+        }
     },
 ]);

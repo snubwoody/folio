@@ -17,12 +17,12 @@ export default defineConfig({
             ? {
                 protocol: "ws",
                 host,
-                port: 1421,
+                port: 1421
             }
             : undefined,
         watch: {
-            ignored: ["**/src-tauri/**"],
-        },
+            ignored: ["**/src-tauri/**"]
+        }
     },
     test: {
         exclude: ["e2e", "node_modules", ".vercel", "dist"],
@@ -34,8 +34,8 @@ export default defineConfig({
                 test: {
                     name: "unit",
                     include: ["src/tests/unit/**/*.test.ts"],
-                    environment: "jsdom",
-                },
+                    environment: "jsdom"
+                }
             },
             {
                 extends: true,
@@ -48,16 +48,16 @@ export default defineConfig({
                         screenshotFailures: false,
                         api: {
                             host: "127.0.0.1",
-                            port: 4040,
+                            port: 4040
                         },
                         instances: [
                             { browser: "chromium" },
                             { browser: "firefox" },
-                            { browser: "webkit" },
-                        ],
-                    },
-                },
-            },
-        ],
-    },
+                            { browser: "webkit" }
+                        ]
+                    }
+                }
+            }
+        ]
+    }
 });

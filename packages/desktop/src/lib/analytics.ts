@@ -33,8 +33,7 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
             try{
                 const date = Date.parse(expense.date);
                 return isThisMonth(date);
-            }
-            catch{
+            } catch{
                 return false;
             }
         });

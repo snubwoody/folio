@@ -8,9 +8,9 @@ import node from "@astrojs/node";
 export default defineConfig({
     prefetch: true,
     vite: {
-        plugins: [tailwindcss(),sitemap()],
+        plugins: [tailwindcss(),sitemap()]
     },
     adapter: node({
-        mode: "standalone",
-    }),
+        mode: "standalone"
+    })
 });

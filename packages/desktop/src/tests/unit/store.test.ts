@@ -17,7 +17,7 @@ test("Delete category", async () => {
     });
     appStore.categories = [{ id: "id-1", title: "", createdAt: "" }];
     appStore.expenses = [
-        { id: "id-1", amount: "", date: "", currencyCode: "" },
+        { id: "id-1", amount: "", date: "", currencyCode: "" }
     ];
 
     await appStore.deleteCategory("id-1");

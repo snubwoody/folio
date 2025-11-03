@@ -23,4 +23,4 @@ export class AppError extends Error{
 /** An error from the backend. */
 export type ErrorResponse = {
     message: string
-}
+};

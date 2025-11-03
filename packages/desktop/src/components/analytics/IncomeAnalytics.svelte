@@ -30,7 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         "var(--color-blue-600)",
         "var(--color-blue-700)",
         "var(--color-blue-800)",
-        "var(--color-blue-900)",
+        "var(--color-blue-900)"
     ];
 
     // TODO: add no income streams found

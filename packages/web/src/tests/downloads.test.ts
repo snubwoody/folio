@@ -3,7 +3,7 @@
 import { getLatestRelease } from "../lib/downloads.ts";
 import { test } from "vitest";
 
-test("Get latest release",async ()=>{
+test("Get latest release",async () => {
     await getLatestRelease();
 });
 

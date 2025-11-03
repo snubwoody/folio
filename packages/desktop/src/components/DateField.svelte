@@ -17,16 +17,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
 	type Props = {
-		onChange?: (year: number,month: number,day: number) => void
-	}
+	    onChange?: (year: number,month: number,day: number) => void
+	};
 
     const { onChange }: Props = $props();
     // The date is always parsed as YYYY-MM-DD regardless of the locale.
     let selectedDate: string | undefined= $state(undefined);
 
-    $effect(()=>{
+    $effect(() => {
         if (!selectedDate) return;
-        let [year,month,day] = selectedDate.split("-").map(d => parseInt(d));
+        const [year,month,day] = selectedDate.split("-").map(d => parseInt(d));
         onChange?.(year,month,day);
     });
 </script>
