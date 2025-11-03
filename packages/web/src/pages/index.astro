@@ -1,15 +1,19 @@
 ---
-import BaseLayout from "@layout/BaseLayout.astro"
-import About from "@components/home/About.astro"
+import BaseLayout from "@layout/BaseLayout.astro";
+import About from "@components/home/About.astro";
 import Hero from "@components/home/Hero.astro";
 import IncomeStreams from "../components/home/IncomeStreams.astro";
 import Categories from "../components/home/Categories.astro";
+import Questions from "@components/home/Questions.astro";
+import Info from "@components/home/Info.astro";
 ---
 
 <BaseLayout>
-	<Hero/>
-	<About/>
-	<Categories/>
-	<IncomeStreams/>
-	<script src="../scripts/observe.js"/>
+    <Hero/>
+    <Info/>
+    <About/>
+    <Categories/>
+    <IncomeStreams/>
+    <Questions/>
+    <script src="../scripts/observe.js"/>
 </BaseLayout>

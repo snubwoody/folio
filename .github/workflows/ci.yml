@@ -99,6 +99,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build frontend
         run: pnpm -r build
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build
   test:
     strategy:
       fail-fast: false
@@ -233,6 +238,7 @@ jobs:
       - test
       - test-frontend
       - build-frontend
+      - build-docker
     runs-on: ubuntu-latest
     steps:
       - name: Complete

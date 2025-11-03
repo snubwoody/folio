@@ -1,5 +1,5 @@
 ---
-import type {HTMLAttributes} from "astro/types";
+import type { HTMLAttributes } from "astro/types";
 type Variant = "primary" | "secondary" | "neutral" | "bordered";
 type Size = "medium";
 
@@ -13,11 +13,10 @@ type Props = {
 } & HTMLAttributes<"button">;
 
 const {
-	variant = "primary",
-	size = "medium",
-	href,
-	class: userClass,
-	...rest
+    variant = "primary",
+    href,
+    class: userClass,
+    ...rest
 }: Props = Astro.props;
 
 // TODO: test passing in a custom class
@@ -25,13 +24,13 @@ const buttonVariant = `btn-${variant} ${userClass}`;
 ---
 
 {href ?
-<a {href} class={`btn ${buttonVariant}`} {...rest}>
-	<slot/>
-</a>
-	:
-<button class={`btn ${buttonVariant}`} {...rest}>
-	<slot/>
-</button>
+    <a {href} class={`btn ${buttonVariant}`} {...rest}>
+        <slot/>
+    </a>
+    :
+    <button class={`btn ${buttonVariant}`} {...rest}>
+        <slot/>
+    </button>
 	}
 
 <style>
@@ -50,7 +49,6 @@ const buttonVariant = `btn-${variant} ${userClass}`;
 			aspect-ratio: 1;
 		}
 	}
-
 
 	.btn-primary{
 		background-color: var(--color-surface-primary);

@@ -1,29 +1,28 @@
 ---
-import Button from "@components/Button.astro"
+import Button from "@components/Button.astro";
 import Screenshot from "@assets/Screenshot.png";
 import Image from "astro/components/Image.astro";
 import WindowsLogo from "phosphor-astro/WindowsLogoFill.astro";
 ---
 
 <section>
-	<div class="info-section">
-		<h1>Folio</h1>
-		<p>
-			A free, privacy-focused budgeting app. Track expenses, manage budgets, and 
+    <div class="info-section">
+        <h1>Folio</h1>
+        <p>
+			A free, privacy-focused budgeting app. Track expenses, manage budgets, and
 			analyze your spending all while keeping your financial data private and under your complete control.
-		</p>
-		<div data-platform="Windows" class="flex items-center gap-4">
-			<Button id="download-button" href="/downloads">
-				<WindowsLogo id="windows-logo"/>
-				<p>Download for Windows</p>
-			</Button>
-			<a href="/downloads" class="text-purple-500">Other platforms</a>
-		</div>
-	</div>
-	<Image src={Screenshot} alt="App screenshot"/>
+        </p>
+        <div data-platform="Windows" class="flex items-center gap-4">
+            <Button id="download-button" href="/downloads">
+                <WindowsLogo id="windows-logo"/>
+                <p>Download for Windows</p>
+            </Button>
+            <a href="/downloads" class="text-purple-500">Other platforms</a>
+        </div>
+    </div>
+    <Image src={Screenshot} alt="App screenshot"/>
 </section>
 <script src="../../scripts/get-download-links.ts"/>
-
 
 <style>
 	section{
