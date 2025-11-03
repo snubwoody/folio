@@ -48,6 +48,8 @@ export default defineConfig([
         languageOptions: {
             parser: svelteParser,
             parserOptions: {
+                projectService: true,
+                extraFileExtensions: [".svelte"],
                 parser: tseslint.parser
             }
         },
@@ -60,14 +62,15 @@ export default defineConfig([
     {
         files: ["**/*.{js,mjs,cjs,ts,astro,svelte}"],
         plugins: {
-            // js,
+            js,
             "@stylistic":stylistic
         },
-        rules: {
+        rules: {    
+            "no-unused-vars": "off",
+            "@typescript-eslint/no-unused-vars": ["warn"],
             "object-curly-spacing": ["warn", "always"],
             "array-bracket-spacing": ["warn", "never"],
             "no-trailing-spaces": "warn",
-            "no-unused-vars": "warn",
             "prefer-const": "warn",
             "no-empty": "warn",
             "no-multiple-empty-lines": ["warn", { max: 1 }],
@@ -78,5 +81,5 @@ export default defineConfig([
             "@stylistic/brace-style": ["error"],
             "@stylistic/comma-dangle": ["error","never"]
         }
-    },
+    }
 ]);
