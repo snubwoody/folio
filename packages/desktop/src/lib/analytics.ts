@@ -27,8 +27,8 @@ export type SpendingAnalytic = {
  */
 export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalytic[] => {
     expenses = expenses
-    .filter(expense => expense.category !== null)
-    .filter(expense => {
+        .filter(expense => expense.category !== null)
+        .filter(expense => {
             console.log(expense.date);
             // TODO: test malformed dates
             try{

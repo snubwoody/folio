@@ -122,7 +122,7 @@ test("Parse date only strings",() => {
         { id: "1",title: "Rent",createdAt: "" }
     ];
 
-    // Strip the timezone and extract the date 
+    // Strip the timezone and extract the date
     const past = new Date(2000).toISOString().split("T")[0];
     const today = new Date().toISOString().split("T")[0];
     const future = new Date(4000).toISOString().split("T")[0];
