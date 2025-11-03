@@ -115,3 +115,42 @@ test("Filter by current month",() => {
     const analytics = calculateSpendingAnalytics(expenses);
     expect(analytics[0].total).toBe(200);
 });
+
+test("Parse date only strings",() => {
+
+    const categories: Category[] = [
+        { id: "1",title: "Rent",createdAt: "" }
+    ];
+
+    // Strip the timezone and extract the date 
+    const past = new Date(2000).toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0];
+    const future = new Date(4000).toISOString().split("T")[0];
+
+    const expenses: Expense[] = [
+        {
+            id: "",
+            amount: "200",
+            currencyCode: "CAD",
+            date: today,
+            category: categories[0]
+        },
+        {
+            id: "",
+            amount: "250",
+            currencyCode: "CAD",
+            date: past,
+            category: categories[0]
+        },
+        {
+            id: "",
+            amount: "10.25",
+            currencyCode: "CAD",
+            date: future,
+            category: categories[0]
+        }
+    ];
+
+    const analytics = calculateSpendingAnalytics(expenses);
+    expect(analytics[0].total).toBe(200);
+});

@@ -33,7 +33,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         "var(--color-purple-800)",
         "var(--color-purple-900)"
     ];
-
 </script>
 
 <section class="space-y-2">
