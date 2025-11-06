@@ -79,7 +79,9 @@ jobs:
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
       - name: Bundle app
-        run: cargo packager --release --formats ${{matrix.formats}}
+        run: |
+          cd packages/desktop/src-tauri
+          cargo packager --release --formats ${{matrix.formats}}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
