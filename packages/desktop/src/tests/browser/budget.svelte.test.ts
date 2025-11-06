@@ -45,9 +45,9 @@ test("Total expenses", async () => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const expenses: Expense[] = [
-        { id: "", date, amount: "20", description: "", currencyCode: "USD" },
-        { id: "", date, amount: "100", description: "", currencyCode: "USD" },
-        { id: "", date, amount: "50", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "20", currencyCode: "USD" },
+        { id: "", date, amount: "100",  currencyCode: "USD" },
+        { id: "", date, amount: "50", currencyCode: "USD" }
     ];
     appStore.expenses = expenses;
 
@@ -64,7 +64,6 @@ test("Format large amounts", async () => {
             id: "",
             date,
             amount: "20000000",
-            description: "",
             currencyCode: "USD"
         }
     ];
@@ -77,9 +76,9 @@ test("Total income", async () => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const incomes: Income[] = [
-        { id: "", date, amount: "20", description: "", currencyCode: "USD" },
-        { id: "", date, amount: "100", description: "", currencyCode: "USD" },
-        { id: "", date, amount: "50", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "20", currencyCode: "USD" },
+        { id: "", date, amount: "100",  currencyCode: "USD" },
+        { id: "", date, amount: "50", currencyCode: "USD" }
     ];
     appStore.incomes = incomes;
 
@@ -92,15 +91,14 @@ test("Only include current month expenses", async () => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const expenses: Expense[] = [
-        { id: "", date, amount: "20", description: "", currencyCode: "USD" },
+        { id: "", date, amount: "20", currencyCode: "USD" },
         {
             id: "",
             date: "1990-1-1",
             amount: "100",
-            description: "",
             currencyCode: "USD"
         },
-        { id: "", date, amount: "50", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "50",  currencyCode: "USD" }
     ];
     appStore.expenses = expenses;
 
@@ -113,15 +111,14 @@ test("Only include current month incomes", async () => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const incomes: Income[] = [
-        { id: "", date, amount: "20", description: "", currencyCode: "USD" },
+        { id: "", date, amount: "20", currencyCode: "USD" },
         {
             id: "",
             date: "1990-1-1",
             amount: "100",
-            description: "",
             currencyCode: "USD"
         },
-        { id: "", date, amount: "50", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "50", currencyCode: "USD" }
     ];
     appStore.incomes = incomes;
 
@@ -134,10 +131,10 @@ test("Show percentage of income", async () => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const expenses: Expense[] = [
-        { id: "", date, amount: "10", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "10", currencyCode: "USD" }
     ];
     const incomes: Income[] = [
-        { id: "", date, amount: "100", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "100", currencyCode: "USD" }
     ];
     appStore.expenses = expenses;
     appStore.incomes = incomes;
@@ -150,15 +147,14 @@ test("Don't show NAN expense percentage", async () => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDay()}`;
     const expenses: Expense[] = [
-        { id: "", date, amount: "20", description: "", currencyCode: "USD" },
+        { id: "", date, amount: "20", currencyCode: "USD" },
         {
             id: "",
             date: "1990-1-1",
             amount: "100",
-            description: "",
             currencyCode: "USD"
         },
-        { id: "", date, amount: "50", description: "", currencyCode: "USD" }
+        { id: "", date, amount: "50", currencyCode: "USD" }
     ];
     appStore.expenses = expenses;
 
