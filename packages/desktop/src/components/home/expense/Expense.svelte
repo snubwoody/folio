@@ -56,7 +56,7 @@
     <p>{expense.category?.title ?? " "}</p>
     <IconButton
         aria-label="Delete expense"
-        class="delete-btn"
+        class="absolute -left-3 opacity-0 hover:opacity-100"
         size="small"
         variant="ghost"
         onclick={() => appStore.transactions.deleteExpense(expense.id)}

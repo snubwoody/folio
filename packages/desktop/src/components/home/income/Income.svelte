@@ -55,7 +55,7 @@
 <div class="data-cell flex justify-between items-center relative">
     <p>{income.incomeStream?.title ?? " "}</p>
     <IconButton
-        class="delete-btn"
+        class="absolute -left-3 opacity-0 hover:opacity-100"
         size="small"
         variant="ghost"
         onclick={() => appStore.transactions.deleteIncome(income.id)}
