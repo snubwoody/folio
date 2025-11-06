@@ -76,7 +76,7 @@ export class TransactionStore{
 
     async deleteExpense(id: string){
         try{
-            await invoke("delete_expense",{ id});
+            await invoke("delete_expense",{ id });
 
         } catch(e){
             const error = e as ErrorResponse;
@@ -84,10 +84,10 @@ export class TransactionStore{
         }
         await this.#rootStore.load();
     }
-    
+
     async deleteIncome(id: string){
         try{
-            await invoke("delete_income",{ id});
+            await invoke("delete_income",{ id });
 
         } catch(e){
             const error = e as ErrorResponse;
