@@ -238,18 +238,6 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           cargo packager --release --formats ${{matrix.formats}}
-  release: 
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            CHANGELOG.md
-          draft: true
   pass:
     needs:
       - format

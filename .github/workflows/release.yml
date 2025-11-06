@@ -110,11 +110,12 @@ jobs:
           merge-multiple: true
           path: artifacts
       - name: Create draft release
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: |
-          gh release create ${{ github.ref_name }} \
-            --draft \
-            --notes-file CHANGELOG.md \
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Folio vx.x.x
+          files: |
+            CHANGELOG.md
             artifacts/**/*
+          body_path: CHANGELOG.md
+          draft: true
 
