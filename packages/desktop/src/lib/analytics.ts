@@ -29,8 +29,6 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
     expenses = expenses
         .filter(expense => expense.category !== null)
         .filter(expense => {
-            console.log(expense.date);
-            // TODO: test malformed dates
             try{
                 return isThisMonth(parseISO(expense.date));
             } catch{

@@ -55,6 +55,7 @@
 <div class="data-cell flex justify-between items-center relative">
     <p>{expense.category?.title ?? " "}</p>
     <IconButton
+        aria-label="Delete expense"
         class="delete-btn"
         size="small"
         variant="ghost"
