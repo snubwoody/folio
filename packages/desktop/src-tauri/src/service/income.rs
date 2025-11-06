@@ -136,6 +136,14 @@ impl Income {
         Ok(())
     }
 
+    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
+        sqlx::query!("DELETE FROM incomes WHERE id=$1", id)
+            .execute(pool)
+            .await?;
+
+        Ok(())
+    }
+
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Result<Self, crate::Error> {
         let record = sqlx::query!("SELECT * FROM incomes WHERE id=$1", id)
             .fetch_one(pool)
@@ -208,6 +216,20 @@ mod test {
     }
 
     #[sqlx::test]
+    async fn delete_income(pool: SqlitePool) -> Result<(), crate::Error> {
+        let income1 = Income::create(Default::default(), &pool).await?;
+        let income2 = Income::create(Default::default(), &pool).await?;
+        let incomes = fetch_incomes(&pool).await?;
+        assert_eq!(incomes.len(), 2);
+
+        Income::delete(&income1.id, &pool).await?;
+        let incomes = fetch_incomes(&pool).await?;
+        assert_eq!(incomes.len(), 1);
+        assert_eq!(incomes[0].id, income2.id);
+        Ok(())
+    }
+
+    #[sqlx::test]
     async fn create_income(pool: SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("", Money::ZERO, &pool).await?;
         let stream = IncomeStream::create("", &pool).await?;
@@ -236,7 +258,7 @@ mod test {
     }
 
     #[sqlx::test]
-    async fn fetch_incomes(pool: SqlitePool) -> Result<(), crate::Error> {
+    async fn fetch_all_incomes(pool: SqlitePool) -> Result<(), crate::Error> {
         let amount = Money::from_unscaled(200);
         let amount = amount.inner();
         let record = sqlx::query!(

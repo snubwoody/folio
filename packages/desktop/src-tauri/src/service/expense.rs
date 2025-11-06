@@ -141,6 +141,14 @@ impl Expense {
         Ok(())
     }
 
+    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
+        sqlx::query!("DELETE FROM expenses WHERE id=$1", id)
+            .execute(pool)
+            .await?;
+
+        Ok(())
+    }
+
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Result<Self, crate::Error> {
         let record = sqlx::query!("SELECT * FROM expenses WHERE id=$1", id)
             .fetch_one(pool)
@@ -237,6 +245,20 @@ mod test {
         assert_eq!(record.amount, 500_202_000);
         assert_eq!(record.currency_code, "XOF");
         assert_eq!(record.transaction_date, "2015-02-01");
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn delete_expense(pool: SqlitePool) -> Result<(), crate::Error> {
+        let expense1 = Expense::create(Default::default(), &pool).await?;
+        let expense2 = Expense::create(Default::default(), &pool).await?;
+        let expenses = fetch_expenses(&pool).await?;
+        assert_eq!(expenses.len(), 2);
+
+        Expense::delete(&expense1.id, &pool).await?;
+        let expenses = fetch_expenses(&pool).await?;
+        assert_eq!(expenses.len(), 1);
+        assert_eq!(expenses[0].id, expense2.id);
         Ok(())
     }
 
