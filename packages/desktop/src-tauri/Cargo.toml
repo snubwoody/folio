@@ -60,9 +60,13 @@ your finances without compromising your data. All your financial data
 stays on your device - no tracking, just simple budgeting.
 """
 resources = [
-    "icons/*",
     "../build",
-    "../../../CHANGELOG.md"
+    "../../../CHANGELOG.md",
+    "icons/32x32.png",
+    "icons/128x128.png",
+    "icons/128x128@2x.png",
+    "icons/icon.icns",
+    "icons/icon.ico"
 ]
 
 [package.metadata.packager.linux]
