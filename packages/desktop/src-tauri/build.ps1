@@ -1,2 +1,3 @@
-cp target/release/folio.exe msix
-cp -r ../build/ msix/build
+pnpm -F desktop tauri build --no-bundle
+Copy-Item target/release/folio.exe msix
+Copy-Item -r ../build/ msix/build
