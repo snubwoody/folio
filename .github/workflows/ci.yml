@@ -24,8 +24,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Run pnpm check
-        run: pnpm -r check
+      - name: Run pnpm lint
+        run: pnpm lint
   check:
     runs-on: ubuntu-latest
     steps:
@@ -39,8 +39,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Run pnpm lint
-        run: pnpm -r lint
+      - name: Run pnpm check
+        run: pnpm -r check
   clippy:
     runs-on: macos-latest
     steps:
