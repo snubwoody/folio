@@ -61,7 +61,7 @@ jobs:
           path: ~/.cargo/bin
       - name: Install sqlx-cli
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli
+        run: cargo install sqlx-cli --force
       - name: Setup database
         run: |
           cd packages/desktop/src-tauri
@@ -135,7 +135,7 @@ jobs:
           path: ~/.cargo/bin
       - name: Install sqlx-cli
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli
+        run: cargo install sqlx-cli --force
       - uses: actions/cache@v4
         name: Cache rust
         with:
@@ -196,12 +196,12 @@ jobs:
         name: Cache cargo binaries
         id: cache-cargo-bin
         with:
-          key: cargo-bin-cache-${{runner.os}}
+          key: cargo-bin-cache-${{runner.os}}-key1
           path: ~/.cargo/bin
       - name: Install sqlx-cli
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli
-      - run: cargo install cargo-packager --locked
+        run: cargo install sqlx-cli --locked --force
+      - run: cargo install cargo-packager --locked --force
         name: Install cargo packager
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
       - uses: actions/cache@v4
@@ -234,12 +234,7 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
-      - name: Build app
-        run: |
-          cd packages/desktop/src-tauri
-          pnpm --filter @folio/desktop build
-          cargo build --release --locked
-      - name: Bundle
+      - name: Bundle app
         run: |
           cd packages/desktop/src-tauri
           cargo packager --release --formats ${{matrix.formats}}

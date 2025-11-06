@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "1.2.1"
+version = "1.2.2"
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
@@ -20,37 +20,40 @@ tauri-build = { version = "2", features = [] }
 tempfile = "3.23.0"
 
 [dependencies]
-tauri = { version = "2", features = ["config-toml", "test"] }
-tauri-plugin-opener = "2"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-rust_decimal = {version = "1.39.0",features = ["macros"] }
+tauri = { version = "2.8.5", features = ["config-toml", "test"] }
+tauri-plugin-opener = "2.5.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+rust_decimal = { version = "1.39.0", features = ["macros"] }
 tokio = { version = "1.47.1", features = ["full"] }
-chrono = {version = "0.4.42",features = ["serde"] }
+chrono = { version = "0.4.42", features = ["serde"] }
 thiserror = "2.0.17"
 tracing-subscriber = "0.3.20"
 tracing = "0.1.41"
 directories = "6.0.0"
-tauri-plugin-os = "2"
-iso_currency = {version = "0.5.3",features = ["with-serde", "iterator"] }
+tauri-plugin-os = "2.3.2"
+iso_currency = { version = "0.5.3", features = ["with-serde", "iterator"] }
 
 [dependencies.sqlx]
-version = "0.8"
-features = ["runtime-tokio", "sqlite", "uuid", "chrono", "rust_decimal", "migrate", "macros"]
+version = "0.8.6"
+features = [
+    "runtime-tokio",
+    "sqlite",
+    "uuid",
+    "chrono",
+    "rust_decimal",
+    "migrate",
+    "macros",
+]
 
 [package.metadata.packager]
 product-name = "Folio"
-category="Finance"
+category = "Finance"
+before-packaging-command = "pnpm -F desktop tauri build --no-bundle"
 publisher = "Wakunguma Kalimukwa"
-identifier="com.wakunguma.folio"
-formats = [
-    "appimage",
-    "dmg",
-    "nsis",
-    "deb",
-    "pacman",
-]
-license-file="../../../LICENSE"
+identifier = "com.wakunguma.folio"
+formats = ["appimage", "dmg", "nsis", "deb", "pacman"]
+license-file = "../../../LICENSE"
 homepage = "https://www.github.com/snubwoody/folio"
 description = "A free, privacy focused budgeting app."
 long-description = """
@@ -59,25 +62,27 @@ your finances without compromising your data. All your financial data
 stays on your device - no tracking, just simple budgeting.
 """
 resources = [
-    "icons/*",
     "../build",
-    "../../../CHANGELOG.md"
+    "../../../CHANGELOG.md",
+    "icons/32x32.png",
+    "icons/128x128.png",
+    "icons/128x128@2x.png",
+    "icons/icon.icns",
+    "icons/icon.ico",
 ]
 
 [package.metadata.packager.linux]
 generate-desktop-entry = true
 
 [package.metadata.packager.pacman]
-depends= [
-    "cairo", 
+depends = [
+    "cairo",
     "desktop-file-utils",
-    "gdk-pixbuf2", 
-    "glib2", 
-    "gtk3", 
-    "hicolor-icon-theme", 
-    "libsoup", 
-    "pango", 
-    "webkit2gtk-4.1"
+    "gdk-pixbuf2",
+    "glib2",
+    "gtk3",
+    "hicolor-icon-theme",
+    "libsoup",
+    "pango",
+    "webkit2gtk-4.1",
 ]
-
-

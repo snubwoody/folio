@@ -6,7 +6,7 @@
     IgnorableNamespaces="uap rescap">
 
     <Identity Name="Wakunguma.Folio-Budgetingapp"
-              Version="1.2.1.0"
+              Version="1.2.2.0"
               Publisher="CN=70A3CBD3-185D-4DDE-9F41-27073B2FE013"
               ProcessorArchitecture="x64" />
     <Properties>
