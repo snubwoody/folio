@@ -11,6 +11,8 @@
     import DatePicker from "../../DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
     import SelectButton from "$components/SelectButton.svelte";
+    import IconButton from "$components/button/IconButton.svelte";
+    import { Trash2 } from "@lucide/svelte";
 
     type Props = {
         expense: Expense;
@@ -50,8 +52,17 @@
     }
 </script>
 
-<div class="data-cell flex justify-between items-center">
+<div class="data-cell flex justify-between items-center relative">
     <p>{expense.category?.title ?? " "}</p>
+    <IconButton
+        aria-label="Delete expense"
+        class="delete-btn"
+        size="small"
+        variant="ghost"
+        onclick={() => appStore.transactions.deleteExpense(expense.id)}
+    >
+        <Trash2 />
+    </IconButton>
     <SelectButton
         items={appStore.categories}
         toOption={(c) => {

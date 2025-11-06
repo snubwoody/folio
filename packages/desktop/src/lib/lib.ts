@@ -36,7 +36,6 @@ export type IncomeStream = {
 export type Income = {
     id: string;
     amount: string;
-    description: string;
     incomeStream?: IncomeStream;
     account?: Account;
     date: string;

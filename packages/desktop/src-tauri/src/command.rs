@@ -40,6 +40,8 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_account,
         fetch_budgets,
         create_account,
+        delete_expense,
+        delete_income,
         create_budget,
         edit_budget,
         currencies,

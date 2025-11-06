@@ -5,9 +5,14 @@
     "scripts": {
         "dev": "astro dev",
         "build": "astro build",
+        "check": "tsc --noEmit && astro check",
         "preview": "astro preview",
         "astro": "astro",
         "test": "vitest run",
         "test:headless": "vitest run"
+    },
+    "dependencies": {
+        "@astrojs/check": "^0.9.5",
+        "typescript": "~5.6.2"
     }
 }

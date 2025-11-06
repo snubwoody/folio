@@ -10,6 +10,8 @@
     } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import DatePicker from "../../DatePicker.svelte";
+    import IconButton from "$components/button/IconButton.svelte";
+    import { Trash2 } from "@lucide/svelte";
     import SelectButton from "$components/SelectButton.svelte";
 
     type Props = {
@@ -50,8 +52,16 @@
     }
 </script>
 
-<div class="data-cell flex justify-between items-center">
+<div class="data-cell flex justify-between items-center relative">
     <p>{income.incomeStream?.title ?? " "}</p>
+    <IconButton
+        class="delete-btn"
+        size="small"
+        variant="ghost"
+        onclick={() => appStore.transactions.deleteIncome(income.id)}
+    >
+        <Trash2 />
+    </IconButton>
     <SelectButton
         items={appStore.incomeStreams}
         toOption={(c) => {

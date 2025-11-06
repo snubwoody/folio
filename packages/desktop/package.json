@@ -8,7 +8,6 @@
         "build": "vite build",
         "preview": "vite preview",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
         "tauri": "tauri",
         "db:sync": "cd src-tauri && sqlx database drop -y && sqlx database create && sqlx migrate run",
         "test": "vitest --browser=chromium",

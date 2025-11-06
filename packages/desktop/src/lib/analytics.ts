@@ -29,8 +29,6 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
     expenses = expenses
         .filter(expense => expense.category !== null)
         .filter(expense => {
-            console.log(expense.date);
-            // TODO: test malformed dates
             try{
                 return isThisMonth(parseISO(expense.date));
             } catch{
@@ -39,16 +37,16 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
         });
     const categories = new Set<string>();
     expenses.forEach(expense => {
-        categories.add(expense.category.id);
+        categories.add(expense.category!.id);
     });
     const analytics: SpendingAnalytic[] = [];
     for (const id of categories){
         const e = expenses
-            .filter(expense => expense.category.id === id);
-        const category = e[0].category;
+            .filter(expense => expense.category!.id === id);
+        const category = e[0].category!;
 
         const total = expenses
-            .filter(expense => expense.category.id === id)
+            .filter(expense => expense.category!.id === id)
             .reduce((previous,current) => previous + parseFloat(current.amount),0);
 
         analytics.push({ category,total });

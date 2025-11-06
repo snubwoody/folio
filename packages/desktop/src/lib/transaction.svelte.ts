@@ -73,6 +73,29 @@ export class TransactionStore{
         }
         await this.#rootStore.load();
     }
+
+    async deleteExpense(id: string){
+        try{
+            await invoke("delete_expense",{ id });
+
+        } catch(e){
+            const error = e as ErrorResponse;
+            throw new AppError(error.message);
+        }
+        await this.#rootStore.load();
+    }
+
+    async deleteIncome(id: string){
+        try{
+            await invoke("delete_income",{ id });
+
+        } catch(e){
+            const error = e as ErrorResponse;
+            throw new AppError(error.message);
+        }
+        await this.#rootStore.load();
+    }
+
     async editIncome(opts: EditIncome){
         const { id,...data } = opts;
         data.amount = data.amount?.replaceAll(",","");
