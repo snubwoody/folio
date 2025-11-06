@@ -27,7 +27,7 @@ test("Show expenses in expense table", async () => {
     ];
     const page = render(ExpenseTable);
     expect(page.getByText("Oct 10, 2025")).toBeInTheDocument();
-    expect(page.getByText("CAD")).toBeInTheDocument();
+    expect(page.getByText("CA$").first()).toBeInTheDocument();
 });
 
 test("Show expense category", async () => {
