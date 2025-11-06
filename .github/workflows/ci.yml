@@ -239,6 +239,8 @@ jobs:
           cd packages/desktop/src-tauri
           cargo packager --release --formats ${{matrix.formats}}
   release: 
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
