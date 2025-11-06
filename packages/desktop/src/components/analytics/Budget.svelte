@@ -39,7 +39,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <div class="data-cell flex justify-between items-center relative">
     <p>{budget.category?.title ?? " "}</p>
     <IconButton
-        class="delete-btn"
+        class="absolute -left-3 opacity-0 hover:opacity-100"
         size="small"
         variant="ghost"
         onclick={() => appStore.deleteBudget(budget.id)}
@@ -50,14 +50,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <MoneyCell symbol={getCurrencySymbol(appStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
 <p class="data-cell">{formatAmount(budget.totalSpent,{ currency: appStore.settings.currencyCode })}</p>
 <p class="data-cell">{formatAmount(budget.remaining,{ currency: appStore.settings.currencyCode })}</p>
-<style>
-    :global(.delete-btn) {
-        position: absolute;
-        left: -24px;
-        opacity: 0;
-
-        &:hover {
-            opacity: 1;
-        }
-    }
-</style>
