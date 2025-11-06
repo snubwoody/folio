@@ -7,8 +7,9 @@ import node from "@astrojs/node";
 // https://astro.build/config
 export default defineConfig({
     prefetch: true,
+    integrations: [sitemap()],
     vite: {
-        plugins: [tailwindcss(),sitemap()]
+        plugins: [tailwindcss()]
     },
     adapter: node({
         mode: "standalone"

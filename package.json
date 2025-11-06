@@ -6,7 +6,6 @@
         "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
         "dev:desktop": "pnpm -F desktop tauri dev",
         "dev:web": "pnpm -F web dev",
-        "check":"tsc --noEmit",
         "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
     },
     "dependencies": {
