@@ -224,6 +224,16 @@ pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Resul
 }
 
 #[tauri::command]
+pub async fn delete_income(state: tauri::State<'_, State>, id: String) -> Result<()> {
+    Income::delete(&id, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn delete_expense(state: tauri::State<'_, State>, id: String) -> Result<()> {
+    Expense::delete(&id, &state.pool).await
+}
+
+#[tauri::command]
 pub async fn edit_account(
     state: tauri::State<'_, State>,
     id: String,
