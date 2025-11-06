@@ -1,10 +1,17 @@
 # @folio/desktop
 
+## 1.2.2
+
+### Patch Changes
+
+- feat: add delete buttons to incomes and expenses ([#85](https://github.com/snubwoody/folio/pull/85))
+- fix: parse date in local time zone when calculating analytics ([#82](https://github.com/snubwoody/folio/pull/82))
+
 ## 1.2.1
 
 ### Patch changes
 
-- fix: include build when bundling app ([#84](https://github.com/snubwoody/folio/pull/81))
+- fix: include build when bundling app ([#81](https://github.com/snubwoody/folio/pull/81))
 
 ## 1.2.0
 

@@ -1,11 +1,19 @@
 
+## 1.2.2 - 6-11-2025
+
+- Added delete button to income and expense rows.
+
+### Bug fixes
+
+- Spending analytics now display correctly after fixing date parsing.
+
 ## 1.2.1 - 2-11-2025
 
 - Fixed bug preventing application from being launched.
 
 ## 1.2.0 - 31-10-2025
 
-> This build is broken please opt for v1.2.1
+> This build is broken please opt for later versions.
 
 ### New features
 
