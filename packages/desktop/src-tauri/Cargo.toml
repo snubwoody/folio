@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "1.2.1"
+version = "1.2.2"
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
@@ -41,6 +41,7 @@ features = ["runtime-tokio", "sqlite", "uuid", "chrono", "rust_decimal", "migrat
 [package.metadata.packager]
 product-name = "Folio"
 category="Finance"
+before-packaging-command="pnpm -F desktop tauri build --no-bundle"
 publisher = "Wakunguma Kalimukwa"
 identifier="com.wakunguma.folio"
 formats = [
