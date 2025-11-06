@@ -55,10 +55,10 @@ jobs:
       - uses: taiki-e/install-action@nextest
       - name: Install sqlx-cli
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli
+        run: cargo install sqlx-cli --force
       - name: Install cargo packager
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install cargo-packager --locked
+        run: cargo install cargo-packager --locked --force
       - name: Setup database
         run: |
           cd packages/desktop/src-tauri
@@ -78,14 +78,8 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
-      - name: Build app
-        run: |
-          cd packages/desktop/src-tauri
-          pnpm --filter @folio/desktop tauri build --no-bundle
-      - name: Bundle
-        run: |
-          cd packages/desktop/src-tauri
-          cargo packager --release --formats ${{matrix.formats}}
+      - name: Bundle app
+        run: cargo packager --release --formats ${{matrix.formats}}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -93,7 +87,8 @@ jobs:
           path: |
             packages/desktop/src-tauri/target/release/**/*.deb
             packages/desktop/src-tauri/target/release/**/*.rpm
-            packages/desktop/src-tauri/target/release/**/*.PKGBUILD
+            packages/desktop/src-tauri/target/release/**/PKGBUILD
+            packages/desktop/src-tauri/target/release/**/*.AppImage
             packages/desktop/src-tauri/target/release/**/*.msi
             packages/desktop/src-tauri/target/release/**/*-setup.exe
             packages/desktop/src-tauri/target/release/**/*.dmg
@@ -102,7 +97,7 @@ jobs:
     permissions:
       contents: write
     needs: build
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
         with:
