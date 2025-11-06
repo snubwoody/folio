@@ -178,7 +178,7 @@ jobs:
           - os: windows-latest
             formats: nsis
           - os: ubuntu-latest
-            formats: deb,pacman
+            formats: deb,pacman,appimage
           - os: macos-latest
             formats: dmg
     runs-on: ${{matrix.os}}
@@ -200,7 +200,7 @@ jobs:
           path: ~/.cargo/bin
       - name: Install sqlx-cli
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli
+        run: cargo install sqlx-cli --locked
       - run: cargo install cargo-packager --locked
         name: Install cargo packager
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
@@ -234,12 +234,7 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
-      - name: Build app
-        run: |
-          cd packages/desktop/src-tauri
-          pnpm --filter @folio/desktop build
-          cargo build --release --locked
-      - name: Bundle
+      - name: Bundle app
         run: |
           cd packages/desktop/src-tauri
           cargo packager --release --formats ${{matrix.formats}}
