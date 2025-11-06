@@ -16,7 +16,7 @@ use std::str::FromStr;
 
 use chrono::{DateTime, Local, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::{SqlitePool, pool};
+use sqlx::SqlitePool;
 use tracing::info;
 
 use crate::{
@@ -258,8 +258,7 @@ mod test {
         Expense::delete(&expense1.id, &pool).await?;
         let expenses = fetch_expenses(&pool).await?;
         assert_eq!(expenses.len(), 1);
-        assert_eq!(expenses[0].id, expense2.
-            id);
+        assert_eq!(expenses[0].id, expense2.id);
         Ok(())
     }
 

@@ -225,8 +225,7 @@ mod test {
         Income::delete(&income1.id, &pool).await?;
         let incomes = fetch_incomes(&pool).await?;
         assert_eq!(incomes.len(), 1);
-        assert_eq!(incomes[0].id, income2.
-            id);
+        assert_eq!(incomes[0].id, income2.id);
         Ok(())
     }
 
