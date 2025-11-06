@@ -4,10 +4,10 @@
 </script>
 
 <ul class="expense-table">
-	<p class="table-heading">Category</p>
-	<p class="table-heading">Account</p>
-	<p class="table-heading">Date</p>
-	<p class="table-heading">Amount</p>
+	<li class="table-heading">Category</li>
+	<li class="table-heading">Account</li>
+	<li class="table-heading">Date</li>
+	<li class="table-heading">Amount</li>
 	{#each appStore.expenses as expense (expense.id)}
 		<Expense {expense}/>
 	{/each}
