@@ -1,16 +1,33 @@
-name: Deploy website
+name: Deploy to GitHub Pages
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
-  deploy:
-    name: Deploy app
+  build:
     runs-on: ubuntu-latest
-    concurrency: web-deploy-group    
     steps:
-      - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Build site
+        uses: withastro/action@v5
+        with:
+          path: packages/web
+          package-manager: pnpm@latest
+          build-cmd: pnpm -F web build
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
