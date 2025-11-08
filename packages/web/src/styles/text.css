@@ -26,9 +26,9 @@
 @font-face {
   font-family: Satoshi;
   src:
-		  url("/fonts/Satoshi-Variable.woff2") format("woff2"),
-	  url("/fonts/Satoshi-Variable.woff") format("woff"),
-	  url("/fonts/Satoshi-Variable.ttf") format("truetype");
+      url("/folio/fonts/Satoshi-Variable.woff2") format("woff2"),
+	  url("/folio/fonts/Satoshi-Variable.woff") format("woff"),
+	  url("/folio/fonts/Satoshi-Variable.ttf") format("truetype");
   font-weight: 300 900;
   font-style: normal;
   font-display: swap;
