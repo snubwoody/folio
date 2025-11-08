@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import Link from "./Link.astro";
 type Variant = "primary" | "secondary" | "neutral" | "bordered";
 type Size = "medium";
 
@@ -24,9 +25,9 @@ const buttonVariant = `btn-${variant} ${userClass}`;
 ---
 
 {href ?
-    <a {href} class={`btn ${buttonVariant}`} {...rest}>
+    <Link {href} class={`btn ${buttonVariant}`} {...rest}>
         <slot/>
-    </a>
+    </Link>
     :
     <button class={`btn ${buttonVariant}`} {...rest}>
         <slot/>
