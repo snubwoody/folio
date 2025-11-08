@@ -17,6 +17,9 @@ importers:
       '@astrojs/vercel':
         specifier: ^8.2.10
         version: 8.2.11(@sveltejs/kit@2.46.5(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.43.0)(vite@7.1.11(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)))(svelte@5.43.0)(vite@7.1.11(@types/node@24.7.2)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)))(astro@5.15.2(@types/node@24.7.2)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.6.3)(yaml@2.8.1))(rollup@4.52.4)(svelte@5.43.0)
+      '@lucide/astro':
+        specifier: ^0.553.0
+        version: 0.553.0(astro@5.15.2(@types/node@24.7.2)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.6.3)(yaml@2.8.1))
       '@lucide/svelte':
         specifier: ^0.546.0
         version: 0.546.0(svelte@5.43.0)
@@ -787,6 +790,11 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
+
+  '@lucide/astro@0.553.0':
+    resolution: {integrity: sha512-yiHpOKGBPOy+pmZfkQmZcFAETU8FvkqWdoLCboSZGuZ1zgwFHGxBmr/brmk5PxVFOUnImzsRFGzAX2O2A88hmQ==}
+    peerDependencies:
+      astro: ^4 || ^5
 
   '@lucide/svelte@0.546.0':
     resolution: {integrity: sha512-qFVQ+BUJH9Swns7cag3Wik7VqKZfN2hwDZ2VazbZJc8VSqI0kgOZCZ2OVwrvNxdkl8Mw9M9H1ROB0BXh/WH/sA==}
@@ -4737,6 +4745,10 @@ snapshots:
       hookified: 1.12.1
 
   '@keyv/serialize@1.1.1': {}
+
+  '@lucide/astro@0.553.0(astro@5.15.2(@types/node@24.7.2)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.6.3)(yaml@2.8.1))':
+    dependencies:
+      astro: 5.15.2(@types/node@24.7.2)(@vercel/functions@2.2.13)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(typescript@5.6.3)(yaml@2.8.1)
 
   '@lucide/svelte@0.546.0(svelte@5.43.0)':
     dependencies:
