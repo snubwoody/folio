@@ -5,8 +5,7 @@ import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
     prefetch: true,
-    site:"https://snubwoody.github.io/folio/",
-    base: "/folio",
+    site:"https://folio.wakunguma.com",
     output: "static",
     integrations: [sitemap()],
     vite: {
