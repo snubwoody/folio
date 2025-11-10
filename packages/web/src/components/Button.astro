@@ -21,6 +21,7 @@ const {
 }: Props = Astro.props;
 
 // TODO: test passing in a custom class
+// TODO: just add a ButtonStyle type share it between link and button
 const buttonVariant = `btn-${variant} ${userClass}`;
 ---
 
@@ -86,6 +87,18 @@ const buttonVariant = `btn-${variant} ${userClass}`;
 
 		&:active{
 			background-color: var(--color-neutral-50);
+		}
+	}
+
+    .btn-neutral{
+        background-color: var(--color-neutral-50);
+
+		&:hover{
+			background-color: var(--color-neutral-100);
+		}
+
+		&:active{
+			background-color: var(--color-neutral-200);
 		}
 	}
 
