@@ -2,11 +2,12 @@
 import BaseLayout from "@layout/BaseLayout.astro";
 import About from "@components/home/About.astro";
 import Hero from "@components/home/Hero.astro";
-import IncomeStreams from "../components/home/IncomeStreams.astro";
-import Categories from "../components/home/Categories.astro";
+import IncomeStreams from "@components/home/IncomeStreams.astro";
+import Categories from "@components/home/Categories.astro";
 import Questions from "@components/home/Questions.astro";
 import Info from "@components/home/Info.astro";
 import Roadmap from "@components/home/Roadmap.astro";
+import Downloads from "@components/home/Downloads.astro";
 ---
 
 <BaseLayout>
@@ -15,6 +16,7 @@ import Roadmap from "@components/home/Roadmap.astro";
     <About/>
     <Categories/>
     <IncomeStreams/>
+    <Downloads/>
     <Roadmap/>
     <Questions/>
     <script src="../scripts/observe.js"/>
