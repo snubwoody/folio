@@ -18,9 +18,15 @@
     section{
         display: flex;
         align-items: center;
-        /* justify-content: center; */
         gap: 32px;
         padding: 64px;
+
+        @media (width < 768px) {
+            flex-direction: column;
+            justify-content: center;
+            padding: 64px 24px;
+            gap: 64px;
+        }
 
         div{
             width: 100%;
