@@ -62,6 +62,6 @@ export const getDownloadLinks = async (): Promise<DownloadLinks> => {
     return {
         exe: map.get("exe")!.browser_download_url,
         dmg: map.get("dmg")!.browser_download_url,
-        deb: map.get("deb")!.browser_download_url,
+        deb: map.get("deb")!.browser_download_url
     };
 };
