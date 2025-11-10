@@ -12,11 +12,8 @@ type Props = {
 const { downloadLinks }:Props = Astro.props;
 
 const {
-    appImage,
     deb,
-    rpm,
     exe,
-    msi,
     dmg
 } = downloadLinks;
 ---
@@ -28,9 +25,6 @@ const {
             <h6>Windows</h6>
         </header>
         <div>
-            <Button href={msi} variant="bordered">
-                Windows (Msi)
-            </Button>
             <Button href={exe} variant="bordered">
                 Windows (Exe)
             </Button>
@@ -53,14 +47,8 @@ const {
             <h6>Linux</h6>
         </header>
         <div>
-            <Button href={appImage} variant="bordered">
-                Linux (AppImage)
-            </Button>
             <Button href={deb} variant="bordered">
                 Linux (Deb)
-            </Button>
-            <Button href={rpm} variant="bordered">
-                Linux (Rpm)
             </Button>
         </div>
     </li>
