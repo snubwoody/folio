@@ -6,11 +6,8 @@ const downloadLinks = await getDownloadLinks();
 
 console.log(downloadLinks)
 const {
-    appImage,
     deb,
-    rpm,
     exe,
-    msi,
     dmg
 } = downloadLinks;
 ---
@@ -28,8 +25,8 @@ const {
     <div class="flex flex-col gap-2 items-center w-full">
         <h5 class="font-medium">Installers</h5>
         <ul>
-            <li><Button variant="neutral" href="https://">Windows (.exe)</Button></li>
-            <li><Button variant="neutral" href="https://">MacOS (.dmg)</Button></li>
+            <li><Button variant="neutral" href={`${exe}`}>Windows (.exe)</Button></li>
+            <li><Button variant="neutral" href={`${dmg}`}>MacOS (.dmg)</Button></li>
             <li>
                 <Button variant="neutral" href={`${deb}`}>
                     Linux (.deb)
