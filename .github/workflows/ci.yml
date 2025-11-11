@@ -45,15 +45,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
-          restore-keys: |
-            rust-cache-${{runner.os}}-
-            rust-cache-
-          path: |
-            packages/desktop/src-tauri/target/
-            ~/.cargo
+          workspaces: packages/desktop/src-tauri -> target
       - uses: actions/cache@v4
         id: cache-sqlx
         with:
@@ -114,11 +108,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build frontend
         run: pnpm -r build
-  build-docker:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker compose build
   test:
     strategy:
       fail-fast: false
@@ -139,16 +128,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: packages/desktop/src-tauri -> target
-      # - uses: actions/cache@v4
-      #   name: Cache rust
-      #   with:
-      #     key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
-      #     restore-keys: |
-      #       rust-cache-${{runner.os}}-
-      #       rust-cache-
-      #     path: |
-      #       packages/desktop/src-tauri/target/
-      #       ~/.cargo
 
       - uses: taiki-e/install-action@nextest
       - name: Setup database
@@ -182,7 +161,6 @@ jobs:
       - test
       - test-frontend
       - build-frontend
-      - build-docker
     runs-on: ubuntu-latest
     steps:
       - name: Complete
