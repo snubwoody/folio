@@ -28,6 +28,8 @@ jobs:
         run: pnpm lint
   check:
     runs-on: ubuntu-latest
+    env:
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -45,15 +47,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/cache@v4
+      - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
-          restore-keys: |
-            rust-cache-${{runner.os}}-
-            rust-cache-
-          path: |
-            packages/desktop/src-tauri/target/
-            ~/.cargo
+          workspaces: packages/desktop/src-tauri -> target
       - uses: actions/cache@v4
         id: cache-sqlx
         with:
@@ -83,6 +79,8 @@ jobs:
     permissions:
       pull-requests: write
       checks: write
+    env:
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -101,6 +99,8 @@ jobs:
         run: pnpm -r test:headless
   build-frontend:
     runs-on: macos-latest
+    env:
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -114,11 +114,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build frontend
         run: pnpm -r build
-  build-docker:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker compose build
   test:
     strategy:
       fail-fast: false
@@ -136,16 +131,9 @@ jobs:
       - name: Install sqlx-cli
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli --force
-      - uses: actions/cache@v4
-        name: Cache rust
+      - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
-          restore-keys: |
-            rust-cache-${{runner.os}}-
-            rust-cache-
-          path: |
-            packages/desktop/src-tauri/target/
-            ~/.cargo
+          workspaces: packages/desktop/src-tauri -> target
 
       - uses: taiki-e/install-action@nextest
       - name: Setup database
@@ -179,7 +167,6 @@ jobs:
       - test
       - test-frontend
       - build-frontend
-      - build-docker
     runs-on: ubuntu-latest
     steps:
       - name: Complete

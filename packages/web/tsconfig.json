@@ -10,6 +10,6 @@
             "@scripts/*": ["./src/scripts/*"],
             "@styles/*": ["./src/styles/*"],
             "@components/*": ["./src/components/*"]
-	}
+	    }
     }
 }

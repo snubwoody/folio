@@ -33,12 +33,18 @@ export type DownloadLinks = {
     exe: string
 };
 
+const githubAccessToken = import.meta.env.PERSONAL_ACCESS_TOKEN ?? process.env.PERSONAL_ACCESS_TOKEN;
+
 /**
  * Fetches the latest Github release.
  */
 export const getLatestRelease = async(): Promise<ReleaseInfo> => {
     const url = "https://api.github.com/repos/snubwoody/folio/releases/latest";
-    const response  = await fetch(url);
+    const response  = await fetch(url,{
+        headers: {
+            "Authorization": `Token ${githubAccessToken}`
+        }
+    });
     return await response.json() as ReleaseInfo;
 };
 
