@@ -33,7 +33,7 @@ export type DownloadLinks = {
     exe: string
 };
 
-const githubAccessToken = import.meta.env.PERSONAL_ACCESS_TOKEN;
+const githubAccessToken = import.meta.env.PERSONAL_ACCESS_TOKEN ?? process.env.PERSONAL_ACCESS_TOKEN;
 
 /**
  * Fetches the latest Github release.
