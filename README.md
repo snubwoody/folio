@@ -4,17 +4,21 @@
 </div>
 <div align="center">
     <h1>Folio</h1>
-    <p>
-        A free and open source, budgeting app.
-    </p>
+    <a href="https://github.com/snubwoody/folio/actions/workflows/ci.yml">
+        <img src="https://github.com/snubwoody/folio/actions/workflows/ci.yml/badge.svg"/>
+    </a>
+    <a href="https://github.com/snubwoody/folio/tree/main?tab=GPL-3.0-1-ov-file">
+        <img src="https://img.shields.io/github/license/snubwoody/folio"/>
+    </a>
 </div>
 
+
 ## Overview
+
 Folio is a free, privacy focused, budgeting app. All your data is stored locally on device, no network, no accounts.
 
 See the [website](https://folio.wakunguma.com) for more details.
 
-## 💻 Downloads
 
 <div align="center">
     <a href="https://apps.microsoft.com/detail/9P5X2HZSXCR1?referrer=appbadge&mode=direct">
