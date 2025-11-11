@@ -12,6 +12,7 @@
 ## Overview
 Folio is a free, privacy focused, budgeting app. All your data is stored locally on device, no network, no accounts.
 
+See the [website](https://folio.wakunguma.com) for more details.
 
 ## 💻 Downloads
 
@@ -27,6 +28,12 @@ You can find the installers on the latest [Github release](https://github.com/sn
 - 🪟 Windows: Download the latest `-setup.exe` file.
 - 🍎 MacOS: Download the latest `.dmg` file.
 - 🐧 Linux (.deb): Download the latest `.deb` file.
+
+## Roadmap
+Folio is currently in beta, see the [open issues](https://github.com/snubwoody/folio/issues) for a list of upcoming changes.
+
+- [Feature requests](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Afeature)
+- [Known bugs](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Abug)
 
 ## License
 
