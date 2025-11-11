@@ -3,7 +3,7 @@ import "@styles/global.css";
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
 
-const title = "Folio - Budgeting made simple";
+const title = "Folio - A free & open source budgeting app";
 const description = `
 A free, privacy-focused budgeting app. Track expenses, manage budgets, and
 analyze your spending all while keeping your financial data private and under your complete control.
@@ -19,9 +19,15 @@ analyze your spending all while keeping your financial data private and under yo
         <link rel="icon" href="/logo.svg">
         <meta name="robots" content="index, follow">
         <link rel="sitemap" href="/sitemap-index.xml" />
+        <!-- Open graph -->
         <meta property="og:title" content={title}>
         <meta property="og:description" content={description}>
-        <meta property="og:site_name" content="Wakunguma">
+        <meta property="og:site_name" content="Folio">
+        <meta name="og:url" content="https://folio.wakunguma.com">
+        <meta property="og:locale" content="en_GB">
+        <!-- Twitter -->
+        <meta name="twitter:title" content={title}>
+        <meta name="twitter:description" content={description}>
     </head>
     <body>
         <Navbar/>
