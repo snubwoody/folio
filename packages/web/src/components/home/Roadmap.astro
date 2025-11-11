@@ -8,20 +8,14 @@ interface RoadmapItem {
 
 const items: RoadmapItem[] = [
     { title:"User analytics",checked: true },
-    { title:"Vaults",checked: false },
     { title:"Dark mode",checked: false },
     { title:"Sync across devices",checked: false },
     { title:"Recurring transactions",checked: false }
 ];
 ---
 
-<section class="flex flex-col items-center max-md:px-3 max-md:py-5 md:p-10 gap-5">
-    <div class="grid place-items-center gap-1.5">
-        <h4>Roadmap</h4>
-        <p class="max-w-[50ch] text-center">
-            Folio is currently in beta, you’re support is highly appreciated.
-        </p>
-    </div>
+<section class="flex flex-col items-center max-md:px-3 max-md:py-5 md:p-10 gap-2.5">
+    <h4>Roadmap</h4>
     <ul class="space-y-2">
         {items.map(item =>
             <li data-observe>

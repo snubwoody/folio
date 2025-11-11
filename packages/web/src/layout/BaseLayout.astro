@@ -2,6 +2,12 @@
 import "@styles/global.css";
 import Navbar from "@components/Navbar.astro";
 import Footer from "@components/Footer.astro";
+
+const title = "Folio - Budgeting made simple";
+const description = `
+A free, privacy-focused budgeting app. Track expenses, manage budgets, and
+analyze your spending all while keeping your financial data private and under your complete control.
+`;
 ---
 
 <!DOCTYPE html>
@@ -9,8 +15,13 @@ import Footer from "@components/Footer.astro";
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Folio - Budgeting made simple</title>
-        <link rel="icon" href="/folio/logo.svg">
+        <title>{title}</title>
+        <link rel="icon" href="/logo.svg">
+        <meta name="robots" content="index, follow">
+        <link rel="sitemap" href="/sitemap-index.xml" />
+        <meta property="og:title" content={title}>
+        <meta property="og:description" content={description}>
+        <meta property="og:site_name" content="Wakunguma">
     </head>
     <body>
         <Navbar/>
