@@ -19,6 +19,8 @@ Folio is a free, privacy focused, budgeting app. All your data is stored locally
 
 See the [website](https://folio.wakunguma.com) for more details.
 
+## Downloads
+
 
 <div align="center">
     <a href="https://apps.microsoft.com/detail/9P5X2HZSXCR1?referrer=appbadge&mode=direct">
