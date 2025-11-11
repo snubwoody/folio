@@ -77,6 +77,8 @@ jobs:
     permissions:
       pull-requests: write
       checks: write
+    env:
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
@@ -95,6 +97,8 @@ jobs:
         run: pnpm -r test:headless
   build-frontend:
     runs-on: macos-latest
+    env:
+      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
