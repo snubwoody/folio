@@ -40,6 +40,12 @@ Folio is currently in beta, see the [open issues](https://github.com/snubwoody/f
 - [Feature requests](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Afeature)
 - [Known bugs](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Abug)
 
+## Support
+There are a couple way to reach out:
+- [Start a discussion](https://github.com/snubwoody/folio/discussions).
+- [Open an issue](https://github.com/snubwoody/folio/issues).
+- You can reach out to me on the email listed on my [website](https://wakunguma.com).
+
 ## License
 
 Folio is free software licensed under the GNU General Public License v3.0 or later.
