@@ -10,8 +10,8 @@
 </div>
 
 ## Overview
-Folio is a free, privacy focused, budgeting app. All your data is stored locally on device, no network, no accounts,
-no telemetry.
+Folio is a free, privacy focused, budgeting app. All your data is stored locally on device, no network, no accounts.
+
 
 ## 💻 Downloads
 
@@ -21,12 +21,12 @@ no telemetry.
     </a>
 </div>
 
-Coming soon for:
+You can find the installers on the latest [Github release](https://github.com/snubwoody/folio/releases/latest).
 
-- 🪟 **Windows**
-- 🐧 **Linux**
-- 🍎 **macOS**
 
+- 🪟 Windows: Download the latest `-setup.exe` file.
+- 🍎 MacOS: Download the latest `.dmg` file.
+- 🐧 Linux (.deb): Download the latest `.deb` file.
 
 ## License
 
