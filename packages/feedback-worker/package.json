@@ -1,0 +1,19 @@
+{
+    "name": "@folio/feedback-worker",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "",
+    "main": "src/index.ts",
+    "scripts": {
+        "worker": "tsx src/index.ts"
+    },
+    "dependencies": {
+        "dotenv": "^17.2.3",
+        "jsonwebtoken": "^9.0.2",
+        "octokit": "^5.0.5"
+    },
+    "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.10",
+        "tsx": "^4.20.6"
+    }
+}

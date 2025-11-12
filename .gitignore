@@ -9,6 +9,7 @@ target/
 # Environment variables
 .env
 .env.*
+*.pem
 
 # IDE settings
 .idea/

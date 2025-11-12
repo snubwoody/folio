@@ -78,8 +78,8 @@ export default defineConfig([
             "@stylistic/quotes": ["warn", "double"],
             "@stylistic/semi": ["error"],
             "@stylistic/arrow-spacing": ["warn"],
-            "@stylistic/brace-style": ["error"],
-            "@stylistic/comma-dangle": ["error","never"]
+            "@stylistic/brace-style": ["warn"],
+            "@stylistic/comma-dangle": ["warn","never"]
         }
     }
 ]);
