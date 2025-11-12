@@ -8,12 +8,15 @@
         "worker": "tsx src/index.ts"
     },
     "dependencies": {
+        "@types/node": "^24.7.2",
         "dotenv": "^17.2.3",
+        "hono": "^4.10.5",
         "jsonwebtoken": "^9.0.2",
         "octokit": "^5.0.5"
     },
     "devDependencies": {
         "@types/jsonwebtoken": "^9.0.10",
-        "tsx": "^4.20.6"
+        "tsx": "^4.20.6",
+        "wrangler": "^4.47.0"
     }
 }

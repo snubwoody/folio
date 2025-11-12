@@ -1,8 +1,9 @@
 {
-    "extends": ["../../tsconfig.base.json"],
+    "extends": ["../../tsconfig.base.json",],
     "compilerOptions": {
         "module": "esnext",
         "target": "esnext",
-        "lib": ["ESNext"]
+        "lib": ["ESNext"],
+        "types": ["./worker-configuration.d.ts","node"]
     }
 }
