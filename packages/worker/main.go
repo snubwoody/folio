@@ -24,8 +24,8 @@ func main() {
 	}
 
 	http.HandleFunc("GET /", getRoot)
-	http.HandleFunc("POST /api/v2025-11-12/feature", postFeature)
-	http.HandleFunc("POST /api/v2025-11-12/bug", postBug)
+	http.HandleFunc("POST /api/v1/feature", postFeature)
+	http.HandleFunc("POST /api/v1/bug", postBug)
 
 	fmt.Println("Listening for requests on port :8080")
 	err = http.ListenAndServe(":8080", nil)
