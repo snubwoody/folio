@@ -1,6 +1,6 @@
-.changeset/
 .git/
 .github/
+.env
 **/target/
 .idea/
 .vscode/
