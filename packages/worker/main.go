@@ -21,75 +21,75 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error loading .env: %s", err)
 	}
-    
+
 	// token,err := getAccessToken()
 	// if err != nil {
 	// 	fmt.Printf("Error loading .env: %s", err)
 	// }
-    // err = createIssue(token)
+	// err = createIssue(token)
 	// if err != nil {
 	// 	fmt.Printf("Error loading .env: %s", err)
 	// }
 
-    http.HandleFunc("GET /",getRoot)
-    err = http.ListenAndServe(":8080",nil)
-    if err != nil{
-        fmt.Printf("Error: %s\n",err)
-        os.Exit(1)
-    }
+	http.HandleFunc("GET /", getRoot)
+	err = http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
+		os.Exit(1)
+	}
 }
 
-func getRoot(w http.ResponseWriter, r *http.Request){
-    io.WriteString(w,"Server is up an running")
+func getRoot(w http.ResponseWriter, _ *http.Request) {
+	io.WriteString(w, "Server is up and running")
 }
 
 // TODO: make client?
-func createIssue(accessToken string) error{
-    url := "https://api.github.com/repos/snubwoody/folio/issues"
-    client := &http.Client{}
-    b := map[string]any{
-        "title": "[Feature request]",
-    }
-    jsonData,err := json.Marshal(b)
-    if err != nil{
-        return nil
-    }
+func createIssue(accessToken string) error {
+	url := "https://api.github.com/repos/snubwoody/folio/issues"
+	client := &http.Client{}
+	b := map[string]any{
+		"title": "[Feature request]",
+	}
+	jsonData, err := json.Marshal(b)
+	if err != nil {
+		return nil
+	}
 	r, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-    if err != nil{
-        return nil
-    }
+	if err != nil {
+		return nil
+	}
 	r.Header.Set("Accept", "application/vnd.github.raw+json")
 	r.Header.Set("Authorization", fmt.Sprintf("Token %s", accessToken))
 	r.Header.Set("X-Github-Api-Version", fmt.Sprintf("%s", apiVersion))
-    
+
 	resp, err := client.Do(r)
 
-    var responseBody map[string]any
-	
-    err = json.NewDecoder(resp.Body).Decode(&responseBody)
-	if err != nil {
-        return err
-	}
-	
-    err = resp.Body.Close()
+	var responseBody map[string]any
+
+	err = json.NewDecoder(resp.Body).Decode(&responseBody)
 	if err != nil {
 		return err
 	}
 
-    fmt.Printf("%s\n",responseBody)
-
-    return nil
-}
-
-type AccessTokenResponse struct{
-    Token string `json:"token"`
-    ExpiresAt string `json:"expires_at"`
-}
-
-func getAccessToken() (string,error){
-    jwt, err := createJwt()
+	err = resp.Body.Close()
 	if err != nil {
-        return "",err
+		return err
+	}
+
+	fmt.Printf("%s\n", responseBody)
+
+	return nil
+}
+
+type AccessTokenResponse struct {
+	Token     string `json:"token"`
+	ExpiresAt string `json:"expires_at"`
+}
+
+func getAccessToken() (string, error) {
+	jwt, err := createJwt()
+	if err != nil {
+		return "", err
 	}
 	url := fmt.Sprintf("https://api.github.com/app/installations/%d/access_tokens", installationId)
 	client := &http.Client{}
@@ -100,18 +100,18 @@ func getAccessToken() (string,error){
 
 	resp, err := client.Do(r)
 	if err != nil {
-        return "",err
+		return "", err
 	}
 	var responseBody AccessTokenResponse
 	err = json.NewDecoder(resp.Body).Decode(&responseBody)
 	if err != nil {
-        return "",err
+		return "", err
 	}
 	err = resp.Body.Close()
 	if err != nil {
-		return "",err
+		return "", err
 	}
-    return responseBody.Token,nil
+	return responseBody.Token, nil
 }
 
 func createJwt() (string, error) {
