@@ -1,8 +1,0 @@
-[workspace.package]
-edition = "2024"
-
-[workspace]
-resolver = "3"
-members = [
-    "packages/desktop/src-tauri"
-]
