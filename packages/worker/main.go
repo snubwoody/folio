@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -26,7 +27,13 @@ func main() {
 	http.HandleFunc("POST /api/v2025-11-12/feature", postFeature)
 	http.HandleFunc("POST /api/v2025-11-12/bug", postBug)
 
+	fmt.Println("Listening for requests on port :8080")
 	err = http.ListenAndServe(":8080", nil)
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Println("Closing server")
+		return
+	}
+
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
@@ -83,6 +90,7 @@ func postBug(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+	fmt.Println("Created new bug report")
 }
 
 func postFeature(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +101,7 @@ func postFeature(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, fmt.Sprintf("Invalid request body:%s", err))
 		return
 	}
-	err = submitBugReport(body)
+	err = submitFeatureRequest(body)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Printf("Error %s\n", err)
@@ -101,6 +109,7 @@ func postFeature(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+	fmt.Println("Created new feature request")
 }
 
 func getRoot(w http.ResponseWriter, _ *http.Request) {
