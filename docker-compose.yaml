@@ -1,8 +1,0 @@
-services:
-  web:
-    build: 
-      context: .
-      dockerfile: Dockerfile.web
-    image: folio/website
-    ports:
-      - 8080:8080

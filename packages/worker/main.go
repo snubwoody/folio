@@ -22,16 +22,10 @@ func main() {
 		fmt.Printf("Error loading .env: %s", err)
 	}
 
-	// token,err := getAccessToken()
-	// if err != nil {
-	// 	fmt.Printf("Error loading .env: %s", err)
-	// }
-	// err = createIssue(token)
-	// if err != nil {
-	// 	fmt.Printf("Error loading .env: %s", err)
-	// }
-
 	http.HandleFunc("GET /", getRoot)
+	http.HandleFunc("POST /api/v1/feature", getRoot)
+	http.HandleFunc("POST /api/v1/bug", postBug)
+
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err)
@@ -39,16 +33,68 @@ func main() {
 	}
 }
 
+type BugReport struct {
+	Title       string `json:"title"`
+	Description string `json:"description,omitempty"`
+	Os          string `json:"os,omitempty"`
+	// The app version
+	Version string `json:"version,omitempty"`
+}
+
+// ToMarkdown converts the bug report into markdown
+// for use in the github issue.
+func (b *BugReport) ToMarkdown() string {
+	s := fmt.Sprintf("App version: %s\n", b.Version)
+	s += fmt.Sprintf("OS: %s\n\n", b.Os)
+	s += "## Description%\n"
+	s += fmt.Sprintf("%s\n", b.Description)
+	return s
+}
+
+func postBug(w http.ResponseWriter, r *http.Request) {
+	var body BugReport
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		io.WriteString(w, fmt.Sprintf("Invalid request body:%s", err))
+		return
+	}
+	err = submitBugReport(body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Printf("Error %s\n", err)
+		io.WriteString(w, "An unknown error occurred")
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+}
+
 func getRoot(w http.ResponseWriter, _ *http.Request) {
 	io.WriteString(w, "Server is up and running")
 }
 
+// TODO: return response
+func submitBugReport(report BugReport) error {
+	token, err := getAccessToken()
+	if err != nil {
+		return err
+	}
+	title := fmt.Sprintf("[Bug report] %s", report.Title)
+	err = createIssue(token, title, report.ToMarkdown())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // TODO: make client?
-func createIssue(accessToken string) error {
+func createIssue(accessToken, title, body string) error {
 	url := "https://api.github.com/repos/snubwoody/folio/issues"
 	client := &http.Client{}
 	b := map[string]any{
-		"title": "[Feature request]",
+		"title": title,
+		"body":  body,
 	}
 	jsonData, err := json.Marshal(b)
 	if err != nil {
