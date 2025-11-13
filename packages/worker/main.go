@@ -23,8 +23,8 @@ func main() {
 	}
 
 	http.HandleFunc("GET /", getRoot)
-	http.HandleFunc("POST /api/v1/feature", getRoot)
-	http.HandleFunc("POST /api/v1/bug", postBug)
+	http.HandleFunc("POST /api/v2025-11-12/feature", postFeature)
+	http.HandleFunc("POST /api/v2025-11-12/bug", postBug)
 
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -41,18 +41,52 @@ type BugReport struct {
 	Version string `json:"version,omitempty"`
 }
 
+type FeatureRequest struct {
+	Title       string `json:"title"`
+	Description string `json:"description,omitempty"`
+	Os          string `json:"os,omitempty"`
+	// The app version
+	Version string `json:"version,omitempty"`
+}
+
 // ToMarkdown converts the bug report into markdown
 // for use in the github issue.
 func (b *BugReport) ToMarkdown() string {
 	s := fmt.Sprintf("App version: %s\n", b.Version)
 	s += fmt.Sprintf("OS: %s\n\n", b.Os)
-	s += "## Description%\n"
+	s += "## Description\n"
 	s += fmt.Sprintf("%s\n", b.Description)
+	return s
+}
+
+func (f *FeatureRequest) ToMarkdown() string {
+	s := fmt.Sprintf("App version: %s\n", f.Version)
+	s += fmt.Sprintf("OS: %s\n\n", f.Os)
+	s += "## Description\n"
+	s += fmt.Sprintf("%s\n", f.Description)
 	return s
 }
 
 func postBug(w http.ResponseWriter, r *http.Request) {
 	var body BugReport
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		io.WriteString(w, fmt.Sprintf("Invalid request body:%s", err))
+		return
+	}
+	err = submitBugReport(body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Printf("Error %s\n", err)
+		io.WriteString(w, "An unknown error occurred")
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+}
+
+func postFeature(w http.ResponseWriter, r *http.Request) {
+	var body FeatureRequest
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
 		w.WriteHeader(http.StatusUnprocessableEntity)
@@ -81,6 +115,20 @@ func submitBugReport(report BugReport) error {
 	}
 	title := fmt.Sprintf("[Bug report] %s", report.Title)
 	err = createIssue(token, title, report.ToMarkdown())
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func submitFeatureRequest(request FeatureRequest) error {
+	token, err := getAccessToken()
+	if err != nil {
+		return err
+	}
+	title := fmt.Sprintf("[Feature request] %s", request.Title)
+	err = createIssue(token, title, request.ToMarkdown())
 	if err != nil {
 		return err
 	}
@@ -121,9 +169,6 @@ func createIssue(accessToken, title, body string) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Printf("%s\n", responseBody)
-
 	return nil
 }
 
