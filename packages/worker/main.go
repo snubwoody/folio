@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"time"
@@ -30,7 +31,16 @@ func main() {
 	// 	fmt.Printf("Error loading .env: %s", err)
 	// }
 
-    
+    http.HandleFunc("GET /",getRoot)
+    err = http.ListenAndServe(":8080",nil)
+    if err != nil{
+        fmt.Printf("Error: %s\n",err)
+        os.Exit(1)
+    }
+}
+
+func getRoot(w http.ResponseWriter, r *http.Request){
+    io.WriteString(w,"Server is up an running")
 }
 
 // TODO: make client?
