@@ -15,7 +15,7 @@ export default {
         "import-notation": "string",
         "custom-property-pattern": null,
         "custom-property-empty-line-before": null,
-        // Ignore tailind @ rules
+        // Ignore tailwind @ rules
         "at-rule-no-unknown": [true, { ignoreAtRules: ["utility", "theme"] }],
         // Relax some rules for Svelte
         "selector-pseudo-class-no-unknown": [

@@ -16,45 +16,55 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <!--
 @component
+# Segmented tabs
 A tab bar that display a list of tab items to the user, each corresponding to
 a specific tab content.
 
 # Example
 ```svelte
 <script>
-    const paymentMethods = [
-        {id: 298024, title: "Apple Pay"},
-        {id: 232353, title: "Klarna"},
-        {id: 368547, title: "Bank"},
-        {id: 869822, title: "Credit card"},
-        {id: 724024, title: "Cash"},
-        {id: 239142, title: "PayPal"},
-    ]
+    import { SegmentedTabs,TabContent,TabButton } from "$components/select";
+    let value = "Tab 1";
 </script>
 
-<SelectMenu
-    label = "Payment method"
-    items={paymentMethods}
-    toOption = {(item) => {value: item.id, label: item.title}}
-    onChange = {(item) => console.log(item)}
-/>
+<SegmentedTabs bind:value>
+    <TabButton value="Tab 1">Tab 1</TabButton>
+    <TabButton value="Tab 2">Tab 2</TabButton>
+    <TabContent value="Tab 1">Tab 1</TabContent>
+    <TabContent value="Tab 2">Tab 2</TabContent>
+</SegmentedTabs>
 ```
 -->
 <script lang="ts">
     import {Tabs} from "bits-ui";
     import type {Snippet} from "svelte";
+    import "$styles/tabs.css";
+
+    type SegmentedTabStyle = "primary" | "neutral";
 
     interface Props{
         value: string,
-        children: Snippet
+        children: Snippet,
+        variant?: SegmentedTabStyle,
     }
 
     let {
         value = $bindable(),
-        children
+        variant = "primary",
+        children,
     }: Props = $props();
 </script>
 
-<Tabs.Root bind:value>
+<Tabs.Root class={`segmented-tabs segmented-tabs-${variant}`} bind:value>
     {@render children()}
 </Tabs.Root>
+
+<!--<style>-->
+<!--    :global(.segmented-tabs){-->
+<!--        :global(.segmented-tab-bar){-->
+<!--            background: red;-->
+<!--            padding: 2px;-->
+<!--            border-radius: var(&#45;&#45;radius-full);-->
+<!--        }-->
+<!--    }-->
+<!--</style>-->

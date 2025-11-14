@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import TransactionTable from "./expense/ExpenseTable.svelte";
     import AddTransaction from "./AddTransaction.svelte";
     import IncomeTable from "./income/IncomeTable.svelte";
-    import { SegmentedTabs,TabContent,TabButton } from "$components/select";
+    import { SegmentedTabs,TabContent,TabButton,TabBar } from "$components/select";
 
     type TransactionTab = "Expenses" | "Income";
     const tabIds: TransactionTab[] = ["Expenses", "Income"];
@@ -29,9 +29,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <section class="space-y-2">
-    <SegmentedTabs bind:value={active}>
-        <TabButton value="Expenses">Expenses</TabButton>
-        <TabButton value="Incomes">Incomes</TabButton>
+    <SegmentedTabs variant="primary" bind:value={active}>
+        <TabBar>
+            <TabButton value="Expenses">Expenses</TabButton>
+            <TabButton value="Incomes">Incomes</TabButton>
+        </TabBar>
         <TabContent value="Expenses">Expenses</TabContent>
         <TabContent value="Incomes">Incomes</TabContent>
     </SegmentedTabs>
