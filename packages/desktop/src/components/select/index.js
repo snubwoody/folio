@@ -12,8 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-export {default as SegmentedTabs} from "./SegmentedTabs.svelte";
-export {default as TabButton} from "./TabButton.svelte";
-export {default as TabContent} from "./TabContent.svelte";
-export {default as TabBar} from "./TabBar.svelte";
+export { default as SegmentedTabs } from "./SegmentedTabs.svelte";
+export { default as TabButton } from "./TabButton.svelte";
+export { default as TabContent } from "./TabContent.svelte";
+export { default as TabBar } from "./TabBar.svelte";
 

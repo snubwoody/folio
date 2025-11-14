@@ -15,68 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { Tabs } from "melt/builders";
     import TransactionTable from "./expense/ExpenseTable.svelte";
-    import AddTransaction from "./AddTransaction.svelte";
     import IncomeTable from "./income/IncomeTable.svelte";
     import { SegmentedTabs,TabContent,TabButton,TabBar } from "$components/select";
 
-    type TransactionTab = "Expenses" | "Income";
-    const tabIds: TransactionTab[] = ["Expenses", "Income"];
-    let activeTab = $state(tabIds[0]);
-    const tabs = new Tabs<TransactionTab>({ value: tabIds[0],onValueChange: (active) => activeTab = active });
-    let active = $state("Expenses");
-    let active2 = $state("Expenses");
+    let activeTab = $state("Expenses");
 </script>
 
 <section class="space-y-2">
-    <SegmentedTabs variant="primary" bind:value={active}>
-        <TabBar>
-            <TabButton value="Expenses">Expenses</TabButton>
-            <TabButton value="Incomes">Incomes</TabButton>
-        </TabBar>
-        <TabContent value="Expenses">Expenses</TabContent>
-        <TabContent value="Incomes">Incomes</TabContent>
-    </SegmentedTabs>
-
-    <SegmentedTabs variant="neutral" bind:value={active2}>
+    <SegmentedTabs variant="neutral" bind:value={activeTab}>
         <TabBar class="w-full max-w-[250px]">
             <TabButton value="Expenses">Expenses</TabButton>
             <TabButton value="Incomes">Incomes</TabButton>
         </TabBar>
-        <TabContent value="Expenses">Expenses</TabContent>
-        <TabContent value="Incomes">Incomes</TabContent>
+        <TabContent value="Expenses">
+            <TransactionTable/>
+        </TabContent>
+        <TabContent value="Incomes">
+            <IncomeTable/>
+        </TabContent>
     </SegmentedTabs>
-
-    <header class="flex items-center gap-2">
-        {#each tabIds as id,i (i)}
-            <button {...tabs.getTrigger(id)}>
-            {id}
-            </button>
-        {/each}
-        <AddTransaction {activeTab}/>
-    </header>
-    {#each tabIds as id,i (i)}
-        <div {...tabs.getContent(id)}>
-            {#if id === "Expenses"}
-                <TransactionTable/>
-            {:else}
-                <IncomeTable/>
-            {/if}
-        </div>
-    {/each}
 </section>
-
-<style>
-    [data-melt-tabs-trigger]{
-        padding: 8px 16px;
-        transition: all 250ms;
-        border-radius: 999px;
-        color: var(--color-text-muted);
-
-        &[data-active]{
-            background-color: var(--color-neutral-50);
-            color: var(--color-text-body);
-        }
-    }
-</style>

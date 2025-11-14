@@ -36,8 +36,8 @@ a specific tab content.
 ```
 -->
 <script lang="ts">
-    import {Tabs} from "bits-ui";
-    import type {Snippet} from "svelte";
+    import { Tabs } from "bits-ui";
+    import type { Snippet } from "svelte";
     import "$styles/tabs.css";
 
     type SegmentedTabStyle = "primary" | "neutral";
@@ -52,22 +52,23 @@ a specific tab content.
     let {
         value = $bindable(),
         variant = "primary",
-        children,
+        children
     }: Props = $props();
 
-    $effect(()=>{
-        value;
+    $effect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        value
         movePill();
     });
 
     function movePill(){
         if (!tabRoot){
-            return
+            return;
         }
         const activeElement = tabRoot?.querySelector("[data-tabs-trigger][data-state='active']");
         if (!activeElement) return;
         const rect = activeElement.getBoundingClientRect();
-        const offset = activeElement?.getBoundingClientRect().x - tabRoot.getBoundingClientRect().x
+        const offset = activeElement?.getBoundingClientRect().x - tabRoot.getBoundingClientRect().x;
         let pill = tabRoot?.querySelector<HTMLElement>(".segmented-tabs-pill");
         if (!pill) return;
         pill.style.transform = `translatex(${offset}px)`;
@@ -76,7 +77,7 @@ a specific tab content.
     }
 
     function getValue(): string {
-        return value
+        return value;
     }
 
     function setValue(newValue: string){
