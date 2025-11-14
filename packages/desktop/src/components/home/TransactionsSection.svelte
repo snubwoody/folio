@@ -26,11 +26,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     let activeTab = $state(tabIds[0]);
     const tabs = new Tabs<TransactionTab>({ value: tabIds[0],onValueChange: (active) => activeTab = active });
     let active = $state("Expenses");
+    let active2 = $state("Expenses");
 </script>
 
 <section class="space-y-2">
     <SegmentedTabs variant="primary" bind:value={active}>
         <TabBar>
+            <TabButton value="Expenses">Expenses</TabButton>
+            <TabButton value="Incomes">Incomes</TabButton>
+        </TabBar>
+        <TabContent value="Expenses">Expenses</TabContent>
+        <TabContent value="Incomes">Incomes</TabContent>
+    </SegmentedTabs>
+
+    <SegmentedTabs variant="neutral" bind:value={active2}>
+        <TabBar class="w-full max-w-[250px]">
             <TabButton value="Expenses">Expenses</TabButton>
             <TabButton value="Incomes">Incomes</TabButton>
         </TabBar>

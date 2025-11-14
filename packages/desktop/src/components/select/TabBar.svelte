@@ -18,10 +18,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import {Tabs} from "bits-ui";
     import type {Snippet} from "svelte";
     interface Props{
-        children: Snippet
+        children: Snippet,
+        class?: string
     }
 
-    const {children}:Props = $props();
+    const {children,class:userClass}:Props = $props();
 </script>
 
-<Tabs.List>{@render children()}</Tabs.List>
+<Tabs.List class={`${userClass ?? ""}`}>
+    <div class="segmented-tabs-pill"></div>
+    {@render children()}
+</Tabs.List>

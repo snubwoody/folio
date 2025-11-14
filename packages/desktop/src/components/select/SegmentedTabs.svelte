@@ -48,23 +48,43 @@ a specific tab content.
         variant?: SegmentedTabStyle,
     }
 
+    let tabRoot = $state<HTMLDivElement | null>(null);
     let {
         value = $bindable(),
         variant = "primary",
         children,
     }: Props = $props();
+
+    $effect(()=>{
+        value;
+        movePill();
+    });
+
+    function movePill(){
+        if (!tabRoot){
+            return
+        }
+        const activeElement = tabRoot?.querySelector("[data-tabs-trigger][data-state='active']");
+        if (!activeElement) return;
+        const rect = activeElement.getBoundingClientRect();
+        const offset = activeElement?.getBoundingClientRect().x - tabRoot.getBoundingClientRect().x
+        let pill = tabRoot?.querySelector<HTMLElement>(".segmented-tabs-pill");
+        if (!pill) return;
+        pill.style.transform = `translatex(${offset}px)`;
+        pill.style.width = `${rect.width}px`;
+        pill.style.height = `${rect.height}px`;
+    }
+
+    function getValue(): string {
+        return value
+    }
+
+    function setValue(newValue: string){
+        value = newValue;
+    }
 </script>
 
-<Tabs.Root class={`segmented-tabs segmented-tabs-${variant}`} bind:value>
+<Tabs.Root bind:ref={tabRoot} class={`segmented-tabs segmented-tabs-${variant}`} bind:value={getValue,setValue}>
     {@render children()}
 </Tabs.Root>
 
-<!--<style>-->
-<!--    :global(.segmented-tabs){-->
-<!--        :global(.segmented-tab-bar){-->
-<!--            background: red;-->
-<!--            padding: 2px;-->
-<!--            border-radius: var(&#45;&#45;radius-full);-->
-<!--        }-->
-<!--    }-->
-<!--</style>-->

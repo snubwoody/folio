@@ -25,4 +25,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const {value,children}:Props = $props();
 </script>
 
-<Tabs.Trigger {value}>{@render children()}</Tabs.Trigger>
+<Tabs.Trigger {value}>
+    {@render children()}
+</Tabs.Trigger>
