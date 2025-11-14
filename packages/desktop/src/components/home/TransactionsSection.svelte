@@ -19,14 +19,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import TransactionTable from "./expense/ExpenseTable.svelte";
     import AddTransaction from "./AddTransaction.svelte";
     import IncomeTable from "./income/IncomeTable.svelte";
+    import { SegmentedTabs,TabContent,TabButton } from "$components/select";
 
     type TransactionTab = "Expenses" | "Income";
     const tabIds: TransactionTab[] = ["Expenses", "Income"];
     let activeTab = $state(tabIds[0]);
     const tabs = new Tabs<TransactionTab>({ value: tabIds[0],onValueChange: (active) => activeTab = active });
+    let active = $state("Expenses");
 </script>
 
 <section class="space-y-2">
+    <SegmentedTabs bind:value={active}>
+        <TabButton value="Expenses">Expenses</TabButton>
+        <TabButton value="Incomes">Incomes</TabButton>
+        <TabContent value="Expenses">Expenses</TabContent>
+        <TabContent value="Incomes">Incomes</TabContent>
+    </SegmentedTabs>
+
     <header class="flex items-center gap-2">
         {#each tabIds as id,i (i)}
             <button {...tabs.getTrigger(id)}>
