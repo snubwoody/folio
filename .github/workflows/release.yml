@@ -4,6 +4,8 @@ env:
   DATABASE_URL: sqlite://data.db
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
@@ -11,7 +13,6 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      
       matrix:
         include:
           - os: windows-latest
@@ -31,16 +32,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-      - uses: actions/cache@v4
-        name: Cache rust
+      - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
-          restore-keys: |
-            rust-cache-${{runner.os}}-
-            rust-cache-
-          path: |
-            target/
-            ~/.cargo
+          workspaces: packages/desktop/src-tauri -> target
       - uses: actions/cache@v4
         id: cache-sqlx
         with:
@@ -79,9 +73,7 @@ jobs:
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
       - name: Bundle app
-        run: |
-          cd packages/desktop/src-tauri
-          cargo packager --release --formats ${{matrix.formats}}
+        run: pnpm -F desktop tauri build
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -90,7 +82,7 @@ jobs:
             packages/desktop/src-tauri/target/release/**/*.deb
             packages/desktop/src-tauri/target/release/**/*.rpm
             packages/desktop/src-tauri/target/release/**/PKGBUILD
-            packages/desktop/src-tauri/target/release/**/*.AppImage
+            packages/desktop/src-tauri/target/release/**/*AppImage
             packages/desktop/src-tauri/target/release/**/*.msi
             packages/desktop/src-tauri/target/release/**/*-setup.exe
             packages/desktop/src-tauri/target/release/**/*.dmg
