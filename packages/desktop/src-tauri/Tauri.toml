@@ -25,7 +25,7 @@ stays on your device - no tracking, just simple budgeting.
 """
 copyright = "Copyright (C) 2025 Wakunguma Kalimukwa"
 license = "GPL-3.0-or-later"
-license-file = "../LICENSE"
+license-file = "../../../LICENSE"
 icon = [
     "icons/32x32.png",
     "icons/128x128.png",
