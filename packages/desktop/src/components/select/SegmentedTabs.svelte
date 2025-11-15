@@ -57,7 +57,7 @@ a specific tab content.
 
     $effect(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        value
+        value;
         movePill();
     });
 
