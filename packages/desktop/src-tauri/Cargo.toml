@@ -54,7 +54,7 @@ publisher = "Wakunguma Kalimukwa"
 identifier = "com.wakunguma.folio"
 formats = ["appimage", "dmg", "nsis", "deb", "pacman"]
 license-file = "../../../LICENSE"
-homepage = "https://www.github.com/snubwoody/folio"
+homepage = "https://folio.wakunguma.com"
 description = "A free, privacy focused budgeting app."
 long-description = """
 Folio is a privacy-focused budgeting application that helps you manage
