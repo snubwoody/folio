@@ -4,6 +4,8 @@ env:
   DATABASE_URL: sqlite://data.db
 on:
   workflow_dispatch:
+  pull_request:
+    branches: [main]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
@@ -11,15 +13,8 @@ jobs:
   build:
     strategy:
       fail-fast: false
-      
       matrix:
-        include:
-          - os: windows-latest
-            formats: nsis
-          - os: macos-latest
-            formats: dmg
-          - os: ubuntu-latest
-            formats: deb,pacman
+        os: [windows-latest,macos-latest,ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
@@ -31,21 +26,9 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-      - uses: actions/cache@v4
-        name: Cache rust
+      - uses: Swatinem/rust-cache@v2
         with:
-          key: rust-cache-${{runner.os}}-${{hashFiles('**/Cargo.lock')}}
-          restore-keys: |
-            rust-cache-${{runner.os}}-
-            rust-cache-
-          path: |
-            target/
-            ~/.cargo
-      - uses: actions/cache@v4
-        id: cache-sqlx
-        with:
-          key: cargo-sqlx-cache-${{runner.os}} # Permanenly cache sqlx
-          path: ~/.cargo/bin
+          workspaces: packages/desktop/src-tauri -> target
       - uses: actions/cache@v4
         id: cache-cargo-bin
         name: Cache cargo binaries
@@ -53,12 +36,10 @@ jobs:
           key: cargo-cargo-bin-cache-${{runner.os}}
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
-      - name: Install sqlx-cli
-        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli --force
-      - name: Install cargo packager
+      - name: Install binaries
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install cargo-packager --locked --force
+        run: |
+          cargo install sqlx-cli cargo-packager --locked --force
       - name: Setup database
         run: |
           cd packages/desktop/src-tauri
@@ -79,9 +60,10 @@ jobs:
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
       - name: Bundle app
-        run: |
-          cd packages/desktop/src-tauri
-          cargo packager --release --formats ${{matrix.formats}}
+        run: pnpm -F desktop tauri build
+      - name: Build pacman
+        if: ${{runner.os == 'Linux'}}
+        run: cargo packager --release --formats pacman
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -90,12 +72,13 @@ jobs:
             packages/desktop/src-tauri/target/release/**/*.deb
             packages/desktop/src-tauri/target/release/**/*.rpm
             packages/desktop/src-tauri/target/release/**/PKGBUILD
-            packages/desktop/src-tauri/target/release/**/*.AppImage
+            packages/desktop/src-tauri/target/release/**/*AppImage
             packages/desktop/src-tauri/target/release/**/*.msi
             packages/desktop/src-tauri/target/release/**/*-setup.exe
             packages/desktop/src-tauri/target/release/**/*.dmg
             packages/desktop/src-tauri/target/release/**/*.tar.gz
   release:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     permissions:
       contents: write
     needs: build
