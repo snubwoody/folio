@@ -1,5 +1,3 @@
-
-@layer components{
     .segmented-tabs{
         position: relative;
 
@@ -57,4 +55,3 @@
         }
 
     }
-}
