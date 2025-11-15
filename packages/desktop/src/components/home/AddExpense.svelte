@@ -62,6 +62,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }}
         onChange={(item) => category = item}
     />
-    <button class="btn btn-primary w-full" onclick={createExpense}>Add transaction</button>
+    <button class="btn btn-primary w-full" onclick={createExpense}>Add expense</button>
 </form>
 

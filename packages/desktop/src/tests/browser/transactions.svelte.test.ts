@@ -1,6 +1,7 @@
 import { appStore } from "$lib/state.svelte";
 import ExpenseTable from "$components/home/expense/ExpenseTable.svelte";
 import Expense from "$components/home/expense/Expense.svelte";
+import TransactionsSection from "$components/home/TransactionsSection.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
 beforeEach(() => {
@@ -16,6 +17,18 @@ test("Expense table heading", async () => {
     expect(items[1]).toHaveTextContent("Account");
     expect(items[2]).toHaveTextContent("Date");
     expect(items[3]).toHaveTextContent("Amount");
+});
+
+test("Show add transaction button", async () => {
+    const page = render(TransactionsSection);
+    expect(page.getByRole("button", { name: "New" })).toBeInTheDocument();
+});
+
+test("Open add expense form", async () => {
+    const page = render(TransactionsSection);
+    await page.getByRole("button", { name: "New" }).click();
+    const fields = page.getByRole("textbox").all();
+    expect(fields).toHaveLength(2);
 });
 
 test("Show expenses in expense table", async () => {

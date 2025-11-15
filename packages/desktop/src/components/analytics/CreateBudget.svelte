@@ -39,13 +39,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <form {...popover.content} class="popup-overlay space-y-2 bg-white max-w-[350px] w-full" onsubmit={() => {}}>
     <TextField bind:value={amount} label="Amount"/>
     <SelectMenu
-        label="Categories"
+        label="Category"
         items={appStore.categories}
         toOption={(a) => {
             return { label: a.title,value: a.id };
         }}
         onChange={(item) => category = item}
     />
-    <button class="btn btn-primary w-full" onclick={createBudget}>Add transaction</button>
+    <button class="btn btn-primary w-full" onclick={createBudget}>Create budget</button>
 </form>
 

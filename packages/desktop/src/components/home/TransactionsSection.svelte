@@ -18,16 +18,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import TransactionTable from "./expense/ExpenseTable.svelte";
     import IncomeTable from "./income/IncomeTable.svelte";
     import { SegmentedTabs,TabContent,TabButton,TabBar } from "$components/select";
+    import AddTransaction from "$components/home/AddTransaction.svelte";
 
-    let activeTab = $state("Expenses");
+    type TabType = "Expenses" | "Income";
+    let activeTab = $state<TabType>("Expenses");
 </script>
 
 <section class="space-y-2">
     <SegmentedTabs variant="neutral" bind:value={activeTab}>
-        <TabBar class="w-full max-w-[250px]">
-            <TabButton value="Expenses">Expenses</TabButton>
-            <TabButton value="Incomes">Incomes</TabButton>
-        </TabBar>
+        <header class="flex items-center justify-between">
+            <TabBar class="w-full max-w-[250px]">
+                <TabButton value="Expenses">Expenses</TabButton>
+                <TabButton value="Incomes">Incomes</TabButton>
+            </TabBar>
+            <AddTransaction {activeTab}/>
+        </header>
         <TabContent value="Expenses">
             <TransactionTable/>
         </TabContent>
