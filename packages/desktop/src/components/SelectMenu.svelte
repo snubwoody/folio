@@ -43,6 +43,7 @@ from.
 <script lang="ts" generics="T">
     import { Select } from "melt/builders";
     import { type SelectOption } from "$lib/select.svelte";
+    import {ChevronDown} from "@lucide/svelte";
 
     type Props = {
         label?: string;
@@ -92,8 +93,8 @@ from.
         {...select.trigger}
         class="flex w-full items-center justify-between px-1.5 py-1 rounded-md border border-neutral-50"
     >
-        <p>{selectedOption?.label ?? "Select an option"}</p>
-        <i class="ph ph-caret-down"></i>
+        {selectedOption?.label ?? "Select an option"}
+        <ChevronDown class="select-btn-icon" size="20"/>
     </button>
 </div>
 <ul {...select.content} class="popup-overlay space-y-1">
@@ -106,6 +107,17 @@ from.
 </ul>
 
 <style>
+    :global(.select-btn-icon) {
+        transition: all 250ms;
+        color: var(--color-text-body);
+    }
+
+    button[aria-expanded='true'] {
+        :global(.select-btn-icon){
+            rotate: 90deg;
+        }
+    }
+
     li {
         border-radius: var(--radius-sm);
         padding: 8px;
