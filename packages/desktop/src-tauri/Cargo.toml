@@ -49,7 +49,6 @@ features = [
 [package.metadata.packager]
 product-name = "Folio"
 category = "Finance"
-before-packaging-command = "pnpm -F desktop tauri build --no-bundle"
 publisher = "Wakunguma Kalimukwa"
 identifier = "com.wakunguma.folio"
 formats = ["appimage", "dmg", "nsis", "deb", "pacman"]

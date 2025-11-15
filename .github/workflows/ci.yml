@@ -158,58 +158,6 @@ jobs:
         run: |
           cd packages/desktop/src-tauri
           cargo nextest run --locked
-  bundle:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-    runs-on: ${{matrix.os}}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        name: Cache cargo binaries
-        id: cache-cargo-bin
-        with:
-          key: cargo-bin-cache-${{runner.os}}
-          path: ~/.cargo/bin
-      - name: Install sqlx-cli
-        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli --force
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: packages/desktop/src-tauri -> target
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - uses: taiki-e/install-action@nextest
-      - name: Setup database
-        run: |
-          cd packages/desktop/src-tauri
-          cargo sqlx database create
-          cargo sqlx migrate run
-      - name: Install system dependencies
-        if: ${{runner.os == 'Linux'}}
-        run: |
-          sudo apt update
-          sudo apt install libwebkit2gtk-4.1-dev \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libxdo-dev \
-            libssl-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev
-      - name: Build app
-        run: pnpm -F desktop tauri build --no-bundle
-      - name: Bundle app
-        run: pnpm -F desktop tauri bundle
   pass:
     needs:
       - format
