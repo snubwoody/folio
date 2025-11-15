@@ -29,6 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	}: Props = $props();
 </script>
 
+<!--TODO: add label-->
 <div class="flex flex-col gap-1">
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
