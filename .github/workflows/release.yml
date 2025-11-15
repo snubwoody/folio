@@ -88,6 +88,7 @@ jobs:
             packages/desktop/src-tauri/target/release/**/*.dmg
             packages/desktop/src-tauri/target/release/**/*.tar.gz
   release:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     permissions:
       contents: write
     needs: build
