@@ -30,6 +30,8 @@ import (
 const ClientId = "Iv23libGSoaUaiaWkC3D"
 
 func main() {
+	// TODO: rate limit
+	// TODO: add logging
 	Client = NewClient(GithubApiEndpoint)
 	err := godotenv.Load()
 	if err != nil {
