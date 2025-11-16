@@ -32,6 +32,7 @@ const installationId = 94393199
 const apiVersion = "2022-11-28"
 
 func main() {
+	Client = NewClient(IssueUrl)
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Printf("Error loading .env: %s", err)
@@ -70,6 +71,24 @@ type FeatureRequest struct {
 	Version string `json:"version,omitempty"`
 }
 
+type Response struct {
+	// The http status code
+	Status uint `json:"status"`
+	// The response body, if the request succeeded.
+	Body *ResponseBody `json:"body,omitempty"`
+	// The response error, if the request failed.
+	Error *ResponseError `json:"error,omitempty"`
+}
+
+type ResponseBody struct {
+	IssueNumber uint   `json:"issue_number"`
+	IssueUrl    string `json:"issue_url"`
+}
+
+type ResponseError struct {
+	Details string `json:"details"`
+}
+
 // ToMarkdown converts the bug report into markdown
 // for use in the github issue.
 func (b *BugReport) ToMarkdown() string {
@@ -80,6 +99,8 @@ func (b *BugReport) ToMarkdown() string {
 	return s
 }
 
+// ToMarkdown converts the feature request into markdown
+// for use in the github issue.
 func (f *FeatureRequest) ToMarkdown() string {
 	s := fmt.Sprintf("App version: %s\n", f.Version)
 	s += fmt.Sprintf("OS: %s\n\n", f.Os)
@@ -137,7 +158,7 @@ func submitBugReport(report BugReport) error {
 		return err
 	}
 	title := fmt.Sprintf("[Bug report] %s", report.Title)
-	err = createIssue(token, title, report.ToMarkdown())
+	err = Client.CreateIssue(token, title, report.ToMarkdown())
 	if err != nil {
 		return err
 	}
@@ -151,11 +172,10 @@ func submitFeatureRequest(request FeatureRequest) error {
 		return err
 	}
 	title := fmt.Sprintf("[Feature request] %s", request.Title)
-	err = createIssue(token, title, request.ToMarkdown())
+	err = Client.CreateIssue(token, title, request.ToMarkdown())
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -173,7 +193,7 @@ func createIssue(accessToken, title, body string) error {
 	}
 	r, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
-		return nil
+		return err
 	}
 	r.Header.Set("Accept", "application/vnd.github.raw+json")
 	r.Header.Set("Authorization", fmt.Sprintf("Token %s", accessToken))
@@ -208,6 +228,9 @@ func getAccessToken() (string, error) {
 	url := fmt.Sprintf("https://api.github.com/app/installations/%d/access_tokens", installationId)
 	client := &http.Client{}
 	r, err := http.NewRequest("POST", url, nil)
+	if err != nil {
+		return "", err
+	}
 	r.Header.Set("Accept", "application/vnd.github.raw+json")
 	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", jwt))
 	r.Header.Set("X-Github-Api-Version", fmt.Sprintf("%s", apiVersion))
