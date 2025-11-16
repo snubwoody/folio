@@ -15,7 +15,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -28,11 +27,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const installationId = 94393199
-const apiVersion = "2022-11-28"
+const ClientId = "Iv23libGSoaUaiaWkC3D"
 
 func main() {
-	Client = NewClient(IssueUrl)
+	Client = NewClient(GithubApiEndpoint)
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Printf("Error loading .env: %s", err)
@@ -179,42 +177,6 @@ func submitFeatureRequest(request FeatureRequest) error {
 	return nil
 }
 
-// TODO: make client?
-func createIssue(accessToken, title, body string) error {
-	url := "https://api.github.com/repos/snubwoody/folio/issues"
-	client := &http.Client{}
-	b := map[string]any{
-		"title": title,
-		"body":  body,
-	}
-	jsonData, err := json.Marshal(b)
-	if err != nil {
-		return nil
-	}
-	r, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return err
-	}
-	r.Header.Set("Accept", "application/vnd.github.raw+json")
-	r.Header.Set("Authorization", fmt.Sprintf("Token %s", accessToken))
-	r.Header.Set("X-Github-Api-Version", fmt.Sprintf("%s", apiVersion))
-
-	resp, err := client.Do(r)
-
-	var responseBody map[string]any
-
-	err = json.NewDecoder(resp.Body).Decode(&responseBody)
-	if err != nil {
-		return err
-	}
-
-	err = resp.Body.Close()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 type AccessTokenResponse struct {
 	Token     string `json:"token"`
 	ExpiresAt string `json:"expires_at"`
@@ -225,7 +187,7 @@ func getAccessToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	url := fmt.Sprintf("https://api.github.com/app/installations/%d/access_tokens", installationId)
+	url := fmt.Sprintf("https://api.github.com/app/installations/%d/access_tokens", InstallationId)
 	client := &http.Client{}
 	r, err := http.NewRequest("POST", url, nil)
 	if err != nil {
@@ -233,7 +195,7 @@ func getAccessToken() (string, error) {
 	}
 	r.Header.Set("Accept", "application/vnd.github.raw+json")
 	r.Header.Set("Authorization", fmt.Sprintf("Bearer %s", jwt))
-	r.Header.Set("X-Github-Api-Version", fmt.Sprintf("%s", apiVersion))
+	r.Header.Set("X-Github-Api-Version", fmt.Sprintf("%s", ApiVersion))
 
 	resp, err := client.Do(r)
 	if err != nil {
@@ -254,17 +216,15 @@ func getAccessToken() (string, error) {
 func createJwt() (string, error) {
 	now := time.Now().Unix()
 	privateKey := os.Getenv("WORKER_PRIVATE_KEY")
-	clientId := "Iv23libGSoaUaiaWkC3D"
 	claims := jwt.MapClaims{
-		"iss": clientId,
+		"iss": ClientId,
 		"iat": now,
 		"exp": now + 600, // Expiry of 10 minutes
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	k, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(privateKey))
 	if err != nil {
-		fmt.Printf("Error: %s", err)
-		return "", nil
+		return "", err
 	}
 	s, err := token.SignedString(k)
 	if err != nil {
