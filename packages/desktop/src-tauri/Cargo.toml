@@ -20,31 +20,20 @@ tauri-build = { version = "2", features = [] }
 tempfile = "3.23.0"
 
 [dependencies]
-tauri = { version = "2.8.5", features = ["config-toml", "test"] }
-tauri-plugin-opener = "2.5.2"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-rust_decimal = { version = "1.39.0", features = ["macros"] }
-tokio = { version = "1.47.1", features = ["full"] }
-chrono = { version = "0.4.42", features = ["serde"] }
-thiserror = "2.0.17"
-tracing-subscriber = "0.3.20"
-tracing = "0.1.41"
-directories = "6.0.0"
-tauri-plugin-os = "2.3.2"
-iso_currency = { version = "0.5.3", features = ["with-serde", "iterator"] }
-
-[dependencies.sqlx]
-version = "0.8.6"
-features = [
-    "runtime-tokio",
-    "sqlite",
-    "uuid",
-    "chrono",
-    "rust_decimal",
-    "migrate",
-    "macros",
-]
+tauri.workspace = true
+tauri-plugin-opener.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rust_decimal.workspace = true
+tokio.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+directories.workspace = true
+tauri-plugin-os.workspace = true
+iso_currency.workspace = true
+sqlx.workspace = true
 
 [package.metadata.packager]
 product-name = "Folio"
