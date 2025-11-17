@@ -60,9 +60,8 @@ jobs:
         run: cargo install sqlx-cli --force
       - name: Setup database
         run: |
-          cd packages/desktop/src-tauri
           cargo sqlx database create
-          cargo sqlx migrate run
+          cargo sqlx migrate run --source packages/desktop/migrations
       - name: Run cargo clippy
         run: cargo clippy --all-features --all-targets -- -D warnings
   format:
