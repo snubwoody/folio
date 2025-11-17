@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [main]
 concurrency:
-  group: ci-${{github.ref}}-${{github.workflow}}
+  group: release-desktop
   cancel-in-progress: true
 jobs:
   build:

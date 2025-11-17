@@ -61,7 +61,7 @@ jobs:
       - name: Setup database
         run: |
           cargo sqlx database create
-          cargo sqlx migrate run --source packages/desktop/migrations
+          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
       - name: Run cargo clippy
         run: cargo clippy --all-features --all-targets -- -D warnings
   format:
