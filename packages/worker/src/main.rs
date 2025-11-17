@@ -77,20 +77,12 @@ impl Claims{
     }
 }
 
-fn create_jwt() -> anyhow::Result<()>{
+fn create_jwt() -> anyhow::Result<String>{
     let key = std::env::var("WORKER_PRIVATE_KEY")?;
-    let key = r#"
-    -----BEGIN PRIVATE KEY-----
-    MIIEvgIBADANBgkqhki
-    -----END PRIVATE KEY-----
-    "#;
-    dbg!(&key);
     let claims = Claims::new();
     let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
-    dbg!(&key);
     let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256),&claims,&key)?;
-    dbg!(token);
-    Ok(())
+    Ok(token)
 }
 
 #[cfg(test)]
