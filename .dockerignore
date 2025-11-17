@@ -1,8 +1,8 @@
 .git/
 .github/
-.env
+**/.env
 **/target/
 .idea/
 .vscode/
 **/node_modules/
-docker-compose.yaml
+../../docker-compose.yaml

@@ -14,7 +14,7 @@ name = "folio_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "2.5.2", features = [] }
 
 [dev-dependencies]
 tempfile = "3.23.0"
