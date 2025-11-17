@@ -14,3 +14,7 @@ reqwest.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 httpmock.workspace = true
+dotenvy.workspace = true
+jsonwebtoken.workspace = true
+rand.workspace = true
+rsa.workspace = true

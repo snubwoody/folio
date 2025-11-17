@@ -1,12 +1,15 @@
 mod client;
 
 use std::time::SystemTime;
+use dotenvy::dotenv;
+use jsonwebtoken::{Algorithm, EncodingKey, Header};
 use poem::{get, handler, Route, Server};
 use poem::listener::TcpListener;
 use serde::{Deserialize, Serialize};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    let _ = dotenv();
     tracing_subscriber::fmt::init();
     let app = Route::new()
         .at("/health",get(health));
@@ -52,6 +55,7 @@ fn health(){
 
 }
 
+#[derive(Debug,Serialize,Deserialize)]
 pub struct Claims{
     pub iss: String,
     pub iat: u64,
@@ -73,13 +77,33 @@ impl Claims{
     }
 }
 
-fn create_jwt(){
-    
+fn create_jwt() -> anyhow::Result<()>{
+    let key = std::env::var("WORKER_PRIVATE_KEY")?;
+    let key = r#"
+    -----BEGIN PRIVATE KEY-----
+    MIIEvgIBADANBgkqhki
+    -----END PRIVATE KEY-----
+    "#;
+    dbg!(&key);
+    let claims = Claims::new();
+    let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
+    dbg!(&key);
+    let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256),&claims,&key)?;
+    dbg!(token);
+    Ok(())
 }
 
 #[cfg(test)]
 mod test{
     use super::*;
+
+    #[test]
+    fn jwt() -> anyhow::Result<()>{
+        let mut rng = rand::rng();
+        unsafe { std::env::set_var("WORKER_PRIVATE_KEY", ""); }
+        create_jwt()?;
+        Ok(())
+    }
 
     #[test]
     fn claims_iss(){
