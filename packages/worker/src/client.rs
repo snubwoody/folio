@@ -9,7 +9,7 @@ pub struct GithubClient {
 }
 
 impl GithubClient {
-    fn new(base_url: &str) -> GithubClient {
+    pub fn new(base_url: &str) -> GithubClient {
         GithubClient {
             base_url: base_url.to_string(),
             version: String::from("2022-11-28"),
@@ -22,7 +22,7 @@ impl GithubClient {
     }
 
     /// Creates a github issue
-    async fn create_issue(&self, title: &str, body: &str) -> anyhow::Result<()> {
+    pub async fn create_issue(&self, title: &str, body: &str) -> anyhow::Result<()> {
         let body = CreateIssueBody::new(title, body);
         let response = self
             .client

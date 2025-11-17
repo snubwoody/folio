@@ -75,14 +75,14 @@ jobs:
         with:
           name: folio-upload-${{ matrix.os }}
           path: |
-            packages/desktop/src-tauri/target/release/**/*.deb
-            packages/desktop/src-tauri/target/release/**/*.rpm
-            packages/desktop/src-tauri/target/release/**/PKGBUILD
-            packages/desktop/src-tauri/target/release/**/*AppImage
-            packages/desktop/src-tauri/target/release/**/*.msi
-            packages/desktop/src-tauri/target/release/**/*-setup.exe
-            packages/desktop/src-tauri/target/release/**/*.dmg
-            packages/desktop/src-tauri/target/release/**/*.tar.gz
+            target/release/**/*.deb
+            target/release/**/*.rpm
+            target/release/**/PKGBUILD
+            target/release/**/*AppImage
+            target/release/**/*.msi
+            target/release/**/*-setup.exe
+            target/release/**/*.dmg
+            target/release/**/*.tar.gz
   release:
     if: ${{ github.event_name == 'workflow_dispatch' }}
     permissions:
@@ -90,6 +90,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with:
           pattern: folio-upload-*

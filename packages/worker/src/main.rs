@@ -1,19 +1,53 @@
 mod client;
+mod middleware;
 
+use std::sync::Arc;
 use dotenvy::dotenv;
 use jsonwebtoken::{Algorithm, EncodingKey, Header};
 use poem::listener::TcpListener;
-use poem::{Route, Server, get, handler};
+use poem::{Route, Server, get, handler, EndpointExt, Endpoint, Request};
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
-use poem::middleware::Cors;
+use poem::http::Method;
+use poem::middleware::{Cors, FnMiddleware, ForceHttps, RequestId};
+use poem::web::Data;
+use crate::client::GithubClient;
+use crate::middleware::{logging_middleware};
+
+const GITHUB_API_URL: &str = "https://api.github.com";
+
+#[derive(Clone)]
+struct State{
+    client: Arc<GithubClient>
+}
+
+impl State {
+    pub fn new() -> State{
+        Self{
+           client: Arc::new(GithubClient::new(GITHUB_API_URL))
+        }
+    }
+
+    pub fn client(&self) -> Arc<GithubClient> {
+        self.client.clone()
+    }
+}
+
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let _ = dotenv();
     tracing_subscriber::fmt::init();
-    let cors = Cors::new();
-    let app = Route::new().at("/health", get(health));
+    let cors = Cors::new()
+        .allow_method(Method::GET)
+        .allow_method(Method::POST);
+
+    let mut app = Route::new()
+        .at("/health", get(health))
+        .with(cors)
+        .data(State::new())
+        .around(logging_middleware);
+
 
     let listener = TcpListener::bind("0.0.0.0:8080");
     Server::new(listener).run(app).await?;
@@ -29,7 +63,10 @@ pub struct FeatureRequest {
     version: String,
 }
 
-fn feature_request() {}
+
+async fn feature_request( Data(state):Data<State> ) {
+    // state.client().create_issue("","");
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct CreateIssueBody {
@@ -47,7 +84,7 @@ impl CreateIssueBody {
 }
 
 #[handler]
-fn health() {}
+async fn health() {}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
