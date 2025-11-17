@@ -1,4 +1,4 @@
-use crate::{CreateIssueBody, create_jwt};
+use crate::CreateIssueBody;
 use reqwest::Client;
 
 #[derive(Clone)]
@@ -24,8 +24,7 @@ impl GithubClient {
     /// Creates a github issue
     pub async fn create_issue(&self, title: &str, body: &str) -> anyhow::Result<()> {
         let body = CreateIssueBody::new(title, body);
-        let response = self
-            .client
+        self.client
             .post(self.issue_url())
             .header("Accept", "application/vnd.github.raw+json")
             .header("Authorization", "Token ")
@@ -36,15 +35,15 @@ impl GithubClient {
         Ok(())
     }
 
-    /// Gets a new access token from github
-    async fn access_token(&self) -> anyhow::Result<()> {
-        let jwt = create_jwt()?;
-        let installation_id = 94393199;
-        let url =
-            format!("https://api.github.com/app/installations/{installation_id}/access_tokens");
-
-        Ok(())
-    }
+    // /// Gets a new access token from github
+    // async fn access_token(&self) -> anyhow::Result<()> {
+    //     let jwt = create_jwt()?;
+    //     let installation_id = 94393199;
+    //     let url =
+    //         format!("https://api.github.com/app/installations/{installation_id}/access_tokens");
+    //
+    //     Ok(())
+    // }
 }
 
 #[cfg(test)]

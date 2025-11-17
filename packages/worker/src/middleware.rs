@@ -1,4 +1,4 @@
-use poem::{Endpoint, IntoResponse, Middleware, Request, Response};
+use poem::{Endpoint, IntoResponse, Request, Response};
 use tracing::{info, warn};
 
 pub async fn logging_middleware<E: Endpoint>(next: E, req: Request) -> poem::Result<Response> {

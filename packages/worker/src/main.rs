@@ -1,38 +1,18 @@
 mod client;
 mod middleware;
 
-use std::sync::Arc;
+use crate::client::GithubClient;
+use crate::middleware::logging_middleware;
 use dotenvy::dotenv;
-use jsonwebtoken::{Algorithm, EncodingKey, Header};
+use poem::http::Method;
 use poem::listener::TcpListener;
-use poem::{Route, Server, get, handler, EndpointExt, Endpoint, Request};
+use poem::middleware::Cors;
+use poem::web::Data;
+use poem::{EndpointExt, Route, Server, get, handler, post};
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
-use poem::http::Method;
-use poem::middleware::{Cors, FnMiddleware, ForceHttps, RequestId};
-use poem::web::Data;
-use crate::client::GithubClient;
-use crate::middleware::{logging_middleware};
 
 const GITHUB_API_URL: &str = "https://api.github.com";
-
-#[derive(Clone)]
-struct State{
-    client: Arc<GithubClient>
-}
-
-impl State {
-    pub fn new() -> State{
-        Self{
-           client: Arc::new(GithubClient::new(GITHUB_API_URL))
-        }
-    }
-
-    pub fn client(&self) -> Arc<GithubClient> {
-        self.client.clone()
-    }
-}
-
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -42,12 +22,12 @@ async fn main() -> anyhow::Result<()> {
         .allow_method(Method::GET)
         .allow_method(Method::POST);
 
-    let mut app = Route::new()
+    let app = Route::new()
         .at("/health", get(health))
+        .at("/api/v1/features", post(feature_request))
         .with(cors)
-        .data(State::new())
+        .data(GithubClient::new(GITHUB_API_URL))
         .around(logging_middleware);
-
 
     let listener = TcpListener::bind("0.0.0.0:8080");
     Server::new(listener).run(app).await?;
@@ -63,13 +43,13 @@ pub struct FeatureRequest {
     version: String,
 }
 
-
-async fn feature_request( Data(state):Data<State> ) {
-    // state.client().create_issue("","");
+#[handler]
+async fn feature_request(Data(client): Data<&GithubClient>) {
+    let _ = client.create_issue("", "").await;
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct CreateIssueBody {
+pub struct CreateIssueBody {
     title: String,
     body: String,
 }
@@ -114,27 +94,17 @@ impl Claims {
     }
 }
 
-fn create_jwt() -> anyhow::Result<String> {
-    let key = std::env::var("WORKER_PRIVATE_KEY")?;
-    let claims = Claims::new();
-    let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
-    let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256), &claims, &key)?;
-    Ok(token)
-}
+// fn create_jwt() -> anyhow::Result<String> {
+//     let key = std::env::var("WORKER_PRIVATE_KEY")?;
+//     let claims = Claims::new();
+//     let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
+//     let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256), &claims, &key)?;
+//     Ok(token)
+// }
 
 #[cfg(test)]
 mod test {
     use super::*;
-
-    // #[test]
-    // fn jwt() -> anyhow::Result<()> {
-    //     let rng = rand::rng();
-    //     unsafe {
-    //         std::env::set_var("WORKER_PRIVATE_KEY", "");
-    //     }
-    //     create_jwt()?;
-    //     Ok(())
-    // }
 
     #[test]
     fn claims_iss() {
