@@ -1,8 +1,8 @@
+use crate::{CreateIssueBody, create_jwt};
 use reqwest::Client;
-use crate::{create_jwt, CreateIssueBody};
 
 #[derive(Clone)]
-pub struct GithubClient{
+pub struct GithubClient {
     base_url: String,
     version: String,
     client: Client,
@@ -17,17 +17,19 @@ impl GithubClient {
         }
     }
 
-    fn issue_url(&self) -> String{
+    fn issue_url(&self) -> String {
         format!("{}/repos/snubwoody/folio/issues", self.base_url)
     }
 
     /// Creates a github issue
-    async fn create_issue(&self,title: &str,body: &str) -> anyhow::Result<()> {
-        let body = CreateIssueBody::new(title,body);
-        let response = self.client.post(&self.issue_url())
-            .header("Accept","application/vnd.github.raw+json")
-            .header("Authorization","Token ")
-            .header("X-Github-Api-Version",&self.version)
+    async fn create_issue(&self, title: &str, body: &str) -> anyhow::Result<()> {
+        let body = CreateIssueBody::new(title, body);
+        let response = self
+            .client
+            .post(self.issue_url())
+            .header("Accept", "application/vnd.github.raw+json")
+            .header("Authorization", "Token ")
+            .header("X-Github-Api-Version", &self.version)
             .json(&body)
             .send()
             .await?;
@@ -38,20 +40,19 @@ impl GithubClient {
     async fn access_token(&self) -> anyhow::Result<()> {
         let jwt = create_jwt()?;
         let installation_id = 94393199;
-        let url = format!("https://api.github.com/app/installations/{installation_id}/access_tokens");
+        let url =
+            format!("https://api.github.com/app/installations/{installation_id}/access_tokens");
 
         Ok(())
     }
 }
 
-
-
 #[cfg(test)]
-mod test{
-    use httpmock::Method::{GET, POST};
-    use httpmock::MockServer;
-    use crate::client::GithubClient;
+mod test {
     use crate::CreateIssueBody;
+    use crate::client::GithubClient;
+    use httpmock::Method::POST;
+    use httpmock::MockServer;
 
     #[tokio::test]
     async fn request_headers() -> anyhow::Result<()> {
@@ -60,12 +61,12 @@ mod test{
         let mock = server.mock(|when, then| {
             when.method(POST)
                 .header("Accept", "application/vnd.github.raw+json")
-                .header_includes("Authorization","Token")
-                .header("X-Github-Api-Version",&client.version)
+                .header_includes("Authorization", "Token")
+                .header("X-Github-Api-Version", &client.version)
                 .path("/repos/snubwoody/folio/issues");
             then.status(200);
         });
-        client.create_issue("","").await?;
+        client.create_issue("", "").await?;
         mock.assert();
         Ok(())
     }
@@ -80,7 +81,7 @@ mod test{
                 .path("/repos/snubwoody/folio/issues");
             then.status(200);
         });
-        client.create_issue("[Feature request]","Body").await?;
+        client.create_issue("[Feature request]", "Body").await?;
         mock.assert();
         Ok(())
     }
@@ -90,11 +91,10 @@ mod test{
         let server = MockServer::start();
         let client = GithubClient::new(server.base_url().as_str());
         let mock = server.mock(|when, then| {
-            when.method(POST)
-                .path("/repos/snubwoody/folio/issues");
+            when.method(POST).path("/repos/snubwoody/folio/issues");
             then.status(200);
         });
-        client.create_issue("","").await?;
+        client.create_issue("", "").await?;
         mock.assert();
         Ok(())
     }
