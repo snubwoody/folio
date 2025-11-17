@@ -60,21 +60,16 @@ jobs:
         run: cargo install sqlx-cli --force
       - name: Setup database
         run: |
-          cd packages/desktop/src-tauri
           cargo sqlx database create
-          cargo sqlx migrate run
+          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
       - name: Run cargo clippy
-        run: |
-          cd packages/desktop/src-tauri
-          cargo clippy --all-features --all-targets -- -D warnings
+        run: cargo clippy --all-features --all-targets -- -D warnings
   format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Check formatting
-        run: |
-          cd packages/desktop/src-tauri
-          cargo fmt --check
+        run: cargo fmt --check
   test-frontend:
     permissions:
       pull-requests: write
@@ -132,15 +127,11 @@ jobs:
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli --force
       - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: packages/desktop/src-tauri -> target
-
       - uses: taiki-e/install-action@nextest
       - name: Setup database
         run: |
-          cd packages/desktop/src-tauri
           cargo sqlx database create
-          cargo sqlx migrate run
+          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
       - name: Install system dependencies
         if: ${{runner.os == 'Linux'}}
         run: |
@@ -155,9 +146,7 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - name: Run tests
-        run: |
-          cd packages/desktop/src-tauri
-          cargo nextest run --locked
+        run: cargo nextest run --locked
   pass:
     needs:
       - format

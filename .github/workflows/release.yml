@@ -7,7 +7,7 @@ on:
   pull_request:
     branches: [main]
 concurrency:
-  group: ci-${{github.ref}}-${{github.workflow}}
+  group: release-desktop
   cancel-in-progress: true
 jobs:
   build:
@@ -59,24 +59,30 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
+      - name: Setup database
+        run: |
+          cargo sqlx database create
+          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
       - name: Bundle app
         run: pnpm -F desktop tauri build
       - name: Build pacman
         if: ${{runner.os == 'Linux'}}
-        run: cargo packager --release --formats pacman
+        run: |
+          cd packages/desktop/src-tauri
+          cargo packager --release --formats pacman
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: folio-upload-${{ matrix.os }}
           path: |
-            packages/desktop/src-tauri/target/release/**/*.deb
-            packages/desktop/src-tauri/target/release/**/*.rpm
-            packages/desktop/src-tauri/target/release/**/PKGBUILD
-            packages/desktop/src-tauri/target/release/**/*AppImage
-            packages/desktop/src-tauri/target/release/**/*.msi
-            packages/desktop/src-tauri/target/release/**/*-setup.exe
-            packages/desktop/src-tauri/target/release/**/*.dmg
-            packages/desktop/src-tauri/target/release/**/*.tar.gz
+            target/release/**/*.deb
+            target/release/**/*.rpm
+            target/release/**/PKGBUILD
+            target/release/**/*AppImage
+            target/release/**/*.msi
+            target/release/**/*-setup.exe
+            target/release/**/*.dmg
+            target/release/**/*.tar.gz
   release:
     if: ${{ github.event_name == 'workflow_dispatch' }}
     permissions:
@@ -84,6 +90,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with:
           pattern: folio-upload-*

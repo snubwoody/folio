@@ -1,7 +1,7 @@
 services:
   folio-worker:
-    build: 
-      context: .
     image: folio/worker
+    build:
+      context: .
     ports:
       - "8080:8080"
