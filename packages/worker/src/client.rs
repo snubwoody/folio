@@ -1,5 +1,5 @@
+use crate::auth::create_jwt;
 use chrono::{DateTime, Duration, Utc};
-use crate::auth::{create_jwt};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::warn;
@@ -36,15 +36,15 @@ pub struct AccessTokenResponse {
     pub expires_at: DateTime<Utc>,
 }
 
-#[derive(Debug, Default,Clone)]
-pub struct AccessToken{
+#[derive(Debug, Default, Clone)]
+pub struct AccessToken {
     pub token: String,
     pub expires_at: DateTime<Utc>,
 }
 
-impl From<AccessTokenResponse> for AccessToken{
+impl From<AccessTokenResponse> for AccessToken {
     fn from(value: AccessTokenResponse) -> Self {
-        Self{
+        Self {
             token: value.token,
             expires_at: value.expires_at,
         }
@@ -68,7 +68,7 @@ impl GithubClient {
             base_url: base_url.to_string(),
             version: String::from("2022-11-28"),
             client: Client::new(),
-            installation_id: 94393199,
+            installation_id: INSTALLATION_ID,
             // Set to a dummy default token
             token: AccessToken::default(),
         };
@@ -91,14 +91,13 @@ impl GithubClient {
 
     /// Checks if the token is expired and refreshes it.
     pub async fn refresh_token(&mut self) -> anyhow::Result<()> {
-        if !self.token_expired(){
-            return Ok(())
+        if !self.token_expired() {
+            return Ok(());
         }
 
         self.token = self.access_token().await?.into();
         Ok(())
     }
-
 
     fn issue_url(&self) -> String {
         format!("{}/repos/snubwoody/folio/issues", self.base_url)
@@ -114,7 +113,11 @@ impl GithubClient {
     /// Creates a Github issue with the specified title and body.
     ///
     /// [API Endpoint](https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#create-an-issue)
-    pub async fn create_issue(&mut self, title: &str, body: &str) -> anyhow::Result<CreateIssueResponse> {
+    pub async fn create_issue(
+        &mut self,
+        title: &str,
+        body: &str,
+    ) -> anyhow::Result<CreateIssueResponse> {
         self.refresh_token().await?;
         let body = CreateIssueBody::new(title, body);
         let response = self
@@ -130,7 +133,7 @@ impl GithubClient {
 
         if response.status().is_client_error() || response.status().is_server_error() {
             let response_body = response.text().await?;
-            warn!(response=response_body,"Failed to create issue");
+            warn!(response = response_body, "Failed to create issue");
             return Err(anyhow::anyhow!("Failed to create issue"));
         }
         let response_body: CreateIssueResponse = response.json().await?;
@@ -157,7 +160,7 @@ impl GithubClient {
         if response.status().is_client_error() || response.status().is_server_error() {
             let response_body = response.text().await?;
             dbg!(&response_body);
-            warn!(response=response_body,"Failed to create access token");
+            warn!(response = response_body, "Failed to create access token");
             return Err(anyhow::anyhow!("Failed to create access token"));
         }
         let response_body: AccessTokenResponse = response.json().await?;
@@ -167,25 +170,28 @@ impl GithubClient {
 
 #[cfg(test)]
 mod test {
-    use chrono::Utc;
     use super::*;
-    use httpmock::Method::POST;
     use crate::auth::create_private_key;
+    use chrono::Utc;
+    use httpmock::Method::POST;
     use httpmock::{Mock, MockServer};
 
     async fn access_token_mock(server: &'_ MockServer) -> anyhow::Result<Mock<'_>> {
         let key = create_private_key()?;
-        unsafe {std::env::set_var("WORKER_PRIVATE_KEY",key)}
+        unsafe { std::env::set_var("WORKER_PRIVATE_KEY", key) }
         let mock = server.mock(|when, then| {
             when.method(POST)
                 .header("Accept", "application/vnd.github.raw+json")
                 .header_includes("Authorization", "Bearer ")
-                .path(format!("/app/installations/{INSTALLATION_ID}/access_tokens"));
+                .path(format!(
+                    "/app/installations/{INSTALLATION_ID}/access_tokens"
+                ));
             let expires_at = Utc::now() + Duration::minutes(10);
-            let body = AccessTokenResponse{expires_at,..Default::default()};
-            then
-                .status(201)
-                .json_body_obj(&body);
+            let body = AccessTokenResponse {
+                expires_at,
+                ..Default::default()
+            };
+            then.status(201).json_body_obj(&body);
         });
         Ok(mock)
     }
@@ -199,7 +205,6 @@ mod test {
         mock.assert_calls(2);
         Ok(())
     }
-
 
     #[tokio::test]
     async fn fetch_access_token_on_init() -> anyhow::Result<()> {
@@ -223,9 +228,7 @@ mod test {
                 .header("X-Github-Api-Version", &client.version)
                 .path("/repos/snubwoody/folio/issues");
             let body = CreateIssueResponse::default();
-            then
-                .status(201)
-                .json_body_obj(&body);
+            then.status(201).json_body_obj(&body);
         });
         client.create_issue("", "").await?;
         mock.assert();
@@ -242,9 +245,7 @@ mod test {
                 .json_body_obj(&CreateIssueBody::new("[Feature request]", "Body"))
                 .path("/repos/snubwoody/folio/issues");
             let body = CreateIssueResponse::default();
-            then
-                .status(201)
-                .json_body_obj(&body);
+            then.status(201).json_body_obj(&body);
         });
         client.create_issue("[Feature request]", "Body").await?;
         mock.assert();
@@ -259,9 +260,7 @@ mod test {
         let mock = server.mock(|when, then| {
             when.method(POST).path("/repos/snubwoody/folio/issues");
             let body = CreateIssueResponse::default();
-            then
-                .status(201)
-                .json_body_obj(&body);
+            then.status(201).json_body_obj(&body);
         });
         client.create_issue("", "").await?;
         mock.assert();

@@ -1,6 +1,6 @@
-use std::time::SystemTime;
 use jsonwebtoken::{Algorithm, EncodingKey, Header};
 use serde::{Deserialize, Serialize};
+use std::time::SystemTime;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -46,7 +46,7 @@ pub fn create_private_key() -> anyhow::Result<String> {
     use rsa::pkcs8::EncodePrivateKey;
 
     let mut rng = rsa::rand_core::OsRng;
-    let key = rsa::RsaPrivateKey::new(&mut rng,2048)?;
+    let key = rsa::RsaPrivateKey::new(&mut rng, 2048)?;
     let pem = key.to_pkcs8_pem(LineEnding::LF)?;
     // This is just for testing so we can leave the
     // security features
