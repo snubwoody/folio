@@ -1,10 +1,25 @@
 use chrono::{DateTime, Duration, Utc};
-use crate::{CreateIssueBody, create_jwt};
+use crate::auth::{create_jwt};
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::warn;
 
 const INSTALLATION_ID: u32 = 94393199;
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateIssueBody {
+    title: String,
+    body: String,
+}
+
+impl CreateIssueBody {
+    pub fn new(title: &str, body: &str) -> Self {
+        Self {
+            title: String::from(title),
+            body: String::from(body),
+        }
+    }
+}
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct CreateIssueResponse {
@@ -153,9 +168,9 @@ impl GithubClient {
 #[cfg(test)]
 mod test {
     use chrono::Utc;
-    use crate::{create_private_key, CreateIssueBody};
-    use crate::client::{AccessToken, AccessTokenResponse, CreateIssueResponse, GithubClient, INSTALLATION_ID};
+    use super::*;
     use httpmock::Method::POST;
+    use crate::auth::create_private_key;
     use httpmock::{Mock, MockServer};
 
     async fn access_token_mock(server: &'_ MockServer) -> anyhow::Result<Mock<'_>> {
@@ -166,7 +181,7 @@ mod test {
                 .header("Accept", "application/vnd.github.raw+json")
                 .header_includes("Authorization", "Bearer ")
                 .path(format!("/app/installations/{INSTALLATION_ID}/access_tokens"));
-            let expires_at = Utc::now() + chrono::Duration::minutes(10);
+            let expires_at = Utc::now() + Duration::minutes(10);
             let body = AccessTokenResponse{expires_at,..Default::default()};
             then
                 .status(201)

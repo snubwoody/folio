@@ -1,18 +1,23 @@
 mod client;
 mod middleware;
+mod auth;
 
+use std::collections::HashMap;
+use std::sync::{Arc};
+use tokio::sync::Mutex;
 use crate::client::GithubClient;
 use crate::middleware::logging_middleware;
 use dotenvy::dotenv;
 use jsonwebtoken::{Algorithm, EncodingKey, Header};
-use poem::http::Method;
+use poem::http::{Method, StatusCode};
 use poem::listener::TcpListener;
 use poem::middleware::Cors;
 use poem::web::{Data, Json};
-use poem::{Body, EndpointExt, Route, Server, get, handler, post};
-use serde::{Deserialize, Serialize};
+use poem::{Body, EndpointExt, Route, Server, get, handler, post, IntoResponse, Response};
+use serde::{Deserialize, Serialize, Serializer};
 use std::time::SystemTime;
-
+use serde_json::json;
+use tracing::warn;
 
 const GITHUB_API_URL: &str = "https://api.github.com";
 
@@ -24,13 +29,14 @@ async fn main() -> anyhow::Result<()> {
         .allow_method(Method::GET)
         .allow_method(Method::POST);
 
-    // TODO: wrap client in arc
     let client = GithubClient::new(GITHUB_API_URL).await?;
+    let data = Arc::new(Mutex::new(client));
     let app = Route::new()
         .at("/health", get(health))
         .at("/api/v1/features", post(feature_request))
+        .at("/api/v1/bugs", post(bug_report))
         .with(cors)
-        .data(client)
+        .data(data)
         .around(logging_middleware);
 
     let listener = TcpListener::bind("0.0.0.0:8080");
@@ -42,104 +48,158 @@ async fn main() -> anyhow::Result<()> {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct FeatureRequest {
     title: String,
-    body: String,
+    description: String,
     os: String,
     version: String,
 }
 
+impl FeatureRequest {
+    pub fn issue_title(&self) -> String{
+        format!("[Feature request] {}", self.title)
+    }
+    pub fn body(&self) -> String {
+        let mut body = String::new();
+        body.push_str(&format!("OS: {}\n",self.os));
+        body.push_str(&format!("Version: {}\n",self.version));
+        body.push_str("## Description\n\n");
+        body.push_str(&format!("{}",self.description));
+        body
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct BugReport {
+    title: String,
+    version: String,
+    os: String,
+    description: String,
+}
+
+impl BugReport {
+    pub fn issue_title(&self) -> String{
+        format!("[Bug report] {}", self.title)
+    }
+    pub fn body(&self) -> String {
+        let mut body = String::new();
+        body.push_str(&format!("OS: {}\n",self.os));
+        body.push_str(&format!("Version: {}\n",self.version));
+        body.push_str("## Description\n\n");
+        body.push_str(&format!("{}",self.description));
+        body
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SupportResponse{
+    issue_url: String,
+    issue_id: u32
+}
+
 #[handler]
 async fn feature_request(
-    Json(FeatureRequest { title, body, .. }): Json<FeatureRequest>,
-    Data(client): Data<&GithubClient>,
-) {
-    // FIXME
-    let _ = client.create_issue(&title, &body).await;
-}
+    Json(request): Json<FeatureRequest>,
+    Data(client): Data<&Arc<Mutex<GithubClient>>>,
+) -> impl IntoResponse {
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CreateIssueBody {
-    title: String,
-    body: String,
-}
+    let mut client = client.lock().await;
+    let response = client.create_issue(&request.issue_title(), &request.body()).await;
 
-impl CreateIssueBody {
-    pub fn new(title: &str, body: &str) -> Self {
-        Self {
-            title: String::from(title),
-            body: String::from(body),
+    match response {
+        Ok(issue) => {
+            let response = SupportResponse{
+                issue_url: issue.url,
+                issue_id: issue.number
+            };
+
+            ApiResponse::created(response)
+        },
+        Err(error) => {
+            let message =error.to_string();
+            warn!(error=message,"Failed to create feature request");
+            ApiResponse::error(&message,StatusCode::INTERNAL_SERVER_ERROR)
         }
     }
 }
+
+#[handler]
+async fn bug_report(
+    Json(report): Json<FeatureRequest>,
+    Data(client): Data<&Arc<Mutex<GithubClient>>>,
+) -> impl IntoResponse {
+    let mut client = client.lock().await;
+    let response = client.create_issue(&report.issue_title(), &report.body()).await;
+
+    match response {
+        Ok(issue) => {
+            let response = SupportResponse{
+                issue_url: issue.url,
+                issue_id: issue.number
+            };
+
+            ApiResponse::created(response)
+        },
+        Err(error) => {
+            let message =error.to_string();
+            warn!(error=message,"Failed to create feature request");
+            ApiResponse::error(&message,StatusCode::INTERNAL_SERVER_ERROR)
+        }
+    }
+}
+
+#[derive(Debug)]
+pub struct ApiResponse<T>{
+    status: StatusCode,
+    body: Option<T>,
+    error: Option<ApiError>,
+}
+
+impl<T: Serialize + Send + Sync> ApiResponse<T> {
+    pub fn new(status: StatusCode, body: Option<T>, error: Option<ApiError>) -> Self {
+        Self{
+            status,
+            body,
+            error,
+        }
+    }
+
+    /// Created an api response with a 201 status code
+    pub fn created(body: T) -> Self {
+        Self::new(StatusCode::CREATED, Some(body), None)
+    }
+
+    pub fn error(message: &str,code: StatusCode) -> Self {
+        Self::new(code, None, Some(ApiError::new(message)))
+    }
+}
+
+impl<T: Serialize + Send + Sync> IntoResponse for ApiResponse<T> {
+    fn into_response(self) -> Response {
+        let body = match self.body {
+            Some(body) => Body::from_json(&body).unwrap(),
+            None => Body::from_json(self.error.unwrap()).unwrap(),
+        };
+
+        (self.status,body).into_response()
+    }
+}
+
+
+#[derive(Debug, Deserialize, Serialize,Clone)]
+pub struct ApiError{
+    message: String,
+}
+
+impl ApiError{
+    pub fn new(message: &str) -> ApiError{
+        Self{
+            message: String::from(message),
+        }
+    }
+}
+
+
 
 #[handler]
 async fn health() -> &'static str {
     "The server is up and running"
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Claims {
-    pub iss: String,
-    pub iat: u64,
-    pub exp: u64,
-}
-
-impl Default for Claims {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl Claims {
-    pub fn new() -> Self {
-        let now = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .unwrap_or_default()
-            .as_secs();
-
-        Self {
-            iss: String::from("Iv23libGSoaUaiaWkC3D"),
-            iat: now,
-            exp: now + 600,
-        }
-    }
-}
-
-/// Creates a json web token using the `WORKER_PRIVATE_KEY`
-/// environment variable as the private key.
-fn create_jwt() -> anyhow::Result<String> {
-    let key = std::env::var("WORKER_PRIVATE_KEY")?;
-    let claims = Claims::new();
-    let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
-    let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256), &claims, &key)?;
-    Ok(token)
-}
-
-#[cfg(test)]
-fn create_private_key() -> anyhow::Result<String> {
-    use rsa::pkcs1::LineEnding;
-    use rsa::pkcs8::EncodePrivateKey;
-
-    let mut rng = rsa::rand_core::OsRng;
-    let key = rsa::RsaPrivateKey::new(&mut rng,2048)?;
-    let pem = key.to_pkcs8_pem(LineEnding::LF)?;
-    // This is just for testing so we can leave the
-    // security features
-    Ok(pem.to_string())
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn claims_iss() {
-        let claims = Claims::new();
-        assert_eq!(claims.iss, "Iv23libGSoaUaiaWkC3D");
-    }
-
-    #[test]
-    fn claims_expiry() {
-        let claims = Claims::new();
-        assert_eq!(claims.exp, claims.iat + 600);
-    }
 }
