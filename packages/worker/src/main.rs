@@ -4,13 +4,15 @@ mod middleware;
 use crate::client::GithubClient;
 use crate::middleware::logging_middleware;
 use dotenvy::dotenv;
+use jsonwebtoken::{Algorithm, EncodingKey, Header};
 use poem::http::Method;
 use poem::listener::TcpListener;
 use poem::middleware::Cors;
-use poem::web::Data;
-use poem::{EndpointExt, Route, Server, get, handler, post};
+use poem::web::{Data, Json};
+use poem::{Body, EndpointExt, Route, Server, get, handler, post};
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
+
 
 const GITHUB_API_URL: &str = "https://api.github.com";
 
@@ -44,8 +46,12 @@ pub struct FeatureRequest {
 }
 
 #[handler]
-async fn feature_request(Data(client): Data<&GithubClient>) {
-    let _ = client.create_issue("", "").await;
+async fn feature_request(
+    Json(FeatureRequest { title, body, .. }): Json<FeatureRequest>,
+    Data(client): Data<&GithubClient>,
+) {
+    // FIXME
+    let _ = client.create_issue(&title, &body).await;
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -64,7 +70,9 @@ impl CreateIssueBody {
 }
 
 #[handler]
-async fn health() {}
+async fn health() -> &'static str {
+    "The server is up and running"
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -94,13 +102,28 @@ impl Claims {
     }
 }
 
-// fn create_jwt() -> anyhow::Result<String> {
-//     let key = std::env::var("WORKER_PRIVATE_KEY")?;
-//     let claims = Claims::new();
-//     let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
-//     let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256), &claims, &key)?;
-//     Ok(token)
-// }
+/// Creates a json web token using the `WORKER_PRIVATE_KEY`
+/// environment variable as the private key.
+fn create_jwt() -> anyhow::Result<String> {
+    let key = std::env::var("WORKER_PRIVATE_KEY")?;
+    let claims = Claims::new();
+    let key = EncodingKey::from_rsa_pem(key.as_bytes())?;
+    let token = jsonwebtoken::encode(&Header::new(Algorithm::RS256), &claims, &key)?;
+    Ok(token)
+}
+
+#[cfg(test)]
+fn create_private_key() -> anyhow::Result<String> {
+    use rsa::pkcs1::LineEnding;
+    use rsa::pkcs8::EncodePrivateKey;
+
+    let mut rng = rsa::rand_core::OsRng;
+    let key = rsa::RsaPrivateKey::new(&mut rng,2048)?;
+    let pem = key.to_pkcs8_pem(LineEnding::LF)?;
+    // This is just for testing so we can leave the
+    // security features
+    Ok(pem.to_string())
+}
 
 #[cfg(test)]
 mod test {
