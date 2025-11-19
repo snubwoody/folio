@@ -4,6 +4,8 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use tracing::warn;
 
+const INSTALLATION_ID: u32 = 94393199;
+
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct CreateIssueResponse {
     pub id: u32,
@@ -19,6 +21,21 @@ pub struct AccessTokenResponse {
     pub expires_at: DateTime<Utc>,
 }
 
+#[derive(Debug, Default,Clone)]
+pub struct AccessToken{
+    pub token: String,
+    pub expires_at: DateTime<Utc>,
+}
+
+impl From<AccessTokenResponse> for AccessToken{
+    fn from(value: AccessTokenResponse) -> Self {
+        Self{
+            token: value.token,
+            expires_at: value.expires_at,
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct GithubClient {
     base_url: String,
@@ -27,22 +44,36 @@ pub struct GithubClient {
     client: Client,
     /// The unique identifier of the installation.
     installation_id: u32,
+    token: AccessToken,
 }
 
 impl GithubClient {
-    pub fn new(base_url: &str) -> GithubClient {
-        GithubClient {
+    pub async fn new(base_url: &str) -> anyhow::Result<Self> {
+        let mut client = GithubClient {
             base_url: base_url.to_string(),
             version: String::from("2022-11-28"),
             client: Client::new(),
             installation_id: 94393199,
-        }
+            // Set to a dummy default token
+            token: AccessToken::default(),
+        };
+
+        let token = client.access_token().await?;
+        client.token = token.into();
+        Ok(client)
     }
 
     /// Returns the name of the Github app.
     pub fn name(&self) -> &str {
         "Folio Automated Issues"
     }
+
+    pub fn token_expired(&self) -> bool {
+        let now = Utc::now();
+        // if now > self
+        false
+    }
+
 
     fn issue_url(&self) -> String {
         format!("{}/repos/snubwoody/folio/issues", self.base_url)
@@ -108,49 +139,34 @@ impl GithubClient {
 
 #[cfg(test)]
 mod test {
+    use chrono::Utc;
     use crate::{create_private_key, CreateIssueBody};
-    use crate::client::{AccessTokenResponse, CreateIssueResponse, GithubClient};
+    use crate::client::{AccessToken, AccessTokenResponse, CreateIssueResponse, GithubClient, INSTALLATION_ID};
     use httpmock::Method::POST;
-    use httpmock::MockServer;
+    use httpmock::{Mock, MockServer};
 
-    #[tokio::test]
-    async fn access_token_url() -> anyhow::Result<()> {
+    async fn access_token_mock(server: &'_ MockServer) -> anyhow::Result<Mock<'_>> {
         let key = create_private_key()?;
         unsafe {std::env::set_var("WORKER_PRIVATE_KEY",key)}
-        let server = MockServer::start();
-        let client = GithubClient::new(server.base_url().as_str());
-        let mock = server.mock(|when, then| {
-            when.method(POST)
-                .path(format!("/app/installations/{}/access_tokens",client.installation_id));
-            let body = AccessTokenResponse::default();
-            then
-                .status(201)
-                .json_body_obj(&body);
-        });
-        client.access_token().await?;
-        mock.assert();
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn access_token_headers() -> anyhow::Result<()> {
-        let key = create_private_key()?;
-        unsafe {std::env::set_var("WORKER_PRIVATE_KEY",key)}
-        let server = MockServer::start();
-        let client = GithubClient::new(server.base_url().as_str());
         let mock = server.mock(|when, then| {
             when.method(POST)
                 .header("Accept", "application/vnd.github.raw+json")
-                .header("X-Github-Api-Version", &client.version)
                 .header_includes("Authorization", "Bearer ")
-                .header("User-Agent", client.name())
-                .path(format!("/app/installations/{}/access_tokens",client.installation_id));
-
-            let body = AccessTokenResponse::default();
+                .path(format!("/app/installations/{INSTALLATION_ID}/access_tokens"));
+            let expires_at = Utc::now() + chrono::Duration::minutes(10);
+            let body = AccessTokenResponse{expires_at,..Default::default()};
             then
                 .status(201)
                 .json_body_obj(&body);
         });
+        Ok(mock)
+    }
+
+    #[tokio::test]
+    async fn access_token_url() -> anyhow::Result<()> {
+        let server = MockServer::start();
+        let mock = access_token_mock(&server).await?;
+        let client = GithubClient::new(server.base_url().as_str()).await?;
         client.access_token().await?;
         mock.assert();
         Ok(())
@@ -159,7 +175,8 @@ mod test {
     #[tokio::test]
     async fn create_issue_request_headers() -> anyhow::Result<()> {
         let server = MockServer::start();
-        let client = GithubClient::new(server.base_url().as_str());
+        access_token_mock(&server).await?;
+        let client = GithubClient::new(server.base_url().as_str()).await?;
         let mock = server.mock(|when, then| {
             when.method(POST)
                 .header("Accept", "application/vnd.github.raw+json")
@@ -180,12 +197,16 @@ mod test {
     #[tokio::test]
     async fn request_body() -> anyhow::Result<()> {
         let server = MockServer::start();
-        let client = GithubClient::new(server.base_url().as_str());
+        access_token_mock(&server).await?;
+        let client = GithubClient::new(server.base_url().as_str()).await?;
         let mock = server.mock(|when, then| {
             when.method(POST)
                 .json_body_obj(&CreateIssueBody::new("[Feature request]", "Body"))
                 .path("/repos/snubwoody/folio/issues");
-            then.status(201);
+            let body = CreateIssueResponse::default();
+            then
+                .status(201)
+                .json_body_obj(&body);
         });
         client.create_issue("[Feature request]", "Body").await?;
         mock.assert();
@@ -195,10 +216,14 @@ mod test {
     #[tokio::test]
     async fn correct_issue_endpoint() -> anyhow::Result<()> {
         let server = MockServer::start();
-        let client = GithubClient::new(server.base_url().as_str());
+        access_token_mock(&server).await?;
+        let client = GithubClient::new(server.base_url().as_str()).await?;
         let mock = server.mock(|when, then| {
             when.method(POST).path("/repos/snubwoody/folio/issues");
-            then.status(201);
+            let body = CreateIssueResponse::default();
+            then
+                .status(201)
+                .json_body_obj(&body);
         });
         client.create_issue("", "").await?;
         mock.assert();

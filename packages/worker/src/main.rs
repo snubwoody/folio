@@ -24,11 +24,13 @@ async fn main() -> anyhow::Result<()> {
         .allow_method(Method::GET)
         .allow_method(Method::POST);
 
+    // TODO: wrap client in arc
+    let client = GithubClient::new(GITHUB_API_URL).await?;
     let app = Route::new()
         .at("/health", get(health))
         .at("/api/v1/features", post(feature_request))
         .with(cors)
-        .data(GithubClient::new(GITHUB_API_URL))
+        .data(client)
         .around(logging_middleware);
 
     let listener = TcpListener::bind("0.0.0.0:8080");
