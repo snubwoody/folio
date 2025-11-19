@@ -1,5 +1,15 @@
 use crate::CreateIssueBody;
 use reqwest::Client;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Deserialize,Serialize,Default)]
+pub struct CreateIssueResponse{
+    pub id: u32,
+    pub url: String,
+    pub repository_url: String,
+    /// A number uniquely identifying the issue within its repository.
+    pub number: u32,
+}
 
 #[derive(Clone)]
 pub struct GithubClient {
@@ -21,10 +31,10 @@ impl GithubClient {
         format!("{}/repos/snubwoody/folio/issues", self.base_url)
     }
 
-    /// Creates a github issue
-    pub async fn create_issue(&self, title: &str, body: &str) -> anyhow::Result<()> {
+    /// Creates a github issue with the specified title and body.
+    pub async fn create_issue(&self, title: &str, body: &str) -> anyhow::Result<CreateIssueBody> {
         let body = CreateIssueBody::new(title, body);
-        self.client
+        let response = self.client
             .post(self.issue_url())
             .header("Accept", "application/vnd.github.raw+json")
             .header("Authorization", "Token ")
@@ -32,7 +42,15 @@ impl GithubClient {
             .json(&body)
             .send()
             .await?;
-        Ok(())
+
+        if response.status().is_client_error() || response.status().is_server_error(){
+            // TODO: return error
+            return Err(anyhow::anyhow!("Failed to create issue"));
+        }
+        let response_body: CreateIssueBody = response
+            .json()
+            .await?;
+        Ok(response_body)
     }
 
     // /// Gets a new access token from github
