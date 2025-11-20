@@ -18,23 +18,30 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	type Props = {
 	    label?: string,
+	    name?: string,
+        id?: string,
 	    value: string,
 	    placeholder?: string
 	};
 
 	let {
 	    label,
+        name,
+        id,
 	    placeholder,
 	    value = $bindable()
 	}: Props = $props();
+
+    const inputName = name ?? label;
+    const inputId = id ?? inputName;
 </script>
 
-<div class="flex flex-col gap-1">
+<label for={inputId} class="flex flex-col gap-1">
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
     {/if}
-	<input bind:value type="text" {placeholder}>
-</div>
+	<input id={inputId} name={inputName} bind:value type="text" {placeholder}>
+</label>
 
 <style>
 	input{
