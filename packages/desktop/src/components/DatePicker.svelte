@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { CalendarDays, ChevronLeft, ChevronRight } from "@lucide/svelte";
     import { DatePicker } from "bits-ui";
-    import { type DateValue } from "@internationalized/date";
+    import type { DateValue } from "@internationalized/date";
 
     type Props = {
         onDateChange?: (year: number, month: number, day: number) => void;

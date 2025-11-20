@@ -42,7 +42,7 @@ from.
 -->
 <script lang="ts" generics="T">
     import { Select } from "melt/builders";
-    import { type SelectOption } from "$lib/select.svelte";
+    import type { SelectOption } from "$lib/select.svelte";
     import { ChevronDown } from "@lucide/svelte";
 
     type Props = {
@@ -85,7 +85,7 @@ from.
     });
 </script>
 
-<div class={`space-y-1 ${className}`}>
+<div class={`space-y-1 ${className} select-none`}>
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
     {/if}

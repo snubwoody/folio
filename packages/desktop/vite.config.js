@@ -42,6 +42,7 @@ export default defineConfig({
                 test: {
                     include: ["src/tests/browser/**/*.test.ts"],
                     name: "browser",
+                    environment: "jsdom",
                     browser: {
                         enabled: true,
                         provider: "playwright",

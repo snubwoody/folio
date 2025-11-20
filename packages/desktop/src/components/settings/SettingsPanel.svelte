@@ -24,12 +24,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <div aria-label="Settings panel" class="settings-panel">
     <aside>
-         <MenuItem bind:selectedIndex index={0}>General</MenuItem>
+        <MenuItem bind:selectedIndex index={0}>General</MenuItem>
         <MenuItem bind:selectedIndex index={1}>Categories</MenuItem>
         <MenuItem bind:selectedIndex index={2}>Income streams</MenuItem>
     </aside>
     <main class="overflow-y-auto">
-        <!-- Temporarily disabled -->
         {#if selectedIndex === 0}
              <General/>
         {:else if selectedIndex === 1}

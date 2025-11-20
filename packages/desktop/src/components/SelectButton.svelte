@@ -44,7 +44,7 @@ from.
     import { Select } from "melt/builders";
     import IconButton from "$components/button/IconButton.svelte";
     import ChevronDown from "@lucide/svelte/icons/chevron-down";
-    import { type SelectOption } from "$lib/select.svelte";
+    import type { SelectOption } from "$lib/select.svelte";
 
     type Props = {
         items: T[];

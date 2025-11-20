@@ -18,7 +18,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Settings from "@lucide/svelte/icons/settings";
     import IconButton from "$components/button/IconButton.svelte";
-    // import { createDialog } from "@melt-ui/svelte";
     import { Dialog } from "bits-ui";
     import SettingsPanel from "$components/settings/SettingsPanel.svelte";
 
