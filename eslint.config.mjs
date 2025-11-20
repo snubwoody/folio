@@ -69,6 +69,7 @@ export default defineConfig([
             "no-unused-vars": "off",
             "prefer-const": "off",
             "@typescript-eslint/no-unused-vars": ["warn"],
+            "@typescript-eslint/no-import-type-side-effects": ["warn"],
             "object-curly-spacing": ["warn", "always"],
             "array-bracket-spacing": ["warn", "never"],
             "no-trailing-spaces": "warn",
