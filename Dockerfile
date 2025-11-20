@@ -19,5 +19,9 @@ RUN cargo build --release --bin folio-worker
 # We do not need the Rust toolchain to run the binary!
 FROM debian AS runtime
 WORKDIR /app
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    pkg-config \
+    ca-certificates 
 COPY --from=builder /app/target/release/folio-worker /usr/local/bin
 ENTRYPOINT ["/usr/local/bin/folio-worker"]
