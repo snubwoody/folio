@@ -12,6 +12,7 @@
 	    await appStore.accountStore.addAccount(name,startingBalance);
 	    popover.open = false;
 	}
+    // TODO: replace popover with bits-ui
 </script>
 
 <section>
