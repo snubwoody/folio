@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { HTMLButtonAttributes } from "svelte/elements";
-    import type {Snippet} from "svelte";
+    import type { Snippet } from "svelte";
     type Variant = "primary" | "secondary" | "neutral" | "bordered";
 
     interface Props extends HTMLButtonAttributes{

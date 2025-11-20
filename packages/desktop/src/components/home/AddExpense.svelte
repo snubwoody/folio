@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectMenu from "$components/SelectMenu.svelte";
     import type { Account, Category } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
-    import {Button} from "$components/button";
+    import { Button } from "$components/button";
 
 	const popover = new Popover();
 
