@@ -21,6 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectMenu from "$components/SelectMenu.svelte";
     import type { Account, Category } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
+    import {Button} from "$components/button";
 
 	const popover = new Popover();
 
@@ -62,6 +63,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }}
         onChange={(item) => category = item}
     />
-    <button class="btn btn-primary w-full" onclick={createExpense}>Add expense</button>
+    <Button class="w-full" onclick={createExpense}>Add expense</Button>
 </form>
 

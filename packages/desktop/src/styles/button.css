@@ -3,8 +3,6 @@ button{
 	cursor: pointer;
 }
 
-
-
 @layer components{
     .btn{
         display: flex;
@@ -38,6 +36,31 @@ button{
         
         &:active{
             background-color: var(--color-neutral-200);
+        }
+    }
+
+    .btn-bordered{
+        border: 1px solid var(--color-neutral-50);
+
+        &:hover{
+            background-color: var(--color-neutral-25);
+        }
+
+        &:active{
+            background-color: var(--color-neutral-50);
+        }
+    }
+
+    .btn-secondary{
+        background-color: var(--color-neutral-950);
+        color: var(--color-white);
+
+        &:hover{
+            background-color: var(--color-neutral-900);
+        }
+
+        &:active{
+            background-color: var(--color-neutral-800);
         }
     }
 }
