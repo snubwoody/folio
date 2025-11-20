@@ -17,6 +17,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
     import {Button, IconButton} from "$components/button";
+    import { getCurrentWindow } from "@tauri-apps/api/window";
+
     import { Dialog } from "bits-ui";
     import Form from "./Form.svelte";
     import { X } from "@lucide/svelte";

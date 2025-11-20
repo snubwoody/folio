@@ -19,11 +19,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import {Button, IconButton} from "$components/button";
     import {TextArea} from "$components/input";
     import TextField from "$components/TextField.svelte";
+    import {platform} from "@tauri-apps/plugin-os";
 
     let title = $state("Title");
     let description = $state("A detailed description of the issue...");
     // TODO: add error
     let form:HTMLFormElement;
+    let currentPlatform = platform();
 
     const submit = (event: SubmitEvent) => {
         event.preventDefault();
@@ -41,8 +43,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     </div>
     <div class="flex items-center justify-between">
         <div>OS</div>
-        <div>Windows</div>
-        <input type="hidden" name="os"  readonly value="Windows" />
+        <div>{currentPlatform}</div>
+        <input type="hidden" name="os"  readonly value={currentPlatform} />
     </div>
     <TextField name="title" label="Title" bind:value={title}/>
     <TextArea name="description" class="max-w-[500px]" label="Description" bind:value={description}/>

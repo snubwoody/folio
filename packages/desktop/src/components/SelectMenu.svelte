@@ -85,7 +85,7 @@ from.
     });
 </script>
 
-<div class={`space-y-1 ${className}`}>
+<div class={`space-y-1 ${className} select-none`}>
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
     {/if}
