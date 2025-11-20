@@ -19,15 +19,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	type Props = {
 	    label?: string,
 	    name?: string,
-        id?: string,
+	    id?: string,
 	    value: string,
 	    placeholder?: string
 	};
 
 	let {
 	    label,
-        name,
-        id,
+	    name,
+	    id,
 	    placeholder,
 	    value = $bindable()
 	}: Props = $props();

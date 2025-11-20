@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import {type HTMLTextareaAttributes} from "svelte/elements";
+    import { type HTMLTextareaAttributes } from "svelte/elements";
 	interface Props extends HTMLTextareaAttributes {
 	    label?: string,
 	    value: string,
@@ -27,7 +27,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	    label,
 	    placeholder,
 	    value = $bindable(),
-        ...rest
+	    ...rest
 	}: Props = $props();
 </script>
 

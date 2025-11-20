@@ -16,9 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import {Button, IconButton} from "$components/button";
-    import { getCurrentWindow } from "@tauri-apps/api/window";
-
+    import { Button, IconButton } from "$components/button";
     import { Dialog } from "bits-ui";
     import Form from "./Form.svelte";
     import { X } from "@lucide/svelte";
@@ -53,7 +51,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <IconButton variant="ghost"><X size="20"/></IconButton>
                             </Dialog.Close>
                         </div>
-                        <SegmentedTabs variant="neutral" value="feature">
+                        <SegmentedTabs variant="neutral" bind:value={activeTab}>
                             <TabBar class="w-full">
                                 <TabButton value="feature">Feature request</TabButton>
                                 <TabButton value="bug">Bug report</TabButton>

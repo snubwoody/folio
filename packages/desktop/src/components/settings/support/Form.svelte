@@ -16,10 +16,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import {Button, IconButton} from "$components/button";
-    import {TextArea} from "$components/input";
+    import { Button } from "$components/button";
+    import { TextArea } from "$components/input";
     import TextField from "$components/TextField.svelte";
-    import {platform} from "@tauri-apps/plugin-os";
+    import { platform } from "@tauri-apps/plugin-os";
 
     let title = $state("Title");
     let description = $state("A detailed description of the issue...");
@@ -29,10 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const submit = (event: SubmitEvent) => {
         event.preventDefault();
-
-        const formData = new FormData(event.currentTarget as HTMLFormElement);
-        console.log(formData.get("title"));
-    }
+    };
 </script>
 
 <form bind:this={form} onsubmit={submit} class="flex flex-col gap-2.5">
