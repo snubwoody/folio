@@ -20,11 +20,12 @@ directories = "6.0.0"
 tauri-plugin-os = "2.3.2"
 iso_currency = { version = "0.5.3", features = ["with-serde", "iterator"] }
 anyhow = "1.0.100"
-reqwest = {version = "0.12.24",features = ["json"]}
+reqwest = {version = "0.12.24",features = ["json","rustls-tls"]}
 httpmock = "0.8.2"
 dotenvy = "0.15.7"
 jsonwebtoken = {version = "10.2.0",features = ["aws_lc_rs"]}
-rand = "0.9.2"
+# Locked because rsa depends on this version
+rand = "=0.8.5"
 rsa = "0.9.9"
 
 [workspace.dependencies.poem]
