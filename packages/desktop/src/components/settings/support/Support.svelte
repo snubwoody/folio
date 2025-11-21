@@ -18,12 +18,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { Button, IconButton } from "$components/button";
     import { Dialog } from "bits-ui";
-    import Form from "./Form.svelte";
+    import SupportForm from "./SupportForm.svelte";
     import { X } from "@lucide/svelte";
-    import { SegmentedTabs,TabContent,TabButton,TabBar } from "$components/select";
-
-    type TabType = "feature" | "bug";
-    let activeTab = $state<TabType>("feature");
 </script>
 
 <section>
@@ -51,18 +47,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                                 <IconButton variant="ghost"><X size="20"/></IconButton>
                             </Dialog.Close>
                         </div>
-                        <SegmentedTabs variant="neutral" bind:value={activeTab}>
-                            <TabBar class="w-full">
-                                <TabButton value="feature">Feature request</TabButton>
-                                <TabButton value="bug">Bug report</TabButton>
-                            </TabBar>
-                            <TabContent value="feature">
-                                <Form/>
-                            </TabContent>
-                            <TabContent value="bug">
-                                <Form/>
-                            </TabContent>
-                        </SegmentedTabs>
+                        <SupportForm/>
                     </div>
                 </Dialog.Content>
             </Dialog.Portal>

@@ -44,6 +44,7 @@ impl BugReport {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all="camelCase")]
 pub struct SupportResponse {
     pub issue_url: String,
     pub issue_id: u32,

@@ -68,6 +68,20 @@ export type Settings = {
     currencyCode: string;
 };
 
+export type SupportResponse = {
+    issueUrl: string;
+    issueId: number;
+};
+
+export type FeatureRequest = {
+    title: string;
+    description: string;
+    version: string;
+    os: string;
+};
+
+export type BugReport = FeatureRequest;
+
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
     const date = new Date(Number(year), Number(month) - 1, Number(day));

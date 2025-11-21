@@ -56,6 +56,8 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_income_stream,
         fetch_categories,
         edit_income,
+        feature_request,
+        bug_report,
     ])
 }
 
