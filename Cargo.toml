@@ -20,17 +20,15 @@ directories = "6.0.0"
 tauri-plugin-os = "2.3.2"
 iso_currency = { version = "0.5.3", features = ["with-serde", "iterator"] }
 anyhow = "1.0.100"
-reqwest = {version = "0.12.24",features = ["json","rustls-tls"]}
+reqwest = {version = "0.12.24",features = ["json","native-tls"]}
 httpmock = "0.8.2"
 dotenvy = "0.15.7"
-jsonwebtoken = {version = "10.2.0",features = ["aws_lc_rs"]}
-# Locked because rsa depends on this version
-rand = "=0.8.5"
+jsonwebtoken = {version = "10.2.0",features = ["rust_crypto"]}
 rsa = "0.9.9"
 
 [workspace.dependencies.poem]
 version = "3.1.12"
-features = ["rustls","requestid"]
+features = ["native-tls","requestid"]
 
 [workspace.dependencies.sqlx]
 version = "0.8.6"
