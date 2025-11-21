@@ -12,12 +12,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+
 use crate::settings::Settings;
 use crate::{
     Money, Result, State,
     analytics::{self, IncomeAnalytic, SpendingAnalytic},
     service::{self, *},
 };
+use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
@@ -250,4 +252,14 @@ pub async fn create_income_stream(
     title: &str,
 ) -> Result<IncomeStream> {
     IncomeStream::create(title, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn feature_request(request: FeatureRequest) -> Result<SupportResponse> {
+    crate::support::feature_request(request).await
+}
+
+#[tauri::command]
+pub async fn bug_report(request: BugReport) -> Result<SupportResponse> {
+    crate::support::bug_report(request).await
 }

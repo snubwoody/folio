@@ -1285,7 +1285,9 @@ version = "1.2.2"
 dependencies = [
  "chrono",
  "directories",
+ "folio-core",
  "iso_currency",
+ "reqwest",
  "rust_decimal",
  "serde",
  "serde_json",

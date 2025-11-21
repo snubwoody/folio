@@ -1,7 +1,4 @@
 {
-    "rust-analyzer.linkedProjects": [
-        "packages/desktop/src-tauri/Cargo.toml"
-	],
     "markdownlint.config": {
         "MD033": false
     }
