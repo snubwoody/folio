@@ -61,7 +61,6 @@ impl IncomeStream {
 
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
-
         let income_stream = IncomeStream {
             id: record.id,
             title: record.title,
