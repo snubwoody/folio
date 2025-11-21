@@ -3,9 +3,9 @@ mod client;
 mod middleware;
 
 use crate::client::GithubClient;
-use folio_core::{SupportResponse,FeatureRequest,BugReport};
 use crate::middleware::logging_middleware;
 use dotenvy::dotenv;
+use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use poem::http::{Method, StatusCode};
 use poem::listener::TcpListener;
 use poem::middleware::Cors;
@@ -41,7 +41,6 @@ async fn main() -> anyhow::Result<()> {
 
     Ok(())
 }
-
 
 #[handler]
 async fn feature_request(
