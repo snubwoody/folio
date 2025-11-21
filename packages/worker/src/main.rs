@@ -5,6 +5,7 @@ mod middleware;
 use crate::client::GithubClient;
 use crate::middleware::logging_middleware;
 use dotenvy::dotenv;
+use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use poem::http::{Method, StatusCode};
 use poem::listener::TcpListener;
 use poem::middleware::Cors;
@@ -41,56 +42,6 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct FeatureRequest {
-    title: String,
-    description: String,
-    os: String,
-    version: String,
-}
-
-impl FeatureRequest {
-    pub fn issue_title(&self) -> String {
-        format!("[Feature request] {}", self.title)
-    }
-    pub fn body(&self) -> String {
-        let mut body = String::new();
-        body.push_str(&format!("OS: {}\n", self.os));
-        body.push_str(&format!("Version: {}\n", self.version));
-        body.push_str("## Description\n\n");
-        body.push_str(&self.description.to_string());
-        body
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct BugReport {
-    title: String,
-    version: String,
-    os: String,
-    description: String,
-}
-
-impl BugReport {
-    pub fn issue_title(&self) -> String {
-        format!("[Bug report] {}", self.title)
-    }
-    pub fn body(&self) -> String {
-        let mut body = String::new();
-        body.push_str(&format!("OS: {}\n", self.os));
-        body.push_str(&format!("Version: {}\n", self.version));
-        body.push_str("## Description\n\n");
-        body.push_str(&self.description.to_string());
-        body
-    }
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct SupportResponse {
-    issue_url: String,
-    issue_id: u32,
-}
-
 #[handler]
 async fn feature_request(
     Json(request): Json<FeatureRequest>,
@@ -120,7 +71,7 @@ async fn feature_request(
 
 #[handler]
 async fn bug_report(
-    Json(report): Json<FeatureRequest>,
+    Json(report): Json<BugReport>,
     Data(client): Data<&Arc<Mutex<GithubClient>>>,
 ) -> impl IntoResponse {
     let mut client = client.lock().await;
@@ -139,7 +90,7 @@ async fn bug_report(
         }
         Err(error) => {
             let message = error.to_string();
-            warn!(error = message, "Failed to create feature request");
+            warn!(error = message, "Failed to create bug report");
             ApiResponse::error(&message, StatusCode::INTERNAL_SERVER_ERROR)
         }
     }

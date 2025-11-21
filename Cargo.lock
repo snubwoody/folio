@@ -1302,19 +1302,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "folio-core"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "folio-worker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
  "dotenvy",
+ "folio-core",
  "httpmock",
  "jsonwebtoken",
  "poem",
  "reqwest",
  "rsa",
  "serde",
- "serde_json",
  "tokio",
  "tracing",
  "tracing-subscriber",
