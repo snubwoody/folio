@@ -20,9 +20,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { TextArea } from "$components/input";
     import TextField from "$components/TextField.svelte";
     import { platform } from "@tauri-apps/plugin-os";
-    import { getVersion } from '@tauri-apps/api/app';
-    import {onMount} from "svelte";
-    import type {FeatureRequest} from "$lib/lib";
+    import { getVersion } from "@tauri-apps/api/app";
+    import { onMount } from "svelte";
+    import type { FeatureRequest } from "$lib/lib";
 
     let title = $state("Title");
     let description = $state("A detailed description of the issue...");
@@ -33,13 +33,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         onSubmit: (request: FeatureRequest) => void
     }
 
-    const {onSubmit}: Props = $props();
+    const { onSubmit }: Props = $props();
 
     let appVersion: string = $state("");
 
     const submit = (event: SubmitEvent) => {
         event.preventDefault();
-        const formData = new FormData(event.currentTarget! as HTMLFormElement)
+        const formData = new FormData(event.currentTarget! as HTMLFormElement);
         const description = formData.get("description")! as string;
         const title = formData.get("title")! as string;
         const version = formData.get("version")! as string;
@@ -50,12 +50,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             title,
             version,
             os
-        }
+        };
 
-        onSubmit(request)
+        onSubmit(request);
     };
 
-    onMount(async()=>{
+    onMount(async() => {
         appVersion = await getVersion();
     });
 </script>

@@ -16,15 +16,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import type {SupportResponse} from "$lib/lib";
-    import {Button} from "$components/button";
+    import type { SupportResponse } from "$lib/lib";
+    import { Button } from "$components/button";
     import { Dialog } from "bits-ui";
 
     interface Props{
         response: SupportResponse
     }
 
-    const {response}: Props = $props();
+    const { response }: Props = $props();
 </script>
 
 <!--FIXME--->

@@ -1,5 +1,4 @@
 
-
 <!--
 Copyright (C) 2025 Wakunguma Kalimukwa
 
@@ -19,7 +18,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
     import { Dialog } from "bits-ui";
-    import {Button} from "$components/button";
+    import { Button } from "$components/button";
 
 </script>
 

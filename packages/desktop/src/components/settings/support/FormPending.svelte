@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
-
 <div class="loader">
     <div class="circle"></div>
     <div class="circle"></div>
@@ -41,7 +40,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         border-radius: var(--radius-full);
         background: var(--color-neutral-800);
         animation: bounce 1s linear infinite;
-
 
         &:nth-child(2){
             animation-delay: 0.25s;
