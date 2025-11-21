@@ -18,19 +18,35 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Form from "./Form.svelte";
     import { SegmentedTabs,TabContent,TabButton,TabBar } from "$components/select";
-    import type {SupportResponse} from "$lib/lib";
+    import type {BugReport, FeatureRequest, SupportResponse} from "$lib/lib";
     import FormSuccess from "$components/settings/support/FormSuccess.svelte";
     import FormError from "$components/settings/support/FormError.svelte";
     import FormPending from "$components/settings/support/FormPending.svelte";
+    import {invoke} from "@tauri-apps/api/core";
 
     type TabType = "feature" | "bug";
     type FormState = "default" | "pending" | "success" | "error";
     let activeTab = $state<TabType>("feature");
     let formState = $state<FormState>("default");
-    let response: SupportResponse = {
-        issueId: 14,
-        issueUrl: "https://github.com"
-    };
+    let response: SupportResponse| null = $state(null)
+
+    const submit = async(request: FeatureRequest) =>{
+        formState = "pending";
+            console.log(request)
+        try {
+            if (activeTab === "feature"){
+                response = await invoke("feature_request",{request}) as SupportResponse;
+            }else {
+                let report = request as BugReport;
+                response = await invoke("bug_report",{ request: report }) as SupportResponse;
+            }
+            formState = "success"
+        }catch (e) {
+            console.error(e)
+            formState = "error"
+        }
+    }
+    // TODO: save the requests locally?
 </script>
 
 {#if formState === "default"}
@@ -40,15 +56,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <TabButton value="bug">Bug report</TabButton>
         </TabBar>
         <TabContent value="feature">
-            <Form/>
+            <Form onSubmit={(request) => submit(request)}/>
         </TabContent>
         <TabContent value="bug">
-            <Form/>
+            <Form onSubmit={(request) => submit(request)}/>
         </TabContent>
     </SegmentedTabs>
 {:else if formState === "pending"}
     <FormPending/>
-{:else if formState === "success"}
+{:else if formState === "success" && response}
     <FormSuccess {response}/>
 {:else if formState === "error"}
     <FormError/>

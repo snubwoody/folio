@@ -69,8 +69,8 @@ export type Settings = {
 };
 
 export type SupportResponse = {
-    issueUrl: string;
-    issueId: number;
+    issue_url: string;
+    issue_id: number;
 };
 
 export type FeatureRequest = {

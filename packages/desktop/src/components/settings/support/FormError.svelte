@@ -1,5 +1,4 @@
-<script>
-</script>
+
 
 <!--
 Copyright (C) 2025 Wakunguma Kalimukwa
@@ -18,8 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
+<script lang="ts">
+    import { Dialog } from "bits-ui";
+    import {Button} from "$components/button";
+
+</script>
+
 <div>
     <p>Something went wrong with the request, please try again.</p>
+    <Dialog.Close class="w-full">
+        <Button class="w-full" variant="neutral">Close</Button>
+    </Dialog.Close>
 </div>
 
 <style>

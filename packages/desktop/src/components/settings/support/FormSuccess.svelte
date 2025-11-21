@@ -18,6 +18,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import type {SupportResponse} from "$lib/lib";
     import {Button} from "$components/button";
+    import { Dialog } from "bits-ui";
 
     interface Props{
         response: SupportResponse
@@ -26,10 +27,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const {response}: Props = $props();
 </script>
 
+<!--FIXME--->
 <div>
-    <p>Your bug report has been submitted please see the progress at the link below:</p>
-    <a href={response.issueUrl}>Issue: {response.issueId}</a>
-    <Button class="w-full" variant="neutral">Close</Button>
+    <p>Your report has been submitted you can see the progress at the link below:</p>
+    <a target="_blank" rel="noopener" href={`https://github.com/snubwoody/folio/issues/${response.issue_id}`}>
+        Issue: {response.issue_id}
+    </a>
+    <Dialog.Close class="w-full">
+        <Button class="w-full" variant="neutral">Close</Button>
+    </Dialog.Close>
 </div>
 
 <style>

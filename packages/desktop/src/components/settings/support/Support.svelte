@@ -69,5 +69,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-md);
         overflow: hidden;
+        height: fit-content;
+        transition: all 250ms ease;
     }
 </style>
