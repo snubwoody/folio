@@ -1,5 +1,8 @@
 # @folio/desktop
 
+(unreleased)
+
+
 ## 1.2.2
 
 ### Patch Changes
