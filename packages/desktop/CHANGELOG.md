@@ -2,6 +2,7 @@
 
 (unreleased)
 
+- migrate: add `sort_order` field to income streams and categories.
 
 ## 1.2.2
 
