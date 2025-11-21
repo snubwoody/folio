@@ -19,6 +19,7 @@ use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+// TODO: Switch to anyhow?
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("IO Error: {0}")]
@@ -33,6 +34,8 @@ pub enum Error {
     MigrateError(#[from] sqlx::migrate::MigrateError),
     #[error("Failed to parse decimal: {0}")]
     ParseDecimalError(#[from] rust_decimal::Error),
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
     #[error("Failed to parse float: {0}")]
     ParseFloatError(#[from] ParseFloatError),
 }
