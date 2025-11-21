@@ -21,7 +21,7 @@ use sqlx::SqlitePool;
 pub struct IncomeStream {
     pub id: String,
     pub title: String,
-    pub created_at: Option<DateTime<Utc>>,
+    pub created_at: DateTime<Utc>,
 }
 
 impl IncomeStream {
@@ -59,10 +59,8 @@ impl IncomeStream {
             .fetch_one(pool)
             .await?;
 
-        let created_at = match record.created_at {
-            Some(timestamp) => DateTime::from_timestamp(timestamp, 0),
-            None => None,
-        };
+        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
+
 
         let income_stream = IncomeStream {
             id: record.id,
@@ -123,7 +121,7 @@ mod test {
         let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", stream.id)
             .fetch_one(&pool)
             .await?;
-        assert!(record.created_at.unwrap() >= now);
+        assert!(record.created_at >= now);
         assert_eq!(record.title, "my---stream");
         Ok(())
     }
