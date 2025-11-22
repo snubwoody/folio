@@ -46,6 +46,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <li style={`--percent: ${percent}%;--bar-color:${color}`} class="graph-bar"></li>
             {/if}
         {/each}
+        <li class="bar"></li>
     </ul>
 </section>
 
@@ -55,12 +56,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         grid-template-columns: auto 1fr;
         gap: 24px 20px;
         align-items: center;
+        position: relative;
 
         .graph-bar{
             width: var(--percent);
             height: 20px;
             border-radius: var(--radius-xs);
             background-color: var(--bar-color);
+        }
+
+        .bar{
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            left: 250px;
+            top: 0;
+            background: var(--color-neutral-200);
+            z-index: -1;
         }
     }
 </style>
