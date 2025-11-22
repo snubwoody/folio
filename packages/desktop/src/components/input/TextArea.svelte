@@ -35,7 +35,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
     {/if}
-    <textarea bind:value {...rest} {placeholder}></textarea>
+    <textarea autocomplete="off" bind:value {...rest} {placeholder}></textarea>
 </div>
 
 <style>
