@@ -59,9 +59,7 @@ jobs:
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli --force
       - name: Setup database
-        run: |
-          cargo sqlx database create
-          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
+        run: pnpm db:setup
       - name: Run cargo clippy
         run: cargo clippy --all-features --all-targets -- -D warnings
   format:
@@ -130,9 +128,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@nextest
       - name: Setup database
-        run: |
-          cargo sqlx database create
-          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
+        run: pnpm db:setup
       - name: Install system dependencies
         if: ${{runner.os == 'Linux'}}
         run: |
@@ -169,16 +165,15 @@ jobs:
         name: Cache cargo binaries
         id: cache-cargo-bin
         with:
-          key: cargo-bin-cache-${{runner.os}}
+          key: v0-cargo-bin-cache-${{runner.os}}
           path: ~/.cargo/bin
       - name: Install sqlx-cli
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli --force
+        run: |
+          cargo install sqlx-cli cargo-packager --locked --force
       - uses: Swatinem/rust-cache@v2
       - name: Setup database
-        run: |
-          cargo sqlx database create
-          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
+        run: pnpm db:setup
       - name: Install system dependencies
         if: ${{runner.os == 'Linux'}}
         run: |
@@ -209,6 +204,7 @@ jobs:
       - check
       - test
       - test-frontend
+      - bundle
       - build-frontend
     runs-on: ubuntu-latest
     steps:
