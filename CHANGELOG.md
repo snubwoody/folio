@@ -1,7 +1,9 @@
 
-(unreleased)
+## 1.3.0 - 21-11-2025
 
 - Added support section in settings panel.
+- Improved transaction tab bar style.
+  - Tabs can now be controlled using the arrow keys.
 
 ## 1.2.2 - 6-11-2025
 
