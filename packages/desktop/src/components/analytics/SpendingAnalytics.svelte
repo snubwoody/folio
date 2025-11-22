@@ -37,21 +37,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <section class="space-y-2">
     <h6>Spending</h6>
-    <ul>
+    <div class="spending-graph">
         {#each analytics as item,index (item.category.id)}
-            {#if item.total > 0}
+            {#if item.total > 0} <!--Prevent zero division errors-->
                 {@const percent = (item.total/total) * 100}
                 {@const color = purpleShades[(index+2) % purpleShades.length]}
-                <li class="category-title">{item.category.title}</li>
-                <li style={`--percent: ${percent}%;--bar-color:${color}`} class="graph-bar"></li>
+                <div class="category-title">{item.category.title}</div>
+                <div style={`--percent: ${percent}%;--bar-color:${color}`} class="graph-bar"></div>
             {/if}
         {/each}
-        <li class="bar"></li>
-    </ul>
+        <div class="vertical-bar"></div>
+    </div>
 </section>
 
 <style>
-    ul{
+    .spending-graph {
         display: grid;
         grid-template-columns: auto 1fr;
         gap: 24px 20px;
@@ -65,16 +65,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             border-radius: var(--radius-xs);
             background-color: var(--bar-color);
         }
-
-        .bar{
-            counter-increment: bar;
-            position: absolute;
-            width: 1px;
-            height: 100%;
-            left: 250px;
-            top: 0;
-            background: var(--color-neutral-200);
-            z-index: -1;
-        }
     }
+
+    .vertical-bar{
+        counter-increment: bar;
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        top: 0;
+        left: 20%;
+        background: var(--color-neutral-200);
+        grid-column-start: 2;
+    }
+
 </style>
