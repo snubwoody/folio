@@ -23,7 +23,7 @@ use crate::{Money, service::fetch_expenses};
 pub struct Category {
     pub id: String,
     pub title: String,
-    pub created_at: DateTime<Utc>,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 impl Category {
@@ -45,7 +45,9 @@ impl Category {
             .fetch_one(pool)
             .await?;
 
-        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
 
         let category = Category {
             id: record.id,
@@ -157,7 +159,7 @@ mod test {
             .fetch_one(&pool)
             .await?;
 
-        assert!(record.created_at >= now);
+        assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.title, "Ent");
         Ok(())
     }
