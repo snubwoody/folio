@@ -31,7 +31,7 @@ jobs:
     env:
       PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -46,22 +46,22 @@ jobs:
   clippy:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: packages/desktop/src-tauri -> target
       - uses: actions/cache@v4
         id: cache-sqlx
         with:
           key: cargo-sqlx-cache-${{runner.os}} # Permanently cache sqlx
           path: ~/.cargo/bin
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
       - name: Install sqlx-cli
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli --force
       - name: Setup database
-        run: |
-          cargo sqlx database create
-          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
+        run: pnpm db:setup
       - name: Run cargo clippy
         run: cargo clippy --all-features --all-targets -- -D warnings
   format:
@@ -78,7 +78,7 @@ jobs:
       PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -98,7 +98,7 @@ jobs:
     env:
       PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -117,7 +117,7 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/cache@v4
         name: Cache cargo binaries
         id: cache-cargo-bin
@@ -127,12 +127,14 @@ jobs:
       - name: Install sqlx-cli
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli --force
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@nextest
       - name: Setup database
-        run: |
-          cargo sqlx database create
-          cargo sqlx migrate run --source packages/desktop/src-tauri/migrations
+        run: pnpm db:setup
       - name: Install system dependencies
         if: ${{runner.os == 'Linux'}}
         run: |
