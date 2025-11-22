@@ -38,8 +38,7 @@ jobs:
       - uses: taiki-e/install-action@nextest
       - name: Install binaries
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: |
-          cargo install sqlx-cli cargo-packager --locked --force
+        run: cargo install sqlx-cli cargo-packager --force
       - name: Setup database
         run: pnpm db:setup
       - name: Install system dependencies
