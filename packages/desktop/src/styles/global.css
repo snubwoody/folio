@@ -38,6 +38,15 @@
         0 8px 10px -6px rgb(75 25 226 / 0.1);
 }
 
+*{
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none;
+}
+
 html,
 body {
     width: 100%;
