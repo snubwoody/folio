@@ -28,7 +28,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div>
             <p>Submit a bug report/feature request</p>
             <p class="text-text-muted">
-                You can check the existing issues or feature requests to see if the bug already exists.
+                You can check the existing
+                <!--TODO: add link component-->
+                <a target="_blank" rel="noopener" href="https://github.com/snubwoody/folio/issues" class="text-purple-500 inline">
+                    issues
+                </a>
+                to see
+                if the report already exists.
             </p>
         </div>
         <Dialog.Root>

@@ -1,5 +1,13 @@
 # @folio/desktop
 
+## 1.3.0
+
+- feat: add support section in settings ([#144](https://github.com/snubwoody/folio/pull/144))
+  - feat: add feature requests and bug reports ([#156](https://github.com/snubwoody/folio/pull/156))
+- fix: correct wrong text in budget form ([#135](https://github.com/snubwoody/folio/pull/135))
+- feat: add SegmentedTabs component ([#132](https://github.com/snubwoody/folio/pull/132))
+- migrate: add `sort_order` field to income streams and categories ([#147](https://github.com/snubwoody/folio/pull/147)).
+
 ## 1.2.2
 
 ### Patch Changes
