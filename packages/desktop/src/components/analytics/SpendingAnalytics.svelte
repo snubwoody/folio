@@ -17,6 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { calculateSpendingAnalytics } from "$lib/analytics";
     import { appStore } from "$lib/state.svelte";
+    import {formatAmount} from "$lib/lib";
 
     const analytics = $derived.by(() => calculateSpendingAnalytics(appStore.expenses));
     const total = $derived(Math.max(...analytics.map(a => a.total)));
@@ -46,7 +47,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 <div style={`--percent: ${percent}%;--bar-color:${color}`} class="graph-bar"></div>
             {/if}
         {/each}
-        <div class="vertical-bar"></div>
+        {#each Array.from(Array(11).keys()) as item}
+            {@const value  = total}
+            {@const amount = formatAmount(value.toString(),{ compact: true,currency: appStore.settings.currencyCode })}
+            <div style={`--offset:${item*10}%;--amount: "${amount}"`} class="vertical-bar"></div>
+        {/each}
     </div>
 </section>
 
@@ -73,9 +78,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         width: 2px;
         height: 100%;
         top: 0;
-        left: 20%;
-        background: var(--color-neutral-200);
+        left: var(--offset);
+        z-index: -1;
+        background: var(--color-neutral-50);
         grid-column-start: 2;
-    }
+        display: flex;
+        align-items: end;
+        justify-content: center;
 
+        &::after{
+            position: relative;
+            content: var(--amount);
+            bottom: -32px;
+            left: -12px
+        }
+    }
 </style>
