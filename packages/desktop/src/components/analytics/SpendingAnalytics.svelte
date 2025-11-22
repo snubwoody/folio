@@ -57,6 +57,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         gap: 24px 20px;
         align-items: center;
         position: relative;
+        counter-reset: bar;
 
         .graph-bar{
             width: var(--percent);
@@ -66,6 +67,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }
 
         .bar{
+            counter-increment: bar;
             position: absolute;
             width: 1px;
             height: 100%;
