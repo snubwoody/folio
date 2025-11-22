@@ -32,6 +32,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <label class="inline-text-field">
     <input
+        autocomplete="off"
         type="text"
         bind:value={inner}
         onblur={update}

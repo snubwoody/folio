@@ -40,7 +40,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
     {/if}
-	<input id={inputId} name={inputName} bind:value type="text" {placeholder}>
+	<input id={inputId} name={inputName} bind:value autocomplete="off" type="text" {placeholder}>
 </label>
 
 <style>
