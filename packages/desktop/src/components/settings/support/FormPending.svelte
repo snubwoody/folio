@@ -31,7 +31,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         align-items: center;
         gap: 12px;
         justify-content: center;
-        padding: 24px 0px;
+        padding: 24px 0;
     }
 
     .circle{
@@ -52,7 +52,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     @keyframes bounce{
         0%,100% {
-            transform: translateY(0px);
+            transform: translateY(0);
         }
 
         50% {
