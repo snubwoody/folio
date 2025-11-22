@@ -1,4 +1,8 @@
 
+(unreleased)
+
+- Added support section in settings panel.
+
 ## 1.2.2 - 6-11-2025
 
 - Added delete button to income and expense rows.

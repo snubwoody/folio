@@ -16,11 +16,11 @@
 use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use reqwest::Client;
 
-const API_URL: &str = "https://folio-worker.fly.dev/";
+const API_URL: &str = "https://folio-worker.fly.dev";
 
 /// Sends a feature request to the Github bot.
 pub async fn feature_request(request: FeatureRequest) -> crate::Result<SupportResponse> {
-    let url = format!("{}/api/v1/feature", API_URL);
+    let url = format!("{}/api/v1/features", API_URL);
     let client = Client::new();
 
     let response = client.post(&url).json(&request).send().await?;
@@ -31,7 +31,7 @@ pub async fn feature_request(request: FeatureRequest) -> crate::Result<SupportRe
 
 /// Sends a bug report to the Github bot.
 pub async fn bug_report(report: BugReport) -> crate::Result<SupportResponse> {
-    let url = format!("{}/api/v1/bug", API_URL);
+    let url = format!("{}/api/v1/bugs", API_URL);
     let client = Client::new();
 
     let response = client.post(&url).json(&report).send().await?;
