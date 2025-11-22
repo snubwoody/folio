@@ -31,7 +31,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         align-items: center;
         gap: 12px;
         justify-content: center;
-        padding: 24px 0;
+        padding: 24px 0px;
     }
 
     .circle{
