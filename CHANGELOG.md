@@ -2,6 +2,7 @@
 ## 1.3.0 - 21-11-2025
 
 - Added support section in settings panel.
+  - Added feature requests and bug reports.
 - Improved transaction tab bar style.
   - Tabs can now be controlled using the arrow keys.
 
