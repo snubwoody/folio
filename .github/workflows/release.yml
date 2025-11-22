@@ -29,8 +29,6 @@ jobs:
           node-version: 24
           cache: pnpm
       - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: packages/desktop/src-tauri -> target
       - uses: actions/cache@v4
         id: cache-cargo-bin
         name: Cache cargo binaries
@@ -43,10 +41,7 @@ jobs:
         run: |
           cargo install sqlx-cli cargo-packager --locked --force
       - name: Setup database
-        run: |
-          cd packages/desktop/src-tauri
-          cargo sqlx database create
-          cargo sqlx migrate run
+        run: pnpm db:setup
       - name: Install system dependencies
         if: ${{runner.os == 'Linux'}}
         run: |
