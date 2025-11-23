@@ -67,7 +67,7 @@ jobs:
         run: cargo tauri build
       - name: Build msix
         if: ${{runner.os == 'Windows'}}
-        run: cargo run -p msixpack -c crates/folio-desktop/msixpack.toml -o target/release/folio_x64.msix
+        run: cargo run -p msixpack bundle -c crates/folio-desktop/msixpack.toml -o target/release/folio_x64.msix
       - name: Build pacman
         if: ${{runner.os == 'Linux'}}
         run: |

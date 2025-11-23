@@ -40,7 +40,7 @@ pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result
     Ok(())
 }
 
-#[cfg(all(test,windows))]
+#[cfg(all(test, windows))]
 mod test {
     use super::*;
     use crate::{Application, Config, Package, validate_windows_toolkit};
