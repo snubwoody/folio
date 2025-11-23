@@ -6,7 +6,7 @@ members = ["crates/*"]
 edition = "2024"
 
 [workspace.dependencies]
-folio-core = {path = "crates/core"}
+folio-core = {path = "crates/folio-core"}
 tauri = { version = "2.8.5", features = ["config-toml", "test"] }
 tauri-plugin-opener = "2.5.2"
 serde = { version = "1.0", features = ["derive"] }
