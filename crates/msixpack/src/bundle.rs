@@ -1,12 +1,12 @@
+use crate::{Config, copy_executable, copy_resources, data_dir};
+use anyhow::{Context, bail};
 use std::fs;
-use std::path::{Path, PathBuf};
-use std::process::{Command, Stdio};
-use anyhow::{bail, Context};
+use std::path::Path;
+use std::process::Command;
 use tracing::info;
-use crate::{copy_executable, copy_resources, data_dir, Config};
 
 /// Uses the `makeappx.exe` tool to create an msix package.
-pub fn bundle_package(dir: impl AsRef<Path>,dest: impl AsRef<Path>) -> anyhow::Result<()> {
+pub fn bundle_package(dir: impl AsRef<Path>, dest: impl AsRef<Path>) -> anyhow::Result<()> {
     let data_dir = data_dir();
     let exe_path = data_dir.join("windows-toolkit/makeappx.exe");
     // TODO: set env var
@@ -14,7 +14,7 @@ pub fn bundle_package(dir: impl AsRef<Path>,dest: impl AsRef<Path>) -> anyhow::R
     let output = dest.as_ref().to_str().unwrap();
     // TODO: test existing packages
     let output = Command::new(&exe_path)
-        .args(&["pack","/d",package,"/p",output,"/o"])
+        .args(["pack", "/d", package, "/p", output, "/o"])
         .output()?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -27,7 +27,6 @@ pub fn bundle_package(dir: impl AsRef<Path>,dest: impl AsRef<Path>) -> anyhow::R
     Ok(())
 }
 
-
 /// Creates an msix package in the `dest` directory
 pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
     info!("Copying assets into package directory");
@@ -37,21 +36,21 @@ pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result
         .with_context(|| "Failed to copy resources to destination directory")?;
     let manifest = config.create_manifest();
     let xml = quick_xml::se::to_string(&manifest)?;
-    fs::write(&dest.as_ref().join("appxmanifest.xml"), &xml)?;
+    fs::write(dest.as_ref().join("appxmanifest.xml"), &xml)?;
     Ok(())
 }
 
-
 #[cfg(test)]
-mod test{
-    use tempfile::tempdir;
-    use crate::{Application, Config, Package};
+mod test {
     use super::*;
+    use crate::{Application, Config, Package};
+    use std::path::PathBuf;
+    use tempfile::tempdir;
 
     #[test]
     fn bundle_msix() -> anyhow::Result<()> {
-        let config = Config{
-            package: Package{
+        let config = Config {
+            package: Package {
                 display_name: "Test".to_owned(),
                 publisher: "CN=Test".to_owned(),
                 version: "1.0.0.0".to_owned(),
@@ -60,11 +59,11 @@ mod test{
                 logo: "logo.png".to_owned(),
                 ..Default::default()
             },
-            application: Application{
+            application: Application {
                 id: "Test".to_owned(),
                 executable: PathBuf::from("main.exe"),
                 display_name: "Test".to_owned(),
-                description: String::from("A test app")
+                description: String::from("A test app"),
             },
             ..Default::default()
         };
@@ -74,11 +73,11 @@ mod test{
         let dest = dir.join("out.msix");
         let xml = quick_xml::se::to_string(&manifest)?;
 
-        fs::write(&dir.join("logo.png"), xml.as_bytes())?;
-        fs::write(&dir.join("appxmanifest.xml"), &xml)?;
-        fs::write(&dir.join("main.exe"), "")?;
+        fs::write(dir.join("logo.png"), xml.as_bytes())?;
+        fs::write(dir.join("appxmanifest.xml"), &xml)?;
+        fs::write(dir.join("main.exe"), "")?;
 
-        bundle_package(&dir,&dest)?;
+        bundle_package(dir, &dest)?;
         assert!(dest.exists());
         Ok(())
     }

@@ -1,36 +1,36 @@
-mod manifest;
 mod bundle;
 mod download;
+mod manifest;
 
+use crate::bundle::{bundle_package, create_package};
+use crate::download::download_windows_sdk;
 use crate::manifest::{AppxManifest, VisualElements};
 use anyhow::Context;
+use clap::{Parser, Subcommand};
 use glob::glob;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
-use clap::{Parser, Subcommand};
 use tempfile::tempdir;
 use tracing::info;
-use crate::bundle::{bundle_package, create_package};
-use crate::download::download_windows_sdk;
 
 #[derive(Parser)]
-struct Cli{
+struct Cli {
     #[clap(subcommand)]
-    command: Command
+    command: Command,
 }
 
 #[derive(Subcommand)]
-enum Command{
+enum Command {
     /// Bundle an msix package
-    Bundle{
+    Bundle {
         /// The path to the config file
-        #[arg(short='c',long)]
+        #[arg(short = 'c', long)]
         config: Option<PathBuf>,
         /// The path of the final msix package
-        #[arg(short='o',long)]
+        #[arg(short = 'o', long)]
         output: Option<PathBuf>,
-    }
+    },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -41,17 +41,17 @@ fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Command::Bundle{config, output} => {
+        Command::Bundle { config, output } => {
             let config = config.unwrap_or(PathBuf::from("msixpack.toml"));
-            let output= output.unwrap_or(PathBuf::from("package.msix"));
-            bundle(config,output)?;
+            let output = output.unwrap_or(PathBuf::from("package.msix"));
+            bundle(config, output)?;
         }
     }
 
     Ok(())
 }
 
-fn bundle(config: impl AsRef<Path>,output: impl AsRef<Path>) -> anyhow::Result<()> {
+fn bundle(config: impl AsRef<Path>, output: impl AsRef<Path>) -> anyhow::Result<()> {
     info!("Bundling package");
     // TODO:
     // Copy executable and resources
@@ -60,19 +60,15 @@ fn bundle(config: impl AsRef<Path>,output: impl AsRef<Path>) -> anyhow::Result<(
     let config_path = config.as_ref();
     let output_path = output.as_ref();
     let config = Config::from_path(config_path)?;
-    let temp = tempdir()
-        .with_context(|| "Failed to create temporary output directory")?;
+    let temp = tempdir().with_context(|| "Failed to create temporary output directory")?;
     let temp_dir = temp.path();
     let dest = temp_dir.join(".msixpack");
 
     validate_windows_toolkit()?;
 
-    fs::create_dir_all(&dest)
-        .with_context(|| "Failed to create temporary directory")?;
-    create_package(&config, &dest)
-        .with_context(|| "Failed to create package")?;
-    bundle_package(dest,&output)
-        .with_context(|| "Failed to bundle package")?;
+    fs::create_dir_all(&dest).with_context(|| "Failed to create temporary directory")?;
+    create_package(&config, &dest).with_context(|| "Failed to create package")?;
+    bundle_package(dest, &output).with_context(|| "Failed to bundle package")?;
 
     info!("Created package: {output_path:?}");
     Ok(())
@@ -80,7 +76,7 @@ fn bundle(config: impl AsRef<Path>,output: impl AsRef<Path>) -> anyhow::Result<(
 
 /// Installs the windows toolkit if it is not found.
 fn validate_windows_toolkit() -> anyhow::Result<()> {
-    if !toolkit_exists()?{
+    if !toolkit_exists()? {
         let data_dir = data_dir();
         download_windows_sdk(&data_dir)?;
     }
@@ -110,7 +106,8 @@ impl Config {
             .with_context(|| format!("Failed to read configuration file from {path:?}"))?;
         let mut config: Config =
             toml::from_slice(&bytes).with_context(|| "Failed to parse config".to_string())?;
-        config.directory = path.parent()
+        config.directory = path
+            .parent()
             .unwrap() // FIXME
             .to_path_buf();
 
@@ -136,8 +133,9 @@ impl Config {
         manifest
     }
 
-    fn exe_path(&self) -> String{
-        self.application.executable
+    fn exe_path(&self) -> String {
+        self.application
+            .executable
             .file_name()
             .unwrap()
             .to_str()
@@ -146,7 +144,7 @@ impl Config {
     }
 
     fn create_application(&self) -> manifest::Application {
-        let app = manifest::Application {
+        manifest::Application {
             id: self.application.id.clone(),
             executable: self.exe_path(),
             entry_point: String::from("Windows.FullTrustApplication"),
@@ -156,12 +154,8 @@ impl Config {
                 background_color: String::from("transparent"),
                 square_44_logo: self.package.logo.to_owned(),
                 square_150_logo: self.package.logo.to_owned(),
-                ..Default::default()
             },
-            ..Default::default()
-        };
-
-        app
+        }
     }
 }
 
@@ -188,14 +182,12 @@ struct Application {
     executable: PathBuf,
 }
 
-
-
 fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
     let dest = dest.as_ref();
     let exe_path = config.directory.join(&config.application.executable);
     let exe = config.application.executable.file_name().unwrap();
     // FIXME: put it in the root
-    fs::copy(exe_path, dest.join(&exe))?;
+    fs::copy(exe_path, dest.join(exe))?;
     Ok(())
 }
 
@@ -206,17 +198,22 @@ fn copy_resources(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()>
         let path = dir.join(pattern);
         for entry in glob(path.to_str().unwrap())? {
             let entry = entry?;
-            let base_path = entry.strip_prefix(&dir)?;
+            let base_path = entry.strip_prefix(dir)?;
 
             if entry.is_dir() {
                 continue;
             }
             let output = dest.as_ref().join(base_path);
 
-            fs::create_dir_all(&output.parent().unwrap())
+            fs::create_dir_all(output.parent().unwrap())
                 .with_context(|| "Failed to create directory")?;
-            fs::copy(&entry, &output)
-                .with_context(|| format!("Failed to copy file {:?} to {:?}",entry.to_str().unwrap(),output.to_str().unwrap()))?;
+            fs::copy(&entry, &output).with_context(|| {
+                format!(
+                    "Failed to copy file {:?} to {:?}",
+                    entry.to_str().unwrap(),
+                    output.to_str().unwrap()
+                )
+            })?;
         }
     }
     Ok(())
@@ -232,13 +229,13 @@ fn data_dir() -> PathBuf {
 mod test {
     use super::*;
     use std::fs::File;
-    use tempfile::{tempdir};
+    use tempfile::tempdir;
 
     #[test]
     fn get_data_dir() {
         let dir = data_dir();
         let data_dir = dirs::data_dir().unwrap();
-        assert_eq!(dir,data_dir.join("msixpack"));
+        assert_eq!(dir, data_dir.join("msixpack"));
     }
 
     #[test]

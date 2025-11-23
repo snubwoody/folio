@@ -1,23 +1,24 @@
+use anyhow::Context;
 use std::fs;
 use std::io::Cursor;
 use std::path::Path;
-use anyhow::Context;
 use tracing::info;
 
-const WINDOWS_TOOLKIT_URL: &'static str = "https://github.com/microsoft/MSIX-Toolkit/archive/refs/tags/v2.0.zip";
+const WINDOWS_TOOLKIT_URL: &str =
+    "https://github.com/microsoft/MSIX-Toolkit/archive/refs/tags/v2.0.zip";
 
 pub fn download_windows_sdk(path: impl AsRef<Path>) -> anyhow::Result<()> {
     info!("Downloading windows toolkit");
     let response = reqwest::blocking::get(WINDOWS_TOOLKIT_URL)
-        .with_context(||"Failed to fetch windows toolkit")?
+        .with_context(|| "Failed to fetch windows toolkit")?
         .bytes()?;
     let cursor = Cursor::new(response);
     let mut archive = zip::ZipArchive::new(cursor)?;
     archive.extract(&path)?;
 
-    info!("Extracting toolkit to {:?}",path.as_ref());
+    info!("Extracting toolkit to {:?}", path.as_ref());
     // Extract only the required exe and header files
-    extract_sdk(path);
+    extract_sdk(path)?;
     Ok(())
 }
 
@@ -36,6 +37,6 @@ pub fn extract_sdk(path: impl AsRef<Path>) -> anyhow::Result<()> {
 
     // Delete the old toolkit folder
     fs::remove_dir_all(path.join("MSIX-Toolkit-2.0"))
-        .with_context(||"Failed to remove old windows toolkit")?;
+        .with_context(|| "Failed to remove old windows toolkit")?;
     Ok(())
 }

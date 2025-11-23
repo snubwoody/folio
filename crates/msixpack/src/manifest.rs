@@ -20,7 +20,7 @@ pub struct AppxManifest {
     /// packages that contain multiple apps won't pass the Store
     /// certification process.
     pub applications: Applications,
-    pub capabilities: Capabilities
+    pub capabilities: Capabilities,
 }
 
 impl AppxManifest {
@@ -82,23 +82,19 @@ pub struct VisualElements {
     pub square_44_logo: String,
 }
 
-pub struct DefaultTitle {
-    wide_350x150_logo: String,
-}
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Resources {
     #[serde(rename = "Resource")]
     pub resources: Vec<Resource>,
 }
 
-impl Default for Resources{
+impl Default for Resources {
     fn default() -> Self {
-        let resource = Resource{
+        let resource = Resource {
             language: "en-US".to_string(),
         };
 
-        Self{
+        Self {
             resources: vec![resource],
         }
     }
@@ -110,7 +106,7 @@ pub struct Resource {
     language: String,
 }
 
-// TODO: test casing, must be
+// TODO: test casing
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(rename_all = "PascalCase")]
 pub struct Properties {
@@ -126,28 +122,28 @@ pub struct Dependencies {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Capabilities{
+pub struct Capabilities {
     #[serde(rename = "rescap:Capability")]
     capabilities: Vec<Capability>,
 }
 
-impl Default for Capabilities{
+impl Default for Capabilities {
     fn default() -> Self {
-        Self{
-            capabilities: vec![Capability::default()]
+        Self {
+            capabilities: vec![Capability::default()],
         }
     }
 }
 
-#[derive(Serialize, Deserialize, Debug,  Clone)]
-pub struct Capability{
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Capability {
     #[serde(rename = "@Name")]
-    name: String
+    name: String,
 }
 
-impl Default for Capability{
+impl Default for Capability {
     fn default() -> Self {
-        Self{
+        Self {
             name: String::from("runFullTrust"),
         }
     }
