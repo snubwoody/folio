@@ -34,14 +34,17 @@ jobs:
         id: cache-cargo-bin
         name: Cache cargo binaries
         with:
-          key: cargo-bin-cache-${{runner.os}}
+          key: v0-cargo-bin-cache-${{runner.os}}
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install binaries
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli cargo-packager --force
+        run: cargo install sqlx-cli --force
+      - name: Install cargo packager
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+        run: cargo install cargo-packager --force
       - name: Install tauri cli
-        run: cargo binstall tauri-cli -y
+        run: cargo binstall tauri-cli -y --force
       - name: Setup database
         run: pnpm db:setup
       - name: Install system dependencies
@@ -62,6 +65,9 @@ jobs:
         run: pnpm db:setup
       - name: Bundle app
         run: cargo tauri build
+      - name: Build msix
+        if: ${{runner.os == 'Windows'}}
+        run: cargo run -p msixpack bundle -c crates/folio-desktop/msixpack.toml -o target/release/folio_x64.msix
       - name: Build pacman
         if: ${{runner.os == 'Linux'}}
         run: |
@@ -77,6 +83,7 @@ jobs:
             target/release/**/PKGBUILD
             target/release/**/*AppImage
             target/release/**/*.msi
+            target/release/**/*.msix
             target/release/**/*-setup.exe
             target/release/**/*.dmg
             target/release/**/*.tar.gz
