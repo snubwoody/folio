@@ -40,7 +40,7 @@ pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result
     Ok(())
 }
 
-#[cfg(test)]
+#[cfg(all(test,windows))]
 mod test {
     use super::*;
     use crate::{Application, Config, Package, validate_windows_toolkit};
@@ -48,7 +48,6 @@ mod test {
     use tempfile::tempdir;
 
     #[test]
-    #[cfg(windows)]
     fn bundle_msix() -> anyhow::Result<()> {
         validate_windows_toolkit()?;
         let config = Config {
