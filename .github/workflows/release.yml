@@ -44,7 +44,7 @@ jobs:
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
         run: cargo install cargo-packager --force
       - name: Install tauri cli
-        run: cargo binstall tauri-cli -y
+        run: cargo binstall tauri-cli -y --force
       - name: Setup database
         run: pnpm db:setup
       - name: Install system dependencies
