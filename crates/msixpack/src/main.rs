@@ -11,7 +11,7 @@ use std::path::{Path, PathBuf};
 use clap::{Parser, Subcommand};
 use tempfile::tempdir;
 use tracing::info;
-use crate::bundle::bundle_package;
+use crate::bundle::{bundle_package, create_package};
 use crate::download::download_windows_sdk;
 
 #[derive(Parser)]
@@ -42,8 +42,8 @@ fn main() -> anyhow::Result<()> {
 
     match cli.command {
         Command::Bundle{config, output} => {
-            let config = config.unwrap_or(PathBuf::from("./msixpack.toml"));
-            let output= output.unwrap_or(PathBuf::from("./package.msixpack"));
+            let config = config.unwrap_or(PathBuf::from("msixpack.toml"));
+            let output= output.unwrap_or(PathBuf::from("package.msix"));
             bundle(config,output)?;
         }
     }
@@ -136,10 +136,19 @@ impl Config {
         manifest
     }
 
+    fn exe_path(&self) -> String{
+        self.application.executable
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned()
+    }
+
     fn create_application(&self) -> manifest::Application {
         let app = manifest::Application {
             id: self.application.id.clone(),
-            executable: self.application.executable.to_str().unwrap().to_owned(),
+            executable: self.exe_path(),
             entry_point: String::from("Windows.FullTrustApplication"),
             visual_elements: VisualElements {
                 display_name: self.application.display_name.to_owned(),
@@ -177,20 +186,6 @@ struct Application {
     display_name: String,
     description: String,
     executable: PathBuf,
-}
-
-/// Creates an msix package in the `dest` directory
-fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-    dbg!(&config, &dest.as_ref());
-    info!("Copying assets into package directory");
-    copy_executable(config, &dest)
-        .with_context(|| "Failed to copy executable to destination directory")?;
-    copy_resources(config, &dest)
-        .with_context(|| "Failed to copy resources to destination directory")?;
-    let manifest = config.create_manifest();
-    let xml = quick_xml::se::to_string(&manifest)?;
-    fs::write(&dest.as_ref().join("appxmanifest.xml"), &xml)?;
-    Ok(())
 }
 
 
