@@ -34,12 +34,15 @@ jobs:
         id: cache-cargo-bin
         name: Cache cargo binaries
         with:
-          key: cargo-bin-cache-${{runner.os}}
+          key: v0-cargo-bin-cache-${{runner.os}}
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install binaries
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli cargo-packager --force
+        run: cargo install sqlx-cli --force
+      - name: Install cargo packager
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+        run: cargo install cargo-packager --force
       - name: Install tauri cli
         run: cargo binstall tauri-cli -y
       - name: Setup database
