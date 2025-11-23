@@ -7,7 +7,7 @@
         "dev:desktop": "pnpm -F desktop tauri dev",
         "dev:web": "pnpm -F web dev",
         "db:create": "cargo sqlx database create",
-        "db:sync": "cargo sqlx migrate run --source packages/desktop/src-tauri/migrations",
+        "db:sync": "cargo sqlx migrate run --source crates/folio-tauri/migrations",
         "db:setup": "cargo sqlx database drop -y && pnpm db:create && pnpm db:sync",
         "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
     },
