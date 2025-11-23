@@ -29,6 +29,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - uses: Swatinem/rust-cache@v2
+      - uses: cargo-bins/cargo-binstall@main
       - uses: actions/cache@v4
         id: cache-cargo-bin
         name: Cache cargo binaries
@@ -39,6 +40,8 @@ jobs:
       - name: Install binaries
         if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli cargo-packager --force
+      - name: Install tauri cli
+        run: cargo binstall tauri-cli -y
       - name: Setup database
         run: pnpm db:setup
       - name: Install system dependencies
@@ -58,11 +61,11 @@ jobs:
       - name: Setup database
         run: pnpm db:setup
       - name: Bundle app
-        run: pnpm -F desktop tauri build
+        run: cargo tauri build
       - name: Build pacman
         if: ${{runner.os == 'Linux'}}
         run: |
-          cd packages/desktop/src-tauri
+          cd crates/folio-desktop
           cargo packager --release --formats pacman
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
