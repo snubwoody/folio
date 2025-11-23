@@ -237,7 +237,7 @@ mod test {
         let data_dir = dirs::data_dir().unwrap();
         assert_eq!(dir, data_dir.join("msixpack"));
     }
-    
+
     #[test]
     fn copy_resources() -> anyhow::Result<()> {
         let dir = tempdir()?;

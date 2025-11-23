@@ -43,12 +43,14 @@ pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{Application, Config, Package};
+    use crate::{Application, Config, Package, validate_windows_toolkit};
     use std::path::PathBuf;
     use tempfile::tempdir;
 
     #[test]
+    #[cfg(windows)]
     fn bundle_msix() -> anyhow::Result<()> {
+        validate_windows_toolkit()?;
         let config = Config {
             package: Package {
                 display_name: "Test".to_owned(),
