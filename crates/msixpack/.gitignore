@@ -2,6 +2,3 @@
 *.msix
 temp*
 
-# Added by cargo
-
-target/

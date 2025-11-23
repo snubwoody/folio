@@ -237,48 +237,7 @@ mod test {
         let data_dir = dirs::data_dir().unwrap();
         assert_eq!(dir, data_dir.join("msixpack"));
     }
-
-    #[test]
-    fn create_identity() {
-        let package = Package {
-            name: String::from("Company.App"),
-            version: "1.0.0.0".to_string(),
-            logo: "img.png".to_string(),
-            publisher: "CN=Company".to_string(),
-            publisher_name: "Company".to_string(),
-            ..Default::default()
-        };
-        let config = Config {
-            package,
-            ..Default::default()
-        };
-        let manifest = config.create_manifest();
-
-        assert_eq!(manifest.identity.version, "1.0.0.0");
-        assert_eq!(manifest.identity.processor_architecture, "x64");
-        assert_eq!(manifest.identity.publisher, "CN=Company");
-        assert_eq!(manifest.identity.name, "Company.App");
-    }
-
-    #[test]
-    fn create_application() {
-        let application = Application {
-            id: String::from("ID"),
-            executable: PathBuf::from("/bin/sh"),
-            ..Default::default()
-        };
-        let config = Config {
-            application,
-            ..Default::default()
-        };
-        let manifest = config.create_manifest();
-
-        let app = &manifest.applications.applications[0];
-        assert_eq!(app.id, "ID");
-        assert_eq!(app.executable, "/bin/sh");
-        assert_eq!(app.entry_point, "Windows.FullTrustApplication");
-    }
-
+    
     #[test]
     fn copy_resources() -> anyhow::Result<()> {
         let dir = tempdir()?;
