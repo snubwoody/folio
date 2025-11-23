@@ -1,0 +1,14 @@
+[package]
+version = "0.1.0.0"
+name = "Hello.World"
+display-name = "Hello"
+publisher = "CN=Testing"
+publisher-name = "Test"
+logo="icon.png"
+resources = ["icon.png"]
+
+[application]
+id = "Hello"
+executable = "hello.exe"
+description = "A simple greeting"
+display-name = "Hello"

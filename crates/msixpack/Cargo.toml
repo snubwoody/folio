@@ -1,0 +1,17 @@
+[package]
+name = "msixpack"
+version = "0.0.0"
+edition.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+dirs.workspace = true
+glob.workspace = true
+quick-xml.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+tempfile.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+zip.workspace = true
+zip-extensions.workspace = true
