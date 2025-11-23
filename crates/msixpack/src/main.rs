@@ -8,38 +8,82 @@ use glob::glob;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
+use clap::{Parser, Subcommand};
 use tempfile::tempdir;
+use tracing::info;
 use crate::bundle::bundle_package;
 use crate::download::download_windows_sdk;
 
+#[derive(Parser)]
+struct Cli{
+    #[clap(subcommand)]
+    command: Command
+}
+
+#[derive(Subcommand)]
+enum Command{
+    /// Bundle an msix package
+    Bundle{
+        /// The path to the config file
+        #[arg(short='c',long)]
+        config: Option<PathBuf>,
+        /// The path of the final msix package
+        #[arg(short='o',long)]
+        output: Option<PathBuf>,
+    }
+}
+
 fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_file(false)
+        .init();
+    let cli = Cli::parse();
+
+    match cli.command {
+        Command::Bundle{config, output} => {
+            let config = config.unwrap_or(PathBuf::from("./msixpack.toml"));
+            let output= output.unwrap_or(PathBuf::from("./package.msixpack"));
+            bundle(config,output)?;
+        }
+    }
+
+    Ok(())
+}
+
+fn bundle(config: impl AsRef<Path>,output: impl AsRef<Path>) -> anyhow::Result<()> {
+    info!("Bundling package");
     // TODO:
     // Copy executable and resources
     // Create appxmanifest
     // Create msix package
-    let config_path = Path::new("msix/msixpack.toml");
-    let bytes = fs::read(config_path)
-        .with_context(|| format!("Failed to read configuration file from {config_path:?}"))?;
-    let mut config: Config =
-        toml::from_slice(&bytes).with_context(|| "Failed to parse config".to_string())?;
-    config.directory = config_path.parent().unwrap().to_path_buf();
+    let config_path = config.as_ref();
+    let output_path = output.as_ref();
+    let config = Config::from_path(config_path)?;
     let temp = tempdir()
-        .with_context(|| "Failed to create temporary directory")?;
+        .with_context(|| "Failed to create temporary output directory")?;
     let temp_dir = temp.path();
     let dest = temp_dir.join(".msixpack");
 
-    if !toolkit_exists()?{
-        let data_dir = data_dir();
-        download_windows_sdk(&data_dir)?;
-    }
+    validate_windows_toolkit()?;
 
     fs::create_dir_all(&dest)
         .with_context(|| "Failed to create temporary directory")?;
     create_package(&config, &dest)
         .with_context(|| "Failed to create package")?;
-    bundle_package(dest,"folio_x64.msix")
+    bundle_package(dest,&output)
         .with_context(|| "Failed to bundle package")?;
 
+    info!("Created package: {output_path:?}");
+    Ok(())
+}
+
+/// Installs the windows toolkit if it is not found.
+fn validate_windows_toolkit() -> anyhow::Result<()> {
+    if !toolkit_exists()?{
+        let data_dir = data_dir();
+        download_windows_sdk(&data_dir)?;
+    }
     Ok(())
 }
 
@@ -47,7 +91,6 @@ fn main() -> anyhow::Result<()> {
 fn toolkit_exists() -> anyhow::Result<bool> {
     let data_dir = data_dir();
     let exe_path = data_dir.join("windows-toolkit/makeappx.exe");
-
     Ok(exe_path.exists())
 }
 
@@ -61,6 +104,19 @@ pub struct Config {
 }
 
 impl Config {
+    pub fn from_path(path: impl AsRef<Path>) -> anyhow::Result<Config> {
+        let path = path.as_ref();
+        let bytes = fs::read(path)
+            .with_context(|| format!("Failed to read configuration file from {path:?}"))?;
+        let mut config: Config =
+            toml::from_slice(&bytes).with_context(|| "Failed to parse config".to_string())?;
+        config.directory = path.parent()
+            .unwrap() // FIXME
+            .to_path_buf();
+
+        Ok(config)
+    }
+
     pub fn create_manifest(&self) -> AppxManifest {
         let mut manifest = AppxManifest::new();
 
@@ -125,7 +181,8 @@ struct Application {
 
 /// Creates an msix package in the `dest` directory
 fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-
+    dbg!(&config, &dest.as_ref());
+    info!("Copying assets into package directory");
     copy_executable(config, &dest)
         .with_context(|| "Failed to copy executable to destination directory")?;
     copy_resources(config, &dest)
@@ -172,7 +229,7 @@ fn copy_resources(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()>
 
 fn data_dir() -> PathBuf {
     dirs::data_dir()
-        .unwrap()
+        .unwrap_or(PathBuf::from("."))
         .join("msixpack")
 }
 

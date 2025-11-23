@@ -33,6 +33,7 @@ tempfile = "3.23.0"
 toml = { version = "0.9.8", features = ["serde"] }
 zip = "6.0.0"
 zip-extensions = "0.8.3"
+clap = {version = "4.5.53",features = ["derive"]}
 
 
 [workspace.dependencies.poem]

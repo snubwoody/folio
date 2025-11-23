@@ -2,11 +2,12 @@ use std::fs;
 use std::io::Cursor;
 use std::path::Path;
 use anyhow::Context;
+use tracing::info;
 
 const WINDOWS_TOOLKIT_URL: &'static str = "https://github.com/microsoft/MSIX-Toolkit/archive/refs/tags/v2.0.zip";
 
 pub fn download_windows_sdk(path: impl AsRef<Path>) -> anyhow::Result<()> {
-    println!("Downloading windows toolkit");
+    info!("Downloading windows toolkit");
     let response = reqwest::blocking::get(WINDOWS_TOOLKIT_URL)
         .with_context(||"Failed to fetch windows toolkit")?
         .bytes()?;
@@ -14,6 +15,7 @@ pub fn download_windows_sdk(path: impl AsRef<Path>) -> anyhow::Result<()> {
     let mut archive = zip::ZipArchive::new(cursor)?;
     archive.extract(&path)?;
 
+    info!("Extracting toolkit to {:?}",path.as_ref());
     // Extract only the required exe and header files
     extract_sdk(path);
     Ok(())
