@@ -13,12 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-// Prevents additional console window on Windows in release, DO NOT REMOVE!!
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+enum Distribution{
+    // Don't update, let the store handle updates
+    MSStore,
+    WindowsExe,
+    MacOSDmg,
+    LinuxAppImage,
+    // Unknown method, don't update, assume auto updates
+    // are not possible.
+    Unknown
+}
 
-mod update;
-
-#[tokio::main]
-async fn main() {
-    folio_lib::run().await
+async fn check_update(){
+    reqwest::get("http://localhost:8000");
 }

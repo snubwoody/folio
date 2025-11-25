@@ -125,6 +125,7 @@ pub fn get_data_dir() -> Option<PathBuf> {
     #[cfg(any(windows, target_os = "macos"))]
     let app_name = "Folio";
 
+    // Trying to match linux conventions
     #[cfg(target_os = "linux")]
     let app_name = "folio";
 
