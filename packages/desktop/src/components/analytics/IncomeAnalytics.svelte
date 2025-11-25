@@ -17,7 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { appStore } from "$lib/state.svelte";
 
-    const analytics = appStore.incomeAnalytics.sort((a,b) => parseFloat(a.total) + parseFloat(b.total)).reverse();
+    const analytics = appStore.incomeAnalytics
+        .toSorted((a,b) => parseFloat(a.total) + parseFloat(b.total))
+        .reverse();
     const total = analytics.reduce((acc,item) => acc + parseFloat(item.total),0);
 
     const purpleShades = [
