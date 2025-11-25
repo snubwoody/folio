@@ -4,8 +4,7 @@ env:
   DATABASE_URL: sqlite://data.db
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
+  # Run test workflow on push for caching and to make sure it still works
   push:
     branches: [main]
 concurrency:

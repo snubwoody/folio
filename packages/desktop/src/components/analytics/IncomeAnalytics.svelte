@@ -17,10 +17,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { appStore } from "$lib/state.svelte";
 
-    const analytics = appStore.incomeAnalytics.sort((a,b) => parseFloat(a.total) + parseFloat(b.total)).reverse();
-    const total = analytics.reduce((acc,item) => acc + parseFloat(item.total),0);
+    const analytics = $derived.by(() => appStore.sortedIncomeAnalytics());
+    const total = $derived.by(() => analytics.reduce((acc,item) => acc + parseFloat(item.total),0));
 
-    const purpleShades = [
+    const blueShades = [
         "var(--color-blue-50)",
         "var(--color-blue-100)",
         "var(--color-blue-200)",
@@ -43,7 +43,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {#each analytics as item,index (item.stream.id)}
             {#if parseFloat(item.total) > 0}
                 {@const percent = (parseFloat(item.total)/total) * 100}
-                {@const color = purpleShades[(index+5) % purpleShades.length]}
+                {@const color = blueShades[(index+5) % blueShades.length]}
                 <li style={`--percent: ${percent}; --bar-color: ${color}`}>
                     <div style={`--percent: ${percent}; --bar-color: ${color}`} class="graph-bar mb-1.5"></div>
                     <p class="category-title">{item.stream.title}</p>

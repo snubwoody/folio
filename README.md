@@ -34,6 +34,7 @@ You can find the installers on the latest [Github release](https://github.com/sn
 - 🪟 Windows: Download the latest `-setup.exe` file.
 - 🍎 MacOS: Download the latest `.dmg` file.
 - 🐧 Linux (.deb): Download the latest `.deb` file.
+- 🐧 Linux (.AppImage): Download the latest `.AppImage` file.
 
 ## Roadmap
 
