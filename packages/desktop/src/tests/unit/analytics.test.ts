@@ -1,6 +1,7 @@
 import { calculateSpendingAnalytics } from "$lib/analytics";
 import { expect, test } from "vitest";
-import type { Category, Expense } from "$lib/lib";
+import type {Category, Expense, IncomeAnalytic, IncomeStream} from "$lib/lib";
+import {AppStore} from "$lib/state.svelte";
 
 test("Calculate spending analytics",() => {
 
@@ -153,4 +154,25 @@ test("Parse date only strings",() => {
 
     const analytics = calculateSpendingAnalytics(expenses);
     expect(analytics[0].total).toBe(200);
+});
+
+test("Sort income analytics",() => {
+    const incomeStream: IncomeStream = {
+        id: "",
+        title: "",
+        createdAt: "",
+    };
+    const analytics: IncomeAnalytic[] = [
+        {stream: incomeStream, total: "200.00"},
+        {stream: incomeStream, total: "500.00"},
+        {stream: incomeStream, total: "10.00"},
+        {stream: incomeStream, total: "-24.00"},
+    ];
+    const appStore = new AppStore();
+    appStore.incomeAnalytics = analytics;
+    const incomeAnalytics = appStore.sortedIncomeAnalytics();
+    expect(incomeAnalytics[0].total).toBe("500.00");
+    expect(incomeAnalytics[1].total).toBe("200.00");
+    expect(incomeAnalytics[2].total).toBe("10.00");
+    expect(incomeAnalytics[3].total).toBe("-24.00");
 });

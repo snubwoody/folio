@@ -46,6 +46,16 @@ export class AppStore {
         await this.load();
     }
 
+    /**
+     * Returns an array of sorted income analytics. The analytics
+     * are sorted in descending order.
+     */
+    sortedIncomeAnalytics(): IncomeAnalytic[] {
+        return this.incomeAnalytics
+            .toSorted((a,b) => parseFloat(a.total) - parseFloat(b.total))
+            .reverse();
+    }
+
     async setCurrencyCode(currency: string) {
         await invoke("set_currency_code", { currency });
         this.expenses = (await invoke("fetch_expenses")) as Expense[];
@@ -65,7 +75,7 @@ export class AppStore {
 
     /**
      * Delete a category from the user store. Any transactions
-     * referrencing this category will have their category field
+     * referencing this category will have their category field
      * set to `null`.
      *
      * @param id The id of the {@link Category} to delete
@@ -94,7 +104,7 @@ export class AppStore {
 
     /**
      * Delete an income stream from the user store. Any transactions
-     * referrencing this income stream will have their referencing field
+     * referencing this income stream will have their referencing field
      * set to `null`.
      *
      * @param id The id of the {@link IncomeStream} to delete
