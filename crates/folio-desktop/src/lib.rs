@@ -36,9 +36,11 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
         .resizable(true)
         .maximized(true);
 
+    // Use a custom title bar, only on windows
     #[cfg(windows)]
     let builder = builder.decorations(false);
 
+    // FIXME: don't unwrap
     builder.build().unwrap();
     Ok(())
 }
@@ -48,6 +50,7 @@ pub async fn run() {
     tracing_subscriber::fmt::init();
     let state = State::new().await.unwrap();
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .manage(state)
         .setup(setup_app)

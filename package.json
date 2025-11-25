@@ -17,6 +17,7 @@
         "@astrojs/vercel": "^8.2.10",
         "@lucide/astro": "^0.553.0",
         "@lucide/svelte": "^0.546.0",
+        "@tauri-apps/plugin-updater": "~2",
         "astro": "^5.14.4",
         "phosphor-astro": "^2.1.0",
         "sharp": "^0.34.4",
