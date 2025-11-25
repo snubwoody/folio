@@ -6,12 +6,21 @@ button{
 @layer components{
     .btn{
         display: flex;
-        gap: 8px;
         align-items: center;
         justify-content: center;
-        padding: 8px 12px;
-        border-radius: var(--radius-md);
         transition: all 250ms;
+    }
+
+    .btn-small{
+        padding: 4px 8px;
+        gap: 4px;
+        border-radius: var(--radius-sm);
+    }
+
+    .btn-medium{
+        padding: 8px 12px;
+        gap: 8px;
+        border-radius: var(--radius-md);
     }
     
     .btn-primary{
@@ -61,6 +70,16 @@ button{
 
         &:active{
             background-color: var(--color-neutral-800);
+        }
+    }
+
+    .btn-ghost{
+        &:hover{
+            background-color: var(--color-neutral-25);
+        }
+
+        &:active{
+            background-color: var(--color-neutral-50);
         }
     }
 }
