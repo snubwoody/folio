@@ -48,8 +48,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <style>
     :global(body) {
-        display: grid;
-        grid-template-rows: auto 1fr;
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
     }
 
