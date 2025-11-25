@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import {format} from "date-fns"
+    import { format } from "date-fns";
 	type Props = {
 	    onChange?: (year: number,month: number,day: number) => void
 	};
