@@ -1,7 +1,7 @@
 import { calculateSpendingAnalytics } from "$lib/analytics";
 import { expect, test } from "vitest";
-import type {Category, Expense, IncomeAnalytic, IncomeStream} from "$lib/lib";
-import {AppStore} from "$lib/state.svelte";
+import type { Category, Expense, IncomeAnalytic, IncomeStream } from "$lib/lib";
+import { AppStore } from "$lib/state.svelte";
 
 test("Calculate spending analytics",() => {
 
@@ -160,13 +160,13 @@ test("Sort income analytics",() => {
     const incomeStream: IncomeStream = {
         id: "",
         title: "",
-        createdAt: "",
+        createdAt: ""
     };
     const analytics: IncomeAnalytic[] = [
-        {stream: incomeStream, total: "200.00"},
-        {stream: incomeStream, total: "500.00"},
-        {stream: incomeStream, total: "10.00"},
-        {stream: incomeStream, total: "-24.00"},
+        { stream: incomeStream, total: "200.00" },
+        { stream: incomeStream, total: "500.00" },
+        { stream: incomeStream, total: "10.00" },
+        { stream: incomeStream, total: "-24.00" }
     ];
     const appStore = new AppStore();
     appStore.incomeAnalytics = analytics;

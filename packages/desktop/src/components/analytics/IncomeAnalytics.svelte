@@ -17,9 +17,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { appStore } from "$lib/state.svelte";
 
-    // FIXME: sorting broken
-    const analytics = $derived.by(()=>appStore.sortedIncomeAnalytics());
-    const total = $derived.by(()=>analytics.reduce((acc,item) => acc + parseFloat(item.total),0));
+    const analytics = $derived.by(() => appStore.sortedIncomeAnalytics());
+    const total = $derived.by(() => analytics.reduce((acc,item) => acc + parseFloat(item.total),0));
 
     const blueShades = [
         "var(--color-blue-50)",
