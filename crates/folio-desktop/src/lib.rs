@@ -44,11 +44,6 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     builder.build().unwrap();
     Ok(())
 }
-
-async fn update(){
-
-}
-
 // TODO: remove unnecessary mobile attrs
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -97,8 +92,8 @@ impl State {
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
     let opts = SqliteConnectOptions::new()
-            .filename("./data.db") // FIXME
-            .create_if_missing(true);
+        .filename("./data.db") // FIXME
+        .create_if_missing(true);
 
     #[cfg(not(debug_assertions))]
     let opts = {

@@ -13,17 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-enum Distribution{
-    // Don't update, let the store handle updates
-    MSStore,
-    WindowsExe,
-    MacOSDmg,
-    LinuxAppImage,
-    // Unknown method, don't update, assume auto updates
-    // are not possible.
-    Unknown
-}
-
-async fn check_update(){
-    reqwest::get("http://localhost:8000");
-}
+// enum Distribution{
+//     // Don't update, let the store handle updates
+//     MSStore,
+//     WindowsExe,
+//     MacOSDmg,
+//     LinuxAppImage,
+//     // Unknown method, don't update, assume auto updates
+//     // are not possible.
+//     Unknown
+// }
