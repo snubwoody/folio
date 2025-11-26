@@ -45,6 +45,10 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     Ok(())
 }
 
+async fn update(){
+
+}
+
 // TODO: remove unnecessary mobile attrs
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
@@ -91,28 +95,23 @@ impl State {
 
 // TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
-    // TODO: combine these
     #[cfg(debug_assertions)]
-    let pool = {
-        let opts = SqliteConnectOptions::new()
-            .filename("./sqlite.db")
+    let opts = SqliteConnectOptions::new()
+            .filename("./data.db") // FIXME
             .create_if_missing(true);
 
-        sqlx::SqlitePool::connect_with(opts).await?
-    };
-
     #[cfg(not(debug_assertions))]
-    let pool = {
-        use sqlx::sqlite::SqliteConnectOptions;
+    let opts = {
         let data_dir = get_data_dir().unwrap();
         std::fs::create_dir_all(&data_dir)?;
         let data_dir = data_dir.join("data.db");
 
-        let opts = SqliteConnectOptions::new()
+        SqliteConnectOptions::new()
             .filename(data_dir)
-            .create_if_missing(true);
-        sqlx::SqlitePool::connect_with(opts).await?
+            .create_if_missing(true)
     };
+
+    let pool = SqlitePool::connect_with(opts).await?;
 
     sqlx::migrate!().run(&pool).await?;
 

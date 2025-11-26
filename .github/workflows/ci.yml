@@ -150,6 +150,51 @@ jobs:
             librsvg2-dev
       - name: Run tests
         run: cargo nextest run --locked
+  bundle:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/cache@v4
+        name: Cache cargo binaries
+        id: cache-cargo-bin
+        with:
+          key: cargo-bin-cache-${{runner.os}}
+          path: ~/.cargo/bin
+      - name: Install sqlx-cli
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+        run: cargo install sqlx-cli --force
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@nextest
+      - name: Setup database
+        run: pnpm db:setup
+      - name: Install system dependencies
+        if: ${{runner.os == 'Linux'}}
+        run: |
+          sudo apt update
+          sudo apt install libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libxdo-dev \
+            libssl-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev
+      - name: Build
+        run: cargo tauri build --no-bundle
+      - name: Bundle
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{secrets.TAURI_SIGNING_PRIVATE_KEY}}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD}}
+        run: cargo tauri bundle
   pass:
     needs:
       - format
