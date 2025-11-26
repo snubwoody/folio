@@ -45,6 +45,7 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     Ok(())
 }
 
+// TODO: remove unnecessary mobile attrs
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     tracing_subscriber::fmt::init();
@@ -54,7 +55,8 @@ pub async fn run() {
         .plugin(tauri_plugin_os::init())
         .manage(state)
         .setup(setup_app)
-        .plugin(tauri_plugin_opener::init());
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build());
 
     let app = command::handlers(app);
 
@@ -71,11 +73,12 @@ pub struct State {
 impl State {
     pub async fn new() -> Result<Self> {
         let pool = init_database().await?;
+
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
-
         #[cfg(not(debug_assertions))]
         let mut path = get_data_dir().unwrap();
+
         path = path.join("settings.json");
 
         let settings = Settings::open(path)?;

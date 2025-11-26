@@ -36,9 +36,7 @@ directories.workspace = true
 tauri-plugin-os.workspace = true
 iso_currency.workspace = true
 sqlx.workspace = true
-
-[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
-tauri-plugin-updater = "2"
+tauri-plugin-updater.workspace = true
 
 [package.metadata.packager]
 product-name = "Folio"

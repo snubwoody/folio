@@ -24,6 +24,7 @@ use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
 
+/// Adds tauri commands to the app instance.
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
     app.invoke_handler(tauri::generate_handler![
         create_expense,
