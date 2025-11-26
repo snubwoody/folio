@@ -4,6 +4,8 @@
 
 - refactor: disable all text highlighting ([#166](https://github.com/snubwoody/folio/pull/166))
 - refactor: turn off auto complete for text fields ([#165](https://github.com/snubwoody/folio/pull/165))
+- fix: don't sort income analytics in place
+- Set current date as default in `DateField`
 
 ## 1.3.0
 

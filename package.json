@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
-        "dev:desktop": "pnpm -F desktop tauri dev",
+        "dev:desktop": "cargo tauri dev",
         "dev:web": "pnpm -F web dev",
         "db:create": "cargo sqlx database create",
         "db:migrate": "cargo sqlx migrate run --source crates/folio-desktop/migrations",
