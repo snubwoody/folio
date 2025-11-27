@@ -1,6 +1,6 @@
 [package]
 name = "folio"
-version = "1.3.0"
+version.workspace = true
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
 edition = "2024"
@@ -36,6 +36,7 @@ directories.workspace = true
 tauri-plugin-os.workspace = true
 iso_currency.workspace = true
 sqlx.workspace = true
+tauri-plugin-updater.workspace = true
 
 [package.metadata.packager]
 product-name = "Folio"

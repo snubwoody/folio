@@ -6,6 +6,7 @@
 - refactor: turn off auto complete for text fields ([#165](https://github.com/snubwoody/folio/pull/165))
 - fix: don't sort income analytics in place
 - Set current date as default in `DateField`
+- Add small and medium button sizes
 
 ## 1.3.0
 

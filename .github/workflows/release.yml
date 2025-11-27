@@ -63,10 +63,13 @@ jobs:
       - name: Setup database
         run: pnpm db:setup
       - name: Bundle app
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{secrets.TAURI_SIGNING_PRIVATE_KEY}}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD}}
         run: cargo tauri build
       - name: Build msix
         if: ${{runner.os == 'Windows'}}
-        run: cargo run -p msixpack bundle -c crates/folio-desktop/msixpack.toml -o target/release/folio_x64.msix
+        run: cargo run -p msixpack bundle -c crates/folio-desktop/msixpack.toml -o target/release/Folio-x86_64.msix
       - name: Build pacman
         if: ${{runner.os == 'Linux'}}
         run: |
@@ -78,6 +81,7 @@ jobs:
           name: folio-upload-${{ matrix.os }}
           path: |
             target/release/**/*.deb
+            target/release/**/*.sig
             target/release/**/*.rpm
             target/release/**/PKGBUILD
             target/release/**/*AppImage
