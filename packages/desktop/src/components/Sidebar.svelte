@@ -30,9 +30,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <IconButton href="/analytics" variant="ghost">
         <Chart size="20"/>
     </IconButton>
-    <IconButton onclick={() => addToast({title:"Toast"})} variant="ghost">
-        <Chart size="20"/>
-    </IconButton>
     <SettingsButton/>
 </nav>
 

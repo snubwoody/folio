@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Sidebar from "../components/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
-    import ToastGroup from "$components/ToastGroup.svelte";
+    import ToastGroup from "$components/popups/ToastGroup.svelte";
     import "../styles/global.css";
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";

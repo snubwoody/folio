@@ -42,7 +42,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	}
 </script>
 
-<button {...popover.trigger} class="btn btn-primary ml-auto">New</button>
+<Button {...popover.trigger} class="ml-auto">New</Button>
 <form {...popover.content} class="popup-overlay space-y-2 bg-white max-w-[350px] w-full" onsubmit={() => {}}>
     <TextField bind:value={amount} label="Amount"/>
     <DateField onChange={(year,month,day) => date = `${year}-${month}-${day}`}/>

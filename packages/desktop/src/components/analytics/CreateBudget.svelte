@@ -20,6 +20,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectMenu from "$components/SelectMenu.svelte";
     import type { Category } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
+    import { Button, IconButton } from "$components/button";
+    import {Plus} from "@lucide/svelte";
+
 
 	const popover = new Popover();
 
@@ -33,9 +36,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     // TODO: filter categories that don't have budgets
 </script>
 
-<button {...popover.trigger} class="icon-btn icon-btn-medium icon-btn-grey">
-    <i class="ph ph-plus"></i>
-</button>
+<IconButton {...popover.trigger} variant="ghost">
+    <Plus/>
+</IconButton>
 <form {...popover.content} class="popup-overlay space-y-2 bg-white max-w-[350px] w-full" onsubmit={() => {}}>
     <TextField bind:value={amount} label="Amount"/>
     <SelectMenu
@@ -46,6 +49,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }}
         onChange={(item) => category = item}
     />
-    <button class="btn btn-primary w-full" onclick={createBudget}>Create budget</button>
+    <Button class="w-full" onclick={createBudget}>Create budget</Button>
 </form>
 
