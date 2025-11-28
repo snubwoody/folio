@@ -4,6 +4,7 @@ import Expense from "$components/home/expense/Expense.svelte";
 import TransactionsSection from "$components/home/TransactionsSection.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
+
 beforeEach(() => {
     appStore.budgets = [];
     appStore.incomes = [];

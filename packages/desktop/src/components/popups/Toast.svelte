@@ -28,7 +28,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const {toast}: Props = $props();
 </script>
 
-<div transition:fly={{x:"50"}} class="toast">
+<li transition:fly={{x:"50"}} class="toast">
     <div class="flex gap-1">
         <div class="py-0.5">
             <Info size="20" class="text-purple-500"/>
@@ -36,7 +36,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div>
             <p>{toast.title}</p>
             {#if toast.body}
-                <p class="text-sm text-text-muted">A new update is available.</p>
+                <p class="text-sm text-text-muted">{toast.body}</p>
             {/if}
         </div>
         <IconButton
@@ -62,7 +62,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             {/if}
         </div>
     {/if}
-</div>
+</li>
 
 <style>
     .toast{
