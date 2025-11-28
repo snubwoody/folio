@@ -72,7 +72,7 @@ export const toastStore = createToastStore();
  * @param timeout The amount of time before removing the toast.
  */
 export const addToast = (params: ToastParams,timeout: number = 8500) => {
-    const toast: Toast = {id: randomId(),...params};
+    const toast: Toast = { id: randomId(),...params };
     toastStore.addToast(toast,timeout);
 };
 

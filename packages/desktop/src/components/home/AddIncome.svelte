@@ -23,7 +23,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { appStore } from "$lib/state.svelte";
     import { Button } from "$components/button";
 
-
 	const popover = new Popover();
 
 	let amount = $state("");

@@ -21,8 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { Category } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import { Button, IconButton } from "$components/button";
-    import {Plus} from "@lucide/svelte";
-
+    import { Plus } from "@lucide/svelte";
 
 	const popover = new Popover();
 

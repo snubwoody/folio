@@ -20,7 +20,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Home from "@lucide/svelte/icons/house";
     import Chart from "@lucide/svelte/icons/chart-no-axes-combined";
     import SettingsButton from "$components/settings/SettingsButton.svelte";
-    import {addToast} from "$lib/toast.svelte.js";
 </script>
 
 <nav>

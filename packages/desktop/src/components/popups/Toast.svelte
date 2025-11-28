@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import {type Toast, toastStore} from "$lib/toast.svelte.js";
-    import {Info,X} from "@lucide/svelte";
+    import { type Toast, toastStore } from "$lib/toast.svelte.js";
+    import { Info,X } from "@lucide/svelte";
     import { IconButton, Button } from "$components/button";
     import { fly } from "svelte/transition";
     // TODO: close toast on esc
@@ -25,10 +25,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         toast: Toast
     }
 
-    const {toast}: Props = $props();
+    const { toast }: Props = $props();
 </script>
 
-<li transition:fly={{x:"50"}} class="toast">
+<li transition:fly={{ x:"50" }} class="toast">
     <div class="flex gap-1">
         <div class="py-0.5">
             <Info size="20" class="text-purple-500"/>

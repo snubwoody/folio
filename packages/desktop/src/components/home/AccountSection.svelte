@@ -3,8 +3,8 @@
     import TextField from "../TextField.svelte";
     import { appStore } from "$lib/state.svelte";
     import { formatAmount } from "$lib/lib";
-    import {IconButton,Button} from "$components/button";
-    import {Plus} from "@lucide/svelte";
+    import { IconButton,Button } from "$components/button";
+    import { Plus } from "@lucide/svelte";
 
 	const popover = new Popover();
 	let name = $state("My account");

@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <ul class="toast-group">
-    {#each toastStore.toasts as toast}
+    {#each toastStore.toasts as toast (toast.id)}
         <Toast {toast}/>
     {/each}
 </ul>
