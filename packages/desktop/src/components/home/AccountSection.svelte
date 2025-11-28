@@ -3,6 +3,8 @@
     import TextField from "../TextField.svelte";
     import { appStore } from "$lib/state.svelte";
     import { formatAmount } from "$lib/lib";
+    import {IconButton,Button} from "$components/button";
+    import {Plus} from "@lucide/svelte";
 
 	const popover = new Popover();
 	let name = $state("My account");
@@ -18,14 +20,13 @@
 <section>
 	<header class="flex items-center justify-between">
 		<h6>Accounts</h6>
-		<button {...popover.trigger} class="icon-btn icon-btn-grey icon-btn-small">
-			<i class="ph ph-plus"></i>
-		</button>
+        <IconButton {...popover.trigger} variant="ghost">
+            <Plus/>
+        </IconButton>
 		<form class="popup-overlay space-y-1.5" {...popover.content}>
 			<TextField bind:value={name} label="Name"/>
 			<TextField bind:value={startingBalance} label="Starting balance"/>
-			<!--TODO: add text button-->
-			<button class="btn btn-primary w-full" onclick={createAccount}>Save changes</button>
+            <Button class="w-full" onclick={createAccount}>Save changes</Button>
 		</form>
 	</header>
 	<ul>
