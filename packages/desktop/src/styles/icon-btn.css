@@ -4,6 +4,7 @@
     justify-content: center;
     transition: all 250ms;
     width: fit-content;
+    height: fit-content;
 }
 
 .icon-btn-primary{

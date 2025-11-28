@@ -17,10 +17,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Sidebar from "../components/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
+    import ToastGroup from "$components/popups/ToastGroup.svelte";
     import "../styles/global.css";
-    const { children } = $props();
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
+
+    const { children } = $props();
+
     onMount(async () => {
         await appStore.load();
     });
@@ -44,12 +47,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <main class="flex">
     <Sidebar />
     {@render children()}
+    <ToastGroup/>
 </main>
 
 <style>
     :global(body) {
-        display: grid;
-        grid-template-rows: auto 1fr;
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
     }
 

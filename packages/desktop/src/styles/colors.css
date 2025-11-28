@@ -53,6 +53,8 @@
 	--color-red-900: #400202;
 	--color-red-950: #2C0101;
 
+    --color-border-neutral-10: var(--color-neutral-50);
+
     --color-text-heading: var(--color-neutral-950);
 	--color-text-body: var(--color-neutral-900);
 	--color-text-muted: var(--color-neutral-600);
