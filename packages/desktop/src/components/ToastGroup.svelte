@@ -2,12 +2,13 @@
     import { toastStore } from "$lib/toast.svelte";
     import {Info,X} from "@lucide/svelte";
     import { IconButton, Button } from "$components/button";
+    import { fly } from "svelte/transition";
     // TODO: close toast on esc
 </script>
 
 <div class="toast-group">
     {#each toastStore.toasts as toast}
-        <div class="toast">
+        <div transition:fly={{x:"50"}} class="toast">
             <div class="flex gap-1">
                 <div class="py-0.5">
                     <Info size="20" class="text-purple-500"/>
@@ -18,7 +19,7 @@
                         <p class="text-sm text-text-muted">A new update is available.</p>
                     {/if}
                 </div>
-                <IconButton variant="ghost" class="ml-auto">
+                <IconButton variant="ghost" class="ml-auto" onclick={() => toastStore.removeToast(toast.id)}>
                     <X size="16"/>
                 </IconButton>
             </div>
