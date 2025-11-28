@@ -7,10 +7,11 @@ data.db
 build
 target/
 
-# Environment variables
+# Env variables and secrets
 .env
 .env.*
 *.pem
+*.key*
 
 # IDE settings
 .idea/

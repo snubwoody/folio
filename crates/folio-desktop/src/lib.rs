@@ -36,22 +36,26 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
         .resizable(true)
         .maximized(true);
 
+    // Use a custom title bar, only on windows
     #[cfg(windows)]
     let builder = builder.decorations(false);
 
+    // FIXME: don't unwrap
     builder.build().unwrap();
     Ok(())
 }
-
+// TODO: remove unnecessary mobile attrs
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     tracing_subscriber::fmt::init();
     let state = State::new().await.unwrap();
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .manage(state)
         .setup(setup_app)
-        .plugin(tauri_plugin_opener::init());
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build());
 
     let app = command::handlers(app);
 
@@ -68,11 +72,12 @@ pub struct State {
 impl State {
     pub async fn new() -> Result<Self> {
         let pool = init_database().await?;
+
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
-
         #[cfg(not(debug_assertions))]
         let mut path = get_data_dir().unwrap();
+
         path = path.join("settings.json");
 
         let settings = Settings::open(path)?;
@@ -85,28 +90,23 @@ impl State {
 
 // TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
-    // TODO: combine these
     #[cfg(debug_assertions)]
-    let pool = {
-        let opts = SqliteConnectOptions::new()
-            .filename("./sqlite.db")
-            .create_if_missing(true);
-
-        sqlx::SqlitePool::connect_with(opts).await?
-    };
+    let opts = SqliteConnectOptions::new()
+        .filename("./data.db") // FIXME
+        .create_if_missing(true);
 
     #[cfg(not(debug_assertions))]
-    let pool = {
-        use sqlx::sqlite::SqliteConnectOptions;
+    let opts = {
         let data_dir = get_data_dir().unwrap();
         std::fs::create_dir_all(&data_dir)?;
         let data_dir = data_dir.join("data.db");
 
-        let opts = SqliteConnectOptions::new()
+        SqliteConnectOptions::new()
             .filename(data_dir)
-            .create_if_missing(true);
-        sqlx::SqlitePool::connect_with(opts).await?
+            .create_if_missing(true)
     };
+
+    let pool = SqlitePool::connect_with(opts).await?;
 
     sqlx::migrate!().run(&pool).await?;
 
@@ -122,6 +122,7 @@ pub fn get_data_dir() -> Option<PathBuf> {
     #[cfg(any(windows, target_os = "macos"))]
     let app_name = "Folio";
 
+    // Trying to match linux conventions
     #[cfg(target_os = "linux")]
     let app_name = "folio";
 
