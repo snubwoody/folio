@@ -1,3 +1,14 @@
+# Folio Changelog
+
+## 1.3.1 - 29-11-2025
+
+## Improvements
+
+- Disabled all text highlighting
+- Disabled auto complete in text fields
+
+## Bug fixes
+- Fixed a bug causing income analytics to switch places randomly.
 
 ## 1.3.0 - 21-11-2025
 
