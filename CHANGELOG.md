@@ -1,10 +1,14 @@
-## (unreleased)
+# Folio Changelog
 
-- refactor: disable all text highlighting ([#166](https://github.com/snubwoody/folio/pull/166))
-- refactor: turn off auto complete for text fields ([#165](https://github.com/snubwoody/folio/pull/165))
-- fix: don't sort income analytics in place
-- Set current date as default in `DateField`
-- Add small and medium button sizes
+## 1.3.1 - 29-11-2025
+
+## Improvements
+
+- Disabled all text highlighting
+- Disabled auto complete in text fields
+
+## Bug fixes
+- Fixed a bug causing income analytics to switch places randomly.
 
 ## 1.3.0 - 21-11-2025
 

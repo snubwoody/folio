@@ -3,7 +3,7 @@
     "changelog": "@changesets/cli/changelog",
     "commit": false,
     "fixed": [],
-    "linked": [["@folio/desktop","@folio/updater"]],
+    "linked": [],
     "access": "restricted",
     "baseBranch": "main",
     "updateInternalDependencies": "patch",
