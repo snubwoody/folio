@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Colors;
+import 'package:folio/colors.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,11 +14,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme(
             brightness: Brightness.light,
-            primary: Colors.blue,
+            primary: Colors.purple500,
             onPrimary: Colors.white,
-            secondary: Colors.purple,
+            secondary: Colors.purple500,
             onSecondary: Colors.white,
-            error: Colors.red,
+            error: Colors.purple500,
             onError: Colors.white,
             surface: Colors.white,
             onSurface: Colors.black
@@ -33,12 +34,25 @@ class ExpenseTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 4,
-      mainAxisSpacing: 0,
+    return Column(
+        children: [
+          TableHeader(),
+          TableRow(),
+          TableRow(),
+          TableRow(),
+          TableRow(),
+        ],
+    );
+  }
+}
+
+class TableHeader extends StatelessWidget {
+  const TableHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
       children: [
-        TableCell(),
-        TableCell(),
         TableCell(),
         TableCell(),
         TableCell(),
@@ -48,13 +62,36 @@ class ExpenseTable extends StatelessWidget {
   }
 }
 
+class TableRow extends StatelessWidget {
+  const TableRow({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        TableCell(),
+        TableCell(),
+        TableCell(),
+        TableCell(),
+      ],
+    );
+  }
+}
+
+
 class TableCell extends StatelessWidget {
   const TableCell({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: const TextLabel("Cell")
+    return Expanded(
+      child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            border: BoxBorder.fromBorderSide(BorderSide(color: Colors.borderNeutral50))
+          ),
+          child: const TextLabel("Cell")
+      ),
     );
   }
 }
