@@ -4,6 +4,7 @@ data.db
 
 # Build output
 .svelte-kit
+*.msix
 build
 target/
 

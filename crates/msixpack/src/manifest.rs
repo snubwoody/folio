@@ -91,7 +91,7 @@ pub struct Resources {
 impl Default for Resources {
     fn default() -> Self {
         let resource = Resource {
-            language: "en-US".to_string(),
+            language: "en-GB".to_string(),
         };
 
         Self {
