@@ -10,7 +10,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Folio',
       theme: ThemeData(
         colorScheme: ColorScheme(
             brightness: Brightness.light,
@@ -77,7 +78,6 @@ class TableRow extends StatelessWidget {
     );
   }
 }
-
 
 class TableCell extends StatelessWidget {
   const TableCell({super.key});
