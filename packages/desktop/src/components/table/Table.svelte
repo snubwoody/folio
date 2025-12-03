@@ -27,3 +27,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <div>
     {@render children()}
 </div>
+
+<style>
+    div{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+</style>

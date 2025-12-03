@@ -14,3 +14,4 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 export { default as TableCell } from "./TableCell.svelte";
 export { default as Table } from "./Table.svelte";
+export { default as TableHeader } from "./TableHeader.svelte";
