@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectButton from "$components/SelectButton.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
-    import {TableCell} from "$components/table";
+    import {TableCell,SelectCell} from "$components/table";
 
     type Props = {
         expense: Expense;
@@ -69,25 +69,26 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<TableCell class="justify-between relative">
-    <p>{expense.category?.title ?? " "}</p>
-    <IconButton
-        aria-label="Delete expense"
-        class="absolute -left-3 opacity-0 hover:opacity-100"
-        size="small"
-        variant="ghost"
-        onclick={() => appStore.transactions.deleteExpense(expense.id)}
-    >
-        <Trash2 />
-    </IconButton>
-    <SelectButton
-        items={appStore.categories}
-        toOption={(c) => {
-            return { label: c.title, value: c.id };
-        }}
-        onChange={editCategory}
-    />
-</TableCell>
+<SelectCell></SelectCell>
+<!--<TableCell class="justify-between relative">-->
+<!--    <p>{expense.category?.title ?? " "}</p>-->
+<!--    <IconButton-->
+<!--        aria-label="Delete expense"-->
+<!--        class="absolute -left-3 opacity-0 hover:opacity-100"-->
+<!--        size="small"-->
+<!--        variant="ghost"-->
+<!--        onclick={() => appStore.transactions.deleteExpense(expense.id)}-->
+<!--    >-->
+<!--        <Trash2 />-->
+<!--    </IconButton>-->
+<!--    <SelectButton-->
+<!--        items={appStore.categories}-->
+<!--        toOption={(c) => {-->
+<!--            return { label: c.title, value: c.id };-->
+<!--        }}-->
+<!--        onChange={editCategory}-->
+<!--    />-->
+<!--</TableCell>-->
 <TableCell class="justify-between">
     <p>{expense.account?.name ?? " "}</p>
     <SelectButton
