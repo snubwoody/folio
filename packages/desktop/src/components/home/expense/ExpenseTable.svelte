@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import Expense from "./Expense.svelte";
+    import {Table} from "$components/table";
     import { appStore } from "$lib/state.svelte";
 </script>
 

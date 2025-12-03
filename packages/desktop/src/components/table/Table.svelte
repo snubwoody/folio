@@ -16,31 +16,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import {type Snippet} from "svelte";
-    import {type HTMLAttributes} from "svelte/elements";
 
-    interface Props extends HTMLAttributes<HTMLDivElement>{
+    interface Props{
         children: Snippet
     }
-    const { children,class: userClass,...rest }: Props = $props();
-    // TODO: exit on enter or esc
+
+    const {children}: Props = $props();
 </script>
 
-
-<div class={userClass} {...rest}>
+<div>
     {@render children()}
 </div>
-
-<!--TODO: make the horizontal borders half width?-->
-<style>
-    div {
-        display: flex;
-        align-items: center;
-        padding: 12px;
-        border: 2px solid var(--color-neutral-50);
-        transition: all 250ms;
-
-        &:focus-within{
-            border-color: var(--color-border-focus);
-        }
-    }
-</style>
