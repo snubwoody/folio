@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { parseMoney } from "$lib/lib";
+    import {TableCell} from "$components/table";
 
     type Props = {
         amount: string,
@@ -36,7 +37,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<div class="data-cell flex items-center gap-0.5">
+<TableCell>
+<!--<div class="data-cell flex items-center gap-0.5">-->
     <p>{symbol}</p>
     <input bind:value={currentAmount} onblur={updateAmount} class="outline-none">
-</div>
+<!--</div>-->
+
+</TableCell>

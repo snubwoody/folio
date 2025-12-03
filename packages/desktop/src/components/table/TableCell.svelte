@@ -1,0 +1,45 @@
+<!--
+Copyright (C) 2025 Wakunguma Kalimukwa
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+-->
+<script lang="ts">
+    import {type Snippet} from "svelte";
+
+    interface Props{
+        children: Snippet
+    }
+    const { children }: Props = $props();
+    // TODO: exit on enter or esc
+</script>
+
+
+<div class="data-cell flex items-center">
+    {@render children()}
+</div>
+
+<!--TODO: make the horizontal borders half width?-->
+<style>
+    div {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--color-neutral-50);
+        transition: all 250ms;
+
+        &:focus-within{
+            border-color: var(--color-border-focus);
+        }
+    }
+</style>
