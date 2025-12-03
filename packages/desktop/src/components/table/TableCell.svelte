@@ -16,16 +16,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import {type Snippet} from "svelte";
+    import {type HTMLAttributes} from "svelte/elements";
 
-    interface Props{
+    interface Props extends HTMLAttributes<HTMLDivElement>{
         children: Snippet
     }
-    const { children }: Props = $props();
+    const { children,class: userClass,...rest }: Props = $props();
     // TODO: exit on enter or esc
 </script>
 
 
-<div class="data-cell flex items-center">
+<div class={userClass} {...rest}>
     {@render children()}
 </div>
 
