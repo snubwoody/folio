@@ -14,32 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
-<!--
-@component
-A select menu that displays a popup with options for the user to choose
-from.
 
-# Example
-```svelte
-<script>
-    const paymentMethods = [
-        {id: 298024, title: "Apple Pay"},
-        {id: 232353, title: "Klarna"},
-        {id: 368547, title: "Bank"},
-        {id: 869822, title: "Credit card"},
-        {id: 724024, title: "Cash"},
-        {id: 239142, title: "PayPal"},
-    ]
-</script>
-
-<SelectMenu
-    label = "Payment method"
-    items={paymentMethods}
-    toOption = {(item) => {value: item.id, label: item.title}}
-    onChange = {(item) => console.log(item)}
-/>
-```
--->
 <script lang="ts" generics="T">
     import { Select } from "melt/builders";
     import IconButton from "$components/button/IconButton.svelte";
