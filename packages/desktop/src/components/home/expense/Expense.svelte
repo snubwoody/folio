@@ -69,26 +69,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<SelectCell></SelectCell>
-<!--<TableCell class="justify-between relative">-->
-<!--    <p>{expense.category?.title ?? " "}</p>-->
-<!--    <IconButton-->
-<!--        aria-label="Delete expense"-->
-<!--        class="absolute -left-3 opacity-0 hover:opacity-100"-->
-<!--        size="small"-->
-<!--        variant="ghost"-->
-<!--        onclick={() => appStore.transactions.deleteExpense(expense.id)}-->
-<!--    >-->
-<!--        <Trash2 />-->
-<!--    </IconButton>-->
-<!--    <SelectButton-->
-<!--        items={appStore.categories}-->
-<!--        toOption={(c) => {-->
-<!--            return { label: c.title, value: c.id };-->
-<!--        }}-->
-<!--        onChange={editCategory}-->
-<!--    />-->
-<!--</TableCell>-->
+<TableCell class="justify-between relative">
+    <p>{expense.category?.title ?? " "}</p>
+    <IconButton
+        aria-label="Delete expense"
+        class="absolute -left-3 opacity-0 hover:opacity-100"
+        size="small"
+        variant="ghost"
+        onclick={() => appStore.transactions.deleteExpense(expense.id)}
+    >
+        <Trash2 />
+    </IconButton>
+    <SelectButton
+        items={appStore.categories}
+        toOption={(c) => {
+            return { label: c.title, value: c.id };
+        }}
+        onChange={editCategory}
+    />
+</TableCell>
 <TableCell class="justify-between">
     <p>{expense.account?.name ?? " "}</p>
     <SelectButton

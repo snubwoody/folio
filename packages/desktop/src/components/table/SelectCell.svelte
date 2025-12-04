@@ -14,26 +14,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
-<script>
+<script lang="ts">
     import { TableCell } from "$components/table";
     import { Select } from "bits-ui";
 
-    const items = [
-        { value: "RBC Credit Card",label: "RBC Credit Card" },
-        { value: "RBC Savings",label: "RBC Savings" },
-        { value: "Absa",label: "Absa" },
-        { value: "FNB",label: "FNB" }
-    ];
+    interface Props{
+        items: {value: string, label: string}[]
+    }
+
+    const {items}: Props = $props();
+
+    let selectedItem = $state(items[0]);
+    // TODO: add selected style
+
+    const onChange = (value: string) => {
+        console.log(value)
+    }
 </script>
 
 <TableCell>
-    <Select.Root type="single" name="Combobox">
-        <Select.Trigger class="w-full h-full flex justify-start outline-none">Trigger</Select.Trigger>
+    <Select.Root onValueChange={onChange} type="single" name="Combobox">
+        <Select.Trigger class="w-full h-full flex justify-start outline-none">
+            {selectedItem.label}
+        </Select.Trigger>
         <Select.Portal>
-            <Select.Content class="w-[var(--bits-select-anchor-width)]">
-                {#each items as item,index}
-                    <Select.Item value={item.value} label={item.label}>
-                        {#snippet children({ selected })}
+            <Select.Content class="w-[var(--bits-select-anchor-width)] popup-overlay space-y-1">
+                {#each items as item (item.value)}
+                    <Select.Item value={item.value} label={item.label} class="select-item">
+                        {#snippet children()}
                             {item.label}
                         {/snippet}
                     </Select.Item>
@@ -46,5 +54,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <style>
     :global([data-select-content]){
         background: white;
+    }
+
+    :global(.select-item) {
+        border-radius: var(--radius-sm);
+        padding: 8px;
+        transition: all 250ms;
+
+        &:hover {
+            background-color: var(--color-neutral-50);
+        }
+
+        &[data-selected="true"] {
+            background-color: var(--color-neutral-50);
+        }
     }
 </style>

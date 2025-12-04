@@ -16,10 +16,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import Expense from "./Expense.svelte";
-    import { Table, TableHeader } from "$components/table";
+    import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
     import { appStore } from "$lib/state.svelte";
     import type {DataCell, DataCellParams, DataColumn} from "$lib/table";
 
+    type ColumnType =
+        "Category" |
+        "Account" |
+        "Date" |
+        "Amount";
+
+    // TODO: maybe generic
     const columns: DataColumn[] = [
         {id: "Category"},
         {id: "Account"},
@@ -40,14 +47,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         });
         return cells;
     })
+
+    const categories = $derived.by(()=>
+        appStore.categories.map(category => {return {value: category.id,label: category.title}})
+    )
 </script>
 
 <Table {cells} {columns}>
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
     {/snippet}
-    {#snippet cell({value})}
-        <p>{value}</p>
+    {#snippet cell({value,columnId})}
+        {#if columnId === "Category"}
+            <SelectCell items={categories}></SelectCell>
+        {:else}
+            <TableCell>{value}</TableCell>
+        {/if}
     {/snippet}
 	{#each appStore.expenses as expense (expense.id)}
 		<Expense {expense}/>

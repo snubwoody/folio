@@ -28,8 +28,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { children,header,cell,columns,cells }: Props = $props();
     const table = new DataTable(columns,cells);
-    console.log("Cells:",cells)
-    console.log(table.cells)
 </script>
 
 
