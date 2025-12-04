@@ -19,7 +19,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
     import { appStore } from "$lib/state.svelte";
     import type {DataCell, DataCellParams, DataColumn, DataRow} from "$lib/table";
-    import type {Account, Category} from "$lib/lib";
+    import {type Account, type Category, formatDate} from "$lib/lib";
+    import DatePicker from "$components/DatePicker.svelte";
 
     // TODO: maybe generic
     const columns: DataColumn[] = [
@@ -67,6 +68,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             accountId
         });
     }
+
+    function updateDate(expenseId: string,year: number, month: number, day: number) {
+        appStore.transactions.editExpense({
+            id: expenseId,
+            date: `${year}-${month}-${day}`
+        });
+    }
 </script>
 
 <Table {cells} {columns} {rows}>
@@ -86,6 +94,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 onChange={(value) => editAccount(rowId,value)}
                 items={accounts}
             />
+        {:else if columnId === "Date"}
+            <TableCell class="justify-between">
+                <p>{formatDate(value)}</p>
+                <DatePicker onDateChange={(year,month,day)=>updateDate(rowId,year,month,day)} />
+            </TableCell>
         {:else}
             <TableCell>{value}</TableCell>
         {/if}
