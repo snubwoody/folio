@@ -15,15 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script>
-    import {TableCell} from "$components/table";
+    import { TableCell } from "$components/table";
     import { Select } from "bits-ui";
 
     const items = [
-        {value: "RBC Credit Card",label: "RBC Credit Card"},
-        {value: "RBC Savings",label: "RBC Savings"},
-        {value: "Absa",label: "Absa"},
-        {value: "FNB",label: "FNB"},
-    ]
+        { value: "RBC Credit Card",label: "RBC Credit Card" },
+        { value: "RBC Savings",label: "RBC Savings" },
+        { value: "Absa",label: "Absa" },
+        { value: "FNB",label: "FNB" }
+    ];
 </script>
 
 <TableCell>
@@ -33,7 +33,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <Select.Content class="w-[var(--bits-select-anchor-width)]">
                 {#each items as item,index}
                     <Select.Item value={item.value} label={item.label}>
-                        {#snippet children({selected})}
+                        {#snippet children({ selected })}
                             {item.label}
                         {/snippet}
                     </Select.Item>

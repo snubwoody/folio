@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import {type Snippet} from "svelte";
+    import type { Snippet } from "svelte";
 
     interface Props{
         children: Snippet

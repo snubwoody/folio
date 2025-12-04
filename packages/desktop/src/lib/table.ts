@@ -1,5 +1,4 @@
 
-
 export interface DataRow{ id: string }
 export interface DataColumn{ id: string }
 
@@ -20,7 +19,7 @@ export class DataTable{
         let columnIndex = 0;
         const dataCells = [];
         for (const cell of cells) {
-            const dataCell: DataCell = {columnId: columns[columnIndex].id,...cell};
+            const dataCell: DataCell = { columnId: columns[columnIndex].id,...cell };
             dataCells.push(dataCell);
             if (columnIndex === columns.length - 1) {
                 columnIndex = 0;

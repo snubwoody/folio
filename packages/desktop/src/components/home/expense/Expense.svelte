@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectButton from "$components/SelectButton.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
-    import {TableCell,SelectCell} from "$components/table";
+    import { TableCell,SelectCell } from "$components/table";
 
     type Props = {
         expense: Expense;
