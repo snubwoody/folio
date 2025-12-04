@@ -21,7 +21,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         children: Snippet
     }
 
-    const {children}: Props = $props();
+    interface DataColumn{
+        id: string
+    }
+
+    interface DataRow{
+        id: string
+    }
+
+    type DataValue = string | number;
+
+    interface DataCell{
+        value: DataValue
+    }
+
+    const { children }: Props = $props();
 </script>
 
 <div>
