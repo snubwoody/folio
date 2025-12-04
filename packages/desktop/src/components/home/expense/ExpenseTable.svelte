@@ -18,13 +18,32 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Expense from "./Expense.svelte";
     import { Table, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte";
+    import type {DataCellParams, DataColumn} from "$lib/table";
+
+    const columns: DataColumn[] = [
+        {id: "Category"},
+        {id: "Account"},
+        {id: "Date"},
+        {id: "Amount"},
+    ];
+
+    const cells: DataCellParams[] = [];
+
+    $effect(()=>{
+        appStore.expenses.forEach(expense => {
+            // FIXME allow null values
+            cells.push({value: expense.category?.title ?? ""});
+            cells.push({value: expense.account?.name ?? ""});
+            cells.push({value: expense.date});
+            cells.push({value: expense.amount});
+        })
+    })
 </script>
 
-<Table>
-    <TableHeader>Category</TableHeader>
-    <TableHeader>Account</TableHeader>
-    <TableHeader>Date</TableHeader>
-    <TableHeader>Amount</TableHeader>
+<Table {cells} {columns}>
+    {#snippet header(label)}
+        <TableHeader>{label}</TableHeader>
+    {/snippet}
 	{#each appStore.expenses as expense (expense.id)}
 		<Expense {expense}/>
 	{/each}

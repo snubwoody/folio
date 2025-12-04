@@ -16,29 +16,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import type { Snippet } from "svelte";
+    import {type DataCellParams, type DataColumn, DataTable} from "$lib/table";
 
     interface Props{
-        children: Snippet
+        header: Snippet<[string]>,
+        children: Snippet,
+        columns: DataColumn[],
+        cells: DataCellParams[],
     }
 
-    interface DataColumn{
-        id: string
-    }
-
-    interface DataRow{
-        id: string
-    }
-
-    type DataValue = string | number;
-
-    interface DataCell{
-        value: DataValue
-    }
-
-    const { children }: Props = $props();
+    const { children,header,columns,cells }: Props = $props();
+    const table = new DataTable(columns,cells);
 </script>
 
+
 <div>
+    {#each columns as column (column.id)}
+        {@render header(column.id)}
+    {/each}
     {@render children()}
 </div>
 
