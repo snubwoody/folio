@@ -16,27 +16,82 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import Expense from "./Expense.svelte";
+    import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
     import { appStore } from "$lib/state.svelte";
+    import type {DataCell, DataCellParams, DataColumn, DataRow} from "$lib/table";
+    import type {Account, Category} from "$lib/lib";
+
+    // TODO: maybe generic
+    const columns: DataColumn[] = [
+        {id: "Category"},
+        {id: "Account"},
+        {id: "Date"},
+        {id: "Amount"},
+    ];
+
+    const rows: DataRow[] = $derived.by(()=>
+        appStore.expenses.map(expense => {
+            {return {id: expense.id}}
+        })
+    )
+
+    const cells = $derived.by(()=>{
+        const cells: DataCellParams[] = [];
+        appStore.expenses.forEach(expense => {
+            // FIXME allow null values
+            cells.push({value: expense.category?.id ?? ""});
+            cells.push({value: expense.account?.id ?? ""});
+            cells.push({value: expense.date});
+            cells.push({value: expense.amount});
+        });
+        return cells;
+    })
+
+    const categories = $derived.by(()=>
+        appStore.categories.map(category => {return {value: category.id,label: category.title}})
+    )
+    const accounts = $derived.by(()=>
+        appStore.accounts.map(account => {return {value: account.id,label: account.name}})
+    )
+
+    async function editCategory(expenseId: string,categoryId: string) {
+        await appStore.transactions.editExpense({
+            id: expenseId,
+            categoryId
+        });
+    }
+
+    async function editAccount(expenseId: string, accountId: string) {
+        await appStore.transactions.editExpense({
+            id: expenseId,
+            accountId
+        });
+    }
 </script>
 
-<ul class="expense-table">
-	<li class="table-heading">Category</li>
-	<li class="table-heading">Account</li>
-	<li class="table-heading">Date</li>
-	<li class="table-heading">Amount</li>
+<Table {cells} {columns} {rows}>
+    {#snippet header(label)}
+        <TableHeader>{label}</TableHeader>
+    {/snippet}
+    {#snippet cell({value,columnId,rowId})}
+        {#if columnId === "Category"}
+            <SelectCell
+                {value}
+                onChange={(value) => editCategory(rowId,value)}
+                items={categories}
+            />
+        {:else if columnId === "Account"}
+            <SelectCell
+                {value}
+                onChange={(value) => editAccount(rowId,value)}
+                items={accounts}
+            />
+        {:else}
+            <TableCell>{value}</TableCell>
+        {/if}
+    {/snippet}
 	{#each appStore.expenses as expense (expense.id)}
 		<Expense {expense}/>
 	{/each}
-</ul>
+</Table>
 
-<style>
-	.expense-table{
-		display: grid;
-		grid-template-columns: repeat(4,1fr);
-	}
-
-	.table-heading{
-		color: var(--color-text-muted);
-		padding: 12px;
-	}
-</style>

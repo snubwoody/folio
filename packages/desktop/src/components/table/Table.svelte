@@ -1,0 +1,50 @@
+<!--
+Copyright (C) 2025 Wakunguma Kalimukwa
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
+-->
+<script lang="ts">
+    import type { Snippet } from "svelte";
+    import {type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable} from "$lib/table";
+
+    interface Props{
+        header: Snippet<[string]>,
+        cell: Snippet<[DataCell]>,
+        children: Snippet,
+        columns: DataColumn[],
+        rows: DataRow[],
+        cells: DataCellParams[],
+    }
+
+    const { children,header,cell,columns,rows,cells }: Props = $props();
+    const table = new DataTable(columns,rows,cells);
+</script>
+
+
+<div>
+    {#each columns as column (column.id)}
+        {@render header(column.id)}
+    {/each}
+    {#each table.cells as dataCell,index (index)}
+        {@render cell(dataCell)}
+    {/each}
+    {@render children()}
+</div>
+
+<style>
+    div{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+</style>

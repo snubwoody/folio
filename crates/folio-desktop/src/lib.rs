@@ -30,6 +30,7 @@ use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
 
+// TODO: test this
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
         .title("Folio")

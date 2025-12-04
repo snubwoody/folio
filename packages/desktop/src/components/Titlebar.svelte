@@ -32,7 +32,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     });
 </script>
 
-<!--- Use system defaults on all other platforms -->
+<!--- Use system defaults on other platforms -->
 {#if currentPlatform === "windows"}
     <div class="title-bar">
         <div
@@ -87,10 +87,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             background: var(--color-neutral-50);
         }
     }
+
     img {
         width: 16px;
         height: 16px;
     }
+
     #close-btn {
         &:hover {
             background: #e81123;
