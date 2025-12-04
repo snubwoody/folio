@@ -19,21 +19,29 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { Select } from "bits-ui";
 
     interface Props{
-        items: {value: string, label: string}[]
+        items: {value: string, label: string}[],
+        // TODO: make bindable?
+        value?: string,
+        /**
+         * Callback that runs when the selected value changes.
+         * @param value
+         */
+        onChange?: (value: string) => void,
     }
 
-    const {items}: Props = $props();
+    const {items,value,onChange}: Props = $props();
 
-    let selectedItem = $state(items[0]);
+    let selectedItem = $derived.by(() => items.find(item => item.value === value) ?? items[0]);
     // TODO: add selected style
 
-    const onChange = (value: string) => {
-        console.log(value)
+    const onValueChange = (value: string) => {
+        selectedItem = items.find(item => item.value === value) ?? selectedItem;
+        onChange?.(value)
     }
 </script>
 
 <TableCell>
-    <Select.Root onValueChange={onChange} type="single" name="Combobox">
+    <Select.Root {onValueChange} type="single" name="Combobox">
         <Select.Trigger class="w-full h-full flex justify-start outline-none">
             {selectedItem.label}
         </Select.Trigger>

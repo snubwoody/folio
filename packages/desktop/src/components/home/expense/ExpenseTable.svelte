@@ -19,12 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
     import { appStore } from "$lib/state.svelte";
     import type {DataCell, DataCellParams, DataColumn} from "$lib/table";
-
-    type ColumnType =
-        "Category" |
-        "Account" |
-        "Date" |
-        "Amount";
+    import type {Category} from "$lib/lib";
 
     // TODO: maybe generic
     const columns: DataColumn[] = [
@@ -40,8 +35,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         const cells: DataCellParams[] = [];
         appStore.expenses.forEach(expense => {
             // FIXME allow null values
-            cells.push({value: expense.category?.title ?? ""});
-            cells.push({value: expense.account?.name ?? ""});
+            cells.push({value: expense.category?.id ?? ""});
+            cells.push({value: expense.account?.id ?? ""});
             cells.push({value: expense.date});
             cells.push({value: expense.amount});
         });
@@ -51,6 +46,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const categories = $derived.by(()=>
         appStore.categories.map(category => {return {value: category.id,label: category.title}})
     )
+
+    async function editCategory(item: Category) {
+        // await appStore.transactions.editExpense({
+        //     id: expense.id,
+        //     categoryId: item.id
+        // });
+    }
 </script>
 
 <Table {cells} {columns}>
@@ -59,7 +61,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     {/snippet}
     {#snippet cell({value,columnId})}
         {#if columnId === "Category"}
-            <SelectCell items={categories}></SelectCell>
+            <SelectCell {value} items={categories}></SelectCell>
         {:else}
             <TableCell>{value}</TableCell>
         {/if}
