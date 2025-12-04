@@ -31,7 +31,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const {items,value,onChange}: Props = $props();
 
-    let selectedItem = $derived.by(() => items.find(item => item.value === value) ?? items[0]);
+    let item = items.find(item => item.value === value) ?? items[0];
+    let selectedItem = $state(item);
     // TODO: add selected style
 
     const onValueChange = (value: string) => {

@@ -18,8 +18,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Expense from "./Expense.svelte";
     import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
     import { appStore } from "$lib/state.svelte";
-    import type {DataCell, DataCellParams, DataColumn} from "$lib/table";
-    import type {Category} from "$lib/lib";
+    import type {DataCell, DataCellParams, DataColumn, DataRow} from "$lib/table";
+    import type {Account, Category} from "$lib/lib";
 
     // TODO: maybe generic
     const columns: DataColumn[] = [
@@ -29,7 +29,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {id: "Amount"},
     ];
 
-    // const cells: DataCellParams[] = [];
+    const rows: DataRow[] = $derived.by(()=>
+        appStore.expenses.map(expense => {
+            {return {id: expense.id}}
+        })
+    )
 
     const cells = $derived.by(()=>{
         const cells: DataCellParams[] = [];
@@ -46,22 +50,42 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const categories = $derived.by(()=>
         appStore.categories.map(category => {return {value: category.id,label: category.title}})
     )
+    const accounts = $derived.by(()=>
+        appStore.accounts.map(account => {return {value: account.id,label: account.name}})
+    )
 
-    async function editCategory(item: Category) {
-        // await appStore.transactions.editExpense({
-        //     id: expense.id,
-        //     categoryId: item.id
-        // });
+    async function editCategory(expenseId: string,categoryId: string) {
+        await appStore.transactions.editExpense({
+            id: expenseId,
+            categoryId
+        });
+    }
+
+    async function editAccount(expenseId: string, accountId: string) {
+        await appStore.transactions.editExpense({
+            id: expenseId,
+            accountId
+        });
     }
 </script>
 
-<Table {cells} {columns}>
+<Table {cells} {columns} {rows}>
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
     {/snippet}
-    {#snippet cell({value,columnId})}
+    {#snippet cell({value,columnId,rowId})}
         {#if columnId === "Category"}
-            <SelectCell {value} items={categories}></SelectCell>
+            <SelectCell
+                {value}
+                onChange={(value) => editCategory(rowId,value)}
+                items={categories}
+            />
+        {:else if columnId === "Account"}
+            <SelectCell
+                {value}
+                onChange={(value) => editAccount(rowId,value)}
+                items={accounts}
+            />
         {:else}
             <TableCell>{value}</TableCell>
         {/if}
