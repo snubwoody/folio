@@ -17,8 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import type { Snippet } from "svelte";
     import {type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable} from "$lib/table";
+    import {type HTMLAttributes} from "svelte/elements";
 
-    interface Props{
+    interface Props extends  HTMLAttributes<HTMLDivElement>{
         header: Snippet<[string]>,
         cell: Snippet<[DataCell]>,
         children: Snippet,
@@ -27,12 +28,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         cells: DataCellParams[],
     }
 
-    const { children,header,cell,columns,rows,cells }: Props = $props();
+    const { children,header,cell,columns,rows,cells,...rest }: Props = $props();
     const table = new DataTable(columns,rows,cells);
 </script>
 
 
-<div>
+<div {...rest}>
     {#each columns as column (column.id)}
         {@render header(column.id)}
     {/each}

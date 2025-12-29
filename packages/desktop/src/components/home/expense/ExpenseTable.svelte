@@ -77,7 +77,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<Table {cells} {columns} {rows}>
+<Table aria-label="Expense table" {cells} {columns} {rows}>
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
     {/snippet}

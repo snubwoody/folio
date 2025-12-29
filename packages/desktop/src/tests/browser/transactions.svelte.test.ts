@@ -13,6 +13,7 @@ beforeEach(() => {
 
 test("Expense table heading", async () => {
     const page = render(ExpenseTable);
+    await page.getByText("Expense table").click();
     const items = page.getByRole("listitem").all();
     expect(items[0]).toHaveTextContent("Category");
     expect(items[1]).toHaveTextContent("Account");
