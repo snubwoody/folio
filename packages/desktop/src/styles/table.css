@@ -1,0 +1,27 @@
+
+@layer components {
+    table{
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    th{
+        width: 100%;
+        color: var(--color-text-muted);
+        padding: 12px;
+        text-align: left;
+    }
+
+    td {
+        /*display: flex;*/
+        align-items: center;
+        padding: 12px;
+        border: 2px solid var(--color-neutral-50);
+        transition: all 250ms;
+
+        &:focus-within{
+            border-color: var(--color-border-focus);
+        }
+    }
+}

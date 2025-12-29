@@ -16,44 +16,48 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import Expense from "./Expense.svelte";
-    import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
+    import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte";
-    import type {DataCell, DataCellParams, DataColumn, DataRow} from "$lib/table";
-    import {type Account, type Category, formatDate} from "$lib/lib";
+    import type { DataCell, DataCellParams, DataColumn, DataRow } from "$lib/table";
+    import { type Account, type Category, formatDate } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
 
     // TODO: maybe generic
     const columns: DataColumn[] = [
-        {id: "Category"},
-        {id: "Account"},
-        {id: "Date"},
-        {id: "Amount"},
+        { id: "Category" },
+        { id: "Account" },
+        { id: "Date" },
+        { id: "Amount" }
     ];
 
-    const rows: DataRow[] = $derived.by(()=>
+    const rows: DataRow[] = $derived.by(() =>
         appStore.expenses.map(expense => {
-            {return {id: expense.id}}
+            {return { id: expense.id };}
         })
-    )
+    );
 
-    const cells = $derived.by(()=>{
+    const cells = $derived.by(() => {
         const cells: DataCellParams[] = [];
         appStore.expenses.forEach(expense => {
             // FIXME allow null values
-            cells.push({value: expense.category?.id ?? ""});
-            cells.push({value: expense.account?.id ?? ""});
-            cells.push({value: expense.date});
-            cells.push({value: expense.amount});
+            cells.push({ value: expense.category?.id ?? "" });
+            cells.push({ value: expense.account?.id ?? "" });
+            cells.push({ value: expense.date });
+            cells.push({ value: expense.amount });
         });
         return cells;
-    })
+    });
 
-    const categories = $derived.by(()=>
-        appStore.categories.map(category => {return {value: category.id,label: category.title}})
-    )
-    const accounts = $derived.by(()=>
-        appStore.accounts.map(account => {return {value: account.id,label: account.name}})
-    )
+    const categories = $derived.by(() =>
+        appStore.categories.map(category => {
+            return { value: category.id,label: category.title };
+        })
+    );
+    const accounts = $derived.by(() =>
+        appStore.accounts.map(account => {
+            return { value: account.id,label: account.name };
+        })
+    );
 
     async function editCategory(expenseId: string,categoryId: string) {
         await appStore.transactions.editExpense({
@@ -81,7 +85,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
     {/snippet}
-    {#snippet cell({value,columnId,rowId})}
+    {#snippet cell({ value,columnId,rowId })}
         {#if columnId === "Category"}
             <SelectCell
                 {value}
@@ -95,9 +99,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 items={accounts}
             />
         {:else if columnId === "Date"}
-            <TableCell class="justify-between">
-                <p>{formatDate(value)}</p>
-                <DatePicker onDateChange={(year,month,day)=>updateDate(rowId,year,month,day)} />
+            <TableCell>
+                <div class="flex justify-between items-center">
+                    <p>{formatDate(value)}</p>
+                    <DatePicker onDateChange={(year,month,day) => updateDate(rowId,year,month,day)} />
+                </div>
             </TableCell>
         {:else}
             <TableCell>{value}</TableCell>

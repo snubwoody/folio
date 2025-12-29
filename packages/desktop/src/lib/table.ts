@@ -43,6 +43,14 @@ export class DataTable{
         return this._cells;
     }
 
+    get rows(): DataRow[]{
+        return this._rows;
+    }
+
+    rowCells(id: string): DataCell[]{
+        return this.cells.filter(cell => cell.rowId === id);
+    }
+
     get columns(): DataColumn[]{
         return this._columns;
     }

@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         onChange?: (value: string) => void,
     }
 
-    const {items,value,onChange}: Props = $props();
+    const { items,value,onChange }: Props = $props();
 
     let item = items.find(item => item.value === value) ?? items[0];
     let selectedItem = $state(item);
@@ -37,8 +37,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
-        onChange?.(value)
-    }
+        onChange?.(value);
+    };
 </script>
 
 <TableCell>

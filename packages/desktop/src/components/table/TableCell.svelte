@@ -28,21 +28,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     // TODO: exit on enter or esc
 </script>
 
-<div class={userClass} {...rest}>
+<td class={userClass} {...rest}>
     {@render children()}
-</div>
+</td>
 
 <!--TODO: make the horizontal borders half width?-->
 <style>
-    div {
-        display: flex;
-        align-items: center;
-        padding: 12px;
-        border: 2px solid var(--color-neutral-50);
-        transition: all 250ms;
 
-        &:focus-within{
-            border-color: var(--color-border-focus);
-        }
-    }
 </style>

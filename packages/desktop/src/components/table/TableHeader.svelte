@@ -24,11 +24,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const { children,class: userClass,...rest }: Props = $props();
 </script>
 
-<div class="table-header">{@render children()}</div>
+<th class="table-header">{@render children()}</th>
 
-<style>
-    .table-header{
-        color: var(--color-text-muted);
-        padding: 12px;
-    }
-</style>

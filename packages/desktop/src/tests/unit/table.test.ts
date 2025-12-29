@@ -11,7 +11,7 @@ test("Assign table columns", () => {
         { id: "1" },
         { id: "2" },
         { id: "3" },
-        { id: "4" },
+        { id: "4" }
     ];
 
     const cells: DataCellParams[] = [
@@ -38,7 +38,7 @@ test("Assign table rows", () => {
         { id: "1" },
         { id: "2" },
         { id: "3" },
-        { id: "4" },
+        { id: "4" }
     ];
 
     const cells: DataCellParams[] = [

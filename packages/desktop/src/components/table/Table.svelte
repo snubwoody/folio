@@ -16,8 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import type { Snippet } from "svelte";
-    import {type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable} from "$lib/table";
-    import {type HTMLAttributes} from "svelte/elements";
+    import { type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable } from "$lib/table";
+    import type { HTMLAttributes } from "svelte/elements";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
         header: Snippet<[string]>,
@@ -30,22 +30,26 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { children,header,cell,columns,rows,cells,...rest }: Props = $props();
     const table = new DataTable(columns,rows,cells);
+    console.log(table);
 </script>
 
+<table {...rest}>
+    <thead>
+        <tr>
+            {#each columns as column (column.id)}
+                {@render header(column.id)}
+            {/each}
+        </tr>
+    </thead>
+    <tbody>
+        {#each table.rows as row (row.id)}
+            <tr>
+                {#each table.rowCells(row.id) as dataCell,index (index)}
+                    {@render cell(dataCell)}
+                {/each}
+            </tr>
+        {/each}
+    </tbody>
+    <!--{@render children()}-->
+</table>
 
-<div {...rest}>
-    {#each columns as column (column.id)}
-        {@render header(column.id)}
-    {/each}
-    {#each table.cells as dataCell,index (index)}
-        {@render cell(dataCell)}
-    {/each}
-    {@render children()}
-</div>
-
-<style>
-    div{
-        display: grid;
-        grid-template-columns: repeat(4,1fr);
-    }
-</style>
