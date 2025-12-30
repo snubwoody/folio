@@ -19,8 +19,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte";
     import type { DataCell, DataCellParams, DataColumn, DataRow } from "$lib/table";
-    import { type Account, type Category, formatDate } from "$lib/lib";
+    import {type Account, type Category, formatAmountWithoutSymbol, formatDate, getCurrencySymbol} from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
+    import MoneyCell from "$components/MoneyCell.svelte";
+
+    const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 
     // TODO: make expenses external to make more testable
     const columns: DataColumn[] = [
@@ -79,6 +82,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             date: `${year}-${month}-${day}`
         });
     }
+
+    async function updateAmount(amount: string,id: string) {
+        await appStore.transactions.editExpense({ id, amount });
+    }
 </script>
 
 <Table aria-label="Expense table" {cells} {columns} {rows}>
@@ -106,7 +113,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                 </div>
             </TableCell>
         {:else}
-            <TableCell>{value}</TableCell>
+            {@const formattedAmount = formatAmountWithoutSymbol(value, {
+                currency: appStore.settings.currencyCode
+            })}
+            <MoneyCell {symbol} amount={formattedAmount} onUpdate={(value) => updateAmount(value,rowId)} />
         {/if}
     {/snippet}
 	{#each appStore.expenses as expense (expense.id)}

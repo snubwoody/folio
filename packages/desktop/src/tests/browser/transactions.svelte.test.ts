@@ -4,6 +4,7 @@ import Expense from "$components/home/expense/Expense.svelte";
 import TransactionsSection from "$components/home/TransactionsSection.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
+import type {Account} from "$lib/lib";
 
 beforeEach(() => {
     appStore.budgets = [];
@@ -33,14 +34,22 @@ test("Open add expense form", async () => {
 
 test("Show expenses in expense table", async () => {
     appStore.settings.currencyCode = "CAD";
+    const account: Account= {
+        id: "24",
+        startingBalance: "24",
+        balance: "24",
+        name: "Account"
+    };
+    appStore.accounts = [account];
     appStore.expenses = [
-        { id: "1", amount: "0",date: "2025-10-11",currencyCode: "CAD" },
-        { id: "2", amount: "500",date: "2025-10-10",currencyCode: "CAD" },
-        { id: "3", amount: "24.24",date: "2025-09-01",currencyCode: "CAD" }
+        { id: "1", amount: "0",date: "2025-10-11",currencyCode: "CAD", account },
+        { id: "2", amount: "500",date: "2025-10-10",currencyCode: "CAD",account },
+        { id: "3", amount: "24.24",date: "2025-09-01",currencyCode: "CAD",account }
     ];
     const page = render(ExpenseTable);
-    expect(page.getByText("Oct 10, 2025")).toBeInTheDocument();
-    expect(page.getByText("CA$").first()).toBeInTheDocument();
+    const table = page.getByRole("table");
+    expect(table.getByText("Oct 10, 2025")).toBeInTheDocument();
+    expect(table.getByText("CA$").first()).toBeInTheDocument();
 });
 
 test("Show expense category", async () => {

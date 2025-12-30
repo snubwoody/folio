@@ -44,7 +44,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <TableCell>
     <Select.Root {onValueChange} type="single" name="Combobox">
         <Select.Trigger class="w-full h-full flex justify-start outline-none">
-            {selectedItem.label}
+            {selectedItem?.label ?? ""}
         </Select.Trigger>
         <Select.Portal>
             <Select.Content class="w-[var(--bits-select-anchor-width)] popup-overlay space-y-1">

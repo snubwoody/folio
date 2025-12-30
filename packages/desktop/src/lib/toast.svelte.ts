@@ -88,6 +88,9 @@ export const addToast = (params: ToastParams,timeout: number = 8500) => {
     toastStore.addToast(toast,timeout);
 };
 
+/**
+ * Generates a unique random id.
+ */
 export const randomId = ():string => {
     let id = "";
     // Prevent the extremely low chance of Math.random returning 0

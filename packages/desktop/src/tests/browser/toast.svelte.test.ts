@@ -9,7 +9,7 @@ beforeEach(() => {
 });
 
 test("Show toasts in toast store", async () => {
-    // Set a long timeout to reduce flakyness
+    // Set a long timeout to reduce flakiness
     addToast({ title: "New update available" },20000);
     addToast({ title: "Something went wrong" },20000);
     const page = render(ToastGroup);
