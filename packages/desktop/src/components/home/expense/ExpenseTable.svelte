@@ -22,7 +22,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { type Account, type Category, formatDate } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
 
-    // TODO: maybe generic
+    // TODO: make expenses external to make more testable
     const columns: DataColumn[] = [
         { id: "Category" },
         { id: "Account" },

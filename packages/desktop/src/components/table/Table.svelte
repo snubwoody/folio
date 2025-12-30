@@ -30,10 +30,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { children,header,cell,columns,rows,cells,...rest }: Props = $props();
     const table = new DataTable(columns,rows,cells);
-    console.log(table);
 </script>
 
-<table {...rest}>
+<table class="transaction-table" {...rest}>
     <thead>
         <tr>
             {#each columns as column (column.id)}

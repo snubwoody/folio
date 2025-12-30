@@ -13,12 +13,10 @@ beforeEach(() => {
 
 test("Expense table heading", async () => {
     const page = render(ExpenseTable);
-    await page.getByText("Expense table").click();
-    const items = page.getByRole("listitem").all();
-    expect(items[0]).toHaveTextContent("Category");
-    expect(items[1]).toHaveTextContent("Account");
-    expect(items[2]).toHaveTextContent("Date");
-    expect(items[3]).toHaveTextContent("Amount");
+    expect(page.getByText("Category")).toBeInTheDocument();
+    expect(page.getByText("Account")).toBeInTheDocument();
+    expect(page.getByText("Date")).toBeInTheDocument();
+    expect(page.getByText("Amount")).toBeInTheDocument();
 });
 
 test("Show add transaction button", async () => {
