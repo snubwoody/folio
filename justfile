@@ -1,5 +1,4 @@
-set shell := ["powershell"]
-
+set windows-shell := ["powershell"]
 
 # Create a new sqlite database
 db-create:
