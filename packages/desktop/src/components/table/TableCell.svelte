@@ -31,8 +31,3 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <td class={userClass} {...rest}>
     {@render children()}
 </td>
-
-<!--TODO: make the horizontal borders half width?-->
-<style>
-
-</style>

@@ -18,8 +18,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Expense from "./Expense.svelte";
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte";
-    import type { DataCell, DataCellParams, DataColumn, DataRow } from "$lib/table";
-    import {type Account, type Category, formatAmountWithoutSymbol, formatDate, getCurrencySymbol} from "$lib/lib";
+    import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
+    import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
 

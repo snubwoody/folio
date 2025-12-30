@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     interface Props extends HTMLAttributes<HTMLDivElement>{
         children: Snippet
     }
-    const { children,class: userClass,...rest }: Props = $props();
+    const { children }: Props = $props();
 </script>
 
 <th class="table-header">{@render children()}</th>

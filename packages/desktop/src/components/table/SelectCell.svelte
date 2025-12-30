@@ -50,6 +50,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <Select.Content class="w-[var(--bits-select-anchor-width)] popup-overlay space-y-1">
                 {#each items as item (item.value)}
                     <Select.Item value={item.value} label={item.label} class="select-item">
+                        <!--eslint-disable-next-line svelte/no-useless-children-snippet-->
                         {#snippet children()}
                             {item.label}
                         {/snippet}

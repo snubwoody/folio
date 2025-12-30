@@ -28,7 +28,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         cells: DataCellParams[],
     }
 
-    const { children,header,cell,columns,rows,cells,...rest }: Props = $props();
+    const { header,cell,columns,rows,cells,...rest }: Props = $props();
     const table = new DataTable(columns,rows,cells);
 </script>
 
