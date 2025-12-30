@@ -65,6 +65,9 @@ export type IncomeAnalytic = {
 };
 
 export type Settings = {
+    /**
+     * The global currency code.
+     */
     currencyCode: string;
 };
 

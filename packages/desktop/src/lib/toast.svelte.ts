@@ -48,15 +48,24 @@ export const createToastStore = () => {
     };
 };
 
-export type ToastAction = {
+export interface ToastAction {
+    /**
+     * The text displayed in the button
+     */
     text: string;
+    /**
+     * The event that gets called when the button is clicked.
+     */
     action: () => void;
-};
+}
 
 export interface Toast extends ToastParams {
     id: string;
-};
+}
 
+/**
+ * Parameters for creating a toast
+ */
 export interface ToastParams{
     title: string,
     body?: string,
@@ -64,6 +73,9 @@ export interface ToastParams{
     secondaryAction?: ToastAction,
 }
 
+/**
+ * Global toast store
+ */
 export const toastStore = createToastStore();
 
 /**
@@ -76,6 +88,9 @@ export const addToast = (params: ToastParams,timeout: number = 8500) => {
     toastStore.addToast(toast,timeout);
 };
 
+/**
+ * Generates a unique random id.
+ */
 export const randomId = ():string => {
     let id = "";
     // Prevent the extremely low chance of Math.random returning 0

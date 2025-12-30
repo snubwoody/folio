@@ -15,31 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { parseMoney } from "$lib/lib";
-    import { TableCell } from "$components/table";
+    import type { Snippet } from "svelte";
+    import type { HTMLAttributes } from "svelte/elements";
 
-    type Props = {
-        amount: string,
-        symbol: string,
-        onUpdate: (value:string) => void
-    };
-
-    const { symbol,amount,onUpdate }:Props = $props();
-
-    let currentAmount = $derived(amount);
-    async function updateAmount(){
-        const newAmount = parseMoney(currentAmount);
-        if (!newAmount){
-            currentAmount = amount;
-            return;
-        }
-        onUpdate(newAmount);
+    interface Props extends HTMLAttributes<HTMLDivElement>{
+        children: Snippet
     }
+    const { children }: Props = $props();
 </script>
 
-<TableCell>
-    <div class="flex">
-        <p>{symbol}</p>
-        <input bind:value={currentAmount} onblur={updateAmount} class="outline-none">
-    </div>
-</TableCell>
+<th class="table-header">{@render children()}</th>
+

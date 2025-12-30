@@ -29,6 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectButton from "$components/SelectButton.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
+    import { TableCell } from "$components/table";
 
     type Props = {
         expense: Expense;
@@ -68,7 +69,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<div class="data-cell flex justify-between items-center relative">
+<TableCell class="justify-between relative">
     <p>{expense.category?.title ?? " "}</p>
     <IconButton
         aria-label="Delete expense"
@@ -86,8 +87,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }}
         onChange={editCategory}
     />
-</div>
-<div class="data-cell flex justify-between items-center">
+</TableCell>
+<TableCell class="justify-between">
     <p>{expense.account?.name ?? " "}</p>
     <SelectButton
         items={appStore.accounts}
@@ -96,9 +97,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         }}
         onChange={editAccount}
     />
-</div>
-<li class="data-cell flex items-center justify-between">
+</TableCell>
+<TableCell class="justify-between">
     <p>{formatDate(expense.date)}</p>
     <DatePicker onDateChange={updateDate} />
-</li>
+</TableCell>
 <MoneyCell {symbol} amount={formattedAmount} onUpdate={updateAmount} />

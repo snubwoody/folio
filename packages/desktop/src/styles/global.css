@@ -2,6 +2,7 @@
 @import "./text.css";
 @import "./colors.css";
 @import "./button.css";
+@import "./table.css";
 
 @theme {
     --spacing: 8px;
@@ -58,6 +59,7 @@ body {
 
 /* TODO: move to components layer */
 @utility popup-overlay {
+    background: white;
     max-height: 250px;
     overflow-y: auto;
     box-shadow: var(--shadow-md);
