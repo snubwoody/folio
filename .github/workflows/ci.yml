@@ -48,6 +48,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: Swatinem/rust-cache@v2
+      - uses: extractions/setup-just@v3
       - uses: actions/cache@v4
         id: cache-sqlx
         with:
@@ -61,7 +62,7 @@ jobs:
         if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
         run: cargo install sqlx-cli --force
       - name: Setup database
-        run: pnpm db:setup
+        run: just db-setup
       - name: Run cargo clippy
         run: cargo clippy --all-features --all-targets -- -D warnings
   format:
