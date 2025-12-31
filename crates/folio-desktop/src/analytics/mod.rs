@@ -16,7 +16,10 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{Money, service::{Category, IncomeStream}, db};
+use crate::{
+    Money, db,
+    service::{Category, IncomeStream},
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
@@ -32,10 +35,11 @@ pub struct IncomeAnalytic {
 
 impl SpendingAnalytic {
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let records: Vec<db::Expense> = sqlx::query_as("SELECT * FROM expenses WHERE category_id=$1")
-            .bind(id)
-            .fetch_all(pool)
-            .await?;
+        let records: Vec<db::Expense> =
+            sqlx::query_as("SELECT * FROM expenses WHERE category_id=$1")
+                .bind(id)
+                .fetch_all(pool)
+                .await?;
 
         // Fail the whole operation instead of skipping errors,
         // to avoid false analytics.
@@ -53,10 +57,11 @@ impl SpendingAnalytic {
 
 impl IncomeAnalytic {
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let records: Vec<db::Income> = sqlx::query_as("SELECT * FROM incomes WHERE income_stream=$1")
-            .bind(id)
-            .fetch_all(pool)
-            .await?;
+        let records: Vec<db::Income> =
+            sqlx::query_as("SELECT * FROM incomes WHERE income_stream=$1")
+                .bind(id)
+                .fetch_all(pool)
+                .await?;
 
         // Fail the whole operation instead of skipping errors,
         // to avoid false analytics.

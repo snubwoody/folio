@@ -13,9 +13,9 @@ use chrono::{DateTime, Utc};
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+use crate::db;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
-use crate::db;
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -31,8 +31,8 @@ impl IncomeStream {
         let record: db::IncomeStream = sqlx::query_as(
             "INSERT INTO income_streams(title,created_at) VALUES($1,$2) RETURNING *",
         )
-            .bind(title)
-            .bind(now)
+        .bind(title)
+        .bind(now)
         .fetch_one(pool)
         .await?;
 

@@ -19,7 +19,10 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{Money, service::{Account, IncomeStream}, db};
+use crate::{
+    Money, db,
+    service::{Account, IncomeStream},
+};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -82,12 +85,12 @@ impl Income {
 			VALUES($1,$2,$3,$4,$5,$6)
 			RETURNING *",
         )
-            .bind(amount)
-            .bind(date)
-            .bind(data.account_id)
-            .bind(data.income_stream_id)
-            .bind(data.currency_code)
-            .bind(now)
+        .bind(amount)
+        .bind(date)
+        .bind(data.account_id)
+        .bind(data.income_stream_id)
+        .bind(data.currency_code)
+        .bind(now)
         .fetch_one(pool)
         .await?;
 
@@ -123,11 +126,11 @@ impl Income {
              account_id=$4
             WHERE id=$5",
         )
-            .bind(amount)
-            .bind(date)
-            .bind(income_stream_id)
-            .bind(account_id)
-            .bind(id)
+        .bind(amount)
+        .bind(date)
+        .bind(income_stream_id)
+        .bind(account_id)
+        .bind(id)
         .execute(pool)
         .await?;
         Ok(())
