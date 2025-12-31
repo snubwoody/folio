@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
+import { parse } from "date-fns";
 
 export type Account = {
     id: string;
@@ -84,6 +85,11 @@ export type FeatureRequest = {
 };
 
 export type BugReport = FeatureRequest;
+
+export function parseDate(str: string): Date{
+    const date = parse(str,"dd/MM/yyyy", new Date());
+    return date;
+}
 
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
