@@ -1,11 +1,10 @@
 import { getCurrencySymbol, parseMoney,parseDate } from "$lib/lib";
-import {describe, expect, test} from "vitest";
+import { describe, expect, test } from "vitest";
 
 test("Get currency symbol",() => {
     expect(getCurrencySymbol("USD")).toBe("$");
     expect(getCurrencySymbol("ZAR")).toBe("ZAR");
 });
-
 
 describe("Format money", () => {
     test("plain number",() => {

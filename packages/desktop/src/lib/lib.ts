@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import { parseISO,parse } from "date-fns";
+import { parse } from "date-fns";
 
 export type Account = {
     id: string;
