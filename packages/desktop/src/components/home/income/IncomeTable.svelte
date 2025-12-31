@@ -1,9 +1,8 @@
 <script lang="ts">
-    import Income from "./Income.svelte";
     import { appStore } from "$lib/state.svelte";
-    import type {DataCellParams, DataColumn, DataRow} from "$lib/table";
-    import {SelectCell, Table, TableCell, TableHeader} from "$components/table";
-    import {formatAmountWithoutSymbol, formatDate, getCurrencySymbol} from "$lib/lib";
+    import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
+    import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
+    import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
 
@@ -108,16 +107,3 @@
     {/snippet}
 </Table>
 
-
-
-<style>
-	.expense-table{
-		display: grid;
-		grid-template-columns: repeat(4,1fr);
-	}
-
-	.table-heading{
-		color: var(--color-text-muted);
-		padding: 12px;
-	}
-</style>

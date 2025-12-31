@@ -1,10 +1,9 @@
 import { appStore } from "$lib/state.svelte";
 import ExpenseTable from "$components/home/expense/ExpenseTable.svelte";
-import Expense from "$components/home/expense/Expense.svelte";
 import TransactionsSection from "$components/home/TransactionsSection.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
-import type { Account } from "$lib/lib";
+import type { Account, Expense } from "$lib/lib";
 
 beforeEach(() => {
     appStore.budgets = [];
@@ -53,20 +52,21 @@ test("Show expenses in expense table", async () => {
 });
 
 test("Show expense category", async () => {
-    // TODO: test expense component
     appStore.settings.currencyCode = "CAD";
-    const expense = {
+    const category: Category = {
+        id: "24",
+        title: "Transport",
+        createdAt: "2025-01-01"
+    };
+    const expense: Expense = {
         id: "1",
         amount: "22.24",
         date: "2024-09-09",
-        category: {
-            id: "",
-            title: "Transport",
-            createdAt: ""
-        },
+        category,
         currencyCode: "USD"
     };
-
-    const page = render(Expense,{ expense });
+    appStore.categories = [category];
+    appStore.expenses = [expense];
+    const page = render(ExpenseTable);
     expect(page.getByText("Transport")).toBeInTheDocument();
 });
