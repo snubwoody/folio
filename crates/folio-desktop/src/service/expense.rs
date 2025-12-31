@@ -20,7 +20,7 @@ use sqlx::SqlitePool;
 use tracing::info;
 
 use crate::{
-    Money,
+    Money, db,
     service::{Account, Category},
 };
 
@@ -74,7 +74,7 @@ impl Expense {
         let date = data.date.to_string();
         let amount = data.amount.inner();
 
-        let record = sqlx::query!(
+        let record: db::Expense = sqlx::query_as(
             "INSERT INTO expenses(
 				amount,
 				transaction_date,
@@ -84,14 +84,14 @@ impl Expense {
                  created_at
 			)
 			VALUES($1,$2,$3,$4,$5,$6)
-			RETURNING id",
-            amount,
-            date,
-            data.account_id,
-            data.category_id,
-            data.currency_code,
-            now
+			RETURNING *",
         )
+        .bind(amount)
+        .bind(date)
+        .bind(data.account_id)
+        .bind(data.category_id)
+        .bind(data.currency_code)
+        .bind(now)
         .fetch_one(pool)
         .await?;
 
@@ -122,7 +122,7 @@ impl Expense {
             category_id = Some(category.id)
         }
 
-        sqlx::query!(
+        sqlx::query(
             "
             UPDATE expenses
             SET amount= $1,
@@ -130,19 +130,21 @@ impl Expense {
              category_id=$3,
              account_id=$4
             WHERE id=$5",
-            amount,
-            date,
-            category_id,
-            account_id,
-            id
         )
+        .bind(amount)
+        .bind(date)
+        .bind(category_id)
+        .bind(account_id)
+        .bind(id)
         .execute(pool)
         .await?;
+        
         Ok(())
     }
 
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query!("DELETE FROM expenses WHERE id=$1", id)
+        sqlx::query("DELETE FROM expenses WHERE id=$1")
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -150,7 +152,8 @@ impl Expense {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Result<Self, crate::Error> {
-        let record = sqlx::query!("SELECT * FROM expenses WHERE id=$1", id)
+        let record: db::Expense = sqlx::query_as("SELECT * FROM expenses WHERE id=$1")
+            .bind(id)
             .fetch_one(pool)
             .await?;
 
@@ -182,7 +185,7 @@ impl Expense {
 
 /// Fetch all the expenses from the database.
 pub async fn fetch_expenses(pool: &SqlitePool) -> Result<Vec<Expense>, crate::Error> {
-    let records = sqlx::query!("SELECT id from expenses")
+    let records: Vec<db::Expense> = sqlx::query_as("SELECT id from expenses")
         .fetch_all(pool)
         .await?;
 

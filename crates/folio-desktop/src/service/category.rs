@@ -16,7 +16,7 @@ use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{Money, service::fetch_expenses};
+use crate::{Money, db, service::fetch_expenses};
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -29,19 +29,19 @@ pub struct Category {
 impl Category {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
-        let record = sqlx::query!(
-            "INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING id",
-            title,
-            now
-        )
-        .fetch_one(pool)
-        .await?;
+        let record: db::Category =
+            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
+                .bind(title)
+                .bind(now)
+                .fetch_one(pool)
+                .await?;
 
         Category::from_id(&record.id, pool).await
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", id)
+        let record: db::Category = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
+            .bind(id)
             .fetch_one(pool)
             .await?;
 
@@ -59,7 +59,9 @@ impl Category {
     }
 
     pub async fn edit(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        sqlx::query!("UPDATE categories SET title=$1 WHERE id=$2", title, id)
+        sqlx::query("UPDATE categories SET title=$1 WHERE id=$2")
+            .bind(title)
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -67,7 +69,8 @@ impl Category {
     }
 
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query!("DELETE FROM categories WHERE id=$1", id)
+        sqlx::query("DELETE FROM categories WHERE id=$1")
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -92,7 +95,7 @@ impl Category {
 }
 
 pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate::Error> {
-    let records = sqlx::query!("SELECT id FROM categories")
+    let records: Vec<db::Category> = sqlx::query_as("SELECT * FROM categories")
         .fetch_all(pool)
         .await?;
 
