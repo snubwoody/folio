@@ -3,7 +3,7 @@ import ExpenseTable from "$components/home/ExpenseTable.svelte";
 import TransactionsSection from "$components/home/TransactionsSection.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
-import type { Account, Expense } from "$lib/lib";
+import type { Account, Expense, Category } from "$lib/lib";
 
 beforeEach(() => {
     appStore.budgets = [];
