@@ -22,7 +22,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     interface Props extends  HTMLAttributes<HTMLDivElement>{
         header: Snippet<[string]>,
         cell: Snippet<[DataCell]>,
-        children: Snippet,
         columns: DataColumn[],
         rows: DataRow[],
         cells: DataCellParams[],
@@ -49,6 +48,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             </tr>
         {/each}
     </tbody>
-    <!--{@render children()}-->
 </table>
 

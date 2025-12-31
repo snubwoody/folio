@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import Expense from "./Expense.svelte";
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte";
     import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
@@ -119,8 +118,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <MoneyCell {symbol} amount={formattedAmount} onUpdate={(value) => updateAmount(value,rowId)} />
         {/if}
     {/snippet}
-	{#each appStore.expenses as expense (expense.id)}
-		<Expense {expense}/>
-	{/each}
 </Table>
 
