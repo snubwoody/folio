@@ -1,5 +1,5 @@
 import { appStore } from "$lib/state.svelte";
-import ExpenseTable from "$components/home/expense/ExpenseTable.svelte";
+import ExpenseTable from "$components/home/ExpenseTable.svelte";
 import TransactionsSection from "$components/home/TransactionsSection.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";

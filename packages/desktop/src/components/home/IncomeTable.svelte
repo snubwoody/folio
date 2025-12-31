@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { appStore } from "$lib/state.svelte";
+    import { appStore } from "$lib/state.svelte.js";
     import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";

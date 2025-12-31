@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
-    import { appStore } from "$lib/state.svelte";
+    import { appStore } from "$lib/state.svelte.js";
     import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
     import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
