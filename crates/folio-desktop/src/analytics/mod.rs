@@ -16,10 +16,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{
-    Money,
-    service::{Category, IncomeStream},
-};
+use crate::{Money, service::{Category, IncomeStream}, db};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
@@ -35,7 +32,8 @@ pub struct IncomeAnalytic {
 
 impl SpendingAnalytic {
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let records = sqlx::query!("SELECT amount FROM expenses WHERE category_id=$1", id)
+        let records: Vec<db::Expense> = sqlx::query_as("SELECT * FROM expenses WHERE category_id=$1")
+            .bind(id)
             .fetch_all(pool)
             .await?;
 
@@ -55,7 +53,8 @@ impl SpendingAnalytic {
 
 impl IncomeAnalytic {
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let records = sqlx::query!("SELECT amount FROM incomes WHERE income_stream=$1", id)
+        let records: Vec<db::Income> = sqlx::query_as("SELECT * FROM incomes WHERE income_stream=$1")
+            .bind(id)
             .fetch_all(pool)
             .await?;
 
@@ -74,12 +73,12 @@ impl IncomeAnalytic {
 }
 
 pub async fn spending_analytics(pool: &SqlitePool) -> crate::Result<Vec<SpendingAnalytic>> {
-    let record = sqlx::query!("SELECT id FROM categories")
+    let records: Vec<db::Category> = sqlx::query_as("SELECT * FROM categories")
         .fetch_all(pool)
         .await?;
 
     let mut analytics = vec![];
-    for record in record {
+    for record in records {
         let a = SpendingAnalytic::from_id(&record.id, pool).await?;
         analytics.push(a);
     }
@@ -87,12 +86,12 @@ pub async fn spending_analytics(pool: &SqlitePool) -> crate::Result<Vec<Spending
 }
 
 pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnalytic>> {
-    let record = sqlx::query!("SELECT id FROM income_streams")
+    let records: Vec<db::IncomeStream> = sqlx::query_as("SELECT * FROM income_streams")
         .fetch_all(pool)
         .await?;
 
     let mut analytics = vec![];
-    for record in record {
+    for record in records {
         let a = IncomeAnalytic::from_id(&record.id, pool).await?;
         analytics.push(a);
     }
