@@ -66,10 +66,12 @@ pub async fn set_currency_code(
     settings.set_currency_code(currency)?;
     let code = currency.code();
     // TODO: remove currency_code field
-    sqlx::query!("UPDATE expenses SET currency_code=$1", code)
+    sqlx::query("UPDATE expenses SET currency_code=$1")
+        .bind(code)
         .execute(pool)
         .await?;
-    sqlx::query!("UPDATE incomes SET currency_code=$1", code)
+    sqlx::query("UPDATE incomes SET currency_code=$1")
+        .bind(code)
         .execute(pool)
         .await?;
     Ok(())
