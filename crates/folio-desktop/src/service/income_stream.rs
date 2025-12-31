@@ -15,6 +15,7 @@ use chrono::{DateTime, Utc};
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
+use crate::db;
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -27,11 +28,11 @@ pub struct IncomeStream {
 impl IncomeStream {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
-        let record = sqlx::query!(
-            "INSERT INTO income_streams(title,created_at) VALUES($1,$2) RETURNING id",
-            title,
-            now
+        let record: db::IncomeStream = sqlx::query_as(
+            "INSERT INTO income_streams(title,created_at) VALUES($1,$2) RETURNING *",
         )
+            .bind(title)
+            .bind(now)
         .fetch_one(pool)
         .await?;
 
@@ -39,7 +40,9 @@ impl IncomeStream {
     }
 
     pub async fn edit(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        sqlx::query!("UPDATE income_streams SET title=$1 WHERE id=$2", title, id)
+        sqlx::query("UPDATE income_streams SET title=$1 WHERE id=$2")
+            .bind(title)
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -47,7 +50,8 @@ impl IncomeStream {
     }
 
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query!("DELETE FROM income_streams WHERE id=$1", id)
+        sqlx::query("DELETE FROM income_streams WHERE id=$1")
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -55,7 +59,8 @@ impl IncomeStream {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let record = sqlx::query!("SELECT * FROM income_streams WHERE id=$1", id)
+        let record: db::IncomeStream = sqlx::query_as("SELECT * FROM income_streams WHERE id=$1")
+            .bind(id)
             .fetch_one(pool)
             .await?;
 
@@ -76,7 +81,7 @@ impl IncomeStream {
 
 /// Fetch all the income streams from the database.
 pub async fn fetch_income_streams(pool: &SqlitePool) -> Result<Vec<IncomeStream>, crate::Error> {
-    let records = sqlx::query!("SELECT id FROM income_streams")
+    let records: Vec<db::IncomeStream> = sqlx::query_as("SELECT * FROM income_streams")
         .fetch_all(pool)
         .await?;
 

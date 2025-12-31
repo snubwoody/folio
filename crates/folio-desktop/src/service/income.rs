@@ -19,10 +19,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{
-    Money,
-    service::{Account, IncomeStream},
-};
+use crate::{Money, service::{Account, IncomeStream}, db};
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
@@ -73,7 +70,7 @@ impl Income {
         let now = Utc::now().timestamp();
         let date = data.date.to_string();
 
-        let record = sqlx::query!(
+        let record: db::Income = sqlx::query_as(
             "INSERT INTO incomes(
 				amount,
 				transaction_date,
@@ -83,14 +80,14 @@ impl Income {
                     created_at
 			)
 			VALUES($1,$2,$3,$4,$5,$6)
-			RETURNING id",
-            amount,
-            date,
-            data.account_id,
-            data.income_stream_id,
-            data.currency_code,
-            now,
+			RETURNING *",
         )
+            .bind(amount)
+            .bind(date)
+            .bind(data.account_id)
+            .bind(data.income_stream_id)
+            .bind(data.currency_code)
+            .bind(now)
         .fetch_one(pool)
         .await?;
 
@@ -117,7 +114,7 @@ impl Income {
             income_stream_id = Some(income_stream.id)
         }
 
-        sqlx::query!(
+        sqlx::query(
             "
             UPDATE incomes
             SET amount= $1,
@@ -125,19 +122,20 @@ impl Income {
              income_stream=$3,
              account_id=$4
             WHERE id=$5",
-            amount,
-            date,
-            income_stream_id,
-            account_id,
-            id
         )
+            .bind(amount)
+            .bind(date)
+            .bind(income_stream_id)
+            .bind(account_id)
+            .bind(id)
         .execute(pool)
         .await?;
         Ok(())
     }
 
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query!("DELETE FROM incomes WHERE id=$1", id)
+        sqlx::query("DELETE FROM incomes WHERE id=$1")
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -145,7 +143,8 @@ impl Income {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> Result<Self, crate::Error> {
-        let record = sqlx::query!("SELECT * FROM incomes WHERE id=$1", id)
+        let record: db::Income = sqlx::query_as("SELECT * FROM incomes WHERE id=$1")
+            .bind(id)
             .fetch_one(pool)
             .await?;
 
@@ -176,7 +175,7 @@ impl Income {
 
 /// Fetch all the expenses from the database.
 pub async fn fetch_incomes(pool: &SqlitePool) -> Result<Vec<Income>, crate::Error> {
-    let records = sqlx::query!("SELECT id from incomes")
+    let records: Vec<db::Income> = sqlx::query_as("SELECT * from incomes")
         .fetch_all(pool)
         .await?;
 

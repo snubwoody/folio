@@ -138,7 +138,7 @@ impl Expense {
         .bind(id)
         .execute(pool)
         .await?;
-        
+
         Ok(())
     }
 
@@ -185,7 +185,7 @@ impl Expense {
 
 /// Fetch all the expenses from the database.
 pub async fn fetch_expenses(pool: &SqlitePool) -> Result<Vec<Expense>, crate::Error> {
-    let records: Vec<db::Expense> = sqlx::query_as("SELECT id from expenses")
+    let records: Vec<db::Expense> = sqlx::query_as("SELECT * from expenses")
         .fetch_all(pool)
         .await?;
 
