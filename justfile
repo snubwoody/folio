@@ -21,3 +21,7 @@ dev-desktop:
 # Run the website in dev mode
 dev-web:
     pnpm --filter web dev
+
+lint-web:
+    pnpm eslint . --max-warnings 0
+#    pnpm stylelint **/*.{css,svelte} --max-warnings 0

@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import TransactionTable from "./expense/ExpenseTable.svelte";
-    import IncomeTable from "./income/IncomeTable.svelte";
+    import TransactionTable from "./ExpenseTable.svelte";
+    import IncomeTable from "./IncomeTable.svelte";
     import { SegmentedTabs,TabContent,TabButton,TabBar } from "$components/select";
     import AddTransaction from "$components/home/AddTransaction.svelte";
 

@@ -19,8 +19,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { DatePicker } from "bits-ui";
     import type { DateValue } from "@internationalized/date";
 
+    type DateFn = (year: number, month: number, day: number) => void;
+
     type Props = {
-        onDateChange?: (year: number, month: number, day: number) => void;
+        onDateChange?: DateFn;
     };
 
     const { onDateChange }: Props = $props();
@@ -98,7 +100,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </DatePicker.Root>
 
 <style>
-
     :global([data-calendar-root]) {
         padding: 12px;
         border-radius: var(--radius-md);
