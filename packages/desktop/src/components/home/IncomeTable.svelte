@@ -5,8 +5,8 @@
     import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
-    import {Trash2} from "@lucide/svelte";
-    import {IconButton} from "$components/button";
+    import { Trash2 } from "@lucide/svelte";
+    import { IconButton } from "$components/button";
 
     const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 
@@ -88,7 +88,7 @@
                         <Trash2 />
                     </IconButton>
                 </div>
-            {#each cells as {columnId,rowId,value} }
+            {#each cells as { columnId,rowId,value } (rowId) }
                 {#if columnId === "Income stream"}
                     <SelectCell
                         {value}

@@ -17,12 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte.js";
-    import {IconButton} from "$components/button";
+    import { IconButton } from "$components/button";
     import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
     import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
-    import {Trash2} from "@lucide/svelte";
+    import { Trash2 } from "@lucide/svelte";
 
     const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 
@@ -105,7 +105,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <Trash2 />
                 </IconButton>
             </div>
-        {#each cells as {columnId,rowId,value} }
+        {#each cells as { columnId,rowId,value } (rowId) }
             {#if columnId === "Category"}
                 <SelectCell
                     {value}

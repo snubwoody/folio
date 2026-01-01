@@ -19,10 +19,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable } from "$lib/table";
     import type { HTMLAttributes } from "svelte/elements";
 
-    interface TableRowParams {
-        row: DataRow,
-        cells: DataCell[]
-    }
     interface Props extends  HTMLAttributes<HTMLDivElement>{
         header: Snippet<[string]>,
         row: Snippet<[DataRow,DataCell[]]>,

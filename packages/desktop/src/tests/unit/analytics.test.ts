@@ -118,7 +118,6 @@ test("Filter by current month",() => {
 });
 
 test("Parse date only strings",() => {
-
     const categories: Category[] = [
         { id: "1",title: "Rent",createdAt: "" }
     ];
@@ -130,21 +129,21 @@ test("Parse date only strings",() => {
 
     const expenses: Expense[] = [
         {
-            id: "",
+            id: "today",
             amount: "200",
             currencyCode: "CAD",
             date: today,
             category: categories[0]
         },
         {
-            id: "",
+            id: "past",
             amount: "250",
             currencyCode: "CAD",
             date: past,
             category: categories[0]
         },
         {
-            id: "",
+            id: "future",
             amount: "10.25",
             currencyCode: "CAD",
             date: future,
