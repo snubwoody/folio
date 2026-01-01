@@ -1,23 +1,39 @@
+@theme {
+    --table-*: initial;
+}
 
-@layer components {
+@layer utilities {
     .transaction-table{
         width: 100%;
         border-collapse: collapse;
         table-layout: fixed;
 
 
-        th{
-            width: 100%;
+        .table-header{
             color: var(--color-text-muted);
-            padding: 12px;
-            text-align: left;
         }
 
-        td {
+        .table-row,.table-header{
+            display: flex;
+        }
+
+        .table-row {
+            position: relative;
+            align-items: center;
+        }
+
+        .table-row-actions {
+            position: absolute;
+            left: -24px;
+        }
+
+        .table-cell {
             align-items: center;
             padding: 12px;
             border: 2px solid var(--color-neutral-50);
             transition: all 250ms;
+            height: 100%;
+            flex: 1;
 
             &:focus-within{
                 border-color: var(--color-border-focus);

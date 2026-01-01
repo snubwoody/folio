@@ -35,6 +35,7 @@ export const calculateSpendingAnalytics = (expenses: Expense[] ): SpendingAnalyt
                 return false;
             }
         });
+    console.log(expenses);
     const categories = new Set<string>();
     expenses.forEach(expense => {
         categories.add(expense.category!.id);
