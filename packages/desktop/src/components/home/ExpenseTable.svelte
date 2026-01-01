@@ -17,10 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
     import { appStore } from "$lib/state.svelte.js";
+    import {IconButton} from "$components/button";
     import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
     import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
+    import {Trash2} from "@lucide/svelte";
 
     const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 
@@ -91,32 +93,46 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
     {/snippet}
-    {#snippet cell({ value,columnId,rowId })}
-        {#if columnId === "Category"}
-            <SelectCell
-                {value}
-                onChange={(value) => editCategory(rowId,value)}
-                items={categories}
-            />
-        {:else if columnId === "Account"}
-            <SelectCell
-                {value}
-                onChange={(value) => editAccount(rowId,value)}
-                items={accounts}
-            />
-        {:else if columnId === "Date"}
-            <TableCell>
-                <div class="flex justify-between items-center">
-                    <p>{formatDate(value)}</p>
-                    <DatePicker onDateChange={(year,month,day) => updateDate(rowId,year,month,day)} />
-                </div>
-            </TableCell>
-        {:else}
-            {@const formattedAmount = formatAmountWithoutSymbol(value, {
-                currency: appStore.settings.currencyCode
-            })}
-            <MoneyCell {symbol} amount={formattedAmount} onUpdate={(value) => updateAmount(value,rowId)} />
-        {/if}
+    {#snippet row(row,cells)}
+        <div class="table-row">
+            <div class="table-row-actions opacity-0 hover:opacity-100">
+                <IconButton
+                    aria-label="Delete expense"
+                    size="small"
+                    variant="ghost"
+                    onclick={() => appStore.transactions.deleteExpense(row.id)}
+                >
+                    <Trash2 />
+                </IconButton>
+            </div>
+        {#each cells as {columnId,rowId,value} }
+            {#if columnId === "Category"}
+                <SelectCell
+                    {value}
+                    onChange={(value) => editCategory(rowId,value)}
+                    items={categories}
+                />
+            {:else if columnId === "Account"}
+                <SelectCell
+                    {value}
+                    onChange={(value) => editAccount(rowId,value)}
+                    items={accounts}
+                />
+            {:else if columnId === "Date"}
+                <TableCell>
+                    <div class="flex justify-between items-center">
+                        <p>{formatDate(value)}</p>
+                        <DatePicker onDateChange={(year,month,day) => updateDate(rowId,year,month,day)} />
+                    </div>
+                </TableCell>
+            {:else}
+                {@const formattedAmount = formatAmountWithoutSymbol(value, {
+                    currency: appStore.settings.currencyCode
+                })}
+                <MoneyCell {symbol} amount={formattedAmount} onUpdate={(value) => updateAmount(value,rowId)} />
+            {/if}
+        {/each}
+        </div>
     {/snippet}
 </Table>
 

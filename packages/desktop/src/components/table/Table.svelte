@@ -19,34 +19,32 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable } from "$lib/table";
     import type { HTMLAttributes } from "svelte/elements";
 
+    interface TableRowParams {
+        row: DataRow,
+        cells: DataCell[]
+    }
     interface Props extends  HTMLAttributes<HTMLDivElement>{
         header: Snippet<[string]>,
-        cell: Snippet<[DataCell]>,
+        row: Snippet<[DataRow,DataCell[]]>,
         columns: DataColumn[],
         rows: DataRow[],
         cells: DataCellParams[],
     }
 
-    const { header,cell,columns,rows,cells,...rest }: Props = $props();
+    const { header,row,columns,rows,cells,...rest }: Props = $props();
     const table = new DataTable(columns,rows,cells);
 </script>
 
-<table class="transaction-table" {...rest}>
-    <thead>
-        <tr>
-            {#each columns as column (column.id)}
-                {@render header(column.id)}
-            {/each}
-        </tr>
-    </thead>
-    <tbody>
-        {#each table.rows as row (row.id)}
-            <tr>
-                {#each table.rowCells(row.id) as dataCell,index (index)}
-                    {@render cell(dataCell)}
-                {/each}
-            </tr>
+<div class="transaction-table" {...rest}>
+    <div class="table-header">
+        {#each columns as column (column.id)}
+            {@render header(column.id)}
         {/each}
-    </tbody>
-</table>
+    </div>
+    <div class="table-body">
+        {#each table.rows as tableRow (tableRow.id)}
+            {@render row(tableRow,table.rowCells(tableRow.id))}
+        {/each}
+    </div>
+</div>
 
