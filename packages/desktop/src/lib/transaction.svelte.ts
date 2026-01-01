@@ -74,6 +74,24 @@ export class TransactionStore{
         await this.#rootStore.load();
     }
 
+    /**
+     * Duplicates an expense.
+     * @param id - The expense id
+     */
+    async duplicateExpense(id: string){
+        const expense = this.#rootStore.expenses.find(expense => expense.id === id);
+        if (!expense) return;
+        const ops: CreateExpense = {
+            amount: expense.amount,
+            accountId: expense.account?.id,
+            currencyCode: expense.currencyCode,
+            date: expense.date,
+            categoryId: expense.category?.id
+        };
+        await this.addExpense(ops);
+        await this.#rootStore.load();
+    }
+
     async deleteExpense(id: string){
         try{
             await invoke("delete_expense",{ id });
