@@ -1,17 +1,10 @@
-use folio_lib::{
-    State,
-    service::{Account, fetch_accounts},
-};
-use folio_qt::{DB_POOL, RUNTIME, db_pool};
-use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method, qt_property, qt_signal};
+use crate::{RUNTIME, db_pool};
+use folio_lib::service::{Account, fetch_accounts};
+use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QString, QVariant};
-use std::{
-    collections::HashMap,
-    fs,
-    path::{Path, PathBuf},
-};
+use std::collections::HashMap;
 
-#[derive(QObject)]
+#[derive(QObject, Default)]
 pub struct AccountListModel {
     base: qt_base_class!(trait QAbstractListModel),
     load_accounts: qt_method!(fn(&mut self)),
@@ -20,7 +13,7 @@ pub struct AccountListModel {
 
 impl AccountListModel {
     pub async fn new(pool: &sqlx::SqlitePool) -> Self {
-        let accounts = RUNTIME.block_on(async { fetch_accounts(&pool).await.unwrap() });
+        let accounts = RUNTIME.block_on(async { fetch_accounts(pool).await.unwrap() });
         Self {
             accounts,
             ..Default::default()
@@ -31,16 +24,6 @@ impl AccountListModel {
         self.begin_reset_model();
         self.accounts = RUNTIME.block_on(async { fetch_accounts(db_pool()).await.unwrap() });
         self.end_reset_model();
-    }
-}
-
-impl Default for AccountListModel {
-    fn default() -> Self {
-        Self {
-            base: Default::default(),
-            load_accounts: Default::default(),
-            accounts: Default::default(),
-        }
     }
 }
 
@@ -67,7 +50,7 @@ impl QAbstractListModel for AccountListModel {
         }
     }
 
-    fn role_names(&self) -> std::collections::HashMap<i32, qttypes::QByteArray> {
+    fn role_names(&self) -> HashMap<i32, QByteArray> {
         let mut roles = HashMap::new();
         roles.insert(257, QByteArray::from("name"));
         roles.insert(258, QByteArray::from("balance"));

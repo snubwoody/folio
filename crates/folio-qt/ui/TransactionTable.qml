@@ -12,51 +12,20 @@ TableView {
     rowSpacing: 1
     clip: true
 
-    model: TableModel {
-        TableModelColumn {
-            display: "Category"
+    model: TransactionTableModel {
+        id: transactionListModel
+        Component.onCompleted: {
+            load_expenses()
         }
-        TableModelColumn {
-            display: "Account"
-        }
-        TableModelColumn {
-            display: "Date"
-        }
-        TableModelColumn {
-            display: "Amount"
-        }
-
-        rows: [
-            {
-                "Category": "Finances",
-                "Account": "RBC Savings",
-                "Date": "2025-12-12",
-                "Amount": "40.00",
-            },
-            {
-                "Category": "Finances",
-                "Account": "RBC Savings",
-                "Date": "2025-12-12",
-                "Amount": "40.00",
-            },
-            {
-                "Category": "Finances",
-                "Account": "RBC Savings",
-                "Date": "2025-12-12",
-                "Amount": "40.00",
-            },
-
-        ]
     }
 
     delegate: Rectangle {
-        implicitWidth: 100
+        implicitWidth: TableView.view.width / 4
         implicitHeight: 50
         border.width: 1
 
         Text {
             text: display
-            anchors.centerIn: parent
         }
     }
 }

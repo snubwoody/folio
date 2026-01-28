@@ -15,6 +15,6 @@ ApplicationWindow {
     ColumnLayout {
         anchors.fill: parent
         AccountList {}
-        TransactionTable{}
+        TransactionTable {}
     }
 }

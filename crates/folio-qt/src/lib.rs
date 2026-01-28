@@ -1,7 +1,10 @@
 use sqlx::SqlitePool;
 use std::sync::{LazyLock, OnceLock};
 use tokio::runtime::Runtime;
+pub mod account_list;
+pub mod transaction_table;
 
+/// Global async runtime
 pub static RUNTIME: LazyLock<Runtime> =
     LazyLock::new(|| Runtime::new().expect("failed to create runtime"));
 
