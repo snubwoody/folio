@@ -115,6 +115,35 @@ pub async fn init_database() -> Result<SqlitePool> {
     Ok(pool)
 }
 
+pub fn init_database_sync(runtime: &tokio::runtime::Runtime) -> Result<SqlitePool> {
+    #[cfg(debug_assertions)]
+    let opts = SqliteConnectOptions::new()
+        .filename("./data.db") // FIXME
+        .create_if_missing(true);
+
+    #[cfg(not(debug_assertions))]
+    let opts = {
+        let data_dir = get_data_dir().unwrap();
+        std::fs::create_dir_all(&data_dir)?;
+        let data_dir = data_dir.join("data.db");
+
+        SqliteConnectOptions::new()
+            .filename(data_dir)
+            .create_if_missing(true)
+    };
+
+    // sqlx::migrate!().run(&pool).await?;
+    let pool = runtime.block_on(async move {
+        let pool = SqlitePool::connect_with(opts).await.unwrap();
+
+        sqlx::migrate!().run(&pool).await.unwrap();
+        pool
+    });
+    // let pool = SqlitePool::connect_with(opts).await?;
+
+    Ok(pool)
+}
+
 /// Get the platform specific data directory.
 pub fn get_data_dir() -> Option<PathBuf> {
     // TODO: add message at startup on fail

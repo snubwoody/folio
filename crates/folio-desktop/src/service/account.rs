@@ -42,7 +42,7 @@ impl EditAccount {
     }
 }
 
-#[derive(Debug, Serialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Clone, PartialEq,Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub id: String,

@@ -1574,9 +1574,12 @@ dependencies = [
  "cpp",
  "cpp_build",
  "cstr",
+ "folio",
  "qmetaobject",
  "qttypes",
  "semver",
+ "sqlx",
+ "tokio",
 ]
 
 [[package]]

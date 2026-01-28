@@ -9,6 +9,7 @@ edition = "2024"
 [workspace.dependencies]
 # Workspace crates
 folio-core = {path = "crates/folio-core"}
+folio = {path = "crates/folio-desktop"}
 
 # Tauri
 tauri = { version = "2.8.5", features = ["config-toml", "test"] }

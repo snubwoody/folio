@@ -4,6 +4,9 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+folio.workspace = true
+sqlx.workspace = true
+tokio.workspace = true
 qttypes = { version = "0.2", features = [ "qtquick" ] }
 cpp = "0.5"
 qmetaobject = "0.2.10"
