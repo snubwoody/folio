@@ -1,0 +1,14 @@
+[package]
+name = "folio-qt"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+qttypes = { version = "0.2", features = [ "qtquick" ] }
+cpp = "0.5"
+qmetaobject = "0.2.10"
+cstr = "0.2.12"
+
+[build-dependencies]
+cpp_build = "0.5"
+semver = "1.0.27"

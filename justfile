@@ -25,3 +25,25 @@ dev-web:
 lint-web:
     pnpm eslint . --max-warnings 0
 #    pnpm stylelint **/*.{css,svelte} --max-warnings 0
+
+# Format code
+[windows]
+fmt:
+    cargo fmt
+    qmlformat -i (Get-ChildItem crates/folio-qt/ui/*.qml).FullName
+
+[unix]
+fmt:
+    cargo fmt
+    qmlformat -i qml/*.qml
+
+# Check formatting
+[windows]
+fmt-check:
+    cargo fmt --all --check
+    qmlformat (Get-ChildItem crates/folio-qt/ui/*.qml).FullName
+
+[unix]
+fmt-check:
+    cargo fmt --all --check
+    qmlformat qml/*.qml
