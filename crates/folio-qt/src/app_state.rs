@@ -7,6 +7,7 @@ use qmetaobject::{QAbstractTableModel, QObject, qt_base_class, qt_method, qt_pro
 use qttypes::{QByteArray, QModelIndex, QString, QVariant};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::str::FromStr;
 
 // TODO: create a GlobalQObject
 /// Global app state
@@ -16,7 +17,7 @@ pub struct AppState {
     accounts: qt_property!(RefCell<AccountListModel>),
     transactions: qt_property!(RefCell<TransactionTableModel>),
     load_data: qt_method!(fn(&mut self)),
-    add_account: qt_method!(fn(&mut self)),
+    add_account: qt_method!(fn(&mut self,name: QString,balance: QString)),
 }
 
 impl AppState {
@@ -24,9 +25,11 @@ impl AppState {
         self.accounts.borrow_mut().load_accounts();
     }
 
-    pub fn add_account(&mut self) {
+    pub fn add_account(&mut self, name: QString, balance: QString) {
+        let name = name.to_string();
+        let balance = Money::from_str(balance.to_string().as_str()).unwrap_or_default();
         RUNTIME.block_on(async {
-            folio_lib::service::Account::create("New account", Money::from_unscaled(200), db_pool())
+            folio_lib::service::Account::create(&name, balance, db_pool())
                 .await
                 .unwrap()
         });

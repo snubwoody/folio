@@ -23,11 +23,6 @@ impl AccountListModel {
     pub fn load_accounts(&mut self) {
         self.begin_reset_model();
         self.accounts = RUNTIME.block_on(async { fetch_accounts(db_pool()).await.unwrap() });
-        dbg!(&self.accounts);
-        self.accounts.push(Account {
-            name: "Name".into(),
-            ..Default::default()
-        });
         self.end_reset_model();
     }
 
