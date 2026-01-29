@@ -12,22 +12,17 @@ ApplicationWindow {
     title: "Folio"
     color: "white"
 
+    // Declare global app state
     AppState {
         id: appState
         Component.onCompleted: {
-            load_data()
+            load_data();
         }
     }
 
     ColumnLayout {
         anchors.fill: parent
-        AccountList {}
-        Button {
-            text: "New"
-            onClicked: {
-                console.log("Clicked!")
-            }
-        }
+        AccountPanel {}
         TransactionTable {}
     }
 }

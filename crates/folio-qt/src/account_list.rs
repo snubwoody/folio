@@ -1,6 +1,6 @@
 use crate::{RUNTIME, db_pool};
 use folio_lib::service::{Account, fetch_accounts};
-use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method, QMetaType};
+use qmetaobject::{QAbstractListModel, QMetaType, QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QString, QVariant};
 use std::collections::HashMap;
 
@@ -10,7 +10,6 @@ pub struct AccountListModel {
     load_accounts: qt_method!(fn(&mut self)),
     accounts: Vec<Account>,
 }
-
 
 impl AccountListModel {
     pub fn new() -> Self {
@@ -25,7 +24,19 @@ impl AccountListModel {
         self.begin_reset_model();
         self.accounts = RUNTIME.block_on(async { fetch_accounts(db_pool()).await.unwrap() });
         dbg!(&self.accounts);
-        self.accounts.push(Account{name:"Name".into(),..Default::default()});
+        self.accounts.push(Account {
+            name: "Name".into(),
+            ..Default::default()
+        });
+        self.end_reset_model();
+    }
+
+    pub fn add_account(&mut self) {
+        self.begin_reset_model();
+        self.accounts.push(Account {
+            name: "New account".into(),
+            ..Default::default()
+        });
         self.end_reset_model();
     }
 }

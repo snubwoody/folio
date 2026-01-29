@@ -1,9 +1,8 @@
-use std::collections::HashMap;
-use crate::{db_pool, RUNTIME};
+use crate::{RUNTIME, db_pool};
 use folio_lib::service::{Expense, fetch_expenses};
 use qmetaobject::{QAbstractTableModel, QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QModelIndex, QString, QVariant};
-
+use std::collections::HashMap;
 
 #[derive(QObject, Default)]
 pub struct TransactionTableModel {
@@ -18,9 +17,9 @@ impl TransactionTableModel {
     pub fn load_expenses(&mut self) {
         self.begin_reset_model();
         self.expenses = RUNTIME.block_on(async {
-        fetch_expenses(db_pool())
-            .await
-            .expect("failed to load expenses")
+            fetch_expenses(db_pool())
+                .await
+                .expect("failed to load expenses")
         });
         self.end_reset_model();
     }
@@ -44,7 +43,7 @@ impl QAbstractTableModel for TransactionTableModel {
         // TODO: create a macro for this
         const DISPLAY_ROLE: i32 = 0;
 
-        if role != DISPLAY_ROLE{
+        if role != DISPLAY_ROLE {
             return QVariant::default();
         }
 
@@ -61,5 +60,4 @@ impl QAbstractTableModel for TransactionTableModel {
             _ => QVariant::default(),
         }
     }
-
 }

@@ -32,8 +32,7 @@ fn main() {
     {
         config.flag(f);
     }
-    config.include(&qt_include_path)
-        .build("src/lib.rs");
+    config.include(&qt_include_path).build("src/lib.rs");
 
     for minor in 7..=15 {
         if qt_version >= Version::new(5, minor, 0) {
@@ -47,6 +46,4 @@ fn main() {
     }
 }
 
-fn copy_qml(){
-
-}
+fn copy_qml() {}
