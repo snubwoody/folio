@@ -7,15 +7,10 @@ import App 1.0
 ListView {
     Layout.fillWidth: true
     Layout.preferredHeight: 200
-    // anchors.fill: parent
     orientation: ListView.Horizontal
     spacing: 12
-    model: AccountListModel {
-        id: accountListModel
-        Component.onCompleted: {
-            load_accounts();
-        }
-    }
+
+    model: appState.accounts
 
     delegate: Pane {
         padding: 12

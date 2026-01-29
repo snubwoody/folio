@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>ui/App.qml</file>
-        <file>ui/components/</file>
-    </qresource>
-</RCC>

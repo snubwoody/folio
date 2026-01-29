@@ -12,6 +12,13 @@ ApplicationWindow {
     title: "Folio"
     color: "white"
 
+    AppState {
+        id: appState
+        Component.onCompleted: {
+            load_data()
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
         AccountList {}

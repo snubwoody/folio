@@ -1,6 +1,6 @@
 use crate::{RUNTIME, db_pool};
 use folio_lib::service::{Account, fetch_accounts};
-use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method};
+use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method, QMetaType};
 use qttypes::{QByteArray, QString, QVariant};
 use std::collections::HashMap;
 
@@ -11,9 +11,10 @@ pub struct AccountListModel {
     accounts: Vec<Account>,
 }
 
+
 impl AccountListModel {
-    pub async fn new(pool: &sqlx::SqlitePool) -> Self {
-        let accounts = RUNTIME.block_on(async { fetch_accounts(pool).await.unwrap() });
+    pub fn new() -> Self {
+        let accounts = RUNTIME.block_on(async { fetch_accounts(db_pool()).await.unwrap() });
         Self {
             accounts,
             ..Default::default()

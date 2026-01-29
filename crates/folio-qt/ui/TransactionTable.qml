@@ -12,12 +12,7 @@ TableView {
     rowSpacing: 1
     clip: true
 
-    model: TransactionTableModel {
-        id: transactionListModel
-        Component.onCompleted: {
-            load_expenses()
-        }
-    }
+    model: appState.transactions
 
     delegate: Rectangle {
         implicitWidth: TableView.view.width / 4

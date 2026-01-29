@@ -4,6 +4,7 @@ use folio_lib::init_database;
 use folio_qt::{DB_POOL, RUNTIME, account_list::AccountListModel};
 use qmetaobject::{QmlEngine, qml_register_type, qrc};
 use qttypes::{QString, QUrl};
+use folio_qt::app_state::AppState;
 use folio_qt::transaction_table::TransactionTableModel;
 
 fn main() {
@@ -33,6 +34,12 @@ fn main() {
         1,
         0,
         cstr::cstr!("TransactionTableModel"),
+    );
+    qml_register_type::<AppState>(
+        cstr::cstr!("App"),
+        1,
+        0,
+        cstr::cstr!("AppState"),
     );
 
     engine.load_url(QUrl::from(QString::from("qrc:/ui/App.qml")));
