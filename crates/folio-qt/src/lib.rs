@@ -3,6 +3,7 @@ use std::sync::{LazyLock, OnceLock};
 use tokio::runtime::Runtime;
 pub mod account_list;
 pub mod transaction_table;
+pub mod app_state;
 
 /// Global async runtime
 pub static RUNTIME: LazyLock<Runtime> =

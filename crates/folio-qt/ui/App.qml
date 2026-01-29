@@ -15,6 +15,12 @@ ApplicationWindow {
     ColumnLayout {
         anchors.fill: parent
         AccountList {}
+        Button {
+            text: "New"
+            onClicked: {
+                console.log("Clicked!")
+            }
+        }
         TransactionTable {}
     }
 }
