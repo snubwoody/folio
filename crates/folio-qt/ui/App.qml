@@ -20,9 +20,11 @@ ApplicationWindow {
         }
     }
 
-    ColumnLayout {
-        anchors.fill: parent
-        AccountPanel {}
-        TransactionTable {}
+    RowLayout {
+        ColumnLayout {
+            anchors.fill: parent
+            AccountPanel {}
+            TransactionPanel {}
+        }
     }
 }

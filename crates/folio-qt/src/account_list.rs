@@ -1,6 +1,6 @@
 use crate::{RUNTIME, db_pool};
 use folio_lib::service::{Account, fetch_accounts};
-use qmetaobject::{QAbstractListModel, QMetaType, QObject, qt_base_class, qt_method};
+use qmetaobject::{QAbstractListModel,QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QString, QVariant};
 use std::collections::HashMap;
 
