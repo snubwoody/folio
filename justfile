@@ -47,3 +47,11 @@ fmt-check:
 fmt-check:
     cargo fmt --all --check
     qmlformat qml/*.qml
+
+
+# Switch to release
+bundle:
+    cp target/debug/folio-qt.exe build/folio-qt.exe
+    windeployqt build/folio-qt.exe
+#    mkdir build
+#    cargo packager

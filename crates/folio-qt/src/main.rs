@@ -15,6 +15,8 @@ fn register_qml() {
         "ui/TransactionTable.qml",
         "ui/AccountPanel.qml",
         "ui/TransactionPanel.qml",
+        "ui/Colors.qml",
+        "ui/qmldir",
     });
     qml();
 

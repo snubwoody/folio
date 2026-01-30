@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.FluentWinUI3
 import Qt.labs.qmlmodels
 import App 1.0
+import "."
 
 ApplicationWindow {
     visible: true
@@ -20,11 +21,9 @@ ApplicationWindow {
         }
     }
 
-    RowLayout {
-        ColumnLayout {
-            anchors.fill: parent
-            AccountPanel {}
-            TransactionPanel {}
-        }
+    ColumnLayout {
+        anchors.fill: parent
+        AccountPanel {}
+        TransactionPanel {}
     }
 }

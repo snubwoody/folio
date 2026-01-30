@@ -17,7 +17,7 @@ pub struct AppState {
     accounts: qt_property!(RefCell<AccountListModel>),
     transactions: qt_property!(RefCell<TransactionTableModel>),
     load_data: qt_method!(fn(&mut self)),
-    add_account: qt_method!(fn(&mut self,name: QString,balance: QString)),
+    add_account: qt_method!(fn(&mut self, name: QString, balance: QString)),
 }
 
 impl AppState {

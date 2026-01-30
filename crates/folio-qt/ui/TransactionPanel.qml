@@ -22,23 +22,23 @@ ColumnLayout {
             }
         }
 
-        Popup{
+        Popup {
             id: newAccountPopup
             // x: newAccountButton.x + newAccountPopup.width - width
             // y: newAccountButton.y + newAccountButton.height + 12
             // width: 500
             ColumnLayout {
                 anchors.fill: parent
-                TextField{
+                TextField {
                     id: accountName
                     Layout.fillWidth: true
                     placeholderText: "Enter account name"
                 }
-                TextField{
+                TextField {
                     id: accountBalance
                     Layout.fillWidth: true
                     placeholderText: "Enter starting balance"
-                    validator: DoubleValidator{
+                    validator: DoubleValidator {
                         bottom: 0.00
                         decimals: 2
                         notation: DoubleValidator.StandardNotation
@@ -49,7 +49,7 @@ ColumnLayout {
                     text: "Add expense"
                     Layout.fillWidth: true
                     onClicked: {
-                        appState.add_account(accountName.text,accountBalance.text)
+                        appState.add_account(accountName.text, accountBalance.text);
                         accountName.text = "";
                         accountBalance.text = "";
                         newAccountPopup.close();
@@ -58,5 +58,4 @@ ColumnLayout {
             }
         }
     }
-
 }
