@@ -1,5 +1,5 @@
 use crate::{RUNTIME, db_pool};
-use folio_lib::service::{Expense, fetch_expenses};
+use folio_lib::service::{Account, Expense, fetch_expenses};
 use qmetaobject::{QAbstractTableModel, QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QModelIndex, QString, QVariant};
 use std::collections::HashMap;
@@ -21,6 +21,16 @@ impl TransactionTableModel {
                 .await
                 .expect("failed to load expenses")
         });
+        self.expenses.push(Expense::default());
+        self.expenses.push(Expense::default());
+        self.expenses.push(Expense {
+            account: Some(Account {
+                name: "Account".to_string(),
+                ..Default::default()
+            }),
+            ..Default::default()
+        });
+        dbg!(&self.expenses);
         self.end_reset_model();
     }
 }

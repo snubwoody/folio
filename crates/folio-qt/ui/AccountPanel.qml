@@ -4,8 +4,11 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.FluentWinUI3
 import Qt.labs.qmlmodels
 import App 1.0
+import  "."
 
 ColumnLayout {
+    Layout.fillWidth: true
+    Layout.fillHeight: false
     RowLayout {
         Text {
             text: "Accounts"
@@ -13,11 +16,18 @@ ColumnLayout {
         Item {
             Layout.fillWidth: true
         }
+
+        IconButton {
+            source: "qrc:/icons/plus.svg"
+            onClick: {
+                newAccountPopup.open()
+            }
+        }
+
         Button {
             id: newAccountButton
             text: "New"
             onClicked: {
-                // appState.add_account();
                 newAccountPopup.open();
             }
         }

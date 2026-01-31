@@ -23,6 +23,7 @@ pub struct AppState {
 impl AppState {
     pub fn load_data(&mut self) {
         self.accounts.borrow_mut().load_accounts();
+        self.transactions.borrow_mut().load_expenses();
     }
 
     pub fn add_account(&mut self, name: QString, balance: QString) {

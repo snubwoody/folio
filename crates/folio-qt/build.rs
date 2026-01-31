@@ -45,4 +45,3 @@ fn main() {
         minor += 1;
     }
 }
-

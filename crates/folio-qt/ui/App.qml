@@ -1,7 +1,6 @@
 import QtQuick 6.10
 import QtQuick.Controls 6.10
 import QtQuick.Layouts 1.3
-// import QtQuick.Controls.FluentWinUI3
 import Qt.labs.qmlmodels
 import QtQuick.Controls.Basic
 import App 1.0
@@ -22,16 +21,10 @@ ApplicationWindow {
         }
     }
 
-    // Usage:
-    IconButton {
-        source: "qrc:/icons/plus.svg"
-        // iconSize: 20
-        // onClicked: deleteItem()
-    }
-
     ColumnLayout {
         anchors.fill: parent
-        AccountPanel {}
+        anchors.margins: 32
+        // AccountPanel {}
         TransactionPanel {}
     }
 }

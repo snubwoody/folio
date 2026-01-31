@@ -6,6 +6,8 @@ import Qt.labs.qmlmodels
 import App 1.0
 
 ColumnLayout {
+    Layout.fillWidth: true
+    Layout.fillHeight: true
     RowLayout {
         Text {
             text: "Transactions"
@@ -58,4 +60,6 @@ ColumnLayout {
             }
         }
     }
+
+    TransactionTable{}
 }
