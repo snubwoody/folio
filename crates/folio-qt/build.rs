@@ -46,4 +46,3 @@ fn main() {
     }
 }
 
-fn copy_qml() {}

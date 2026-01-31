@@ -8,6 +8,7 @@ use qmetaobject::{QmlEngine, qml_register_type, qrc};
 use qttypes::{QString, QUrl};
 
 fn register_qml() {
+    // TODO: find someway to include all the icons
     // Embed the qml
     qrc!(pub qml, "/" {
         "ui/App.qml",
@@ -16,7 +17,11 @@ fn register_qml() {
         "ui/AccountPanel.qml",
         "ui/TransactionPanel.qml",
         "ui/Colors.qml",
+        "ui/IconButton.qml",
+
         "ui/qmldir",
+
+        "icons/plus.svg",
     });
     qml();
 
@@ -34,6 +39,7 @@ fn register_qml() {
     );
     qml_register_type::<AppState>(cstr::cstr!("App"), 1, 0, cstr::cstr!("AppState"));
 }
+
 fn main() {
     let pool = RUNTIME.block_on(async {
         init_database()

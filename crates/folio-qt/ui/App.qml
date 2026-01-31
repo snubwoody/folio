@@ -21,6 +21,13 @@ ApplicationWindow {
         }
     }
 
+    // Usage:
+    IconButton {
+        source: "qrc:/icons/plus.svg"
+        // iconSize: 20
+        // onClicked: deleteItem()
+    }
+
     ColumnLayout {
         anchors.fill: parent
         AccountPanel {}
