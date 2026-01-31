@@ -24,7 +24,7 @@ ApplicationWindow {
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 32
-        // AccountPanel {}
+        AccountPanel {}
         TransactionPanel {}
     }
 }

@@ -9,6 +9,7 @@ use qttypes::{QString, QUrl};
 
 fn register_qml() {
     // TODO: find someway to include all the icons
+    // TODO: log to file, don't log personal info
     // Embed the qml
     qrc!(pub qml, "/" {
         "ui/App.qml",

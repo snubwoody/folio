@@ -30,7 +30,7 @@ impl TransactionTableModel {
             }),
             ..Default::default()
         });
-        dbg!(&self.expenses);
+        // dbg!(&self.expenses);
         self.end_reset_model();
     }
 }
@@ -45,6 +45,8 @@ impl QAbstractTableModel for TransactionTableModel {
     }
 
     fn data(&self, index: QModelIndex, role: i32) -> QVariant {
+        dbg!(&role);
+
         if index.row() >= self.expenses.len() as i32 || index.column() >= Self::COLUMN_COUNT {
             return QVariant::default();
         }
@@ -52,6 +54,8 @@ impl QAbstractTableModel for TransactionTableModel {
         let expense = &self.expenses[index.row() as usize];
         // TODO: create a macro for this
         const DISPLAY_ROLE: i32 = 0;
+
+        dbg!(&role);
 
         if role != DISPLAY_ROLE {
             return QVariant::default();

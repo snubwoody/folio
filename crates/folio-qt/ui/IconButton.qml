@@ -21,12 +21,13 @@ Button {
     onClicked: onClick
 
     background: Rectangle {
-        color: control. pressed ? Colors.neutral100 : control.hovered ? Colors.neutral50 : Colors.white
+        color: control.pressed ? Colors.neutral100 : control.hovered ? Colors.neutral50 : Colors.white
         radius: 4
 
         Behavior on color {
-            ColorAnimation { duration: 150 }
+            ColorAnimation {
+                duration: 150
+            }
         }
     }
 }
-

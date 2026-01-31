@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.FluentWinUI3
 import Qt.labs.qmlmodels
 import App 1.0
-import  "."
+import "."
 
 ColumnLayout {
     Layout.fillWidth: true
@@ -20,7 +20,7 @@ ColumnLayout {
         IconButton {
             source: "qrc:/icons/plus.svg"
             onClick: {
-                newAccountPopup.open()
+                newAccountPopup.open();
             }
         }
 

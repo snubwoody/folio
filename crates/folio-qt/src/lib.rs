@@ -4,6 +4,7 @@ use tokio::runtime::Runtime;
 pub mod account_list;
 pub mod app_state;
 pub mod transaction_table;
+// TODO: add compile step for qml
 
 /// Global async runtime
 pub static RUNTIME: LazyLock<Runtime> =

@@ -61,5 +61,5 @@ ColumnLayout {
         }
     }
 
-    TransactionTable{}
+    TransactionTable {}
 }
