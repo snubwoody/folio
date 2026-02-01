@@ -6,11 +6,11 @@ import QtQuick.Controls.Basic
 Button {
     id: control
 
-    signal click()
+    signal click
+
     property string source: ""
     property int size: 20
     property color color: Colors.textBody
-    // property var onClick: function () {}
 
     width: size + 8
     height: size + 8
@@ -20,6 +20,7 @@ Button {
     icon.height: size
     icon.color: color
 
+    // TODO: just use this externally
     onClicked: control.click()
 
     background: Rectangle {

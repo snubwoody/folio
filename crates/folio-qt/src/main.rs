@@ -1,13 +1,12 @@
 use std::env::current_exe;
 // TODO: change windows subsystem on release
 use folio_lib::init_database;
-use folio_qt::register_qml;
 use folio_qt::app_state::AppState;
+use folio_qt::register_qml;
 use folio_qt::transaction_table::TransactionTableModel;
 use folio_qt::{DB_POOL, RUNTIME, account_list::AccountListModel};
 use qmetaobject::{QQuickStyle, QmlEngine, qml_register_type, qrc};
 use qttypes::{QString, QUrl};
-
 
 fn main() {
     unsafe {

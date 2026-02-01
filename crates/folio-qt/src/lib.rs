@@ -1,10 +1,10 @@
-use sqlx::SqlitePool;
-use std::sync::{LazyLock, OnceLock};
-use qmetaobject::{qml_register_type, qrc};
-use tokio::runtime::Runtime;
 use crate::account_list::AccountListModel;
 use crate::app_state::AppState;
 use crate::transaction_table::TransactionTableModel;
+use qmetaobject::{qml_register_type, qrc};
+use sqlx::SqlitePool;
+use std::sync::{LazyLock, OnceLock};
+use tokio::runtime::Runtime;
 
 pub mod account_list;
 pub mod app_state;
@@ -37,6 +37,9 @@ pub fn register_qml() {
         "ui/IconButton.qml",
         "ui/HomePage.qml",
         "ui/AnalyticsPage.qml",
+        "ui/SettingsPanel.qml",
+        "ui/SettingsTabButton.qml",
+        "ui/GeneralSettingsPanel.qml",
 
         "ui/qmldir",
 
@@ -61,4 +64,3 @@ pub fn register_qml() {
     );
     qml_register_type::<AppState>(cstr::cstr!("App"), 1, 0, cstr::cstr!("AppState"));
 }
-

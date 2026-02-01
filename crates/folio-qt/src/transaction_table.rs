@@ -79,12 +79,12 @@ impl QAbstractTableModel for TransactionTableModel {
     fn role_names(&self) -> HashMap<i32, QByteArray> {
         // TODO: define global roles
         let mut roles = HashMap::new();
-        roles.insert(0,QByteArray::from("display"));
-        roles.insert(2,QByteArray::from("edit"));
-        roles.insert(400,QByteArray::from("category"));
-        roles.insert(401,QByteArray::from("account"));
-        roles.insert(402,QByteArray::from("date"));
-        roles.insert(403,QByteArray::from("amount"));
+        roles.insert(0, QByteArray::from("display"));
+        roles.insert(2, QByteArray::from("edit"));
+        roles.insert(400, QByteArray::from("category"));
+        roles.insert(401, QByteArray::from("account"));
+        roles.insert(402, QByteArray::from("date"));
+        roles.insert(403, QByteArray::from("amount"));
         roles
     }
 }

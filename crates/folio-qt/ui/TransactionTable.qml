@@ -21,18 +21,15 @@ TableView {
         // TODO: add tab select
         background: Rectangle {
             color: "white"
-            border.color:
-                table.selectionModel &&
-                table.selectionModel.isSelected(model.index) ? Colors.borderFocus : Colors.borderNeutral
+            border.color: table.selectionModel && table.selectionModel.isSelected(model.index) ? Colors.borderFocus : Colors.borderNeutral
             border.width: 1
         }
 
         contentItem: TextField {
             text: display
             onEditingFinished: {
-                console.log("Done")
+                console.log("Done");
             }
         }
     }
 }
-

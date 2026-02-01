@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import App 1.0
 import "."
 
+// TODO: set font
 ApplicationWindow {
     visible: true
     width: 800
@@ -32,22 +33,24 @@ ApplicationWindow {
                 IconButton {
                     source: "qrc:/icons/home.svg"
                     onClick: {
-                        stackLayout.currentIndex = 0
+                        stackLayout.currentIndex = 0;
                     }
                 }
                 IconButton {
                     source: "qrc:/icons/bar-chart.svg"
                     onClick: stackLayout.currentIndex = 1
-
                 }
                 Item {
                     Layout.fillHeight: true
                 }
                 IconButton {
                     source: "qrc:/icons/settings.svg"
+                    onClick: settingsPopup.open()
                 }
             }
         }
+
+        SettingsPanel {id: settingsPopup}
 
         StackLayout {
             id: stackLayout
