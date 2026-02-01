@@ -1,8 +1,6 @@
 import QtQuick 6.10
 import QtQuick.Controls 6.10
 import QtQuick.Layouts 1.3
-import Qt.labs.qmlmodels
-import QtQuick.Controls.Basic
 import App 1.0
 import "."
 
@@ -21,10 +19,42 @@ ApplicationWindow {
         }
     }
 
-    ColumnLayout {
+    RowLayout {
         anchors.fill: parent
-        anchors.margins: 32
-        AccountPanel {}
-        TransactionPanel {}
+
+        Rectangle {
+            width: 60
+            Layout.fillHeight: true
+            color: Colors.neutral25
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                IconButton {
+                    source: "qrc:/icons/home.svg"
+                    onClick: {
+                        stackLayout.currentIndex = 0
+                    }
+                }
+                IconButton {
+                    source: "qrc:/icons/bar-chart.svg"
+                    onClick: stackLayout.currentIndex = 1
+
+                }
+                Item {
+                    Layout.fillHeight: true
+                }
+                IconButton {
+                    source: "qrc:/icons/settings.svg"
+                }
+            }
+        }
+
+        StackLayout {
+            id: stackLayout
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            HomePage {}
+            AnalyticsPage {}
+        }
     }
 }

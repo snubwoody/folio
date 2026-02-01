@@ -19,9 +19,8 @@ ColumnLayout {
 
         IconButton {
             source: "qrc:/icons/plus.svg"
-            onClick: {
-                newAccountPopup.open();
-            }
+            onClick: newAccountPopup.open();
+
         }
 
         Button {

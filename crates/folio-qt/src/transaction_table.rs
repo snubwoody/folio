@@ -54,10 +54,11 @@ impl QAbstractTableModel for TransactionTableModel {
         let expense = &self.expenses[index.row() as usize];
         // TODO: create a macro for this
         const DISPLAY_ROLE: i32 = 0;
+        const EDIT_ROLE: i32 = 2;
 
         dbg!(&role);
 
-        if role != DISPLAY_ROLE {
+        if role != DISPLAY_ROLE || role != EDIT_ROLE {
             return QVariant::default();
         }
 
@@ -73,5 +74,17 @@ impl QAbstractTableModel for TransactionTableModel {
             3 => QVariant::from(QString::from(amount)),
             _ => QVariant::default(),
         }
+    }
+
+    fn role_names(&self) -> HashMap<i32, QByteArray> {
+        // TODO: define global roles
+        let mut roles = HashMap::new();
+        roles.insert(0,QByteArray::from("display"));
+        roles.insert(2,QByteArray::from("edit"));
+        roles.insert(400,QByteArray::from("category"));
+        roles.insert(401,QByteArray::from("account"));
+        roles.insert(402,QByteArray::from("date"));
+        roles.insert(403,QByteArray::from("amount"));
+        roles
     }
 }
