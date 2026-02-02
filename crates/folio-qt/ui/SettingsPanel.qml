@@ -17,27 +17,30 @@ Popup {
     }
 
     RowLayout {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         ColumnLayout {
+            Layout.fillHeight: true
             ButtonGroup {
                 id: tabs
             }
             SettingsTabButton {
-                Layout.fillWidth: true
                 id: generalBtn
+                Layout.fillWidth: true
                 checked: true
                 text: "General"
                 group: tabs
             }
             SettingsTabButton {
-                Layout.fillWidth: true
                 id: categoriesBtn
+                Layout.fillWidth: true
                 checked: true
                 text: "Categories"
                 group: tabs
             }
             SettingsTabButton {
-                Layout.fillWidth: true
                 id: streamsBtn
+                Layout.fillWidth: true
                 checked: true
                 text: "Income streams"
                 group: tabs
@@ -48,13 +51,15 @@ Popup {
             Layout.fillWidth: true
             Layout.fillHeight: true
             currentIndex: {
-                if (categoriesBtn.checked) return 1
-                if (streamsBtn.checked) return 2
-                return 0
+                if (categoriesBtn.checked)
+                    return 1;
+                if (streamsBtn.checked)
+                    return 2;
+                return 0;
             }
-            Text {text:"General"}
-            Text {text:"Categories"}
-            Text {text:"Income streams"}
+            GeneralSettingsPanel {}
+            CategoriesSettingsPanel {}
+            StreamsSettingsPanel {}
         }
     }
 }

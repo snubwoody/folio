@@ -40,6 +40,8 @@ pub fn register_qml() {
         "ui/SettingsPanel.qml",
         "ui/SettingsTabButton.qml",
         "ui/GeneralSettingsPanel.qml",
+        "ui/CategoriesSettingsPanel.qml",
+        "ui/StreamsSettingsPanel.qml",
 
         "ui/qmldir",
 

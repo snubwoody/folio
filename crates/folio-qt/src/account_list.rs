@@ -12,6 +12,10 @@ pub struct AccountListModel {
 }
 
 impl AccountListModel {
+    const NAME_ROLE: i32 = qmetaobject::USER_ROLE + 1;
+    const BALANCE_ROLE: i32 = Self::NAME_ROLE + 1;
+    const STARTING_BALANCE_ROLE: i32 = Self::BALANCE_ROLE + 1;
+
     pub fn new() -> Self {
         let accounts = RUNTIME.block_on(async { fetch_accounts(db_pool()).await.unwrap() });
         Self {
@@ -49,20 +53,24 @@ impl QAbstractListModel for AccountListModel {
 
         let account = &self.accounts[index];
 
-        const NAME_ROLE: i32 = 257;
-        const BALANCE_ROLE: i32 = 258;
-
         match role {
-            NAME_ROLE => QString::from(account.name.clone()).into(),
-            BALANCE_ROLE => QString::from(account.balance.to_string()).into(),
+            Self::NAME_ROLE => QString::from(account.name.clone()).into(),
+            Self::BALANCE_ROLE => QString::from(account.balance.to_string()).into(),
+            Self::STARTING_BALANCE_ROLE => {
+                QString::from(account.starting_balance.to_string()).into()
+            }
             _ => QVariant::default(),
         }
     }
 
     fn role_names(&self) -> HashMap<i32, QByteArray> {
         let mut roles = HashMap::new();
-        roles.insert(257, QByteArray::from("name"));
-        roles.insert(258, QByteArray::from("balance"));
+        roles.insert(Self::NAME_ROLE, QByteArray::from("name"));
+        roles.insert(Self::BALANCE_ROLE, QByteArray::from("balance"));
+        roles.insert(
+            Self::STARTING_BALANCE_ROLE,
+            QByteArray::from("startingBalance"),
+        );
         roles
     }
 }
