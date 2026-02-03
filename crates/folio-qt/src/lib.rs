@@ -65,6 +65,7 @@ pub fn register_qml() {
         "icons/bar-chart.svg",
         "icons/home.svg",
         "icons/delete.svg",
+        "icons/trash-2.svg",
         "icons/settings.svg",
     });
     qml();

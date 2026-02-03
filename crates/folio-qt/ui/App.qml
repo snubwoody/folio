@@ -27,6 +27,13 @@ ApplicationWindow {
         }
     }
 
+    CategoryListModel {
+        id: categoryModel
+        Component.onCompleted: {
+            load_data();
+        }
+    }
+
     RowLayout {
         anchors.fill: parent
 

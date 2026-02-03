@@ -17,9 +17,9 @@ Popup {
     }
 
     RowLayout {
-        Layout.fillWidth: true
-        Layout.fillHeight: true
+        anchors.fill: parent
         ColumnLayout {
+            // TODO: add max width
             Layout.fillHeight: true
             ButtonGroup {
                 id: tabs
