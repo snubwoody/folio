@@ -25,6 +25,19 @@ pub fn db_pool() -> &'static SqlitePool {
     DB_POOL.get().expect("database pool not initialised")
 }
 
+macro_rules! register_type {
+    ($($t:ty),* $(,)?) => {
+        $(
+            qml_register_type::<$t>(
+                cstr::cstr!("App"),
+                1,
+                0,
+                cstr::cstr!($t),
+            );
+        )*
+    };
+}
+
 pub fn register_qml() {
     // TODO: find someway to include all the icons
     // TODO: log to file, don't log personal info
@@ -51,29 +64,16 @@ pub fn register_qml() {
         "icons/plus.svg",
         "icons/bar-chart.svg",
         "icons/home.svg",
+        "icons/delete.svg",
         "icons/settings.svg",
     });
     qml();
 
-    qml_register_type::<AccountListModel>(
-        cstr::cstr!("App"),
-        1,
-        0,
-        cstr::cstr!("AccountListModel"),
-    );
-    qml_register_type::<TransactionTableModel>(
-        cstr::cstr!("App"),
-        1,
-        0,
-        cstr::cstr!("TransactionTableModel"),
-    );
-    qml_register_type::<CategoryListModel>(
-        cstr::cstr!("App"),
-        1,
-        0,
-        cstr::cstr!("CategoryListModel"),
-    );
-    qml_register_type::<AppState>(cstr::cstr!("App"), 1, 0, cstr::cstr!("AppState"));
+    register_type!{
+        AccountListModel,
+        TransactionTableModel,
+        CategoryListModel,
+        AppState
+    }
 }
-
 
