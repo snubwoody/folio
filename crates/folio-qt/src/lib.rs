@@ -5,8 +5,10 @@ use qmetaobject::{qml_register_type, qrc};
 use sqlx::SqlitePool;
 use std::sync::{LazyLock, OnceLock};
 use tokio::runtime::Runtime;
+use crate::category_list::CategoryListModel;
 
 pub mod account_list;
+pub mod category_list;
 pub mod app_state;
 pub mod transaction_table;
 // TODO: add compile step for qml
@@ -65,5 +67,13 @@ pub fn register_qml() {
         0,
         cstr::cstr!("TransactionTableModel"),
     );
+    qml_register_type::<CategoryListModel>(
+        cstr::cstr!("App"),
+        1,
+        0,
+        cstr::cstr!("CategoryListModel"),
+    );
     qml_register_type::<AppState>(cstr::cstr!("App"), 1, 0, cstr::cstr!("AppState"));
 }
+
+
