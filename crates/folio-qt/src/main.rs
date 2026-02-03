@@ -1,14 +1,14 @@
-use std::env::current_exe;
 // TODO: change windows subsystem on release
 use folio_lib::init_database;
 use folio_qt::register_qml;
-use folio_qt::{DB_POOL, RUNTIME, account_list::AccountListModel};
-use qmetaobject::{QQuickStyle, QmlEngine, qml_register_type, qrc};
+use folio_qt::{DB_POOL, RUNTIME};
+use qmetaobject::{QQuickStyle, QmlEngine};
 use qttypes::{QString, QUrl};
 
+// TODO: log to files
 fn main() {
     tracing_subscriber::fmt::init();
-    
+
     unsafe {
         std::env::set_var("QT_QUICK_CONTROLS_STYLE", "Basic");
     }

@@ -39,46 +39,27 @@ ColumnLayout {
             spacing: 16
             model: accountModel
             delegate: Column {
-                TextField {
+                EditableText{
                     id: textField
                     text: name
-                    color: Colors.textBody
-                    onEditingFinished: {
-                        console.log("Hi");
-                        // FIXME: editing twice
-                        accountModel.edit_account(id,textField.text,startingBalance);
-                        // appState.load_data();
-                        textField.focus = false;
-                    }
-                    background: Rectangle {
-                        Rectangle {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.bottom: parent.bottom
-                            height: 1
-                            color: textField.activeFocus ? Colors.neutral950 : "transparent"
-                            opacity: textField.activeFocus ? 1 : 0.0
-
-                            Behavior on height {
-                                NumberAnimation {
-                                    duration: 120
-                                }
-                            }
-                            Behavior on opacity {
-                                NumberAnimation {
-                                    duration: 120
-                                }
-                            }
-                        }
-                    }
+                    onEdited: accountModel.edit_account(id, textField.text, startingBalance);
                 }
                 Row {
                     spacing: 4
                     Text {
                         text: "Starting balance"
                     }
-                    Text {
+                    EditableText{
+                        // FIXME: broken
+                        id: balanceField
                         text: startingBalance
+                        validator: DoubleValidator {
+                            bottom: 0.00
+                            decimals: 2
+                            notation: DoubleValidator.StandardNotation
+                        }
+                        inputMethodHints: Qt.ImhFormattedNumbersOnly
+                        onEdited: accountModel.edit_account(id, textField.text, balanceField.text);
                     }
                 }
             }

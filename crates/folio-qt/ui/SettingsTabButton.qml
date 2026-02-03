@@ -5,9 +5,8 @@ import App 1.0
 import "."
 
 TabButton {
-    property ButtonGroup group: null
-
     id: control
+    property ButtonGroup group: null
     ButtonGroup.group: group
     checked: selected
     leftPadding: 12
@@ -19,10 +18,7 @@ TabButton {
         color: control.checked ? Colors.white : Colors.textBody
     }
     background: Rectangle {
-        color:
-            control.checked ? Colors.surfacePrimary :
-                control.hovered ? Colors.neutral50 : "transparent"
+        color: control.checked ? Colors.surfacePrimary : control.hovered ? Colors.neutral50 : "transparent"
         radius: 4
     }
 }
-

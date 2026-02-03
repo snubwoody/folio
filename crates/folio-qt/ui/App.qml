@@ -57,7 +57,9 @@ ApplicationWindow {
             }
         }
 
-        SettingsPanel {id: settingsPopup}
+        SettingsPanel {
+            id: settingsPopup
+        }
 
         StackLayout {
             id: stackLayout

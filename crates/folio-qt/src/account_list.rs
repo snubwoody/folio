@@ -1,10 +1,10 @@
 use crate::{RUNTIME, db_pool};
-use folio_lib::service::{Account, fetch_accounts, EditAccount};
+use folio_lib::Money;
+use folio_lib::service::{Account, EditAccount, fetch_accounts};
 use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QString, QVariant};
 use std::collections::HashMap;
 use std::str::FromStr;
-use folio_lib::Money;
 
 #[derive(QObject, Default)]
 pub struct AccountListModel {
@@ -44,27 +44,18 @@ impl AccountListModel {
     pub fn edit_account(&mut self, id: QString, name: QString, balance: QString) {
         let name = name.to_string();
         let balance = Money::from_str(&balance.to_string()).ok();
-        let opts = EditAccount{
+        let opts = EditAccount {
             name: Some(name),
-            starting_balance: balance
+            starting_balance: balance,
         };
-        RUNTIME.block_on(
-            async {
-                // FIXME: probably shouldn't panic
-                let result = Account::edit(&*id.to_string(), opts, db_pool()).await;
-                if let Err(err) = result{
-                    tracing::error!("Error: {}",err);
-                }
+        RUNTIME.block_on(async {
+            // FIXME: printing error even though is working
+            let result = Account::edit(&id.to_string(), opts, db_pool()).await;
+            if let Err(err) = result {
+                tracing::error!("Error: {}", err);
             }
-        );
-        // {
-        //     let mut accounts = self.accounts.borrow_mut();
-        //     accounts.load_accounts();
-        // }
-        // self.accounts.borrow_mut().add_account();
-        // self.accounts.borrow_mut().load_accounts();
+        });
 
-        // self.load_data();
         self.load_accounts();
     }
 
