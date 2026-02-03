@@ -1580,6 +1580,8 @@ dependencies = [
  "semver",
  "sqlx",
  "tokio",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]

@@ -65,4 +65,5 @@ pub fn register_qml() {
         cstr::cstr!("TransactionTableModel"),
     );
     qml_register_type::<AppState>(cstr::cstr!("App"), 1, 0, cstr::cstr!("AppState"));
+    
 }

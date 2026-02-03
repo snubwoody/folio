@@ -22,8 +22,8 @@ use sqlx::SqlitePool;
 #[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct EditAccount {
-    name: Option<String>,
-    starting_balance: Option<Money>,
+    pub name: Option<String>,
+    pub starting_balance: Option<Money>,
 }
 
 impl EditAccount {

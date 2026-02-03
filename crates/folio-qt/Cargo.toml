@@ -8,6 +8,8 @@ folio.workspace = true
 sqlx.workspace = true
 tokio.workspace = true
 qttypes = { version = "0.2", features = [ "qtquick" ] }
+tracing-subscriber.workspace = true
+tracing.workspace = true
 cpp = "0.5"
 qmetaobject = "0.2.10"
 cstr = "0.2.12"

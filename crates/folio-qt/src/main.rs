@@ -7,6 +7,8 @@ use qmetaobject::{QQuickStyle, QmlEngine, qml_register_type, qrc};
 use qttypes::{QString, QUrl};
 
 fn main() {
+    tracing_subscriber::fmt::init();
+    
     unsafe {
         std::env::set_var("QT_QUICK_CONTROLS_STYLE", "Basic");
     }

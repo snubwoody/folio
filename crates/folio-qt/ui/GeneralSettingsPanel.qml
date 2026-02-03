@@ -37,7 +37,7 @@ ColumnLayout {
             Layout.fillHeight: true
             Layout.preferredHeight: 500
             spacing: 16
-            model: appState.accounts
+            model: accountModel
             delegate: Column {
                 TextField {
                     id: textField
@@ -45,7 +45,9 @@ ColumnLayout {
                     color: Colors.textBody
                     onEditingFinished: {
                         console.log("Hi");
-                        // TODO: editing twice
+                        // FIXME: editing twice
+                        accountModel.edit_account(id,textField.text,startingBalance);
+                        // appState.load_data();
                         textField.focus = false;
                     }
                     background: Rectangle {

@@ -20,6 +20,13 @@ ApplicationWindow {
         }
     }
 
+    AccountListModel {
+        id: accountModel
+        Component.onCompleted: {
+            load_accounts();
+        }
+    }
+
     RowLayout {
         anchors.fill: parent
 

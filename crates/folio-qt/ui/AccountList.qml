@@ -10,7 +10,7 @@ ListView {
     orientation: ListView.Horizontal
     spacing: 12
 
-    model: appState.accounts
+    model: accountModel
 
     delegate: Pane {
         padding: 12
