@@ -10,6 +10,7 @@ use std::str::FromStr;
 pub struct CategoryListModel {
     base: qt_base_class!(trait QAbstractListModel),
     load_data: qt_method!(fn(&mut self)),
+    delete_category: qt_method!(fn(&mut self, id: String)),
     // add_account: qt_method!(fn(&mut self, name: QString, balance: QString)),
     // edit_account: qt_method!(fn(&mut self, id: QString, name: QString, balance: QString)),
     categories: Vec<Category>,
@@ -34,6 +35,11 @@ impl CategoryListModel {
         self.begin_reset_model();
         self.categories = RUNTIME.block_on(async { fetch_categories(db_pool()).await.unwrap() });
         self.end_reset_model();
+    }
+
+    fn delete_category(&mut self,id: String){
+        RUNTIME.block_on(async { Category::delete(&id,db_pool()).await.unwrap() });
+        self.load_data();
     }
 
     // pub fn edit_account(&mut self, id: QString, name: QString, balance: QString) {

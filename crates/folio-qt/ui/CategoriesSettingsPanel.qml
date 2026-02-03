@@ -48,6 +48,7 @@ ColumnLayout {
 
             IconButton {
                 source: "qrc:/icons/trash-2.svg"
+                onClick: categoryModel.delete_category(id)
             }
         }
 
