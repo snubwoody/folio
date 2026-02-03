@@ -1,18 +1,16 @@
 use crate::{RUNTIME, db_pool};
-use folio_lib::Money;
 use folio_lib::service::{Account, EditAccount, fetch_accounts, fetch_categories, Category};
 use qmetaobject::{QAbstractListModel, QObject, qt_base_class, qt_method};
 use qttypes::{QByteArray, QString, QVariant};
 use std::collections::HashMap;
-use std::str::FromStr;
 
 #[derive(QObject, Default)]
 pub struct CategoryListModel {
     base: qt_base_class!(trait QAbstractListModel),
     load_data: qt_method!(fn(&mut self)),
     delete_category: qt_method!(fn(&mut self, id: String)),
-    // add_account: qt_method!(fn(&mut self, name: QString, balance: QString)),
-    // edit_account: qt_method!(fn(&mut self, id: QString, name: QString, balance: QString)),
+    edit_category: qt_method!(fn(&mut self, id: String,title: String)),
+    add_category: qt_method!(fn(&mut self)),
     categories: Vec<Category>,
 }
 
@@ -42,23 +40,16 @@ impl CategoryListModel {
         self.load_data();
     }
 
-    // pub fn edit_account(&mut self, id: QString, name: QString, balance: QString) {
-    //     let name = name.to_string();
-    //     let balance = Money::from_str(&balance.to_string()).ok();
-    //     let opts = EditAccount {
-    //         name: Some(name),
-    //         starting_balance: balance,
-    //     };
-    //     RUNTIME.block_on(async {
-    //         // FIXME: printing error even though is working
-    //         let result = Account::edit(&id.to_string(), opts, db_pool()).await;
-    //         if let Err(err) = result {
-    //             tracing::error!("Error: {}", err);
-    //         }
-    //     });
-    //
-    //     self.load_accounts();
-    // }
+    fn edit_category(&mut self,id: String,title: String){
+        RUNTIME.block_on(async { Category::edit(&id,&title,db_pool()).await.unwrap() });
+        self.load_data();
+    }
+
+    fn add_category(&mut self){
+        RUNTIME.block_on(async { Category::create("New category",db_pool()).await.unwrap() });
+        self.load_data();
+    }
+
 
     // pub fn add_account(&mut self, name: QString, balance: QString) {
     //     let name = name.to_string();

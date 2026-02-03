@@ -24,6 +24,7 @@ ColumnLayout {
         }
         IconButton {
             source: "qrc:/icons/plus.svg"
+            onClick: categoryModel.add_category()
         }
     }
 
@@ -38,14 +39,16 @@ ColumnLayout {
         model: categoryModel
 
         delegate: RowLayout {
+            // FIXME: warning: TypeError: Cannot read property 'width' of null
             width: parent.width
-            Text {
+            EditableText{
+                id: textField
                 text: title
+                onEdited: categoryModel.edit_category(id, textField.text)
             }
             Item {
                 Layout.fillWidth: true
             }
-
             IconButton {
                 source: "qrc:/icons/trash-2.svg"
                 onClick: categoryModel.delete_category(id)
