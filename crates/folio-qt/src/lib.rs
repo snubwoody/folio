@@ -58,6 +58,7 @@ pub fn register_qml() {
         "ui/SettingsTabButton.qml",
         "ui/GeneralSettingsPanel.qml",
         "ui/CategoriesSettingsPanel.qml",
+        "ui/components/TextLabel.qml",
         "ui/StreamsSettingsPanel.qml",
         "ui/EditableText.qml",
 

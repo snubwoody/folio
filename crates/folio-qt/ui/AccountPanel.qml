@@ -4,15 +4,16 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.FluentWinUI3
 import App 1.0
 import "."
+import "./components"
 
 ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: false
     RowLayout {
-        Text {
+        TextLabel {
             text: "Accounts"
-            font.family: satoshiVariable.font.family
         }
+
         Item {
             Layout.fillWidth: true
         }
