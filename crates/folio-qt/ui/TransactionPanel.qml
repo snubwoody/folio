@@ -11,14 +11,14 @@ ColumnLayout {
     Layout.fillHeight: true
     RowLayout {
         TextLabel {
-            text: "Transactions"
+            text: qsTr("Transactions")
         }
         Item {
             Layout.fillWidth: true
         }
         Button {
             id: newAccountButton
-            text: "New"
+            text: qsTr("New")
             onClicked: {
                 // appState.add_account();
                 newAccountPopup.open();
@@ -35,12 +35,12 @@ ColumnLayout {
                 TextField {
                     id: accountName
                     Layout.fillWidth: true
-                    placeholderText: "Enter account name"
+                    placeholderText: qsTr("Enter account name")
                 }
                 TextField {
                     id: accountBalance
                     Layout.fillWidth: true
-                    placeholderText: "Enter starting balance"
+                    placeholderText: qsTr("Enter starting balance")
                     validator: DoubleValidator {
                         bottom: 0.00
                         decimals: 2
@@ -49,7 +49,7 @@ ColumnLayout {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                 }
                 Button {
-                    text: "Add expense"
+                    text: qsTr("Add expense")
                     Layout.fillWidth: true
                     onClicked: {
                         appState.add_account(accountName.text, accountBalance.text);

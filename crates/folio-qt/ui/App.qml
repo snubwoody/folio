@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.3
 import App 1.0
 import "."
 
-// TODO: set font
 ApplicationWindow {
     visible: true
     width: 800

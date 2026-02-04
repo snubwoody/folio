@@ -14,10 +14,10 @@ ColumnLayout {
         ColumnLayout {
             spacing: 8
             TextLabel {
-                text: "Currency code"
+                text: qsTr("Currency code")
             }
             TextLabel {
-                text: "The ISO currency code"
+                text: qsTr("The ISO currency code")
             }
         }
         Item {
@@ -31,7 +31,7 @@ ColumnLayout {
         spacing: 6
         Layout.fillHeight: true
         TextLabel {
-            text: "Accounts"
+            text: qsTr("Accounts")
         }
         ListView {
             Layout.fillWidth: true
@@ -48,7 +48,7 @@ ColumnLayout {
                 Row {
                     spacing: 4
                     TextLabel {
-                        text: "Starting balance"
+                        text: qsTr("Starting balance")
                     }
                     EditableText{
                         // FIXME: broken

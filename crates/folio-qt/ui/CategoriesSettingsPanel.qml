@@ -14,10 +14,10 @@ ColumnLayout {
         ColumnLayout {
             spacing: 4
             TextLabel {
-                text: "Categories"
+                text: qsTr("Categories")
             }
             TextLabel {
-                text: "Categories are used for organising expenses"
+                text: qsTr("Categories are used for organising expenses")
             }
         }
         Item {

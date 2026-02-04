@@ -28,21 +28,21 @@ Popup {
                 id: generalBtn
                 Layout.fillWidth: true
                 checked: true
-                text: "General"
+                text: qsTr("General")
                 group: tabs
             }
             SettingsTabButton {
                 id: categoriesBtn
                 Layout.fillWidth: true
                 checked: true
-                text: "Categories"
+                text: qsTr("Categories")
                 group: tabs
             }
             SettingsTabButton {
                 id: streamsBtn
                 Layout.fillWidth: true
                 checked: true
-                text: "Income streams"
+                text: qsTr("Income streams")
                 group: tabs
             }
         }
