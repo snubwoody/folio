@@ -12,6 +12,7 @@ ColumnLayout {
     RowLayout {
         TextLabel {
             text: "Accounts"
+            size: Style.fontSizeH6
         }
 
         Item {

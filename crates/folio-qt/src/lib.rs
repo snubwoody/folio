@@ -51,6 +51,7 @@ pub fn register_qml() {
         "ui/AccountPanel.qml",
         "ui/TransactionPanel.qml",
         "ui/Colors.qml",
+        "ui/Style.qml",
         "ui/IconButton.qml",
         "ui/HomePage.qml",
         "ui/AnalyticsPage.qml",
