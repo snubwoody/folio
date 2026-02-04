@@ -4,12 +4,13 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.FluentWinUI3
 import Qt.labs.qmlmodels
 import App 1.0
+import "components"
 
 ColumnLayout {
     Layout.fillWidth: true
     Layout.fillHeight: true
     RowLayout {
-        Text {
+        TextLabel {
             text: "Transactions"
         }
         Item {

@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Basic
 import App 1.0
 import "."
+import "components"
 
 ColumnLayout {
     Layout.fillWidth: true
@@ -12,10 +13,10 @@ ColumnLayout {
     RowLayout {
         ColumnLayout {
             spacing: 4
-            Text {
+            TextLabel {
                 text: "Categories"
             }
-            Text {
+            TextLabel {
                 text: "Categories are used for organising expenses"
             }
         }

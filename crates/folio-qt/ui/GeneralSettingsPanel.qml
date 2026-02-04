@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Basic
 import App 1.0
 import "."
+import "components"
 
 ColumnLayout {
     Layout.fillWidth: true
@@ -12,24 +13,24 @@ ColumnLayout {
         Layout.fillWidth: true
         ColumnLayout {
             spacing: 8
-            Text {
+            TextLabel {
                 text: "Currency code"
             }
-            Text {
+            TextLabel {
                 text: "The ISO currency code"
             }
         }
         Item {
             Layout.fillWidth: true
         }
-        Text {
+        TextLabel {
             text: "CAD"
         }
     }
     ColumnLayout {
         spacing: 6
         Layout.fillHeight: true
-        Text {
+        TextLabel {
             text: "Accounts"
         }
         ListView {
@@ -46,7 +47,7 @@ ColumnLayout {
                 }
                 Row {
                     spacing: 4
-                    Text {
+                    TextLabel {
                         text: "Starting balance"
                     }
                     EditableText{

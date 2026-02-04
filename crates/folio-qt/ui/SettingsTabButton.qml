@@ -3,6 +3,7 @@ import QtQuick.Controls 6.10
 import QtQuick.Layouts 1.3
 import App 1.0
 import "."
+import "components"
 
 TabButton {
     id: control
@@ -13,7 +14,7 @@ TabButton {
     rightPadding: 12
     topPadding: 4
     bottomPadding: 4
-    contentItem: Text {
+    contentItem: TextLabel {
         text: control.text
         color: control.checked ? Colors.white : Colors.textBody
     }

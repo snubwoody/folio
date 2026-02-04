@@ -3,6 +3,7 @@ import QtQuick.Controls 6.10
 import QtQuick.Layouts 1.3
 import QtQuick.Controls.FluentWinUI3
 import App 1.0
+import "components"
 
 ListView {
     Layout.fillWidth: true
@@ -22,10 +23,10 @@ ListView {
         }
         Column {
             spacing: 8
-            Text {
+            TextLabel {
                 text: name
             }
-            Text {
+            TextLabel {
                 text: balance
             }
         }
