@@ -11,6 +11,7 @@ ColumnLayout {
     RowLayout {
         Text {
             text: "Accounts"
+            font.family: satoshiVariable.font.family
         }
         Item {
             Layout.fillWidth: true

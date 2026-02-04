@@ -12,6 +12,11 @@ ApplicationWindow {
     title: "Folio"
     color: "white"
 
+    FontLoader{
+        id: satoshiVariable
+        source: "qrc:/fonts/Satoshi-Variable.ttf"
+    }
+
     // Declare global app state
     AppState {
         id: appState

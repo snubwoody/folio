@@ -1,10 +1,12 @@
 use crate::account_list::AccountListModel;
 use crate::app_state::AppState;
 use crate::transaction_table::TransactionTableModel;
-use qmetaobject::{qml_register_type, qrc};
+use qmetaobject::{qml_register_type, qrc, QQuickStyle, QmlEngine};
 use sqlx::SqlitePool;
 use std::sync::{LazyLock, OnceLock};
+use qttypes::{QString, QUrl};
 use tokio::runtime::Runtime;
+use folio_lib::init_database;
 use crate::category_list::CategoryListModel;
 
 pub mod account_list;
@@ -67,6 +69,8 @@ pub fn register_qml() {
         "icons/delete.svg",
         "icons/trash-2.svg",
         "icons/settings.svg",
+
+        "fonts/Satoshi-Variable.ttf",
     });
     qml();
 
@@ -76,5 +80,28 @@ pub fn register_qml() {
         CategoryListModel,
         AppState
     }
+}
+
+pub fn run() {
+    tracing_subscriber::fmt::init();
+
+    // TODO: Don't think this is doing anything
+    // TODO: replace everything with qsTr()
+    unsafe {
+        std::env::set_var("QT_QUICK_CONTROLS_STYLE", "Basic");
+    }
+    let pool = RUNTIME.block_on(async {
+        init_database()
+            .await
+            .expect("failed to create database pool")
+    });
+    DB_POOL.set(pool).expect("failed to set pool");
+
+    QQuickStyle::set_style("Basic");
+    register_qml();
+
+    let mut engine = QmlEngine::new();
+    engine.load_url(QUrl::from(QString::from("qrc:/ui/App.qml")));
+    engine.exec();
 }
 
