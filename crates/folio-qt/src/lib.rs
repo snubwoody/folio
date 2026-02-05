@@ -52,7 +52,7 @@ pub fn register_qml() {
         "ui/TransactionPanel.qml",
         "ui/Colors.qml",
         "ui/Style.qml",
-        "ui/IconButton.qml",
+        "ui/components/IconButton.qml",
         "ui/HomePage.qml",
         "ui/AnalyticsPage.qml",
         "ui/SettingsPanel.qml",

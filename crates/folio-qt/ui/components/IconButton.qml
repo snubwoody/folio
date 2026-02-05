@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Controls.Basic
+import ".."
 
 // TODO: change to image for better quality
 Button {

@@ -1,8 +1,9 @@
 use crate::{RUNTIME, db_pool};
 use folio_lib::service::{Account, Expense, fetch_expenses};
-use qmetaobject::{QAbstractTableModel, QObject, qt_base_class, qt_method};
+use qmetaobject::{QAbstractTableModel, QObject, qt_base_class, qt_method, USER_ROLE};
 use qttypes::{QByteArray, QModelIndex, QString, QVariant};
 use std::collections::HashMap;
+use sqlx::types::chrono::NaiveDate;
 
 #[derive(QObject, Default)]
 pub struct TransactionTableModel {
@@ -28,6 +29,7 @@ impl TransactionTableModel {
                 name: "Account".to_string(),
                 ..Default::default()
             }),
+            date: NaiveDate::MAX,
             ..Default::default()
         });
         // dbg!(&self.expenses);
@@ -52,13 +54,12 @@ impl QAbstractTableModel for TransactionTableModel {
         }
 
         let expense = &self.expenses[index.row() as usize];
-        // TODO: create a macro for this
         const DISPLAY_ROLE: i32 = 0;
-        const EDIT_ROLE: i32 = 2;
+        // const EDIT_ROLE: i32 = 2;
 
-        dbg!(&role);
+        dbg!("Hi");
 
-        if role != DISPLAY_ROLE || role != EDIT_ROLE {
+        if role != DISPLAY_ROLE {
             return QVariant::default();
         }
 
@@ -67,24 +68,20 @@ impl QAbstractTableModel for TransactionTableModel {
         let date = expense.date.to_string();
         let amount = expense.amount.to_string();
 
-        match index.column() {
+        dbg!(index.column());
+        // dbg!(expense);
+
+        let variant = match index.column() {
             0 => QVariant::from(QString::from(category)),
             1 => QVariant::from(QString::from(account)),
             2 => QVariant::from(QString::from(date)),
             3 => QVariant::from(QString::from(amount)),
             _ => QVariant::default(),
-        }
+        };
+
+        dbg!(&variant);
+        variant
     }
 
-    fn role_names(&self) -> HashMap<i32, QByteArray> {
-        // TODO: define global roles
-        let mut roles = HashMap::new();
-        roles.insert(0, QByteArray::from("display"));
-        roles.insert(2, QByteArray::from("edit"));
-        roles.insert(400, QByteArray::from("category"));
-        roles.insert(401, QByteArray::from("account"));
-        roles.insert(402, QByteArray::from("date"));
-        roles.insert(403, QByteArray::from("amount"));
-        roles
-    }
+
 }

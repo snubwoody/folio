@@ -3,6 +3,7 @@ import QtQuick.Controls 6.10
 import QtQuick.Layouts 1.3
 import App 1.0
 import "."
+import "components"
 
 ApplicationWindow {
     visible: true
@@ -28,6 +29,13 @@ ApplicationWindow {
         id: accountModel
         Component.onCompleted: {
             load_accounts();
+        }
+    }
+
+    TransactionTableModel {
+        id: transactionModel
+        Component.onCompleted: {
+            load_expenses();
         }
     }
 

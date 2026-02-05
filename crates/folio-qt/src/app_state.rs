@@ -12,6 +12,7 @@ use std::str::FromStr;
 #[derive(QObject, Default)]
 pub struct AppState {
     base: qt_base_class!(trait QObject),
+    // TODO: deprecate these
     accounts: qt_property!(RefCell<AccountListModel>),
     transactions: qt_property!(RefCell<TransactionTableModel>),
     load_data: qt_method!(fn(&mut self)),

@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.3
 import QtQuick.Controls.Basic
 import App 1.0
 import "."
+import "components"
 
 TableView {
     id: table
@@ -12,7 +13,7 @@ TableView {
     clip: true
     editTriggers: TableView.SingleTapped
     selectionMode: TableView.SingleSelection
-    model: appState.transactions
+    model: transactionModel
 
     delegate: TableViewDelegate {
         padding: 12
@@ -25,11 +26,8 @@ TableView {
             border.width: 1
         }
 
-        contentItem: TextField {
+        TextLabel {
             text: display
-            onEditingFinished: {
-                console.log("Done");
-            }
         }
     }
 }
