@@ -83,6 +83,7 @@ pub fn register_qml() {
 }
 
 pub fn run() {
+    qmetaobject::log::init_qt_to_rust();
     tracing_subscriber::fmt::init();
 
     // TODO: Don't think this is doing anything

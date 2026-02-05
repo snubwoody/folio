@@ -11,7 +11,7 @@ qttypes = { version = "0.2", features = [ "qtquick" ] }
 tracing-subscriber.workspace = true
 tracing.workspace = true
 cpp = "0.5"
-qmetaobject = "0.2.10"
+qmetaobject = {version = "0.2.10",features = ["log"]}
 cstr = "0.2.12"
 
 [build-dependencies]
