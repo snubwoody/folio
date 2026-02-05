@@ -22,9 +22,7 @@ TableView {
         // padding: 12
         implicitWidth: TableView.view.width / 4
         implicitHeight: 50
-        // TODO: add tab select
-        // background: Rectangle {
-        // }
+
 
         TextLabel {
             text: display

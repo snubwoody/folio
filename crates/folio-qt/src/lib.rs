@@ -1,5 +1,4 @@
 use crate::account_list::AccountListModel;
-use crate::app_state::AppState;
 use crate::transaction_table::TransactionTableModel;
 use qmetaobject::{qml_register_type, qrc, QQuickStyle, QmlEngine};
 use sqlx::SqlitePool;
@@ -11,7 +10,6 @@ use crate::category_list::CategoryListModel;
 
 pub mod account_list;
 pub mod category_list;
-pub mod app_state;
 pub mod transaction_table;
 // TODO: add compile step for qml
 
@@ -80,7 +78,6 @@ pub fn register_qml() {
         AccountListModel,
         TransactionTableModel,
         CategoryListModel,
-        AppState
     }
 }
 

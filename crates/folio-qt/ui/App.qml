@@ -17,14 +17,6 @@ ApplicationWindow {
         source: "qrc:/fonts/Satoshi-Variable.ttf"
     }
 
-    // Declare global app state
-    AppState {
-        id: appState
-        Component.onCompleted: {
-            load_data();
-        }
-    }
-
     AccountListModel {
         id: accountModel
         Component.onCompleted: {
