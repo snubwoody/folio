@@ -5,6 +5,7 @@ use sqlx::SqlitePool;
 use std::sync::{LazyLock, OnceLock};
 use qttypes::{QString, QUrl};
 use tokio::runtime::Runtime;
+use tracing::info;
 use folio_lib::init_database;
 use crate::category_list::CategoryListModel;
 
@@ -85,7 +86,6 @@ pub fn run() {
     tracing_subscriber::fmt::init();
 
     // TODO: Don't think this is doing anything
-    // TODO: replace everything with qsTr()
     unsafe {
         std::env::set_var("QT_QUICK_CONTROLS_STYLE", "Basic");
     }
@@ -94,6 +94,7 @@ pub fn run() {
             .await
             .expect("failed to create database pool")
     });
+    info!("Initialized database pool");
     DB_POOL.set(pool).expect("failed to set pool");
 
     QQuickStyle::set_style("Basic");

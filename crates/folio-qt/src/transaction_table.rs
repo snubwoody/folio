@@ -9,6 +9,7 @@ use sqlx::types::chrono::NaiveDate;
 pub struct TransactionTableModel {
     base: qt_base_class!(trait QAbstractTableModel),
     load_expenses: qt_method!(fn(&mut self)),
+    add_expense: qt_method!(fn(&mut self)),
     expenses: Vec<Expense>,
 }
 
@@ -22,18 +23,15 @@ impl TransactionTableModel {
                 .await
                 .expect("failed to load expenses")
         });
-        self.expenses.push(Expense::default());
-        self.expenses.push(Expense::default());
-        self.expenses.push(Expense {
-            account: Some(Account {
-                name: "Account".to_string(),
-                ..Default::default()
-            }),
-            date: NaiveDate::MAX,
-            ..Default::default()
-        });
-        // dbg!(&self.expenses);
         self.end_reset_model();
+    }
+
+    pub fn add_expense(&mut self) {
+        // TODO: make the default date the current date
+        RUNTIME.block_on(async {
+            Expense::create(Default::default(),db_pool()).await.expect("failed to create expense");
+        });
+        self.load_expenses();
     }
 }
 
