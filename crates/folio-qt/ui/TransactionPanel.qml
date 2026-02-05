@@ -22,5 +22,7 @@ ColumnLayout {
         }
     }
 
-    TransactionTable {}
+    TransactionTable {
+        id: tableView
+    }
 }

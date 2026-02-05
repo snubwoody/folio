@@ -27,5 +27,13 @@ TableView {
         TextLabel {
             text: display
         }
+
+        TableView.editDelegate: TextField {
+            anchors.fill: parent
+            text: display
+            TableView.onCommit: {
+                console.log("hi")
+            }
+        }
     }
 }

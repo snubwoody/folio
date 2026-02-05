@@ -44,6 +44,7 @@ impl QAbstractTableModel for TransactionTableModel {
         Self::COLUMN_COUNT
     }
 
+
     fn data(&self, index: QModelIndex, role: i32) -> QVariant {
         if index.row() >= self.expenses.len() as i32 || index.column() >= Self::COLUMN_COUNT {
             return QVariant::default();
