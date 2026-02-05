@@ -15,16 +15,16 @@ TableView {
     selectionMode: TableView.SingleSelection
     model: transactionModel
 
-    delegate: TableViewDelegate {
-        padding: 12
+    delegate: Rectangle {
+        color: "white"
+        border.color: table.selectionModel && table.selectionModel.isSelected(model.index) ? Colors.borderFocus : Colors.borderNeutral
+        border.width: 1
+        // padding: 12
         implicitWidth: TableView.view.width / 4
         implicitHeight: 50
         // TODO: add tab select
-        background: Rectangle {
-            color: "white"
-            border.color: table.selectionModel && table.selectionModel.isSelected(model.index) ? Colors.borderFocus : Colors.borderNeutral
-            border.width: 1
-        }
+        // background: Rectangle {
+        // }
 
         TextLabel {
             text: display

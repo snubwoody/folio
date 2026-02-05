@@ -47,8 +47,6 @@ impl QAbstractTableModel for TransactionTableModel {
     }
 
     fn data(&self, index: QModelIndex, role: i32) -> QVariant {
-        dbg!(&role);
-
         if index.row() >= self.expenses.len() as i32 || index.column() >= Self::COLUMN_COUNT {
             return QVariant::default();
         }
@@ -56,8 +54,6 @@ impl QAbstractTableModel for TransactionTableModel {
         let expense = &self.expenses[index.row() as usize];
         const DISPLAY_ROLE: i32 = 0;
         // const EDIT_ROLE: i32 = 2;
-
-        dbg!("Hi");
 
         if role != DISPLAY_ROLE {
             return QVariant::default();
@@ -68,9 +64,6 @@ impl QAbstractTableModel for TransactionTableModel {
         let date = expense.date.to_string();
         let amount = expense.amount.to_string();
 
-        dbg!(index.column());
-        // dbg!(expense);
-
         let variant = match index.column() {
             0 => QVariant::from(QString::from(category)),
             1 => QVariant::from(QString::from(account)),
@@ -79,9 +72,12 @@ impl QAbstractTableModel for TransactionTableModel {
             _ => QVariant::default(),
         };
 
-        dbg!(&variant);
         variant
     }
 
-
+    fn role_names(&self) -> HashMap<i32, QByteArray> {
+        let mut roles = HashMap::new();
+        roles.insert(0,"display".into());
+        roles
+    }
 }
