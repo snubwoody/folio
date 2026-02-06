@@ -23,7 +23,14 @@ class TransactionTableModel(QAbstractTableModel):
 
     def __init__(self,parent = None):
         super().__init__(parent)
-        self.expenses: list[Expense] = []
+        self.expenses: list[Expense] = [
+            Expense(amount=0,date="2024-12-12",account=Account(name="RBC"),category=Category(title="Name")),
+            Expense(amount=550,date="2024-12-12",account=Account(name="Absa"),category=Category(title="Name")),
+            Expense(amount=330,date="2024-12-12",account=Account(name="FNB"),category=Category(title="Name")),
+            Expense(amount=240,date="2024-12-12",account=Account(name="Zanax"),category=Category(title="Name")),
+            Expense(amount=240,date="2024-12-12",account=Account(name="RBC"),category=Category(title="Name")),
+            Expense(amount=120,date="2024-12-12",account=Account(name="RBC"),category=Category(title="Name")),
+        ]
 
     def rowCount(self, parent = None):
         return len(self.expenses)
@@ -31,11 +38,18 @@ class TransactionTableModel(QAbstractTableModel):
     def columnCount(self, parent = None):
         return self.COLUMN_COUNT
     
+    def flags(self, index):
+        return Qt.ItemFlag.ItemIsEditable | super().flags(index)
+    
     def data(self, index,role=Qt.ItemDataRole.DisplayRole):
+        if role == Qt.ItemDataRole.UserRole+1:
+            return index.column()
+        
         if index.row() >= len(self.expenses) or index.column() >= self.columnCount():
             return None
         
         expense = self.expenses[index.row()]
+        
         match index.column():
             case 0:
                 return expense.category.title
@@ -47,15 +61,19 @@ class TransactionTableModel(QAbstractTableModel):
                 return expense.amount
         return None
     
+    def roleNames(self):
+        roles = super().roleNames()
+        roles[Qt.ItemDataRole.DisplayRole] = b"display"
+        roles[Qt.ItemDataRole.UserRole+1] = b"column"
+        return roles
+    
     @Slot()
     def load_expenses(self):
         self.beginResetModel()
-        self.expenses = [
-            Expense(amount=0,date="2024-12-12",account=Account(name="RBC"),category=Category(title="Name")),
-            Expense(amount=550,date="2024-12-12",account=Account(name="Absa"),category=Category(title="Name")),
-            Expense(amount=330,date="2024-12-12",account=Account(name="FNB"),category=Category(title="Name")),
-            Expense(amount=240,date="2024-12-12",account=Account(name="Zanax"),category=Category(title="Name")),
-            Expense(amount=240,date="2024-12-12",account=Account(name="RBC"),category=Category(title="Name")),
-            Expense(amount=120,date="2024-12-12",account=Account(name="RBC"),category=Category(title="Name")),
-        ]
+        self.endResetModel()
+
+    @Slot()
+    def add_expense(self):
+        self.beginResetModel()
+        self.expenses.append(Expense())
         self.endResetModel()

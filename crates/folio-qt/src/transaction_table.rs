@@ -1,9 +1,9 @@
 use crate::{RUNTIME, db_pool};
 use folio_lib::service::{Account, Expense, fetch_expenses};
-use qmetaobject::{QAbstractTableModel, QObject, qt_base_class, qt_method, USER_ROLE};
+use qmetaobject::{QAbstractTableModel, QObject, USER_ROLE, qt_base_class, qt_method};
 use qttypes::{QByteArray, QModelIndex, QString, QVariant};
-use std::collections::HashMap;
 use sqlx::types::chrono::NaiveDate;
+use std::collections::HashMap;
 
 #[derive(QObject, Default)]
 pub struct TransactionTableModel {
@@ -29,7 +29,9 @@ impl TransactionTableModel {
     pub fn add_expense(&mut self) {
         // TODO: make the default date the current date
         RUNTIME.block_on(async {
-            Expense::create(Default::default(),db_pool()).await.expect("failed to create expense");
+            Expense::create(Default::default(), db_pool())
+                .await
+                .expect("failed to create expense");
         });
         self.load_expenses();
     }
@@ -43,7 +45,6 @@ impl QAbstractTableModel for TransactionTableModel {
     fn column_count(&self) -> i32 {
         Self::COLUMN_COUNT
     }
-
 
     fn data(&self, index: QModelIndex, role: i32) -> QVariant {
         if index.row() >= self.expenses.len() as i32 || index.column() >= Self::COLUMN_COUNT {
@@ -76,7 +77,7 @@ impl QAbstractTableModel for TransactionTableModel {
 
     fn role_names(&self) -> HashMap<i32, QByteArray> {
         let mut roles = HashMap::new();
-        roles.insert(0,"display".into());
+        roles.insert(0, "display".into());
         roles
     }
 }

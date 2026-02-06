@@ -11,7 +11,7 @@ TextField {
     signal edited
     onEditingFinished: {
         // FIXME: editing twice
-        control.edited()
+        control.edited();
         control.focus = false;
     }
     background: Rectangle {

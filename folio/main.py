@@ -6,16 +6,17 @@ from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterType
 from models.account_list import AccountListModel
 from models.transaction_table import TransactionTableModel
 from models.category_list import CategoryListModel
+from loguru import logger
 
 
 def print_qt(mode, context, message):
-    print("Qml: ", message)
+    logger.warning(f"Qml: {message}")
 
 
 def main():
-    # FIXME: icon button background is not transparent 
+    # FIXME
+    logger.info("Running folio")
     qInstallMessageHandler(print_qt)
-    print("Running folio")
     app = QGuiApplication(sys.argv)
     qmlRegisterType(AccountListModel, "App", 1, 0, "AccountListModel")
     qmlRegisterType(CategoryListModel, "App", 1, 0, "CategoryListModel")

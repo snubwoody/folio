@@ -29,7 +29,6 @@ ColumnLayout {
         }
     }
 
-
     ListView {
         Layout.fillWidth: true
         Layout.fillHeight: true
@@ -42,7 +41,7 @@ ColumnLayout {
         delegate: RowLayout {
             // FIXME: warning: TypeError: Cannot read property 'width' of null
             width: parent.width
-            EditableText{
+            EditableText {
                 id: textField
                 text: title
                 onEdited: categoryModel.edit_category(id, textField.text)
@@ -55,9 +54,5 @@ ColumnLayout {
                 onClick: categoryModel.delete_category(id)
             }
         }
-
     }
 }
-
-
-

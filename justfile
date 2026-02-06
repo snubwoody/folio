@@ -39,6 +39,7 @@ lint-web:
 fmt:
     cargo fmt
     qmlformat -i (Get-ChildItem crates/folio-qt/ui/*.qml).FullName
+    qmlformat -i (Get-ChildItem folio/ui/*.qml).FullName
 
 [unix]
 fmt:

@@ -23,7 +23,6 @@ TableView {
         implicitWidth: TableView.view.width / 4
         implicitHeight: 50
 
-
         TextLabel {
             text: display
         }
@@ -32,7 +31,7 @@ TableView {
             anchors.fill: parent
             text: display
             TableView.onCommit: {
-                console.log("hi")
+                console.log("hi");
             }
         }
     }

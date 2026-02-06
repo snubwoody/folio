@@ -40,17 +40,17 @@ ColumnLayout {
             spacing: 16
             model: accountModel
             delegate: Column {
-                EditableText{
+                EditableText {
                     id: textField
                     text: name
-                    onEdited: accountModel.edit_account(id, textField.text, startingBalance);
+                    onEdited: accountModel.edit_account(id, textField.text, startingBalance)
                 }
                 Row {
                     spacing: 4
                     TextLabel {
                         text: qsTr("Starting balance")
                     }
-                    EditableText{
+                    EditableText {
                         // FIXME: broken
                         id: balanceField
                         text: startingBalance
@@ -60,7 +60,7 @@ ColumnLayout {
                             notation: DoubleValidator.StandardNotation
                         }
                         inputMethodHints: Qt.ImhFormattedNumbersOnly
-                        onEdited: accountModel.edit_account(id, textField.text, balanceField.text);
+                        onEdited: accountModel.edit_account(id, textField.text, balanceField.text)
                     }
                 }
             }

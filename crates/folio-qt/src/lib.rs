@@ -1,13 +1,13 @@
 use crate::account_list::AccountListModel;
+use crate::category_list::CategoryListModel;
 use crate::transaction_table::TransactionTableModel;
-use qmetaobject::{qml_register_type, qrc, QQuickStyle, QmlEngine};
+use folio_lib::init_database;
+use qmetaobject::{QQuickStyle, QmlEngine, qml_register_type, qrc};
+use qttypes::{QString, QUrl};
 use sqlx::SqlitePool;
 use std::sync::{LazyLock, OnceLock};
-use qttypes::{QString, QUrl};
 use tokio::runtime::Runtime;
 use tracing::info;
-use folio_lib::init_database;
-use crate::category_list::CategoryListModel;
 
 pub mod account_list;
 pub mod category_list;
@@ -75,7 +75,7 @@ pub fn register_qml() {
     });
     qml();
 
-    register_type!{
+    register_type! {
         AccountListModel,
         TransactionTableModel,
         CategoryListModel,
@@ -105,4 +105,3 @@ pub fn run() {
     engine.load_url(QUrl::from(QString::from("qrc:/ui/App.qml")));
     engine.exec();
 }
-

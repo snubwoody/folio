@@ -12,7 +12,7 @@ ApplicationWindow {
     title: "Folio"
     color: "white"
 
-    FontLoader{
+    FontLoader {
         id: satoshiVariable
         source: "qrc:/fonts/Satoshi-Variable.ttf"
     }
