@@ -7,6 +7,7 @@ data.db
 *.msix
 build
 target/
+__pycache__/
 
 # Env variables and secrets
 .env
