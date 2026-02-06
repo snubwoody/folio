@@ -13,10 +13,10 @@ class AccountListModel(QAbstractListModel):
     BALANCE_ROLE: int = ID_ROLE + 1
     NAME_ROLE: int = BALANCE_ROLE + 3
     STARTING_BALANCE_ROLE: int = NAME_ROLE + 4
-    accounts: list[Account]
 
     def __init__(self,parent = None):
         super().__init__(parent)
+        self.accounts: list[Account] = []
 
     def rowCount(self, parent = None):
         return len(self.accounts)

@@ -8,7 +8,7 @@ from models.transaction_table import TransactionTableModel
 from models.category_list import CategoryListModel
 
 def print_qt(mode,context,message):
-    print(message)
+    print("Qml: ",message)
 
 def main():
     # TODO: add fonts

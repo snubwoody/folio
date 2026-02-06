@@ -7,9 +7,9 @@ class Transaction:
 
 class TransactionTableModel(QAbstractListModel):
     ID_ROLE: int = Qt.ItemDataRole.UserRole + 1
-    transactions: list[Transaction]
     def __init__(self,parent = None):
         super().__init__(parent)
+        self.transactions: list[Transaction] = []
 
     def rowCount(self, parent = None) :
         return len(self.transactions)
