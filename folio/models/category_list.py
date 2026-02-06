@@ -14,7 +14,6 @@ class Category:
 class CategoryListModel(QAbstractListModel):
     ID_ROLE: int = Qt.ItemDataRole.UserRole + 1
     TITLE_ROLE: int = ID_ROLE + 1
-    # categories: list[Category] = []
 
     def __init__(self,parent = None):
         super().__init__(parent)
@@ -23,10 +22,16 @@ class CategoryListModel(QAbstractListModel):
     def rowCount(self, parent = None):
         return len(self.categories)
 
-    def data(self, index, role = Qt.ItemDataRole.DisplayRole):
+    def data(self, index, role):
         if index.row() >= self.rowCount():
             return None
-        return ""
+        category = self.categories[index.row()]
+        match role:
+            case self.ID_ROLE:
+                return category.id
+            case self.TITLE_ROLE:
+                return category.title
+        return None
     
     def roleNames(self):
         return {
@@ -37,4 +42,12 @@ class CategoryListModel(QAbstractListModel):
     @Slot()
     def load_categories(self):
         self.beginResetModel()
+        self.categories: list[Category] = [
+            Category(title="Dining out"),
+            Category(title="Entertainment"),
+            Category(title="School"),
+            Category(title="Transport"),
+            Category(title="Transit"),
+            Category(title="Groceries"),
+            ]
         self.endResetModel()

@@ -4,6 +4,7 @@
     <file>icons/home.svg</file>
     <file>icons/settings.svg</file>
     <file>icons/bar-chart.svg</file>
+    <file>icons/trash-2.svg</file>
     <file>fonts/Satoshi-Variable.ttf</file>
 </qresource>
 </RCC>

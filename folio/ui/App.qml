@@ -27,14 +27,14 @@ ApplicationWindow {
     TransactionTableModel {
         id: transactionModel
         Component.onCompleted: {
-            load_expenses();
+            // load_expenses();
         }
     }
 
     CategoryListModel {
         id: categoryModel
         Component.onCompleted: {
-            // load_categories();
+            load_categories();
         }
     }
 

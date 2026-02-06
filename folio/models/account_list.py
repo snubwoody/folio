@@ -11,8 +11,8 @@ class Account:
 class AccountListModel(QAbstractListModel):
     ID_ROLE: int = Qt.ItemDataRole.UserRole + 1
     BALANCE_ROLE: int = ID_ROLE + 1
-    NAME_ROLE: int = BALANCE_ROLE + 3
-    STARTING_BALANCE_ROLE: int = NAME_ROLE + 4
+    NAME_ROLE: int = BALANCE_ROLE + 1
+    STARTING_BALANCE_ROLE: int = NAME_ROLE + 1
 
     def __init__(self,parent = None):
         super().__init__(parent)
@@ -21,11 +21,21 @@ class AccountListModel(QAbstractListModel):
     def rowCount(self, parent = None):
         return len(self.accounts)
 
-    def data(self, index: QModelIndex, role = ID_ROLE):
+    def data(self, index: QModelIndex, role):
         if index.row() >= len(self.accounts):
             return None
 
         account = self.accounts[index.row()]
+
+        match role:
+            case self.ID_ROLE:
+                return account.id
+            case self.NAME_ROLE:
+                return account.name
+            case self.BALANCE_ROLE:
+                return account.balance
+            case self.STARTING_BALANCE_ROLE:
+                return account.startingBalance
 
         return None
 
