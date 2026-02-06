@@ -1,5 +1,9 @@
 set windows-shell := ["powershell"]
 
+# Run the desktop app
+run:
+    poetry run py folio/main.py
+
 # Build qrc resources
 gen-resources:
     poetry run pyside6-rcc folio/resources.qrc -o folio/rc_resources.py

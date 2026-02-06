@@ -1,7 +1,5 @@
 import QtQuick 6.10
-import QtQuick.Controls 6.10
 import QtQuick.Layouts 1.3
-import QtQuick.Controls.Basic
 import App 1.0
 import "."
 import "components"
@@ -23,17 +21,16 @@ TableView {
         implicitWidth: TableView.view.width / 4
         implicitHeight: 50
 
-
         TextLabel {
             text: display
         }
 
-        TableView.editDelegate: TextField {
-            anchors.fill: parent
-            text: display
-            TableView.onCommit: {
-                console.log("hi")
-            }
-        }
+        // TableView.editDelegate: TextField {
+        //     anchors.fill: parent
+        //     text: display
+        //     TableView.onCommit: {
+        //         console.log("hi")
+        //     }
+        // }
     }
 }

@@ -27,7 +27,7 @@ ApplicationWindow {
     TransactionTableModel {
         id: transactionModel
         Component.onCompleted: {
-            // load_expenses();
+            load_expenses();
         }
     }
 

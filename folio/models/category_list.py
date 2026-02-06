@@ -1,16 +1,11 @@
 from PySide6.QtCore import Qt,QAbstractListModel,QByteArray,Slot
-from PySide6.QtQml import  QmlElement
 from dataclasses import dataclass
-
-QML_IMPORT_NAME = "BaseModel"
-QML_IMPORT_MAJOR_VERSION = 1
 
 @dataclass
 class Category:
     id: str = ""
     title: str = ""
 
-@QmlElement
 class CategoryListModel(QAbstractListModel):
     ID_ROLE: int = Qt.ItemDataRole.UserRole + 1
     TITLE_ROLE: int = ID_ROLE + 1
