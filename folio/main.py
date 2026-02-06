@@ -1,12 +1,18 @@
 import sys
+import rc_resources
+from PySide6.QtCore import qInstallMessageHandler
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine,qmlRegisterType
 from models.account_list import AccountListModel
 from models.transaction_table import TransactionTableModel
 from models.category_list import CategoryListModel
 
+def print_qt(mode,context,message):
+    print(message)
+
 def main():
     # TODO: add fonts
+    qInstallMessageHandler(print_qt)
     print("Running folio")
     app = QGuiApplication(sys.argv)
     qmlRegisterType(AccountListModel,"App",1,0,"AccountListModel")

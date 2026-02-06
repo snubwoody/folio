@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QAbstractListModel, QByteArray, Slot, QModelIndex
+from PySide6.QtCore import Qt, QAbstractListModel, QByteArray, Slot
 from dataclasses import  dataclass
 
 @dataclass

@@ -1,5 +1,9 @@
 set windows-shell := ["powershell"]
 
+# Build qrc resources
+gen-resources:
+    poetry run pyside6-rcc folio/resources.qrc -o folio/rc_resources.py
+
 # Create a new sqlite database
 db-create:
     cargo sqlx database create

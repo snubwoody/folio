@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+    <file>icons/plus.svg</file>
+    <file>icons/home.svg</file>
+    <file>fonts/Satoshi-Variable.ttf</file>
+</qresource>
+</RCC>
