@@ -32,7 +32,6 @@ class TransactionTableModel(QAbstractTableModel):
         return self.COLUMN_COUNT
     
     def data(self, index,role=Qt.ItemDataRole.DisplayRole):
-        print(index.column())
         if index.row() >= len(self.expenses) or index.column() >= self.columnCount():
             return None
         
