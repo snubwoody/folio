@@ -15,22 +15,21 @@ class MyApp extends StatelessWidget {
       title: 'Folio',
       theme: ThemeData(
         colorScheme: ColorScheme(
-            brightness: Brightness.light,
-            primary: Colors.purple500,
-            onPrimary: Colors.white,
-            secondary: Colors.purple500,
-            onSecondary: Colors.white,
-            error: Colors.purple500,
-            onError: Colors.white,
-            surface: Colors.white,
-            onSurface: Colors.black
-        )
+          brightness: Brightness.light,
+          primary: Colors.purple500,
+          onPrimary: Colors.white,
+          secondary: Colors.purple500,
+          onSecondary: Colors.white,
+          error: Colors.purple500,
+          onError: Colors.white,
+          surface: Colors.white,
+          onSurface: Colors.black,
+        ),
       ),
       home: Scaffold(body: const HomePage()),
     );
   }
 }
-
 
 class NavigationPanel extends StatelessWidget {
   const NavigationPanel({super.key});
@@ -38,11 +37,7 @@ class NavigationPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      children: [
-        Text("Home"),
-        Text("Analytics"),
-        Text("Settings"),
-      ],
+      children: [Text("Home"), Text("Analytics"), Text("Settings")],
     );
   }
 }
@@ -52,10 +47,6 @@ class ExpenseTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: [
-        ],
-    );
+    return Column(children: []);
   }
 }
-

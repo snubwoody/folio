@@ -20,12 +20,9 @@ import 'package:flutter/cupertino.dart';
 // 0 20px 25px -5px rgb(75 25 226 / 0.1),
 // 0 8px 10px -6px rgb(75 25 226 / 0.1);
 
-abstract final class Style{
+abstract final class Style {
   static const List<BoxShadow> shadowXs = [
-    BoxShadow(
-      color: Color.fromRGBO(0, 0, 0, 0.05),
-      blurRadius: 2,
-    )
+    BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.05), blurRadius: 2),
   ];
 
   static const List<BoxShadow> shadowSm = [
@@ -33,12 +30,12 @@ abstract final class Style{
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 2,
       spreadRadius: -1,
-      offset: Offset(0, 1)
+      offset: Offset(0, 1),
     ),
     BoxShadow(
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 3,
-      offset: Offset(0, 1)
+      offset: Offset(0, 1),
     ),
   ];
 
@@ -47,13 +44,13 @@ abstract final class Style{
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 4,
       spreadRadius: -2,
-      offset: Offset(0, 2)
+      offset: Offset(0, 2),
     ),
     BoxShadow(
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 6,
       spreadRadius: -1,
-      offset: Offset(0, 4)
+      offset: Offset(0, 4),
     ),
   ];
 
@@ -62,13 +59,13 @@ abstract final class Style{
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 15,
       spreadRadius: -3,
-      offset: Offset(0, 1)
+      offset: Offset(0, 1),
     ),
     BoxShadow(
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 6,
       spreadRadius: -4,
-      offset: Offset(0, 4)
+      offset: Offset(0, 4),
     ),
   ];
 
@@ -77,21 +74,18 @@ abstract final class Style{
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 25,
       spreadRadius: -5,
-      offset: Offset(0, 20)
+      offset: Offset(0, 20),
     ),
     BoxShadow(
       color: Color.fromRGBO(0, 0, 0, 0.1),
       blurRadius: 10,
       spreadRadius: -6,
-      offset: Offset(0, 8)
+      offset: Offset(0, 8),
     ),
   ];
 
   static const List<BoxShadow> shadowPurpleXs = [
-    BoxShadow(
-      color: Color.fromRGBO(75, 25, 226, 0.05),
-      blurRadius: 2,
-    )
+    BoxShadow(color: Color.fromRGBO(75, 25, 226, 0.05), blurRadius: 2),
   ];
 
   static const List<BoxShadow> shadowPurpleSm = [
@@ -99,12 +93,12 @@ abstract final class Style{
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 2,
       spreadRadius: -1,
-      offset: Offset(0, 1)
+      offset: Offset(0, 1),
     ),
     BoxShadow(
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 3,
-      offset: Offset(0, 1)
+      offset: Offset(0, 1),
     ),
   ];
 
@@ -113,13 +107,13 @@ abstract final class Style{
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 4,
       spreadRadius: -2,
-      offset: Offset(0, 2)
+      offset: Offset(0, 2),
     ),
     BoxShadow(
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 6,
       spreadRadius: -1,
-      offset: Offset(0, 4)
+      offset: Offset(0, 4),
     ),
   ];
 
@@ -128,13 +122,13 @@ abstract final class Style{
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 15,
       spreadRadius: -3,
-      offset: Offset(0, 1)
+      offset: Offset(0, 1),
     ),
     BoxShadow(
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 6,
       spreadRadius: -4,
-      offset: Offset(0, 4)
+      offset: Offset(0, 4),
     ),
   ];
 
@@ -143,13 +137,13 @@ abstract final class Style{
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 25,
       spreadRadius: -5,
-      offset: Offset(0, 20)
+      offset: Offset(0, 20),
     ),
     BoxShadow(
       color: Color.fromRGBO(75, 25, 226, 0.1),
       blurRadius: 10,
       spreadRadius: -6,
-      offset: Offset(0, 8)
+      offset: Offset(0, 8),
     ),
   ];
 }

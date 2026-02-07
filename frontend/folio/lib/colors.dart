@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-abstract final class Colors{
+abstract final class Colors {
   /// Completely transparent
   static const Color transparent = Color(0x00000000);
 
   static const Color black = Color(0xFF000000);
-  static const Color white= Color(0xFFFFFFFF);
+  static const Color white = Color(0xFFFFFFFF);
 
   // Neutral tones
   static const Color neutral25 = Color(0xFFFCFCFC);
