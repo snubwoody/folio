@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart' hide Colors;
+import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
 import 'package:folio/home_page.dart';
+import 'package:folio/components.dart';
+import 'package:folio/settings_panel.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 void main() {
@@ -47,40 +49,22 @@ class NavigationPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 24,horizontal: 12),
+      padding: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
       color: Colors.neutral25,
-      child: const Column(
+      child: Column(
         spacing: 24,
         children: [
-          IconButton(icon: LucideIcons.house),
-          IconButton(icon: LucideIcons.chartArea),
-          Spacer(),
-          IconButton(icon: LucideIcons.settings),
+          const IconButton(icon: LucideIcons.house),
+          const IconButton(icon: LucideIcons.chartArea),
+          const Spacer(),
+          IconButton(
+            icon: LucideIcons.settings,
+            onTap: () => showDialog(
+              context: context,
+              builder: (BuildContext context) => SettingsPanel(),
+            ),
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class IconButton extends StatefulWidget {
-  final void Function()? onTap;
-  final IconData icon;
-  const IconButton({super.key, this.onTap, required this.icon});
-
-  @override
-  State<IconButton> createState() => _IconButtonState();
-}
-
-class _IconButtonState extends State<IconButton> {
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          widget.onTap?.call();
-        },
-        child: Icon(widget.icon),
       ),
     );
   }
