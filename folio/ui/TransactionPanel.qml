@@ -14,6 +14,11 @@ ColumnLayout {
         Item {
             Layout.fillWidth: true
         }
+        
+        AppButton{
+            text: qsTr("New")
+        }
+
         Button {
             text: qsTr("New")
             onClicked: {
