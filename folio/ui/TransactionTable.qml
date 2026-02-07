@@ -22,6 +22,71 @@ TableView {
         role: "column"
 
         DelegateChoice {
+            column: 0
+            delegate: Rectangle {
+                color: "white"
+                border.color: table.selectionModel && table.selectionModel.isSelected(model.index) ? Colors.borderFocus : Colors.borderNeutral
+                border.width: 1
+                implicitWidth: TableView.view.width / 4
+                implicitHeight: 50
+
+                TextLabel {
+                    text: display
+                }
+
+                TableView.editDelegate: ComboBox {
+                    anchors.fill: parent
+                    textRole: "title"
+                    currentValue: display
+                    model: categoryModel
+                }
+
+                // TableView.editDelegate: TextField {
+                //     id: amountTextField
+                //     anchors.fill: parent
+                //     text: display
+                //     TableView.onCommit: {
+                //         console.log("hi");
+                //         transactionModel.edit_amount(id,amountTextField.text)
+                //     }
+                // }
+            }
+        }
+        
+        
+        DelegateChoice {
+            column: 1
+            delegate: Rectangle {
+                color: "white"
+                border.color: table.selectionModel && table.selectionModel.isSelected(model.index) ? Colors.borderFocus : Colors.borderNeutral
+                border.width: 1
+                implicitWidth: TableView.view.width / 4
+                implicitHeight: 50
+
+                TextLabel {
+                    text: display
+                }
+
+                TableView.editDelegate: ComboBox {
+                    anchors.fill: parent
+                    textRole: "name"
+                    currentValue: display
+                    model: accountModel
+                }
+
+                // TableView.editDelegate: TextField {
+                //     id: amountTextField
+                //     anchors.fill: parent
+                //     text: display
+                //     TableView.onCommit: {
+                //         console.log("hi");
+                //         transactionModel.edit_amount(id,amountTextField.text)
+                //     }
+                // }
+            }
+        }
+        
+        DelegateChoice {
             column: 3
             delegate: Rectangle {
                 color: "white"
@@ -39,7 +104,6 @@ TableView {
                     anchors.fill: parent
                     text: display
                     TableView.onCommit: {
-                        console.log("hi");
                         transactionModel.edit_amount(id,amountTextField.text)
                     }
                 }

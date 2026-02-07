@@ -8,6 +8,10 @@ run:
 gen-resources:
     poetry run pyside6-rcc folio/resources.qrc -o folio/rc_resources.py
 
+# Generate python bindings
+gen-bindings:
+    poetry run maturin develop -m crates/folio-backend/Cargo.toml
+
 # Create a new sqlite database
 db-create:
     cargo sqlx database create

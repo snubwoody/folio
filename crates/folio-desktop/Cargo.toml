@@ -20,6 +20,7 @@ tauri-build = { version = "2.5.2", features = [] }
 tempfile = "3.23.0"
 
 [dependencies]
+pyo3 = "0.28.0"
 folio-core.workspace = true
 reqwest.workspace = true
 tauri.workspace = true

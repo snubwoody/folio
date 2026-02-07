@@ -30,6 +30,26 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
+use tokio::runtime::Runtime;
+use std::sync::{OnceLock,LazyLock};
+
+
+/// Global async runtime
+pub static RUNTIME: LazyLock<Runtime> =
+    LazyLock::new(|| Runtime::new().expect("failed to create runtime"));
+
+/// Global database pool
+pub static DB_POOL: OnceLock<SqlitePool> = OnceLock::new();
+
+
+/// Returns a reference to the database pool
+pub fn db_pool() -> &'static SqlitePool {
+    DB_POOL.get_or_init(||RUNTIME.block_on(async {
+        init_database()
+            .await
+            .expect("failed to create database pool")
+    }))
+}
 
 // TODO: test this
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
@@ -158,6 +178,24 @@ pub fn get_data_dir() -> Option<PathBuf> {
     let app_name = "folio";
 
     Some(data_dir.join(app_name))
+}
+
+/// A Python module implemented in Rust. The name of this module must match
+/// the `lib.name` setting in the `Cargo.toml`, else Python will not be able to
+/// import the module.
+#[pyo3::pymodule]
+mod folio_lib {
+  use pyo3::prelude::*;
+
+  /// Formats the sum of two numbers as string.
+  #[pyfunction]
+  fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
+    Ok((a + b).to_string())
+  }
+
+  fn init_database(){
+
+  }
 }
 
 #[cfg(test)]

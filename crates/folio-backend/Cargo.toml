@@ -1,0 +1,42 @@
+[package]
+name = "folio-backend"
+version.workspace = true
+description = "A free, open source budgeting app"
+authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
+edition = "2024"
+publish = false
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "folio_backend"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+tauri-build = { version = "2.5.2", features = [] }
+
+[dev-dependencies]
+tempfile = "3.23.0"
+
+[dependencies]
+pyo3 = "0.28.0"
+folio-core.workspace = true
+folio.workspace = true
+reqwest.workspace = true
+tauri.workspace = true
+tauri-plugin-opener.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rust_decimal.workspace = true
+tokio.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+tracing-subscriber.workspace = true
+tracing.workspace = true
+directories.workspace = true
+tauri-plugin-os.workspace = true
+iso_currency.workspace = true
+sqlx.workspace = true
+tauri-plugin-updater.workspace = true
+

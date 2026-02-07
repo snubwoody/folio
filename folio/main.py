@@ -8,7 +8,6 @@ from models.transaction_table import TransactionTableModel
 from models.category_list import CategoryListModel
 from loguru import logger
 
-
 def print_qt(mode, context, message):
     logger.warning(f"Qml: {message}")
 
