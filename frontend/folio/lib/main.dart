@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Colors;
 import 'package:folio/colors.dart';
+import 'package:folio/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +26,23 @@ class MyApp extends StatelessWidget {
             onSurface: Colors.black
         )
       ),
-      home: Scaffold(body: const ExpenseTable()),
+      home: Scaffold(body: const HomePage()),
+    );
+  }
+}
+
+
+class NavigationPanel extends StatelessWidget {
+  const NavigationPanel({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        Text("Home"),
+        Text("Analytics"),
+        Text("Settings"),
+      ],
     );
   }
 }
@@ -37,75 +54,8 @@ class ExpenseTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
         children: [
-          TableHeader(),
-          TableRow(),
-          TableRow(),
-          TableRow(),
-          TableRow(),
         ],
     );
   }
 }
-
-class TableHeader extends StatelessWidget {
-  const TableHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        TableCell(),
-        TableCell(),
-        TableCell(),
-        TableCell(),
-      ],
-    );
-  }
-}
-
-class TableRow extends StatelessWidget {
-  const TableRow({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        TableCell(),
-        TableCell(),
-        TableCell(),
-        TableCell(),
-      ],
-    );
-  }
-}
-
-class TableCell extends StatelessWidget {
-  const TableCell({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            border: BoxBorder.fromBorderSide(BorderSide(color: Colors.borderNeutral50))
-          ),
-          child: const TextLabel("Cell")
-      ),
-    );
-  }
-}
-
-class TextLabel extends StatelessWidget {
-  final String value;
-  const TextLabel(this.value,{super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(value);
-  }
-}
-
-
-
 
