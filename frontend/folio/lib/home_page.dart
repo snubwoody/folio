@@ -8,9 +8,12 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: Column(spacing: 24,children: [AccountPanel(),Expanded(child: TransactionPanel())]),
+    return Column(
+      spacing: 24,
+      children: [
+        AccountPanel(),
+        Expanded(child: TransactionPanel()),
+      ],
     );
   }
 }
@@ -23,34 +26,38 @@ class TransactionPanel extends StatelessWidget {
     return Column(
       spacing: 24,
       children: [
-        Row(children: [TextLabel("Transactions"), Spacer(),TextLabel("New")]),
+        Row(children: [TextLabel("Transactions"), Spacer(), TextLabel("New")]),
         TransactionTable(),
       ],
     );
   }
 }
 
-class TransactionTableSource extends DataTableSource{
+class TransactionTableSource extends DataTableSource {
   @override
   int get rowCount => 2;
 
   @override
   DataRow? getRow(int index) {
-    switch (index){
+    switch (index) {
       case 0:
-        return DataRow(cells: [
-          DataCell(TextLabel("Name")),
-          DataCell(TextLabel("RBC")),
-          DataCell(TextLabel("2025-12-12")),
-          DataCell(TextLabel("500.00")),
-        ]);
-        case 1:
-        return DataRow(cells: [
-          DataCell(TextLabel("Name")),
-          DataCell(TextLabel("RBC")),
-          DataCell(TextLabel("2025-12-12")),
-          DataCell(TextLabel("500.00")),
-        ]);
+        return DataRow(
+          cells: [
+            DataCell(TextLabel("Name")),
+            DataCell(TextLabel("RBC")),
+            DataCell(TextLabel("2025-12-12")),
+            DataCell(TextLabel("500.00")),
+          ],
+        );
+      case 1:
+        return DataRow(
+          cells: [
+            DataCell(TextLabel("Name")),
+            DataCell(TextLabel("RBC")),
+            DataCell(TextLabel("2025-12-12")),
+            DataCell(TextLabel("500.00")),
+          ],
+        );
       default:
         return null;
     }
@@ -70,34 +77,28 @@ class TransactionTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [TableCell(),TableCell(),TableCell(),TableCell()],
-        ),
-        Row(
-          children: [TableCell(),TableCell(),TableCell(),TableCell()],
-        ),
-        Row(
-          children: [TableCell(),TableCell(),TableCell(),TableCell()],
-        ),
+        Row(children: [TableCell(), TableCell(), TableCell(), TableCell()]),
+        Row(children: [TableCell(), TableCell(), TableCell(), TableCell()]),
+        Row(children: [TableCell(), TableCell(), TableCell(), TableCell()]),
       ],
     );
   }
 }
-
 
 class TableCell extends StatelessWidget {
   const TableCell({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child:
-    Container(
-      padding: EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.neutral50, width: 1)
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.neutral50, width: 1),
+        ),
+        child: TextLabel("Data"),
       ),
-        child: TextLabel("Data")
-    ));
+    );
   }
 }
 

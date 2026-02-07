@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Colors;
 import 'package:folio/colors.dart';
 import 'package:folio/home_page.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +27,16 @@ class MyApp extends StatelessWidget {
           onSurface: Colors.black,
         ),
       ),
-      home: Scaffold(body: const HomePage()),
+      home: Scaffold(
+        body: Row(
+          children: const [
+            NavigationPanel(),
+            Expanded(
+              child: Padding(padding: EdgeInsets.all(24.0), child: HomePage()),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -36,8 +46,42 @@ class NavigationPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [Text("Home"), Text("Analytics"), Text("Settings")],
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 24,horizontal: 12),
+      color: Colors.neutral25,
+      child: const Column(
+        spacing: 24,
+        children: [
+          IconButton(icon: LucideIcons.house),
+          IconButton(icon: LucideIcons.chartArea),
+          Spacer(),
+          IconButton(icon: LucideIcons.settings),
+        ],
+      ),
+    );
+  }
+}
+
+class IconButton extends StatefulWidget {
+  final void Function()? onTap;
+  final IconData icon;
+  const IconButton({super.key, this.onTap, required this.icon});
+
+  @override
+  State<IconButton> createState() => _IconButtonState();
+}
+
+class _IconButtonState extends State<IconButton> {
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          widget.onTap?.call();
+        },
+        child: Icon(widget.icon),
+      ),
     );
   }
 }
