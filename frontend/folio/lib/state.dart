@@ -29,6 +29,7 @@ class AccountStore extends ChangeNotifier {
   }
 
   void deleteAccount(String id) {
+    // TODO: get the first one just in case things have duplicate ids?
     _accounts.retainWhere((account) => account.id != id);
     notifyListeners();
   }

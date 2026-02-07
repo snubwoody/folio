@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart' hide Colors;
+import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
 import 'package:folio/components.dart';
+import 'package:folio/state.dart';
 import 'package:folio/style.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -107,27 +110,39 @@ class AccountPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accounts = context.watch<AccountStore>().accounts;
+    final accountStore = context.read<AccountStore>();
     return Column(
       children: [
-        Row(children: [TextLabel("Accounts"), Spacer(), TextLabel("New")]),
+        Row(
+          children: [
+            TextLabel("Accounts"),
+            Spacer(),
+            IconButton(
+              icon: LucideIcons.plus,
+              onTap: () =>
+                  accountStore.addAccount(Account(name: "New account")),
+            ),
+          ],
+        ),
         Row(
           spacing: 24,
-          children: [
-            Account(name: "RBC", balance: 24),
-            Account(name: "BOC", balance: 224),
-            Account(),
-            Account(),
-          ],
+          children: accounts
+              .map(
+                (account) =>
+                    AccountCard(name: account.name, balance: account.balance),
+              )
+              .toList(),
         ),
       ],
     );
   }
 }
 
-class Account extends StatelessWidget {
+class AccountCard extends StatelessWidget {
   final String name;
   final double balance;
-  const Account({super.key, this.name = "", this.balance = 0});
+  const AccountCard({super.key, this.name = "", this.balance = 0});
 
   @override
   Widget build(BuildContext context) {
