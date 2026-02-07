@@ -38,7 +38,10 @@ class MyApp extends StatelessWidget {
             children: const [
               NavigationPanel(),
               Expanded(
-                child: Padding(padding: EdgeInsets.all(24.0), child: HomePage()),
+                child: Padding(
+                  padding: EdgeInsets.all(24.0),
+                  child: HomePage(),
+                ),
               ),
             ],
           ),
