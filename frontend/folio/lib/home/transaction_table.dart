@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
 import 'package:folio/components.dart';
-import 'package:folio/state.dart';
-import 'package:folio/style.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:provider/provider.dart';
 
 class TransactionPanel extends StatelessWidget {
   const TransactionPanel({super.key});
@@ -65,9 +61,30 @@ class TransactionTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(children: [DropdownCell(), TextCell("Data"), TextCell("Data"), TextCell("Data")]),
-        Row(children: [DropdownCell(), TextCell("Data"), TextCell("Data"), TextCell("Data")]),
-        Row(children: [DropdownCell(), TextCell("Data"), TextCell("Data"), TextCell("Data")]),
+        Row(
+          children: [
+            DropdownCell(),
+            TextCell("Data"),
+            TextCell("Data"),
+            TextCell("Data"),
+          ],
+        ),
+        Row(
+          children: [
+            DropdownCell(),
+            TextCell("Data"),
+            TextCell("Data"),
+            TextCell("Data"),
+          ],
+        ),
+        Row(
+          children: [
+            DropdownCell(),
+            TextCell("Data"),
+            TextCell("Data"),
+            TextCell("Data"),
+          ],
+        ),
       ],
     );
   }
@@ -75,7 +92,7 @@ class TransactionTable extends StatelessWidget {
 
 class TextCell extends StatelessWidget {
   final String text;
-  const TextCell(this.text,{super.key});
+  const TextCell(this.text, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -89,20 +106,18 @@ class DropdownCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownMenu(
-        dropdownMenuEntries: [
-          DropdownMenuEntry(value: "1", label: "Account 1"),
-          DropdownMenuEntry(value: "2", label: "Account 2"),
-          DropdownMenuEntry(value: "3", label: "Account 3"),
-        ]
+      dropdownMenuEntries: [
+        DropdownMenuEntry(value: "1", label: "Account 1"),
+        DropdownMenuEntry(value: "2", label: "Account 2"),
+        DropdownMenuEntry(value: "3", label: "Account 3"),
+      ],
     );
   }
 }
 
-
-
 class TableCell extends StatelessWidget {
   final Widget child;
-  const TableCell({super.key,required this.child});
+  const TableCell({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +132,3 @@ class TableCell extends StatelessWidget {
     );
   }
 }
-
-
-

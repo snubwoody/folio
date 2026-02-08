@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 class BaseButton extends StatefulWidget {
   /// The color to fill the background of the button
   final Color? color;
+
   /// The color to fill the background of the button while
   /// the cursor is over the button.
   final Color? hoverColor;
@@ -22,7 +23,7 @@ class BaseButton extends StatefulWidget {
     this.onTap,
     this.padding,
     this.borderRadius,
-    this.hoverColor
+    this.hoverColor,
   });
 
   @override
@@ -32,7 +33,7 @@ class BaseButton extends StatefulWidget {
 class _BaseButtonState extends State<BaseButton> {
   bool _hovered = false;
 
-  void setHovered(bool hovered){
+  void setHovered(bool hovered) {
     setState(() {
       _hovered = hovered;
     });
@@ -51,11 +52,11 @@ class _BaseButtonState extends State<BaseButton> {
           decoration: BoxDecoration(
             borderRadius: widget.borderRadius,
             // TODO: animate
-            color: _hovered ? widget.hoverColor : widget.color
+            color: _hovered ? widget.hoverColor : widget.color,
           ),
           child: widget.child,
         ),
       ),
-    );;
+    );
   }
 }

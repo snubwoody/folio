@@ -17,7 +17,7 @@ class SettingsPanel extends StatefulWidget {
 class _SettingsPanelState extends State<SettingsPanel> {
   int _index = 0;
 
-  setIndex(int index){
+  setIndex(int index) {
     setState(() {
       _index = index;
     });
@@ -34,16 +34,28 @@ class _SettingsPanelState extends State<SettingsPanel> {
             child: Column(
               spacing: 12,
               children: [
-                PanelButton(onTap: () => setIndex(0), text: "General", selected: _index == 0),
-                PanelButton(onTap: () => setIndex(1), text: "Categories", selected: _index == 1),
-                PanelButton(onTap: () => setIndex(2), text: "Income streams", selected: _index == 2),
+                PanelButton(
+                  onTap: () => setIndex(0),
+                  text: "General",
+                  selected: _index == 0,
+                ),
+                PanelButton(
+                  onTap: () => setIndex(1),
+                  text: "Categories",
+                  selected: _index == 1,
+                ),
+                PanelButton(
+                  onTap: () => setIndex(2),
+                  text: "Income streams",
+                  selected: _index == 2,
+                ),
               ],
             ),
           ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(24.0),
-              child: switch (_index){
+              child: switch (_index) {
                 // TODO: Handle this case.
                 1 => CategoriesSection(),
                 2 => IncomeStreamsSection(),
@@ -79,16 +91,21 @@ class CategoriesSection extends StatelessWidget {
               ],
             ),
             Spacer(),
-            IconButton(icon: LucideIcons.plus)
+            IconButton(icon: LucideIcons.plus),
           ],
         ),
-        ...categories.map((c) => Row(
-          children: [
-            TextLabel(c.title),
-            Spacer(),
-            IconButton(icon: LucideIcons.trash2,onTap:() => settings.deleteCategory(c.id),)
-          ],
-        ))
+        ...categories.map(
+          (c) => Row(
+            children: [
+              TextLabel(c.title),
+              Spacer(),
+              IconButton(
+                icon: LucideIcons.trash2,
+                onTap: () => settings.deleteCategory(c.id),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -175,18 +192,21 @@ class PanelButton extends StatelessWidget {
     super.key,
     required this.onTap,
     required this.text,
-    required this.selected
+    required this.selected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return  BaseButton(
+    return BaseButton(
       color: selected ? Colors.purple500 : null,
       hoverColor: selected ? null : Colors.neutral50,
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
-      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 12),
-      child: TextLabel(text,color: selected ? Colors.neutral25 : Colors.neutral950,),
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      child: TextLabel(
+        text,
+        color: selected ? Colors.neutral25 : Colors.neutral950,
+      ),
     );
   }
 }

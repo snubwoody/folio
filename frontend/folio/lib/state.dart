@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 
-
-class Category{
+class Category {
   final String id;
   final String title;
 
-  const Category({
-    this.id = "",
-    this.title = ""
-  });
+  const Category({this.id = "", this.title = ""});
 }
 
-class IncomeStream{
+class IncomeStream {
   final String id;
   final String title;
 
-  const IncomeStream({
-    this.id = "",
-    this.title = ""
-  });
+  const IncomeStream({this.id = "", this.title = ""});
 }
 
 class Account {
@@ -35,12 +28,12 @@ class Account {
   });
 }
 
-class SettingsStore extends ChangeNotifier{
+class SettingsStore extends ChangeNotifier {
   final List<Category> _categories = [
-    Category(title: "School",id: "1"),
-    Category(title: "Entertainment",id: "2"),
-    Category(title: "Groceries",id: "3"),
-    Category(title: "Subscriptions",id: "4"),
+    Category(title: "School", id: "1"),
+    Category(title: "Entertainment", id: "2"),
+    Category(title: "Groceries", id: "3"),
+    Category(title: "Subscriptions", id: "4"),
   ];
   final List<IncomeStream> _incomeStreams = [];
 
@@ -51,13 +44,13 @@ class SettingsStore extends ChangeNotifier{
   List<IncomeStream> get incomeStreams => _incomeStreams;
 
   /// Add a new category to the categories list.
-  void addCategory(Category category){
+  void addCategory(Category category) {
     _categories.add(category);
     notifyListeners();
   }
 
   /// Add a new income stream to the list.
-  void addIncomeStream(IncomeStream stream){
+  void addIncomeStream(IncomeStream stream) {
     _incomeStreams.add(stream);
     notifyListeners();
   }
