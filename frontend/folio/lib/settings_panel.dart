@@ -7,8 +7,21 @@ import 'package:provider/provider.dart';
 
 // TODO: generator function for currencies
 
-class SettingsPanel extends StatelessWidget {
+class SettingsPanel extends StatefulWidget {
   const SettingsPanel({super.key});
+
+  @override
+  State<SettingsPanel> createState() => _SettingsPanelState();
+}
+
+class _SettingsPanelState extends State<SettingsPanel> {
+  int _index = 0;
+
+  setIndex(int index){
+    setState(() {
+      _index = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +34,21 @@ class SettingsPanel extends StatelessWidget {
             child: Column(
               spacing: 12,
               children: [
-                TextLabel("General"),
-                TextLabel("Categories"),
-                TextLabel("Income streams"),
+                BaseButton(child: TextLabel("General"), onTap: ()=>setIndex(0),),
+                BaseButton(child: TextLabel("Categories"), onTap: ()=>setIndex(1)),
+                BaseButton(child: TextLabel("Income Streams"), onTap: ()=>setIndex(2)),
               ],
             ),
           ),
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(24.0),
-              child: GeneralSettings(),
+              child: switch (_index){
+                // TODO: Handle this case.
+                1 => CategoriesSection(),
+                2 => IncomeStreamsSection(),
+                _ => GeneralSection(),
+              },
             ),
           ),
         ],
@@ -39,8 +57,76 @@ class SettingsPanel extends StatelessWidget {
   }
 }
 
-class GeneralSettings extends StatelessWidget {
-  const GeneralSettings({super.key});
+/// Base button that provides basic button functionality such as
+/// tap callbacks. It is intended to be used as a building block for
+/// other buttons.
+class BaseButton extends StatelessWidget {
+  final void Function()? onTap;
+  final Widget child;
+  const BaseButton({super.key,this.onTap,required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => onTap?.call(),
+        child: child,
+      ),
+    );;
+  }
+}
+
+
+class CategoriesSection extends StatelessWidget {
+  const CategoriesSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = context.watch<SettingsStore>().categories;
+    final settings = context.read<SettingsStore>();
+    return Column(
+      spacing: 16,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Column(
+              spacing: 4,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextLabel("Categories"),
+                TextLabel("Categories are used for organising expenses."),
+              ],
+            ),
+            Spacer(),
+            IconButton(icon: LucideIcons.plus)
+          ],
+        ),
+        ...categories.map((c) => Row(
+          children: [
+            TextLabel(c.title),
+            Spacer(),
+            IconButton(icon: LucideIcons.trash2,onTap:() => settings.deleteCategory(c.id),)
+          ],
+        ))
+      ],
+    );
+  }
+}
+
+class IncomeStreamsSection extends StatelessWidget {
+  const IncomeStreamsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextLabel("Hi");
+  }
+}
+
+
+class GeneralSection extends StatelessWidget {
+  const GeneralSection({super.key});
 
   @override
   Widget build(BuildContext context) {
