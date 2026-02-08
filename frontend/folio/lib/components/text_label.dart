@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 class TextLabel extends StatelessWidget {
   final String text;
-  const TextLabel(this.text, {super.key});
+  final Color? color;
+  const TextLabel(this.text, {super.key,this.color});
 
   @override
   Widget build(BuildContext context) {
-    return Text(text);
+    return Text(text,style: TextStyle(color: color ),);
   }
 }

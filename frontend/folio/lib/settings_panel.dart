@@ -34,9 +34,9 @@ class _SettingsPanelState extends State<SettingsPanel> {
             child: Column(
               spacing: 12,
               children: [
-                BaseButton(child: TextLabel("General"), onTap: ()=>setIndex(0),),
-                BaseButton(child: TextLabel("Categories"), onTap: ()=>setIndex(1)),
-                BaseButton(child: TextLabel("Income Streams"), onTap: ()=>setIndex(2)),
+                PanelButton(onTap: () => setIndex(0), text: "General", selected: _index == 0),
+                PanelButton(onTap: () => setIndex(1), text: "Categories", selected: _index == 1),
+                PanelButton(onTap: () => setIndex(2), text: "Income streams", selected: _index == 2),
               ],
             ),
           ),
@@ -56,27 +56,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
     );
   }
 }
-
-/// Base button that provides basic button functionality such as
-/// tap callbacks. It is intended to be used as a building block for
-/// other buttons.
-class BaseButton extends StatelessWidget {
-  final void Function()? onTap;
-  final Widget child;
-  const BaseButton({super.key,this.onTap,required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () => onTap?.call(),
-        child: child,
-      ),
-    );;
-  }
-}
-
 
 class CategoriesSection extends StatelessWidget {
   const CategoriesSection({super.key});
@@ -123,7 +102,6 @@ class IncomeStreamsSection extends StatelessWidget {
     return TextLabel("Hi");
   }
 }
-
 
 class GeneralSection extends StatelessWidget {
   const GeneralSection({super.key});
@@ -190,10 +168,25 @@ class AccountSection extends StatelessWidget {
 }
 
 class PanelButton extends StatelessWidget {
-  const PanelButton({super.key});
+  final void Function() onTap;
+  final String text;
+  final bool selected;
+  const PanelButton({
+    super.key,
+    required this.onTap,
+    required this.text,
+    required this.selected
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return  BaseButton(
+      color: selected ? Colors.purple500 : null,
+      hoverColor: selected ? null : Colors.neutral50,
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 12),
+      child: TextLabel(text,color: selected ? Colors.neutral25 : Colors.neutral950,),
+    );
   }
 }
