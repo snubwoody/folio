@@ -6,6 +6,8 @@ import 'package:folio/style.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
+import 'home/transaction_table.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -32,75 +34,6 @@ class TransactionPanel extends StatelessWidget {
         Row(children: [TextLabel("Transactions"), Spacer(), TextLabel("New")]),
         TransactionTable(),
       ],
-    );
-  }
-}
-
-class TransactionTableSource extends DataTableSource {
-  @override
-  int get rowCount => 2;
-
-  @override
-  DataRow? getRow(int index) {
-    switch (index) {
-      case 0:
-        return DataRow(
-          cells: [
-            DataCell(TextLabel("Name")),
-            DataCell(TextLabel("RBC")),
-            DataCell(TextLabel("2025-12-12")),
-            DataCell(TextLabel("500.00")),
-          ],
-        );
-      case 1:
-        return DataRow(
-          cells: [
-            DataCell(TextLabel("Name")),
-            DataCell(TextLabel("RBC")),
-            DataCell(TextLabel("2025-12-12")),
-            DataCell(TextLabel("500.00")),
-          ],
-        );
-      default:
-        return null;
-    }
-  }
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get selectedRowCount => 0;
-}
-
-class TransactionTable extends StatelessWidget {
-  const TransactionTable({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(children: [TableCell(), TableCell(), TableCell(), TableCell()]),
-        Row(children: [TableCell(), TableCell(), TableCell(), TableCell()]),
-        Row(children: [TableCell(), TableCell(), TableCell(), TableCell()]),
-      ],
-    );
-  }
-}
-
-class TableCell extends StatelessWidget {
-  const TableCell({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.neutral50, width: 1),
-        ),
-        child: TextLabel("Data"),
-      ),
     );
   }
 }
