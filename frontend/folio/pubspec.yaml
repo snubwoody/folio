@@ -36,9 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   lucide_icons_flutter: ^3.1.9
   provider: ^6.1.5+1
-  rust_lib_folio:
-    path: rust_builder
   flutter_rust_bridge: 2.11.1
+  drift: ^2.31.0
+  drift_flutter: ^0.2.8
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +53,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   integration_test:
     sdk: flutter
+  drift_dev: ^2.31.0
+  build_runner: ^2.11.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
