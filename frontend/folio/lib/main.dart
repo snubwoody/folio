@@ -98,7 +98,7 @@
 //
 
 import 'package:flutter/material.dart';
-import 'package:folio/src/rust/api/simple.dart';
+import 'package:folio/src/rust/api.dart';
 import 'package:folio/src/rust/frb_generated.dart';
 
 Future<void> main() async {

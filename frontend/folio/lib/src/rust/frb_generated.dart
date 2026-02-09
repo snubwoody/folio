@@ -3,7 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
+import 'api.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_generated.dart';
@@ -55,7 +55,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 
   @override
   Future<void> executeRustInitializers() async {
-    await api.crateApiSimpleInitApp();
+    await api.crateApiInitApp();
   }
 
   @override
@@ -66,20 +66,20 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1918914929;
+  int get rustContentHash => 1579834898;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
-        stem: 'rust_lib_folio',
-        ioDirectory: 'rust/target/release/',
+        stem: 'folio_lib',
+        ioDirectory: '../../crates/folio-desktop/target/release/',
         webPrefix: 'pkg/',
       );
 }
 
 abstract class RustLibApi extends BaseApi {
-  String crateApiSimpleGreet({required String name});
+  String crateApiGreet({required String name});
 
-  Future<void> crateApiSimpleInitApp();
+  Future<void> crateApiInitApp();
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -91,7 +91,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  String crateApiSimpleGreet({required String name}) {
+  String crateApiGreet({required String name}) {
     return handler.executeSync(
       SyncTask(
         callFfi: () {
@@ -103,18 +103,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_String,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiSimpleGreetConstMeta,
+        constMeta: kCrateApiGreetConstMeta,
         argValues: [name],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleGreetConstMeta =>
+  TaskConstMeta get kCrateApiGreetConstMeta =>
       const TaskConstMeta(debugName: "greet", argNames: ["name"]);
 
   @override
-  Future<void> crateApiSimpleInitApp() {
+  Future<void> crateApiInitApp() {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -130,14 +130,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: null,
         ),
-        constMeta: kCrateApiSimpleInitAppConstMeta,
+        constMeta: kCrateApiInitAppConstMeta,
         argValues: [],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiSimpleInitAppConstMeta =>
+  TaskConstMeta get kCrateApiInitAppConstMeta =>
       const TaskConstMeta(debugName: "init_app", argNames: []);
 
   @protected

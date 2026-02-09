@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/*","frontend/folio/rust"]
+members = ["crates/*"]
 
 [workspace.package]
 version = "1.3.1"
