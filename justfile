@@ -9,6 +9,10 @@ db-create:
 test *flags:
     flutter test -r expanded {{flags}}
 
+[working-directory: 'frontend/folio']
+fmt-flutter:
+    dart format .
+
 # Run migrations on the sqlite database
 db-migrate:
     cargo sqlx migrate run --source crates/folio-desktop/migrations

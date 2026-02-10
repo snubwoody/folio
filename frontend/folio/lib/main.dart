@@ -84,4 +84,3 @@ class NavigationPanel extends StatelessWidget {
     );
   }
 }
-
