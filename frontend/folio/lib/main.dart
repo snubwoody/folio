@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
+import 'package:folio/database.dart';
 import 'package:folio/home_page.dart';
 import 'package:folio/components.dart';
 import 'package:folio/settings_panel.dart';
@@ -8,20 +9,27 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  final database = AppDatabase(openConnection());
+  runApp(MyApp(database));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AppDatabase _db;
+  MyApp(this._db,{super.key});
   @override
   Widget build(BuildContext context) {
+    // TODO: pass this in the constructor?
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (BuildContext context) => AccountStore(),
         ),
         ChangeNotifierProvider(
-          create: (BuildContext context) => SettingsStore(),
+          create: (BuildContext context) {
+            final store = SettingsStore(_db);
+            store.load();
+            return store;
+            },
         ),
       ],
       child: MaterialApp(

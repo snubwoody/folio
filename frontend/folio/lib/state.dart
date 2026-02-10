@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:folio/database.dart';
 
 class Category {
   final String id;
@@ -29,19 +30,25 @@ class Account {
 }
 
 class SettingsStore extends ChangeNotifier {
-  final List<Category> _categories = [
-    Category(title: "School", id: "1"),
-    Category(title: "Entertainment", id: "2"),
-    Category(title: "Groceries", id: "3"),
-    Category(title: "Subscriptions", id: "4"),
-  ];
-  final List<IncomeStream> _incomeStreams = [];
+  SettingsStore(this._db);
+
+  final AppDatabase _db;
+  List<Category> _categories = [];
+  List<IncomeStream> _incomeStreams = [];
 
   /// A list of all the categories.
   List<Category> get categories => _categories;
 
   /// A list of the all income streams.
   List<IncomeStream> get incomeStreams => _incomeStreams;
+
+
+  /// Load the data from the database
+  Future<void> load()async{
+    _categories = await _db.getCategories();
+    _incomeStreams = await _db.getIncomeStreams();
+    notifyListeners();
+  }
 
   /// Add a new category to the categories list.
   void addCategory(Category category) {
