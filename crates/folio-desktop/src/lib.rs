@@ -19,8 +19,8 @@ mod money;
 pub mod service;
 mod settings;
 mod support;
+mod db;
 
-pub mod service;
 use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;

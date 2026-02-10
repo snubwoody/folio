@@ -3,11 +3,13 @@ import 'dart:math';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:folio/state.dart';
 import 'package:path_provider/path_provider.dart';
 
 part 'database.g.dart';
 
 // TODO: 6 digits after decimal
+@DataClassName("CategoryRow")
 class Categories extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
@@ -17,6 +19,7 @@ class Categories extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+@DataClassName("IncomeStreamRow")
 class IncomeStreams extends Table {
   TextColumn get id => text()();
   TextColumn get title => text()();
@@ -24,9 +27,11 @@ class IncomeStreams extends Table {
 
   @override
   Set<Column<Object>> get primaryKey => {id};
+
 }
 
 // TODO: on delete
+@DataClassName("BudgetRow")
 class Budgets extends Table {
   TextColumn get id => text()();
   IntColumn get amount => integer()();
@@ -37,6 +42,7 @@ class Budgets extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+@DataClassName("AccountRow")
 class Accounts extends Table {
   TextColumn get id => text()();
   IntColumn get startingBalance => integer()();
@@ -48,6 +54,7 @@ class Accounts extends Table {
 }
 
 // TODO dates
+@DataClassName("ExpenseRow")
 class Expenses extends Table {
   TextColumn get id => text()();
   IntColumn get amount => integer()();
@@ -62,6 +69,7 @@ class Expenses extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+@DataClassName("IncomeRow")
 class Incomes extends Table {
   TextColumn get id => text()();
   IntColumn get amount => integer()();
@@ -99,6 +107,18 @@ class AppDatabase extends _$AppDatabase {
       ),
       // If you need web support, see https://drift.simonbinder.eu/platforms/web/
     );
+  }
+
+  /// Fetches all the categories from the database
+  Future<List<Category>> getCategories()async {
+    final rows = await select(categories).get();
+    return rows.map((r) => Category(id: r.id,title: r.title)).toList();
+  }
+
+  /// Fetches all the income streams from the database
+  Future<List<IncomeStream>> getIncomeStreams()async {
+    final rows = await select(incomeStreams).get();
+    return rows.map((r) => IncomeStream(id: r.id,title: r.title)).toList();
   }
 
   // TODO: test these
@@ -165,8 +185,8 @@ LazyDatabase openConnection({String path = "data.sqlite"}) {
 
 /// Generates a random alphanumeric string
 String generateRandomString(int len) {
-  var r = Random();
-  const _chars =
+  var rng = Random();
+  const chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+  return List.generate(len, (index) => chars[rng.nextInt(chars.length)]).join();
 }
