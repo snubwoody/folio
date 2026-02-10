@@ -15,28 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import Expense from "./Expense.svelte";
-    import { appStore } from "$lib/state.svelte";
+    import type { Snippet } from "svelte";
+    import type { HTMLAttributes } from "svelte/elements";
+
+    interface Props extends HTMLAttributes<HTMLDivElement>{
+        children: Snippet
+    }
+    const { children }: Props = $props();
 </script>
 
-<ul class="expense-table">
-	<li class="table-heading">Category</li>
-	<li class="table-heading">Account</li>
-	<li class="table-heading">Date</li>
-	<li class="table-heading">Amount</li>
-	{#each appStore.expenses as expense (expense.id)}
-		<Expense {expense}/>
-	{/each}
-</ul>
+<th class="table-header">{@render children()}</th>
 
-<style>
-	.expense-table{
-		display: grid;
-		grid-template-columns: repeat(4,1fr);
-	}
-
-	.table-heading{
-		color: var(--color-text-muted);
-		padding: 12px;
-	}
-</style>

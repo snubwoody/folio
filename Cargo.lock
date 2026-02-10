@@ -5427,7 +5427,6 @@ dependencies = [
  "memchr",
  "once_cell",
  "percent-encoding",
- "rust_decimal",
  "serde",
  "serde_json",
  "sha2",
@@ -5437,7 +5436,6 @@ dependencies = [
  "tokio-stream",
  "tracing",
  "url",
- "uuid",
 ]
 
 [[package]]
@@ -5510,7 +5508,6 @@ dependencies = [
  "percent-encoding",
  "rand 0.8.5",
  "rsa",
- "rust_decimal",
  "serde",
  "sha1",
  "sha2",
@@ -5519,7 +5516,6 @@ dependencies = [
  "stringprep",
  "thiserror 2.0.17",
  "tracing",
- "uuid",
  "whoami",
 ]
 
@@ -5550,7 +5546,6 @@ dependencies = [
  "memchr",
  "once_cell",
  "rand 0.8.5",
- "rust_decimal",
  "serde",
  "serde_json",
  "sha2",
@@ -5559,7 +5554,6 @@ dependencies = [
  "stringprep",
  "thiserror 2.0.17",
  "tracing",
- "uuid",
  "whoami",
 ]
 
@@ -5586,7 +5580,6 @@ dependencies = [
  "thiserror 2.0.17",
  "tracing",
  "url",
- "uuid",
 ]
 
 [[package]]

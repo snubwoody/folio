@@ -1,4 +1,3 @@
-mod frb_generated; /* AUTO INJECTED BY flutter_rust_bridge. This line may not be accurate, and you can change it according to your needs. */
 // Copyright (C) 2025 Wakunguma Kalimukwa
 //
 // This program is free software: you can redistribute it and/or modify
@@ -15,9 +14,9 @@ mod frb_generated; /* AUTO INJECTED BY flutter_rust_bridge. This line may not be
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
-pub mod api;
 mod error;
 mod money;
+pub mod service;
 mod settings;
 mod support;
 
@@ -32,6 +31,7 @@ use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
 
+// TODO: test this
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
         .title("Folio")

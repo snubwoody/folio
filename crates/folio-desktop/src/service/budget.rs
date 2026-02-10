@@ -18,7 +18,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tracing::info;
 
-use crate::{Money, service::Category};
+use crate::{Money, db, service::Category};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -38,13 +38,12 @@ impl Budget {
         pool: &SqlitePool,
     ) -> crate::Result<Self> {
         let amount = amount.inner();
-        let record = sqlx::query!(
-            "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
-            amount,
-            category_id,
-        )
-        .fetch_one(pool)
-        .await?;
+        let record: db::Budget =
+            sqlx::query_as("INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING *")
+                .bind(amount)
+                .bind(category_id)
+                .fetch_one(pool)
+                .await?;
 
         let budget = Self::from_id(&record.id, pool).await?;
 
@@ -54,7 +53,9 @@ impl Budget {
 
     pub async fn edit(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
         let amount = amount.inner();
-        sqlx::query!("UPDATE budgets SET amount = $1 WHERE id=$2", amount, id)
+        sqlx::query("UPDATE budgets SET amount = $1 WHERE id=$2")
+            .bind(amount)
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -64,7 +65,8 @@ impl Budget {
     }
 
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query!("DELETE FROM budgets WHERE id=$1", id)
+        sqlx::query("DELETE FROM budgets WHERE id=$1")
+            .bind(id)
             .execute(pool)
             .await?;
 
@@ -73,7 +75,8 @@ impl Budget {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let record = sqlx::query!("SELECT * FROM budgets WHERE id=$1", id)
+        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
+            .bind(id)
             .fetch_one(pool)
             .await?;
 
@@ -95,7 +98,7 @@ impl Budget {
 }
 
 pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
-    let records = sqlx::query!("SELECT id FROM budgets")
+    let records: Vec<db::Budget> = sqlx::query_as("SELECT id FROM budgets")
         .fetch_all(pool)
         .await?;
 
@@ -147,7 +150,7 @@ mod test {
     }
 
     #[sqlx::test]
-    async fn get_category(pool: SqlitePool) -> crate::Result<()> {
+    async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
         let category_id = &fetch_categories(&pool).await?[0].id;
         let amount = Money::from_f64(10.2).inner();
         let record = sqlx::query!(
