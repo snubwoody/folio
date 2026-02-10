@@ -30,10 +30,12 @@ class CategoriesSection extends StatelessWidget {
           ],
         ),
         Expanded(
+          // FIXME: spacing not showing
+          // TODO: try adding keys for better performance
           child: ListView.separated(
             itemCount: categories.length,
             itemBuilder: (context, index) => CategoryCard(categories[index]),
-            separatorBuilder: (BuildContext context, int index) => SizedBox(height: 24,),
+            separatorBuilder: (BuildContext context, int index) => SizedBox(height: 500,),
           ),
         ),
       ],
@@ -48,18 +50,15 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.read<SettingsStore>();
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24.0),
-      child: Row(
-        children: [
-          TextLabel(category.title),
-          Spacer(),
-          IconButton(
-            icon: LucideIcons.trash2,
-            onTap: () => settings.deleteCategory(category.id),
-          ),
-        ],
-      ),
+    return Row(
+      children: [
+        TextLabel(category.title),
+        Spacer(),
+        IconButton(
+          icon: LucideIcons.trash2,
+          onTap: () => settings.deleteCategory(category.id),
+        ),
+      ],
     );;
   }
 }

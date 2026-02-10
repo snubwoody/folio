@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class IconButton extends StatefulWidget {
   final void Function()? onTap;
   final IconData icon;
-  const IconButton({super.key, this.onTap, required this.icon});
+  final double size;
+  const IconButton({super.key, this.onTap, required this.icon, this.size = 16});
 
   @override
   State<IconButton> createState() => _IconButtonState();
@@ -18,7 +19,7 @@ class _IconButtonState extends State<IconButton> {
         onTap: () {
           widget.onTap?.call();
         },
-        child: Icon(widget.icon),
+        child: Icon(widget.icon, size: widget.size,),
       ),
     );
   }

@@ -63,9 +63,10 @@ class SettingsStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteCategory(String id) {
-    // TODO: get the first one just in case things have duplicate ids?
-    _categories.retainWhere((c) => c.id != id);
+  /// Deletes a category.
+  Future<void> deleteCategory(String id) async {
+    await _db.deleteCategory(id);
+    await load();
     notifyListeners();
   }
 

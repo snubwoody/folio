@@ -136,6 +136,17 @@ class AppDatabase extends _$AppDatabase {
     return rowId;
   }
 
+  // TODO: test these
+  /// Deletes a row from the `categories` table with the matching `id`.
+  Future<void> deleteCategory(String id) async {
+    await (delete(categories)..where((r) => r.id.equals(id))).go();
+  }
+
+  /// Deletes a row from the `incomeStreams` table with the matching `id`.
+  Future<void> deleteIncomeStream(String id) async {
+    await (delete(incomeStreams)..where((r) => r.id.equals(id))).go();
+  }
+
   /// Adds a new income stream to the database and returns the `id`.
   Future<String> addIncomeStream({required String title, String? id}) async {
     final rowId = id ?? generateRandomString(20);
