@@ -3,7 +3,7 @@ import 'package:folio/colors.dart';
 import 'package:folio/database.dart';
 import 'package:folio/home_page.dart';
 import 'package:folio/components.dart';
-import 'package:folio/settings_panel.dart';
+import 'package:folio/settings/settings_panel.dart';
 import 'package:folio/state.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +15,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   final AppDatabase _db;
-  MyApp(this._db,{super.key});
+  MyApp(this._db, {super.key});
   @override
   Widget build(BuildContext context) {
     // TODO: pass this in the constructor?
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
             final store = SettingsStore(_db);
             store.load();
             return store;
-            },
+          },
         ),
       ],
       child: MaterialApp(

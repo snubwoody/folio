@@ -91,21 +91,39 @@ class CategoriesSection extends StatelessWidget {
               ],
             ),
             Spacer(),
-            IconButton(icon: LucideIcons.plus),
+            IconButton(icon: LucideIcons.plus,onTap: () => settings.addCategory(title: "New category"),),
           ],
         ),
-        ...categories.map(
-          (c) => Row(
-            children: [
-              TextLabel(c.title),
-              Spacer(),
-              IconButton(
-                icon: LucideIcons.trash2,
-                onTap: () => settings.deleteCategory(c.id),
-              ),
-            ],
+        Expanded(
+          child: ListView.builder(
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return Row(
+                children: [
+                  TextLabel(category.title),
+                  Spacer(),
+                  IconButton(
+                    icon: LucideIcons.trash2,
+                    onTap: () => settings.deleteCategory(category.id),
+                  ),
+                ],
+              );
+            },
           ),
         ),
+        // ...categories.map(
+        //   (c) => Row(
+        //     children: [
+        //       TextLabel(c.title),
+        //       Spacer(),
+        //       IconButton(
+        //         icon: LucideIcons.trash2,
+        //         onTap: () => settings.deleteCategory(c.id),
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }

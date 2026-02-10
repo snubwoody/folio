@@ -27,7 +27,6 @@ class IncomeStreams extends Table {
 
   @override
   Set<Column<Object>> get primaryKey => {id};
-
 }
 
 // TODO: on delete
@@ -110,15 +109,15 @@ class AppDatabase extends _$AppDatabase {
   }
 
   /// Fetches all the categories from the database
-  Future<List<Category>> getCategories()async {
+  Future<List<Category>> getCategories() async {
     final rows = await select(categories).get();
-    return rows.map((r) => Category(id: r.id,title: r.title)).toList();
+    return rows.map((r) => Category(id: r.id, title: r.title)).toList();
   }
 
   /// Fetches all the income streams from the database
-  Future<List<IncomeStream>> getIncomeStreams()async {
+  Future<List<IncomeStream>> getIncomeStreams() async {
     final rows = await select(incomeStreams).get();
-    return rows.map((r) => IncomeStream(id: r.id,title: r.title)).toList();
+    return rows.map((r) => IncomeStream(id: r.id, title: r.title)).toList();
   }
 
   // TODO: test these

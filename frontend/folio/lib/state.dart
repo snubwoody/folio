@@ -42,17 +42,18 @@ class SettingsStore extends ChangeNotifier {
   /// A list of the all income streams.
   List<IncomeStream> get incomeStreams => _incomeStreams;
 
-
   /// Load the data from the database
-  Future<void> load()async{
+  Future<void> load() async {
     _categories = await _db.getCategories();
     _incomeStreams = await _db.getIncomeStreams();
     notifyListeners();
   }
 
   /// Add a new category to the categories list.
-  void addCategory(Category category) {
-    _categories.add(category);
+  Future<void> addCategory({required String title}) async {
+    // _categories.add(category);
+    _db.addCategory(title: title);
+    await load();
     notifyListeners();
   }
 

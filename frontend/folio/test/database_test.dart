@@ -22,7 +22,10 @@ void main() {
       assert(items[0].title == "Stream 1");
     });
     test(".addAccount() adds an account with the properties", () async {
-      final id = await database.addAccount(name: "Account 24", startingBalance: 200);
+      final id = await database.addAccount(
+        name: "Account 24",
+        startingBalance: 200,
+      );
       final items = await (database.select(
         database.accounts,
       )..where((r) => r.id.equals(id))).get();
@@ -32,7 +35,7 @@ void main() {
     test(".getCategories() returns all the categories", () async {
       await database.addCategory(title: "New category");
       final categories = await database.getCategories();
-      final rows = await database.select(database.categories,).get();
+      final rows = await database.select(database.categories).get();
       assert(categories.length == rows.length);
       assert(categories[0].title == categories[0].title);
       assert(categories[0].id == categories[0].id);
@@ -40,7 +43,7 @@ void main() {
     test(".getIncomeStreams() returns all the income streams", () async {
       await database.addIncomeStream(title: "New stream");
       final streams = await database.getIncomeStreams();
-      final rows = await database.select(database.incomeStreams,).get();
+      final rows = await database.select(database.incomeStreams).get();
       assert(streams.length == rows.length);
       assert(streams[0].title == streams[0].title);
       assert(streams[0].id == streams[0].id);
