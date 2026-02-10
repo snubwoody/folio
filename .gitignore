@@ -1,11 +1,12 @@
 .DS_Store
-node_modules
-data.db
+*.db
+*.sqlite
 
 # Build output
-.svelte-kit
+.svelte-kit/
+node_modules/
 *.msix
-build
+build/
 target/
 
 # Env variables and secrets
