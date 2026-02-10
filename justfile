@@ -4,6 +4,11 @@ set windows-shell := ["powershell"]
 db-create:
     cargo sqlx database create
 
+# Run tests
+[working-directory: 'frontend/folio']
+test *flags:
+    flutter test -r expanded {{flags}}
+
 # Run migrations on the sqlite database
 db-migrate:
     cargo sqlx migrate run --source crates/folio-desktop/migrations
