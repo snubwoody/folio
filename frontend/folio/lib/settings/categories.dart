@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide IconButton, Colors;
+import 'package:flutter/material.dart' hide IconButton, Colors,EditableText;
 import 'package:folio/components.dart';
 import 'package:folio/state.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -30,12 +30,11 @@ class CategoriesSection extends StatelessWidget {
           ],
         ),
         Expanded(
-          // FIXME: spacing not showing
           // TODO: try adding keys for better performance
           child: ListView.separated(
             itemCount: categories.length,
             itemBuilder: (context, index) => CategoryCard(categories[index]),
-            separatorBuilder: (BuildContext context, int index) => SizedBox(height: 500,),
+            separatorBuilder: (BuildContext context, int index) => SizedBox(height: 16,),
           ),
         ),
       ],
@@ -44,22 +43,25 @@ class CategoriesSection extends StatelessWidget {
 }
 
 class CategoryCard extends StatelessWidget {
+  final TextEditingController? _controller;
   final Category category;
-  const CategoryCard(this.category,{super.key});
+  CategoryCard(this.category,{super.key}): _controller = TextEditingController(text: category.title);
 
   @override
   Widget build(BuildContext context) {
     final settings = context.read<SettingsStore>();
     return Row(
       children: [
-        TextLabel(category.title),
+        Expanded(child: InlineTextField(
+          controller: TextEditingController(text: category.title),
+        )),
         Spacer(),
         IconButton(
           icon: LucideIcons.trash2,
           onTap: () => settings.deleteCategory(category.id),
         ),
       ],
-    );;
+    );
   }
 }
 

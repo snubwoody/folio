@@ -4,6 +4,7 @@ import 'package:folio/state.dart';
 import 'package:folio/colors.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'categories.dart';
 
 // TODO: generator function for currencies
 
@@ -65,66 +66,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CategoriesSection extends StatelessWidget {
-  const CategoriesSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final categories = context.watch<SettingsStore>().categories;
-    final settings = context.read<SettingsStore>();
-    return Column(
-      spacing: 16,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Column(
-              spacing: 4,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextLabel("Categories"),
-                TextLabel("Categories are used for organising expenses."),
-              ],
-            ),
-            Spacer(),
-            IconButton(icon: LucideIcons.plus,onTap: () => settings.addCategory(title: "New category"),),
-          ],
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              return Row(
-                children: [
-                  TextLabel(category.title),
-                  Spacer(),
-                  IconButton(
-                    icon: LucideIcons.trash2,
-                    onTap: () => settings.deleteCategory(category.id),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-        // ...categories.map(
-        //   (c) => Row(
-        //     children: [
-        //       TextLabel(c.title),
-        //       Spacer(),
-        //       IconButton(
-        //         icon: LucideIcons.trash2,
-        //         onTap: () => settings.deleteCategory(c.id),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-      ],
     );
   }
 }

@@ -1,14 +1,64 @@
 import 'package:flutter/material.dart';
 
-// --text-h1--line-height: 1;
-// --text-h2--line-height: 1;
-// --text-h3--line-height: 1;
-// --text-h4--line-height: 1.25;
-// --text-h5--line-height: 1.25;
-// --text-h6--line-height: 1.5;
-// --text-body--line-height: 1.5;
-// --text-sm--line-height: 1.5;
-// --text-xs--line-height: 1.5;
+// TODO: add font
+abstract final class TextStyles{
+  static const String _fontFamily = "Satoshi";
+
+  static const TextStyle h1 = TextStyle(
+    fontSize: Style.textSizeH1,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.0
+  );
+  static const TextStyle h2= TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeH2,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.0
+  );
+  static const TextStyle h3= TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeH3,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.0
+  );
+  static const TextStyle h4= TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeH4,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.25
+  );
+  static const TextStyle h5= TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeH5,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.25
+  );
+  static const TextStyle h6 = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeH6,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.5
+  );
+  static const TextStyle body = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeBody,
+    fontWeight: FontWeight.w400,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.5
+  );
+  static const TextStyle small = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeSm,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.5
+  );
+  static const TextStyle extraSmall = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: Style.textSizeXs,
+    fontVariations: [FontVariation("wght", 400)],
+    height:  1.5
+  );
+}
 
 abstract final class Style {
   static const double textSizeH1 = 64;
