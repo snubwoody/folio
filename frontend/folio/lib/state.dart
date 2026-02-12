@@ -91,13 +91,18 @@ class SettingsStore extends ChangeNotifier {
 }
 
 class AccountStore extends ChangeNotifier {
-  final List<Account> _accounts = [
-    Account(name: "Account 1", balance: 24, id: "1"),
-    Account(name: "Account 2", balance: 24, id: "2"),
-    Account(name: "Account 3", balance: 24, id: "3"),
-  ];
+  final AppDatabase _db;
+  AccountStore(this._db);
+
+  List<Account> _accounts = [];
 
   List<Account> get accounts => _accounts;
+
+  /// Load the data from the database
+  Future<void> load() async {
+    _accounts = await _db.getAccounts();
+    notifyListeners();
+  }
 
   void addAccount(Account account) {
     _accounts.add(account);

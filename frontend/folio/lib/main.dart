@@ -22,7 +22,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext context) => AccountStore(),
+          create: (BuildContext context) {
+            final store = AccountStore(_db);
+            store.load();
+            return store;
+          },
         ),
         ChangeNotifierProvider(
           create: (BuildContext context) {

@@ -46,6 +46,7 @@ class AccountPanel extends StatelessWidget {
     final accounts = context.watch<AccountStore>().accounts;
     final accountStore = context.read<AccountStore>();
     return Column(
+      spacing: 20,
       children: [
         Row(
           children: [
@@ -58,14 +59,14 @@ class AccountPanel extends StatelessWidget {
             ),
           ],
         ),
-        Row(
-          spacing: 24,
-          children: accounts
-              .map(
-                (account) =>
-                    AccountCard(name: account.name, balance: account.balance),
-              )
-              .toList(),
+        SizedBox(
+          height: 144,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+              itemCount: accounts.length,
+              itemBuilder: (context,index) => AccountCard(accounts[index]),
+              separatorBuilder: (context,index) => SizedBox(width: 12,),
+          ),
         ),
       ],
     );
@@ -73,26 +74,22 @@ class AccountPanel extends StatelessWidget {
 }
 
 class AccountCard extends StatelessWidget {
-  final String name;
-  final double balance;
-  const AccountCard({super.key, this.name = "", this.balance = 0});
+  final Account account;
+  const AccountCard(this.account,{super.key});
 
   @override
   Widget build(BuildContext context) {
     // FIXME: make it fill with a max with
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: double.infinity),
-      child: Container(
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: Style.shadowPurpleMd,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [TextLabel(name), TextLabel("$balance")],
-        ),
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: Style.shadowPurpleMd,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [TextLabel(account.name), TextLabel("${account.startingBalance}")],
       ),
     );
   }

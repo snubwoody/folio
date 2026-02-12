@@ -84,6 +84,7 @@ class Incomes extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
+// TODO: add logging
 @DriftDatabase(
   tables: [Categories, Incomes, Expenses, Accounts, IncomeStreams, Budgets],
 )
@@ -112,6 +113,12 @@ class AppDatabase extends _$AppDatabase {
   Future<List<Category>> getCategories() async {
     final rows = await select(categories).get();
     return rows.map((r) => Category(id: r.id, title: r.title)).toList();
+  }
+
+  Future<List<Account>> getAccounts() async {
+    // TODO: use decimal
+    final rows = await select(accounts).get();
+    return rows.map((r) => Account(id: r.id, name: r.name, startingBalance: r.startingBalance.toDouble())).toList();
   }
 
   /// Fetches all the income streams from the database
