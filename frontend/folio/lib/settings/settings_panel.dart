@@ -5,6 +5,7 @@ import 'package:folio/colors.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'categories.dart';
+import 'income_streams.dart';
 
 // TODO: generator function for currencies
 
@@ -67,15 +68,6 @@ class _SettingsPanelState extends State<SettingsPanel> {
         ],
       ),
     );
-  }
-}
-
-class IncomeStreamsSection extends StatelessWidget {
-  const IncomeStreamsSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextLabel("Hi");
   }
 }
 

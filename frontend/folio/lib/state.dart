@@ -63,6 +63,13 @@ class SettingsStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Edit an income stream
+  Future<void> editIncomeStream({required String id, required String title}) async {
+    _db.editIncomeStream(id: id, title: title);
+    await load();
+    notifyListeners();
+  }
+
   /// Add a new income stream to the list.
   void addIncomeStream(IncomeStream stream) {
     _incomeStreams.add(stream);
