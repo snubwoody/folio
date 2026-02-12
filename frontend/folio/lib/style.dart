@@ -1,62 +1,62 @@
 import 'package:flutter/material.dart';
 
 // TODO: add font
-abstract final class TextStyles{
+abstract final class TextStyles {
   static const String _fontFamily = "Satoshi";
 
   static const TextStyle h1 = TextStyle(
     fontSize: Style.textSizeH1,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.0
+    height: 1.0,
   );
-  static const TextStyle h2= TextStyle(
+  static const TextStyle h2 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeH2,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.0
+    height: 1.0,
   );
-  static const TextStyle h3= TextStyle(
+  static const TextStyle h3 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeH3,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.0
+    height: 1.0,
   );
-  static const TextStyle h4= TextStyle(
+  static const TextStyle h4 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeH4,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.25
+    height: 1.25,
   );
-  static const TextStyle h5= TextStyle(
+  static const TextStyle h5 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeH5,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.25
+    height: 1.25,
   );
   static const TextStyle h6 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeH6,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.5
+    height: 1.5,
   );
   static const TextStyle body = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeBody,
     fontWeight: FontWeight.w400,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.5
+    height: 1.5,
   );
   static const TextStyle small = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeSm,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.5
+    height: 1.5,
   );
   static const TextStyle extraSmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: Style.textSizeXs,
     fontVariations: [FontVariation("wght", 400)],
-    height:  1.5
+    height: 1.5,
   );
 }
 

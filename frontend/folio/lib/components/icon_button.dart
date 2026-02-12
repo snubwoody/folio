@@ -19,7 +19,7 @@ class _IconButtonState extends State<IconButton> {
         onTap: () {
           widget.onTap?.call();
         },
-        child: Icon(widget.icon, size: widget.size,),
+        child: Icon(widget.icon, size: widget.size),
       ),
     );
   }

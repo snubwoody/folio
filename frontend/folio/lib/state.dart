@@ -51,8 +51,14 @@ class SettingsStore extends ChangeNotifier {
 
   /// Add a new category to the categories list.
   Future<void> addCategory({required String title}) async {
-    // _categories.add(category);
     _db.addCategory(title: title);
+    await load();
+    notifyListeners();
+  }
+
+  /// Edit a category
+  Future<void> editCategory({required String id, required String title}) async {
+    _db.editCategory(id: id, title: title);
     await load();
     notifyListeners();
   }

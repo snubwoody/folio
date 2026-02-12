@@ -8,6 +8,6 @@ class TextLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: TextStyle(color: color,height: 1.5));
+    return Text(text, style: TextStyle(color: color, height: 1.5));
   }
 }
