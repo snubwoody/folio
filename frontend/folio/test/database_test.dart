@@ -48,6 +48,18 @@ void main() {
       assert(streams[0].title == streams[0].title);
       assert(streams[0].id == streams[0].id);
     });
+    test(".editCategory() updates the title", () async {
+      final id = await database.addCategory(title: "Category 1");
+      await database.editCategory(title: "Category 2", id: id);
+      final category = await (database.select(database.categories)..where((r) => r.id.equals(id))).getSingle();
+      assert(category.title == "Category 2");
+    });
+    test(".editIncomeStream() updates the title", () async {
+      final id = await database.addIncomeStream(title: "IncomeStream 1");
+      await database.editIncomeStream(title: "IncomeStream 2", id: id);
+      final stream = await (database.select(database.incomeStreams)..where((r) => r.id.equals(id))).getSingle();
+      assert(stream.title == "IncomeStream 2");
+    });
   });
 
   test("Get temp directory", () async {

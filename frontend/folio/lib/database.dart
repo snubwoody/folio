@@ -135,6 +135,14 @@ class AppDatabase extends _$AppDatabase {
     );
     return rowId;
   }
+  
+  Future<void> editCategory({required String title, required String id}) async {
+    await (update(categories)..where((r) => r.id.equals(id))).write(CategoriesCompanion(title: Value(title)));
+  }
+
+  Future<void> editIncomeStream({required String title, required String id}) async {
+    await (update(incomeStreams)..where((r) => r.id.equals(id))).write(IncomeStreamsCompanion(title: Value(title)));
+  }
 
   // TODO: test these
   /// Deletes a row from the `categories` table with the matching `id`.

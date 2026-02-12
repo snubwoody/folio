@@ -42,6 +42,8 @@ class CategoriesSection extends StatelessWidget {
   }
 }
 
+// Optional: Unfocus the field to hide the keyboard
+// FocusScope.of(context).unfocus();
 class CategoryCard extends StatelessWidget {
   final TextEditingController? _controller;
   final Category category;
@@ -54,6 +56,7 @@ class CategoryCard extends StatelessWidget {
       children: [
         Expanded(child: InlineTextField(
           controller: TextEditingController(text: category.title),
+
         )),
         Spacer(),
         IconButton(

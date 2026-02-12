@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:folio/style.dart';
 
-
+// TODO: lose focus
+// TODO: dispose controller
 class InlineTextField extends StatelessWidget {
   final TextEditingController? controller;
-  const InlineTextField({super.key, this.controller});
+  final void Function(String)? onSubmitted;
+  const InlineTextField({super.key, this.controller,this.onSubmitted});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      onFieldSubmitted: (String value) => print(value),
       style: TextStyles.body,
       decoration: InputDecoration(
         border: InputBorder.none,
