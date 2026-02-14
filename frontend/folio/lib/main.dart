@@ -59,6 +59,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Folio',
         theme: ThemeData(
+          // I hate this stupid splash effect
+          splashFactory: NoSplash.splashFactory,
           colorScheme: ColorScheme(
             brightness: Brightness.light,
             primary: Colors.purple500,
