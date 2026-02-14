@@ -41,7 +41,7 @@ class AccountPanel extends StatelessWidget {
             IconButton(
               icon: LucideIcons.plus,
               onTap: () =>
-                  accountStore.addAccount(Account(name: "New account")),
+                  accountStore.addAccount(name: "New account"),
             ),
           ],
         ),

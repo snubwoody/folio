@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:folio/state.dart';
 import 'package:path_provider/path_provider.dart';
+import "package:folio/main.dart";
 
 part 'database.g.dart';
 
@@ -164,7 +165,7 @@ class AppDatabase extends _$AppDatabase {
       accountId: Value(accountId),
       categoryId: Value(categoryId),
     ));
-    print("Added new expense id=$rowId");
+    log.info("Added new expense id=$rowId");
     return rowId;
   }
 
@@ -188,7 +189,7 @@ class AppDatabase extends _$AppDatabase {
       accountId: Value(accountId),
       incomeStreamId: Value(streamId),
     ));
-    print("Added new income id=$rowId");
+    log.info("Added new income id=$id");
     return rowId;
   }
 
@@ -196,6 +197,7 @@ class AppDatabase extends _$AppDatabase {
     await (update(categories)..where((r) => r.id.equals(id))).write(
       CategoriesCompanion(title: Value(title)),
     );
+    log.info("Updated category id=$id");
   }
 
   Future<void> editIncomeStream({
@@ -205,17 +207,26 @@ class AppDatabase extends _$AppDatabase {
     await (update(incomeStreams)..where((r) => r.id.equals(id))).write(
       IncomeStreamsCompanion(title: Value(title)),
     );
+    log.info("Updated income stream id=$id");
   }
 
   // TODO: test these
   /// Deletes a row from the `categories` table with the matching `id`.
   Future<void> deleteCategory(String id) async {
+    log.info("Deleted category id=$id");
     await (delete(categories)..where((r) => r.id.equals(id))).go();
   }
 
   /// Deletes a row from the `incomeStreams` table with the matching `id`.
   Future<void> deleteIncomeStream(String id) async {
+    log.info("Deleted income stream id=$id");
     await (delete(incomeStreams)..where((r) => r.id.equals(id))).go();
+  }
+  
+  /// Deletes a row from the `accounts` table with the matching `id`.
+  Future<void> deleteAccount(String id) async {
+    await (delete(accounts)..where((r) => r.id.equals(id))).go();
+    log.info("Deleted account id=$id");
   }
 
   /// Adds a new income stream to the database and returns the `id`.
@@ -251,6 +262,7 @@ class AppDatabase extends _$AppDatabase {
         createdAt: epochSeconds,
       ),
     );
+    log.info("Created account id=$rowId");
     return rowId;
   }
 }

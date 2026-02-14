@@ -93,6 +93,7 @@ class SettingsStore extends ChangeNotifier {
   Future<void> editCategory({required String id, required String title}) async {
     _db.editCategory(id: id, title: title);
     await load();
+    // TODO: remove duplicate loads
     notifyListeners();
   }
 
@@ -129,10 +130,10 @@ class TransactionsStore extends ChangeNotifier {
 
   final AppDatabase _db;
   List<Expense> _expenses = [
-    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
-    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
-    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
-    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC",id: "1"),category: Category(title: "Groceries",id: "1"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC",id: "2"),category: Category(title: "Groceries",id: "2"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC",id: "3"),category: Category(title: "Groceries",id: "3"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC",id: "4"),category: Category(title: "Groceries",id: "4"),amount: 24),
   ];
 
   List<Income> _incomes = [];
@@ -163,14 +164,13 @@ class AccountStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addAccount(Account account) {
-    _accounts.add(account);
-    notifyListeners();
+  Future<void> addAccount({required String name}) async{
+    _db.addAccount(name: name);
+    await load();
   }
 
-  void deleteAccount(String id) {
-    // TODO: get the first one just in case things have duplicate ids?
-    _accounts.retainWhere((account) => account.id != id);
-    notifyListeners();
+  Future<void> deleteAccount(String id) async {
+    _db.deleteAccount(id);
+    await load();
   }
 }

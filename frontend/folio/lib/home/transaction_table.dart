@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
 import 'package:folio/components.dart';
@@ -28,19 +29,18 @@ class TransactionTable extends StatelessWidget {
     final expenses = context.watch<TransactionsStore>().expenses;
     final accounts = context.watch<AccountStore>().accounts;
     final categories = context.watch<SettingsStore>().categories;
-    print(accounts);
     return Table(
       border: TableBorder.all(color: Colors.borderNeutral50),
       children: [
         ...expenses.map((e) => TableRow(
           children: [
             DropdownCell(
-              initialValue: e.account?.name,
+              initialValue: e.account?.id,
               entries: accounts.map((a) => DropdownMenuEntry(value: a.id, label: a.name)).toList(),
             ),
             DropdownCell(
-              initialValue: e.category?.title,
-              entries: categories.map((a) => DropdownMenuEntry(value: a.id, label: a.title)).toList(),
+              initialValue: e.category?.id,
+              entries: categories.map((c) => DropdownMenuEntry(value: c.id, label: c.title)).toList(),
             ),
             TextCell("${e.amount}"),
             TextCell("${e.date.toString()}"),
@@ -63,22 +63,47 @@ class TextCell extends StatelessWidget {
 }
 
 // TODO: padding
-class DropdownCell extends StatelessWidget {
+class DropdownCell extends StatefulWidget {
+  const DropdownCell({super.key,required this.entries,this.initialValue});
+
   final String? initialValue;
   final List<DropdownMenuEntry> entries ;
-  const DropdownCell({super.key,required this.entries,this.initialValue});
+
+  List<DropdownMenuItem> get menuItems {
+    return entries.map((e) => DropdownMenuItem(value:e.value,child: TextLabel(e.label))).toList();
+  }
+
+  @override
+  State<DropdownCell> createState() => _DropdownCellState();
+}
+
+class _DropdownCellState extends State<DropdownCell> {
+  String? _selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedValue = widget.initialValue;
+    // final hasItem = widget.menuItems.firstWhere((item) => item.value == "") != null;
+    // if (hasItem){
+    // }
+    // widget.menuItems.forEach((i) => print("Menu item id=${i.value}"));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: DropdownMenu(
-        onSelected: (val){
+    return DropdownButtonHideUnderline(
+      child: DropdownButton2(
+        isExpanded: true,
+        value: _selectedValue,
+        onChanged: (value){
+            setState(() {
+              _selectedValue = value;
+            });
         },
-        initialSelection: initialValue,
-        enableFilter: true,
-        // width: double.infinity,
-        dropdownMenuEntries: entries,
+        items: widget.menuItems,
+        buttonStyleData: ButtonStyleData(elevation: 0,),
+        dropdownStyleData: DropdownStyleData(),
       ),
     );
   }

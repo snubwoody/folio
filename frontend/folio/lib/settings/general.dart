@@ -68,6 +68,7 @@ class AccountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accountStore = context.read<AccountStore>();
     return Row(
       children: [
         Expanded(
@@ -79,7 +80,7 @@ class AccountCard extends StatelessWidget {
         Spacer(),
         IconButton(
           icon: LucideIcons.trash2,
-          // onTap: () => settings.deleteCategory(incomeStream.id),
+          onTap: () => accountStore.deleteAccount(account.id),
         ),
       ],
     );
