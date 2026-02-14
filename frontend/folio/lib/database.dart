@@ -164,6 +164,7 @@ class AppDatabase extends _$AppDatabase {
       accountId: Value(accountId),
       categoryId: Value(categoryId),
     ));
+    print("Added new expense id=$rowId");
     return rowId;
   }
 
@@ -187,6 +188,7 @@ class AppDatabase extends _$AppDatabase {
       accountId: Value(accountId),
       incomeStreamId: Value(streamId),
     ));
+    print("Added new income id=$rowId");
     return rowId;
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
 import 'package:folio/components.dart';
+import 'package:folio/state.dart';
+import 'package:provider/provider.dart';
 
 class TransactionPanel extends StatelessWidget {
   const TransactionPanel({super.key});
@@ -17,74 +19,31 @@ class TransactionPanel extends StatelessWidget {
   }
 }
 
-// class TransactionTableSource extends DataTableSource {
-//   @override
-//   int get rowCount => 2;
-//
-//   @override
-//   DataRow? getRow(int index) {
-//     switch (index) {
-//       case 0:
-//         return DataRow(
-//           cells: [
-//             DataCell(TextLabel("Name")),
-//             DataCell(TextLabel("RBC")),
-//             DataCell(TextLabel("2025-12-12")),
-//             DataCell(TextLabel("500.00")),
-//           ],
-//         );
-//       case 1:
-//         return DataRow(
-//           cells: [
-//             DataCell(TextLabel("Name")),
-//             DataCell(TextLabel("RBC")),
-//             DataCell(TextLabel("2025-12-12")),
-//             DataCell(TextLabel("500.00")),
-//           ],
-//         );
-//       default:
-//         return null;
-//     }
-//   }
-//
-//   @override
-//   bool get isRowCountApproximate => false;
-//
-//   @override
-//   int get selectedRowCount => 0;
-// }
-
 class TransactionTable extends StatelessWidget {
   const TransactionTable({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final expenses = context.watch<TransactionsStore>().expenses;
+    return Table(
       children: [
-        Row(
+        ...expenses.map((e) => TableRow(
           children: [
-            DropdownCell(),
-            TextCell("Data"),
-            TextCell("Data"),
-            TextCell("Data"),
-          ],
-        ),
-        Row(
-          children: [
-            DropdownCell(),
-            TextCell("Data"),
-            TextCell("Data"),
-            TextCell("Data"),
-          ],
-        ),
-        Row(
-          children: [
-            DropdownCell(),
-            TextCell("Data"),
-            TextCell("Data"),
-            TextCell("Data"),
-          ],
-        ),
+            TextCell(e.account?.name ?? ""),
+            TextCell(e.category?.title ?? ""),
+            TextCell("${e.amount}"),
+            TextCell("${e.date.toString()}"),
+          ]
+        )),
+        TableRow(children: [
+          // Stack(children: [
+          //   Positioned(child: TextCell("text"),left: -23,)
+          // ],),
+          TextCell("Hi"),
+          TextCell("Hey"),
+          TextCell("Hi"),
+          TextCell("Hi"),
+        ])
       ],
     );
   }

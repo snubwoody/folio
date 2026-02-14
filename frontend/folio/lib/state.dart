@@ -8,6 +8,38 @@ class Category {
   const Category({this.id = "", this.title = ""});
 }
 
+class Expense {
+  final String id;
+  final Account? account;
+  final Category? category;
+  final DateTime date;
+  final int amount;
+
+  Expense({
+    this.id = "",
+    this.account,
+    this.category,
+    this.amount = 0,
+    DateTime? date
+  }): date = date ?? DateTime.now().toUtc();
+}
+
+class Income {
+  final String id;
+  final Account? account;
+  final IncomeStream? incomeStream;
+  final DateTime date;
+  final int amount;
+
+  Income({
+    this.id = "",
+    this.account,
+    this.incomeStream,
+    this.amount = 0,
+    DateTime? date
+  }): date = date ?? DateTime.now().toUtc();
+}
+
 class IncomeStream {
   final String id;
   final String title;
@@ -28,6 +60,7 @@ class Account {
     this.startingBalance = 0,
   });
 }
+
 
 class SettingsStore extends ChangeNotifier {
   SettingsStore(this._db);
@@ -86,6 +119,32 @@ class SettingsStore extends ChangeNotifier {
   void deleteIncomeStream(String id) {
     // TODO: get the first one just in case things have duplicate ids?
     _incomeStreams.retainWhere((i) => i.id != id);
+    notifyListeners();
+  }
+}
+
+
+class TransactionsStore extends ChangeNotifier {
+  TransactionsStore(this._db);
+
+  final AppDatabase _db;
+  List<Expense> _expenses = [
+    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
+    Expense(id: "",account: Account(name: "RBC"),category: Category(title: "Groceries"),amount: 24),
+  ];
+
+  List<Income> _incomes = [];
+
+  /// A list of all the expenses.
+  List<Expense> get expenses => _expenses;
+  List<Income> get incomes => _incomes;
+
+  /// Load the data from the database
+  Future<void> load() async {
+    // _categories = await _db.getCategories();
+    // _incomeStreams = await _db.getIncomeStreams();
     notifyListeners();
   }
 }

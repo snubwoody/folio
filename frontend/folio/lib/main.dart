@@ -35,6 +35,13 @@ class MyApp extends StatelessWidget {
             return store;
           },
         ),
+        ChangeNotifierProvider(
+          create: (BuildContext context) {
+            final store = TransactionsStore(_db);
+            store.load();
+            return store;
+          },
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
