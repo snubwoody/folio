@@ -52,7 +52,8 @@ class Accounts extends Table {
   Set<Column<Object>> get primaryKey => {id};
 }
 
-// TODO dates
+// TODO change dates to utc
+// TODO: add old date field as string as preservation
 @DataClassName("ExpenseRow")
 class Expenses extends Table {
   TextColumn get id => text()();
@@ -135,11 +136,57 @@ class AppDatabase extends _$AppDatabase {
         .toInt();
     await into(categories).insert(
       CategoriesCompanion.insert(
-        title: title,
         id: rowId,
         createdAt: epochSeconds,
+        title: title,
       ),
     );
+    return rowId;
+  }
+
+  Future<String> addExpense({
+    String? id,
+    DateTime? date,
+    String? categoryId,
+    String? accountId,
+    int amount = 0
+  }) async {
+    final rowId = id ?? generateRandomString(20);
+    final transactionDate = date ?? DateTime.now().toUtc();
+    final int epochSeconds = (DateTime.now().millisecondsSinceEpoch / 1000)
+        .toInt();
+    await into(expenses).insert(ExpensesCompanion.insert(
+      id:  rowId,
+      createdAt: epochSeconds,
+      amount: amount,
+      transactionDate: transactionDate,
+      currencyCode: "CAD",
+      accountId: Value(accountId),
+      categoryId: Value(categoryId),
+    ));
+    return rowId;
+  }
+
+  Future<String> addIncome({
+    String? id,
+    DateTime? date,
+    String? streamId,
+    String? accountId,
+    int amount = 0
+  }) async {
+    final rowId = id ?? generateRandomString(20);
+    final transactionDate = date ?? DateTime.now().toUtc();
+    final int epochSeconds = (DateTime.now().millisecondsSinceEpoch / 1000)
+        .toInt();
+    await into(incomes).insert(IncomesCompanion.insert(
+      id:  rowId,
+      createdAt: epochSeconds,
+      amount: amount,
+      transactionDate: transactionDate,
+      currencyCode: "CAD",
+      accountId: Value(accountId),
+      incomeStreamId: Value(streamId),
+    ));
     return rowId;
   }
 
