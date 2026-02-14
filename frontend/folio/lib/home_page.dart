@@ -23,20 +23,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class TransactionPanel extends StatelessWidget {
-  const TransactionPanel({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      spacing: 24,
-      children: [
-        Row(children: [TextLabel("Transactions"), Spacer(), TextLabel("New")]),
-        TransactionTable(),
-      ],
-    );
-  }
-}
 
 class AccountPanel extends StatelessWidget {
   const AccountPanel({super.key});

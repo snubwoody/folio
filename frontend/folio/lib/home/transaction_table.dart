@@ -25,29 +25,31 @@ class TransactionTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final expenses = context.watch<TransactionsStore>().expenses;
+    final accounts = context.watch<AccountStore>().accounts;
+    final categories = context.watch<SettingsStore>().categories;
+    print(accounts);
     return Table(
+      border: TableBorder.all(color: Colors.borderNeutral50),
       children: [
         ...expenses.map((e) => TableRow(
           children: [
-            TextCell(e.account?.name ?? ""),
-            TextCell(e.category?.title ?? ""),
+            DropdownCell(
+              initialValue: e.account?.name,
+              entries: accounts.map((a) => DropdownMenuEntry(value: a.id, label: a.name)).toList(),
+            ),
+            DropdownCell(
+              initialValue: e.category?.title,
+              entries: categories.map((a) => DropdownMenuEntry(value: a.id, label: a.title)).toList(),
+            ),
             TextCell("${e.amount}"),
             TextCell("${e.date.toString()}"),
           ]
         )),
-        TableRow(children: [
-          // Stack(children: [
-          //   Positioned(child: TextCell("text"),left: -23,)
-          // ],),
-          TextCell("Hi"),
-          TextCell("Hey"),
-          TextCell("Hi"),
-          TextCell("Hi"),
-        ])
       ],
     );
   }
 }
+
 
 class TextCell extends StatelessWidget {
   final String text;
@@ -59,17 +61,22 @@ class TextCell extends StatelessWidget {
   }
 }
 
+// TODO: padding
 class DropdownCell extends StatelessWidget {
-  const DropdownCell({super.key});
+  final String? initialValue;
+  final List<DropdownMenuEntry> entries ;
+  const DropdownCell({super.key,required this.entries,this.initialValue});
 
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu(
-      dropdownMenuEntries: [
-        DropdownMenuEntry(value: "1", label: "Account 1"),
-        DropdownMenuEntry(value: "2", label: "Account 2"),
-        DropdownMenuEntry(value: "3", label: "Account 3"),
-      ],
+    return SizedBox(
+      width: double.infinity,
+      child: DropdownMenu(
+        initialSelection: initialValue,
+        enableFilter: true,
+        // width: double.infinity,
+        dropdownMenuEntries: entries,
+      ),
     );
   }
 }
@@ -80,14 +87,12 @@ class TableCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.neutral50, width: 1),
-        ),
-        child: child,
-      ),
+    return Container(
+      padding: EdgeInsets.all(12),
+      // decoration: BoxDecoration(
+        // border: Border.all(color: Colors.neutral50, width: 1),
+      // ),
+      child: child,
     );
   }
 }
