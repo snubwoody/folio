@@ -117,6 +117,12 @@ class AppDatabase extends _$AppDatabase {
     return rows.map((r) => Category(id: r.id, title: r.title)).toList();
   }
 
+  /// Fetches all the categories from the database
+  Future<List<Expense>> getExpenses() async {
+    final rows = await select(expenses).get();
+    return [];
+  }
+
   Future<List<Account>> getAccounts() async {
     // TODO: use decimal
     final rows = await select(accounts).get();

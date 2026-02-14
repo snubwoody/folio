@@ -32,6 +32,19 @@ void main() {
       assert(items[0].name == "Account 24");
       assert(items[0].startingBalance == 200);
     });
+    test(".addExpense() adds an expense with the properties", () async {
+      // TODO: test foreign key?
+      // FIXME: store date as UTC
+	  // TODO: try using rust backend?
+      final id = await database.addExpense(amount: 35,date: DateTime.utc(2024,12,12));
+      final items = await (database.select(
+        database.expenses,
+      )..where((r) => r.id.equals(id))).getSingle();
+      assert(items.amount == 35);
+      print(items.transactionDate);
+      print(DateTime.utc(2024,12,12));
+      assert(items.transactionDate == DateTime.utc(2024,12,12));
+    });
     test(".getCategories() returns all the categories", () async {
       await database.addCategory(title: "New category");
       final categories = await database.getCategories();
