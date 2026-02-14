@@ -5,11 +5,20 @@ import 'package:folio/home_page.dart';
 import 'package:folio/components.dart';
 import 'package:folio/settings/settings_panel.dart';
 import 'package:folio/state.dart';
+import 'package:logging/logging.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:provider/provider.dart';
 
+final log = Logger("Folio");
+
+
 void main() {
+  // TODO: try to get line number and file
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
   final database = AppDatabase(openConnection());
+  log.info("Loading app");
   runApp(MyApp(database));
 }
 
@@ -25,6 +34,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) {
             final store = AccountStore(_db);
             store.load();
+            log.info("Initialised account store");
             return store;
           },
         ),
@@ -32,6 +42,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) {
             final store = SettingsStore(_db);
             store.load();
+            log.info("Initialised settings store");
             return store;
           },
         ),
@@ -39,6 +50,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) {
             final store = TransactionsStore(_db);
             store.load();
+            log.info("Initialised transaction store");
             return store;
           },
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' hide Colors, IconButton;
 import 'package:folio/colors.dart';
 import 'package:folio/components.dart';
+import 'package:folio/main.dart';
 import 'package:folio/state.dart';
 import 'package:provider/provider.dart';
 
@@ -72,6 +73,8 @@ class DropdownCell extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: DropdownMenu(
+        onSelected: (val){
+        },
         initialSelection: initialValue,
         enableFilter: true,
         // width: double.infinity,
