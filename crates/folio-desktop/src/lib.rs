@@ -26,12 +26,12 @@ pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;
 use sqlx::sqlite::SqliteConnectOptions;
-use tracing_appender::rolling::{RollingFileAppender, Rotation};
-use tracing_subscriber::{fmt, layer::SubscriberExt, util::SubscriberInitExt};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
+use tracing_appender::rolling::{RollingFileAppender, Rotation};
+use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 // TODO: test this
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
@@ -53,20 +53,24 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
 pub async fn run() {
     // TODO: log to file, format folio-2026-02-12.log
     // TODO: add database backup before migrating
-    
+
+    #[cfg(debug_assertions)]
+    let log_dir = "logs";
+    #[cfg(not(debug_assertions))]
+    let log_dir = get_data_dir().unwrap().join("logs");
+
     let file_appender = RollingFileAppender::builder()
         .rotation(Rotation::DAILY)
         .filename_prefix("folio")
         .max_log_files(10)
         .filename_suffix("log")
-        .build("logs")
+        .build(log_dir)
         .expect("Failed to setup logging");
 
-    // Keep guard in scope 
-    let (file_writer,_guard) = tracing_appender::non_blocking(file_appender);
+    // Keep guard in scope
+    let (file_writer, _guard) = tracing_appender::non_blocking(file_appender);
 
-    let std_io_layer = fmt::layer()
-        .with_writer(std::io::stdout);
+    let std_io_layer = fmt::layer().with_writer(std::io::stdout);
 
     let file_layer = fmt::layer()
         .pretty()
@@ -74,9 +78,7 @@ pub async fn run() {
         .with_ansi(false);
 
     tracing_subscriber::registry()
-        .with( 
-            EnvFilter::new("info,folio=debug")
-        )
+        .with(EnvFilter::new("info,folio=debug"))
         .with(std_io_layer)
         .with(file_layer)
         .try_init()
