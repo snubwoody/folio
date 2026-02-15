@@ -193,7 +193,9 @@ pub async fn fetch_income_streams(state: tauri::State<'_, State>) -> Result<Vec<
 
 #[tauri::command]
 pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
-    service::fetch_budgets(&state.pool).await
+    service::fetch_budgets(&state.pool)
+        .await
+        .inspect_err(|err|tracing::warn!("Error: {err}"))
 }
 
 #[tauri::command]
