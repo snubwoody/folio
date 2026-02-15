@@ -2,18 +2,19 @@
 @layer components {
     .transaction-table{
         width: 100%;
-        border-collapse: collapse;
+        border-collapse:separate;
         table-layout: fixed;
+        border-spacing: 0;
 
 
-        th{
+        .table-header{
             width: 100%;
             color: var(--color-text-muted);
             padding: 12px;
             text-align: left;
         }
 
-        td {
+        .table-data {
             align-items: center;
             padding: 12px;
             border: 2px solid var(--color-neutral-50);

@@ -74,7 +74,7 @@ impl Budget {
         let total = Money::new(record.amount);
         let category = Category::from_id(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
-        let remaining = total - total_spent;
+        let remaining = (total - total_spent).max(Money::ZERO);
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
         Ok(Self {
@@ -151,6 +151,14 @@ mod test {
 
     #[sqlx::test]
     async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
+        let category = Category::create("__", &pool).await?;
+        let budget = Budget::from_category(&category.id, &pool).await?;
+        assert_eq!(budget.amount, Money::ZERO);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn remaining_caps_at_zero(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("__", &pool).await?;
         let budget = Budget::from_category(&category.id, &pool).await?;
         assert_eq!(budget.amount, Money::ZERO);

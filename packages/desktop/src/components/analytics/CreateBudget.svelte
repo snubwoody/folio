@@ -25,6 +25,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 	const popover = new Popover();
 
+    // TODO: edit and create budgets
 	let amount = $state("");
 	let category: Category | undefined;
 	async function createBudget() {
