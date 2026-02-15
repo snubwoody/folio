@@ -103,7 +103,7 @@ export class AppStore {
     }
 
     /**
-     * Delete an income stream from the user store. Any transactions
+     * Deletes an income stream from the user store. Any transactions
      * referencing this income stream will have their referencing field
      * set to `null`.
      *
@@ -115,7 +115,7 @@ export class AppStore {
     }
 
     /**
-     * Create a new {@link Category}.
+     * Creates a new {@link Category}.
      *
      * @param title The title of the category
      */
@@ -132,7 +132,7 @@ export class AppStore {
     }
 
     /**
-     * Create a new {@link IncomeStream}.
+     * Creates a new {@link IncomeStream}.
      *
      * @param title The title of the income stream
      */
@@ -156,6 +156,7 @@ export class AppStore {
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;
+        console.log(await invoke("fetch_budgets"));
     }
 }
 

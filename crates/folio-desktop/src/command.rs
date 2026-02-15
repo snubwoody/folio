@@ -140,18 +140,24 @@ pub async fn edit_income(
     id: String,
     data: EditIncome,
 ) -> Result<()> {
-    Income::update(&id, data, &state.pool).await?;
+    Income::update(&id, data, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))?;
     Ok(())
 }
 
 #[tauri::command]
 pub async fn spending_analytics(state: tauri::State<'_, State>) -> Result<Vec<SpendingAnalytic>> {
-    analytics::spending_analytics(&state.pool).await
+    analytics::spending_analytics(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn income_analytics(state: tauri::State<'_, State>) -> Result<Vec<IncomeAnalytic>> {
-    analytics::income_analytics(&state.pool).await
+    analytics::income_analytics(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
@@ -160,40 +166,54 @@ pub async fn create_account(
     name: &str,
     starting_balance: Money,
 ) -> Result<()> {
-    Account::create(name, starting_balance, &state.pool).await?;
+    Account::create(name, starting_balance, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))?;
     Ok(())
 }
 
 #[tauri::command]
 pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
-    service::fetch_accounts(&state.pool).await
+    service::fetch_accounts(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn fetch_expenses(state: tauri::State<'_, State>) -> Result<Vec<Expense>> {
-    let expenses = service::fetch_expenses(&state.pool).await?;
+    let expenses = service::fetch_expenses(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))?;
     Ok(expenses)
 }
 
 #[tauri::command]
 pub async fn fetch_incomes(state: tauri::State<'_, State>) -> Result<Vec<Income>> {
-    let expenses = service::fetch_incomes(&state.pool).await?;
-    Ok(expenses)
+    let incomes = service::fetch_incomes(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))?;
+    Ok(incomes)
 }
 
 #[tauri::command]
 pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
-    service::fetch_categories(&state.pool).await
+    service::fetch_categories(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn fetch_income_streams(state: tauri::State<'_, State>) -> Result<Vec<IncomeStream>> {
-    service::fetch_income_streams(&state.pool).await
+    service::fetch_income_streams(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
-    service::fetch_budgets(&state.pool).await
+    service::fetch_budgets(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("Error: {err}"))
 }
 
 #[tauri::command]
@@ -202,7 +222,9 @@ pub async fn create_budget(
     category_id: &str,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::create(Money::from_str(amount)?, category_id, &state.pool).await
+    Budget::create(Money::from_str(amount)?, category_id, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
@@ -217,27 +239,37 @@ pub async fn edit_budget(
     amount: Money,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::edit(&id, amount, &state.pool).await
+    Budget::edit(&id, amount, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
-    Category::create(title, &state.pool).await
+    Category::create(title, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Account::delete(&id, &state.pool).await
+    Account::delete(&id, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn delete_income(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Income::delete(&id, &state.pool).await
+    Income::delete(&id, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn delete_expense(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Expense::delete(&id, &state.pool).await
+    Expense::delete(&id, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
@@ -246,7 +278,9 @@ pub async fn edit_account(
     id: String,
     opts: EditAccount,
 ) -> Result<Account> {
-    Account::edit(&id, opts, &state.pool).await
+    Account::edit(&id, opts, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
@@ -254,15 +288,21 @@ pub async fn create_income_stream(
     state: tauri::State<'_, State>,
     title: &str,
 ) -> Result<IncomeStream> {
-    IncomeStream::create(title, &state.pool).await
+    IncomeStream::create(title, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn feature_request(request: FeatureRequest) -> Result<SupportResponse> {
-    crate::support::feature_request(request).await
+    crate::support::feature_request(request)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }
 
 #[tauri::command]
 pub async fn bug_report(request: BugReport) -> Result<SupportResponse> {
-    crate::support::bug_report(request).await
+    crate::support::bug_report(request)
+        .await
+        .inspect_err(|err| tracing::warn!("{err}"))
 }

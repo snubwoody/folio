@@ -7,6 +7,8 @@ pub struct Budget {
     pub amount: i64,
     pub category_id: String,
     pub created_at: i64,
+    pub month: Option<i64>,
+    pub year: Option<i64>,
 }
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq)]
