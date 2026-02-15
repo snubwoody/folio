@@ -1,8 +1,10 @@
 import { appStore } from "$lib/state.svelte";
 import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
-import { expect, test, beforeEach } from "vitest";
+import BudgetSection from "../../components/analytics/BudgetSection.svelte";
+import BudgetComponent from "../../components/analytics/Budget.svelte";
+import { expect, test, beforeEach, describe } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { formatAmount, type Budget, type Expense, type Income } from "$lib/lib";
+import { formatAmount, type Budget, type Expense, type Income, type Category } from "$lib/lib";
 
 beforeEach(() => {
     appStore.budgets = [];
@@ -165,4 +167,108 @@ test("Don't show NAN expense percentage", async () => {
     await expect
         .element(page.getByText("null% of income"))
         .not.toBeInTheDocument();
+});
+
+describe("Budget section",async() => {
+    test("shows categories", async () => {
+        const category: Category = {
+            id: "1",
+            title: "Groceries",
+            createdAt: ""
+        };
+        const c2: Category = {
+            id: "2",
+            title: "Cinema",
+            createdAt: ""
+        };
+        const c3: Category = {
+            id: "3",
+            title: "Takeout",
+            createdAt: ""
+        };
+        appStore.settings.currencyCode = "USD";
+        appStore.budgets = [
+            { id: "1",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" },
+            { id: "2",category:c2,amount: "24.00",totalSpent: "10.00",remaining: "14.00" },
+            { id: "3",category:c3,amount: "24.00",totalSpent: "10.00",remaining: "14.00" }
+        ];
+
+        const page = render(BudgetSection);
+        await expect
+            .element(page.getByText("Groceries")).toBeInTheDocument();
+        await expect
+            .element(page.getByText("Cinema")).toBeInTheDocument();
+        await expect
+            .element(page.getByText("Takeout")).toBeInTheDocument();
+    });
+});
+
+describe("Budget component",async() => {
+    test("shows left to spend and total", async () => {
+        const category: Category = {
+            id: "",
+            title: "",
+            createdAt: ""
+        } ;
+        appStore.settings.currencyCode = "USD";
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" };
+
+        const page = render(BudgetComponent,{ budget });
+        await expect
+            .element(page.getByText("$24.00")).toBeInTheDocument();
+        await expect
+            .element(page.getByText("$10.00")).toBeInTheDocument();
+    });
+    test("shows category title", async () => {
+        const category: Category = {
+            id: "",
+            title: "Groceries",
+            createdAt: ""
+        } ;
+        appStore.settings.currencyCode = "USD";
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" };
+
+        const page = render(BudgetComponent,{ budget });
+        await expect
+            .element(page.getByText("Groceries")).toBeInTheDocument();
+    });
+    test("shows amount spent", async () => {
+        const category: Category = {
+            id: "",
+            title: "Groceries",
+            createdAt: ""
+        } ;
+        appStore.settings.currencyCode = "USD";
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" };
+
+        const page = render(BudgetComponent,{ budget });
+        await expect
+            .element(page.getByText("Spent $10.00 of $24.00")).toBeInTheDocument();
+    });
+    test("shows fully spent", async () => {
+        const category: Category = {
+            id: "",
+            title: "Groceries",
+            createdAt: ""
+        } ;
+        appStore.settings.currencyCode = "USD";
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "24.00",remaining: "14.00" };
+
+        const page = render(BudgetComponent,{ budget });
+        await expect
+            .element(page.getByText("Fully spent")).toBeInTheDocument();
+    });
+    test("shows overspent", async () => {
+        const category: Category = {
+            id: "",
+            title: "Groceries",
+            createdAt: ""
+        } ;
+        appStore.settings.currencyCode = "USD";
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "25.00",remaining: "14.00" };
+
+        const page = render(BudgetComponent,{ budget });
+        await expect
+            .element(page.getByText("Overspent by $1.00")).toBeInTheDocument();
+    });
 });
