@@ -5,8 +5,3 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-  folio-debian:
-    image: folio/desktop/debian
-    build:
-      dockerfile: Dockerfile.debian
-
