@@ -173,6 +173,11 @@ export function parseMoney(value: string): string | undefined {
     return undefined;
 }
 
+/**
+ * Fetches a list of all the supported currencies.
+ * 
+ * @returns A list of currency strings
+ */
 export async function getCurrencies(){
     return await invoke("currencies") as string[];
 }
