@@ -175,7 +175,7 @@ export function parseMoney(value: string): string | undefined {
 
 /**
  * Fetches a list of all the supported currencies.
- * 
+ *
  * @returns A list of currency strings
  */
 export async function getCurrencies(){

@@ -17,7 +17,7 @@ async fn delete_category(pool: SqlitePool) -> Result<()> {
 
 #[sqlx::test]
 async fn delete_category_with_budget(pool: SqlitePool) -> Result<()> {
-    let category = Category::create("__", &pool).await?;
+    let _category = Category::create("__", &pool).await?;
     // FIXME: add deleted_at or is_deleted column
     // let budget = Budget::create(Default::default(), &category.id, &pool).await?;
     // Category::delete(&category.id, &pool).await?;

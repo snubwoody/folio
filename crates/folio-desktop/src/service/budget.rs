@@ -130,7 +130,6 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("MINE__", &pool).await?;
         let budgets = super::fetch_budgets(&pool).await?;
         assert!(budgets.len() == 1);
         Ok(())
