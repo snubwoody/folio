@@ -130,9 +130,7 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
-        let now = Utc::now().timestamp();
         let category = Category::create("MINE__", &pool).await?;
-        let budget = Budget::create(Money::from_unscaled(20), category.id.as_str(), &pool).await?;
         let budgets = super::fetch_budgets(&pool).await?;
         assert!(budgets.len() == 1);
         Ok(())
