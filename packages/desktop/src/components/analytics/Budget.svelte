@@ -19,14 +19,13 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // TODO: create a budget for every category
     const totalSpent = parseFloat(budget.totalSpent);
     const amount = parseFloat(budget.amount);
-    const remaining = parseFloat(budget.remaining);
     let percentage = Math.round((totalSpent / amount) * 100);
-    let text = $state(`Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`)
+    let text = $state(`Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`);
     if (totalSpent === amount){
-        text = "Fully spent"
+        text = "Fully spent";
     } else if (totalSpent > amount){
         const excess = totalSpent -amount;
-        text = `Overspent by ${formatAmount(excess.toString())}`
+        text = `Overspent by ${formatAmount(excess.toString())}`;
     }
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)
@@ -68,7 +67,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
         width: 100%;
         height: 8px;
     }
-    
+
     .budget-bar-thumb{
         background: var(--color-green-700);
         border-radius: var(--radius-full);

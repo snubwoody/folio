@@ -169,7 +169,7 @@ test("Don't show NAN expense percentage", async () => {
         .not.toBeInTheDocument();
 });
 
-describe("Budget section",async()=>{
+describe("Budget section",async() => {
     test("shows categories", async () => {
         const category: Category = {
             id: "1",
@@ -188,9 +188,9 @@ describe("Budget section",async()=>{
         };
         appStore.settings.currencyCode = "USD";
         appStore.budgets = [
-            {id: "1",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00"},
-            {id: "2",category:c2,amount: "24.00",totalSpent: "10.00",remaining: "14.00"},
-            {id: "3",category:c3,amount: "24.00",totalSpent: "10.00",remaining: "14.00"},
+            { id: "1",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" },
+            { id: "2",category:c2,amount: "24.00",totalSpent: "10.00",remaining: "14.00" },
+            { id: "3",category:c3,amount: "24.00",totalSpent: "10.00",remaining: "14.00" }
         ];
 
         const page = render(BudgetSection);
@@ -203,7 +203,7 @@ describe("Budget section",async()=>{
     });
 });
 
-describe("Budget component",async()=>{
+describe("Budget component",async() => {
     test("shows left to spend and total", async () => {
         const category: Category = {
             id: "",
@@ -211,9 +211,9 @@ describe("Budget component",async()=>{
             createdAt: ""
         } ;
         appStore.settings.currencyCode = "USD";
-        const budget: Budget = {id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00"}
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" };
 
-        const page = render(BudgetComponent,{budget});
+        const page = render(BudgetComponent,{ budget });
         await expect
             .element(page.getByText("$24.00")).toBeInTheDocument();
         await expect
@@ -226,9 +226,9 @@ describe("Budget component",async()=>{
             createdAt: ""
         } ;
         appStore.settings.currencyCode = "USD";
-        const budget: Budget = {id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00"}
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" };
 
-        const page = render(BudgetComponent,{budget});
+        const page = render(BudgetComponent,{ budget });
         await expect
             .element(page.getByText("Groceries")).toBeInTheDocument();
     });
@@ -239,9 +239,9 @@ describe("Budget component",async()=>{
             createdAt: ""
         } ;
         appStore.settings.currencyCode = "USD";
-        const budget: Budget = {id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00"};
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "10.00",remaining: "14.00" };
 
-        const page = render(BudgetComponent,{budget});
+        const page = render(BudgetComponent,{ budget });
         await expect
             .element(page.getByText("Spent $10.00 of $24.00")).toBeInTheDocument();
     });
@@ -252,9 +252,9 @@ describe("Budget component",async()=>{
             createdAt: ""
         } ;
         appStore.settings.currencyCode = "USD";
-        const budget: Budget = {id: "ow",category,amount: "24.00",totalSpent: "24.00",remaining: "14.00"};
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "24.00",remaining: "14.00" };
 
-        const page = render(BudgetComponent,{budget});
+        const page = render(BudgetComponent,{ budget });
         await expect
             .element(page.getByText("Fully spent")).toBeInTheDocument();
     });
@@ -265,9 +265,9 @@ describe("Budget component",async()=>{
             createdAt: ""
         } ;
         appStore.settings.currencyCode = "USD";
-        const budget: Budget = {id: "ow",category,amount: "24.00",totalSpent: "25.00",remaining: "14.00"};
+        const budget: Budget = { id: "ow",category,amount: "24.00",totalSpent: "25.00",remaining: "14.00" };
 
-        const page = render(BudgetComponent,{budget});
+        const page = render(BudgetComponent,{ budget });
         await expect
             .element(page.getByText("Overspent by $1.00")).toBeInTheDocument();
     });
