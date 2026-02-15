@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use rust_decimal::{Decimal, prelude::FromPrimitive};
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::{
     fmt::Display,
@@ -40,7 +40,7 @@ impl Money {
     }
 
     /// Computes the absolute value.
-    pub const fn abs(&self) -> Self{
+    pub const fn abs(&self) -> Self {
         Self::from_scaled(self.0.abs())
     }
 
