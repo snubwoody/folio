@@ -49,18 +49,13 @@ jobs:
       - uses: actions/checkout@v5
       - uses: Swatinem/rust-cache@v2
       - uses: extractions/setup-just@v3
-      - uses: actions/cache@v4
-        id: cache-sqlx
-        with:
-          key: cargo-sqlx-cache-${{runner.os}} # Permanently cache sqlx
-          path: ~/.cargo/bin
       - uses: pnpm/action-setup@v4
         with:
           version: 10
           run_install: false
-      - name: Install sqlx-cli
-        if: ${{steps.cache-sqlx.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli --force
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: nextest
       - name: Setup database
         run: just db-setup
       - name: Run cargo clippy
@@ -119,13 +114,7 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/cache@v4
-        name: Cache cargo binaries
-        id: cache-cargo-bin
-        with:
-          key: cargo-bin-cache-${{runner.os}}
-          path: ~/.cargo/bin
-
+      - uses: extractions/setup-just@v3
       - uses: pnpm/action-setup@v4
         with:
           version: 10
@@ -134,9 +123,6 @@ jobs:
       - uses: taiki-e/install-action@v2
         with:
           tool: nextest,sqlx-cli
-      # - name: Install sqlx-cli
-      #   if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-      #   run: cargo install sqlx-cli --force
       - name: Setup database
         run: just db-setup
       - name: Install system dependencies
