@@ -50,7 +50,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         currencies,
         set_currency_code,
         settings,
-        delete_budget,
         income_analytics,
         edit_income_stream,
         create_income_stream,
@@ -225,12 +224,6 @@ pub async fn create_budget(
     Budget::create(Money::from_str(amount)?, category_id, &state.pool)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn delete_budget(id: String, state: tauri::State<'_, State>) -> Result<()> {
-    Budget::delete(&id, &state.pool).await?;
-    Ok(())
 }
 
 #[tauri::command]

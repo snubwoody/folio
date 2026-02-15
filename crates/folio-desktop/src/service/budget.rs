@@ -32,7 +32,8 @@ pub struct Budget {
 }
 
 impl Budget {
-    pub async fn create(
+    /// Inserts a new row into the `budgets` table.
+    pub (crate) async fn create(
         amount: Money,
         category_id: &str,
         pool: &SqlitePool,
@@ -59,24 +60,37 @@ impl Budget {
             .execute(pool)
             .await?;
 
-        info!(id = id, amount = amount, "Updated budget");
+        info!(id = id, "Updated budget");
 
         Self::from_id(id, pool).await
-    }
-
-    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query("DELETE FROM budgets WHERE id=$1")
-            .bind(id)
-            .execute(pool)
-            .await?;
-
-        info!(id = id, "Deleted budget");
-        Ok(())
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
             .bind(id)
+            .fetch_one(pool)
+            .await?;
+
+        let total = Money::new(record.amount);
+        let category = Category::from_id(&record.category_id, pool).await?;
+        let total_spent = Category::total_spent(&category.id, pool).await?;
+        let remaining = total - total_spent;
+        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
+
+        Ok(Self {
+            id: record.id,
+            amount: total,
+            category,
+            total_spent,
+            remaining,
+            created_at,
+        })
+    }
+    
+    /// Fetches the budget with the corresponding `category_id`.
+    pub async fn from_category(category_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE category_id=$1")
+            .bind(category_id)
             .fetch_one(pool)
             .await?;
 
@@ -128,40 +142,19 @@ mod test {
     #[sqlx::test]
     async fn edit_budget(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("MINE__", &pool).await?;
-        let budget = Budget::create(Money::from_unscaled(20), category.id.as_str(), &pool).await?;
-        let budget = Budget::edit(&budget.id, Money::ZERO, &pool).await?;
-        let b = Budget::from_id(&budget.id, &pool).await?;
+        let budget = Budget::from_category(&category.id, &pool).await?;
+        Budget::edit(&budget.id, Money::from_f64(244.00), &pool).await?;
+        let b = Budget::from_category(&category.id, &pool).await?;
 
-        assert_eq!(b.amount, Money::ZERO);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn delete_budget(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("MINE__", &pool).await?;
-        let budget = Budget::create(Money::from_unscaled(20), category.id.as_str(), &pool).await?;
-        Budget::delete(&budget.id, &pool).await?;
-        let b = Budget::from_id(&budget.id, &pool).await;
-
-        assert!(b.is_err());
+        assert_eq!(b.amount, Money::from_f64(244.00));
         Ok(())
     }
 
     #[sqlx::test]
     async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
-        let category_id = &fetch_categories(&pool).await?[0].id;
-        let amount = Money::from_f64(10.2).inner();
-        let record = sqlx::query!(
-            "INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING id",
-            amount,
-            category_id
-        )
-        .fetch_one(&pool)
-        .await?;
-
-        let budget = Budget::from_id(&record.id, &pool).await?;
-        assert_eq!(budget.amount, Money::from_f64(10.2));
-        assert_eq!(&budget.category.id, category_id);
+        let category = Category::create("__", &pool).await?;
+        let budget = Budget::from_category(&category.id, &pool).await?;
+        assert_eq!(budget.amount, Money::ZERO);
         Ok(())
     }
 }
