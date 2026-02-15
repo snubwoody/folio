@@ -69,6 +69,7 @@ export class AppStore {
     }
 
     async deleteBudget(id: string) {
+        // FIXME: no longer exists
         await invoke("delete_budget", { id });
         await this.load();
     }

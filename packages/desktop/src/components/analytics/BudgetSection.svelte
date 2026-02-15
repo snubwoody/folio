@@ -18,6 +18,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { appStore } from "$lib/state.svelte";
     import Budget from "./Budget.svelte";
     import CreateBudget from "./CreateBudget.svelte";
+    // TODO: create a new category instead of a budget
 </script>
 
 <section>

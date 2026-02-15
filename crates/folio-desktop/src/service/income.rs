@@ -95,7 +95,7 @@ impl Income {
         .await?;
 
         let income = Self::from_id(&record.id, pool).await?;
-        info!(income=?income,"Created income");
+        info!(id=?income.id,"Created income");
         Ok(income)
     }
 

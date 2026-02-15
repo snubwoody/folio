@@ -96,7 +96,7 @@ impl Expense {
         .await?;
 
         let expense = Self::from_id(&record.id, pool).await?;
-        info!(expense=?expense,"Created expense");
+        info!(id=?expense.id,"Created expense");
         Ok(expense)
     }
 
