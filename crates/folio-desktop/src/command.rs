@@ -21,9 +21,9 @@ use crate::{
 };
 use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use iso_currency::{Currency, IntoEnumIterator};
-use tracing::{info,error,warn,debug};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
+use tracing::{debug, error, info, warn};
 
 /// Adds tauri commands to the app instance.
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
@@ -67,22 +67,22 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
 }
 
 #[tauri::command]
-pub fn log_info(message: String){
+pub fn log_info(message: String) {
     info!("[frontend] {message}")
 }
 
 #[tauri::command]
-pub fn log_warn(message: String){
+pub fn log_warn(message: String) {
     warn!("[frontend] {message}")
 }
 
 #[tauri::command]
-pub fn log_debug(message: String){
+pub fn log_debug(message: String) {
     debug!("[frontend] {message}")
 }
 
 #[tauri::command]
-pub fn log_error(message: String){
+pub fn log_error(message: String) {
     error!("[frontend] {message}")
 }
 
