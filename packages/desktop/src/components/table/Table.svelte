@@ -32,7 +32,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <table class="transaction-table" {...rest}>
-    <thead>
+    <thead class="table-header">
         <tr>
             {#each columns as column (column.id)}
                 {@render header(column.id)}
