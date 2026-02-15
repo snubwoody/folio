@@ -17,7 +17,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { parseMoney } from "$lib/lib";
     import { TableCell } from "$components/table";
-    import { logger } from "$lib/logger";
 
     type Props = {
         amount: string,
