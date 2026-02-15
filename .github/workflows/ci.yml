@@ -131,10 +131,12 @@ jobs:
           version: 10
           run_install: false
       - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@nextest
-      - name: Install sqlx-cli
-        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
-        run: cargo install sqlx-cli --force
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: nextest,sqlx-cli
+      # - name: Install sqlx-cli
+      #   if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+      #   run: cargo install sqlx-cli --force
       - name: Setup database
         run: just db-setup
       - name: Install system dependencies
