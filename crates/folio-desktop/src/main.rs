@@ -20,5 +20,6 @@ mod update;
 
 #[tokio::main]
 async fn main() {
+    // TODO: log error
     folio_lib::run().await
 }

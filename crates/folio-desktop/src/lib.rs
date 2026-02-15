@@ -30,6 +30,8 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
+use tracing_appender::rolling::{RollingFileAppender, Rotation};
+use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 // TODO: test this
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
@@ -46,12 +48,41 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     builder.build().unwrap();
     Ok(())
 }
-// TODO: remove unnecessary mobile attrs
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
     // TODO: log to file, format folio-2026-02-12.log
     // TODO: add database backup before migrating
-    tracing_subscriber::fmt::init();
+
+    #[cfg(debug_assertions)]
+    let log_dir = "logs";
+    #[cfg(not(debug_assertions))]
+    let log_dir = get_data_dir().unwrap().join("logs");
+
+    let file_appender = RollingFileAppender::builder()
+        .rotation(Rotation::DAILY)
+        .filename_prefix("folio")
+        .max_log_files(10)
+        .filename_suffix("log")
+        .build(log_dir)
+        .expect("Failed to setup logging");
+
+    // Keep guard in scope
+    let (file_writer, _guard) = tracing_appender::non_blocking(file_appender);
+
+    let std_io_layer = fmt::layer().with_writer(std::io::stdout);
+
+    let file_layer = fmt::layer()
+        .pretty()
+        .with_writer(file_writer)
+        .with_ansi(false);
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::new("info,folio=debug"))
+        .with(std_io_layer)
+        .with(file_layer)
+        .try_init()
+        .unwrap();
     let state = State::new().await.unwrap();
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -76,6 +107,7 @@ pub struct State {
 impl State {
     pub async fn new() -> Result<Self> {
         let pool = init_database().await?;
+        tracing::info!("Initialised database pool");
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");

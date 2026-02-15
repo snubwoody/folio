@@ -14,13 +14,9 @@ db-setup:
     just db-create
     just db-migrate
 
-# Run the desktop app in dev mode
-dev-desktop:
+# Run the app in dev mode
+dev:
     cargo tauri dev
-
-# Run the website in dev mode
-dev-web:
-    pnpm --filter web dev
 
 lint-web:
     pnpm eslint . --max-warnings 0

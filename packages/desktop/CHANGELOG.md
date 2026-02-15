@@ -1,5 +1,9 @@
 # @folio/desktop
 
+## (unreleased)
+
+- Write logs to file
+
 ## 1.3.1
 
 ### Patch Changes
