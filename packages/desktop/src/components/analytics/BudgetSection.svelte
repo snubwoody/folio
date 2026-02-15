@@ -41,7 +41,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 		display: grid;
 		grid-template-columns: 1fr auto auto;
         align-items: center;
-        column-gap: 56px;
-        row-gap: 16px;
+        gap: 16px 56px;
 	}
 </style>
