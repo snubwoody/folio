@@ -17,11 +17,14 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     const { budget }: Props = $props();
     // TODO: store as number
     // TODO: create a budget for every category
+    // FIXME: bar state doesn't update
+    // FIXME: overspent error
     const totalSpent = parseFloat(budget.totalSpent);
     const amount = parseFloat(budget.amount);
-	// TODO: max 100 and min 0
-    let percentage = Math.round((totalSpent / amount) * 100);
-    let text = $state(`Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`);
+    
+    let percentage = $derived.by(()=>Math.min(Math.round((totalSpent / amount) * 100),100));
+    let text = $derived.by(()=>`Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`);
+
     if (totalSpent === amount){
         text = "Fully spent";
     } else if (totalSpent > amount){
