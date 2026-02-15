@@ -23,6 +23,7 @@ use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
+use tracing::{debug, error, info, warn};
 
 /// Adds tauri commands to the app instance.
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
@@ -56,9 +57,33 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_income_stream,
         fetch_categories,
         edit_income,
+        log_info,
+        log_error,
+        log_debug,
+        log_warn,
         feature_request,
         bug_report,
     ])
+}
+
+#[tauri::command]
+pub fn log_info(message: String) {
+    info!("[frontend] {message}")
+}
+
+#[tauri::command]
+pub fn log_warn(message: String) {
+    warn!("[frontend] {message}")
+}
+
+#[tauri::command]
+pub fn log_debug(message: String) {
+    debug!("[frontend] {message}")
+}
+
+#[tauri::command]
+pub fn log_error(message: String) {
+    error!("[frontend] {message}")
 }
 
 #[tauri::command]

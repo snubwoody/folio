@@ -20,6 +20,7 @@ use tracing::info;
 
 use crate::{Money, db, service::Category};
 
+// TODO: soft delete categories
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
