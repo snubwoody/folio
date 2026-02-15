@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 data.db
+logs/
 
 # Build output
 .svelte-kit
