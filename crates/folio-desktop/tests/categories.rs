@@ -1,5 +1,5 @@
 use folio_lib::Result;
-use folio_lib::service::{Category, CreateExpense, CreateIncome, Expense, Income, IncomeStream};
+use folio_lib::service::{Category, CreateIncome, Income, IncomeStream};
 use sqlx::SqlitePool;
 
 #[sqlx::test]

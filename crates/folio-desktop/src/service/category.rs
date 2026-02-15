@@ -16,7 +16,10 @@ use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{Money, db, service::{Budget, fetch_expenses}};
+use crate::{
+    Money, db,
+    service::{Budget, fetch_expenses},
+};
 
 // TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
@@ -38,7 +41,7 @@ impl Category {
                 .bind(now)
                 .fetch_one(pool)
                 .await?;
-        
+
         tracing::info!(id=?record.id,"Created new category");
 
         Budget::create(Money::ZERO, &record.id, pool).await?;

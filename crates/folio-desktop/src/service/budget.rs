@@ -33,7 +33,7 @@ pub struct Budget {
 
 impl Budget {
     /// Inserts a new row into the `budgets` table.
-    pub (crate) async fn create(
+    pub(crate) async fn create(
         amount: Money,
         category_id: &str,
         pool: &SqlitePool,
@@ -86,7 +86,7 @@ impl Budget {
             created_at,
         })
     }
-    
+
     /// Fetches the budget with the corresponding `category_id`.
     pub async fn from_category(category_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE category_id=$1")
@@ -128,7 +128,6 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::fetch_categories;
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
