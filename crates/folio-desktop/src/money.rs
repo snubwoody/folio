@@ -39,6 +39,11 @@ impl Money {
         Self::from_scaled(value)
     }
 
+    /// Computes the absolute value.
+    pub const fn abs(&self) -> Self{
+        Self::from_scaled(self.0.abs())
+    }
+
     pub fn inner(&self) -> i64 {
         self.0
     }
