@@ -40,14 +40,6 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 </script>
 
 <div class="flex flex-col relative gap-1.5 max-w-[600px]">
-    <IconButton
-        class="absolute -left-3 opacity-0 hover:opacity-100"
-        size="small"
-        variant="ghost"
-        onclick={() => appStore.deleteBudget(budget.id)}
-    >
-        <Trash2 />
-    </IconButton>
     <div class="flex items-center justify-between">
         <p>{budget.category?.title ?? " "}</p>
         <p>{text}</p>
