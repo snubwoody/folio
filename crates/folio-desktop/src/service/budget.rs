@@ -15,7 +15,7 @@
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{Row, SqlitePool};
 use tracing::info;
 
 use crate::{Money, db, service::Category};
@@ -98,13 +98,14 @@ impl Budget {
 }
 
 pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
-    let records: Vec<db::Budget> = sqlx::query_as("SELECT id FROM budgets")
+    let records = sqlx::query("SELECT id FROM budgets")
         .fetch_all(pool)
         .await?;
 
     let mut budgets = vec![];
     for record in records {
-        let budget = Budget::from_id(&record.id, pool).await?;
+        let id: String = record.get("id");
+        let budget = Budget::from_id(&id, pool).await?;
         budgets.push(budget);
     }
     Ok(budgets)
@@ -124,6 +125,16 @@ mod test {
         assert_eq!(budget.amount, Money::from_unscaled(20));
         assert_eq!(budget.category.title, "MINE__");
         assert!(budget.created_at.timestamp() >= now);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
+        let category = Category::create("", &pool).await?;
+        let len = super::fetch_budgets(&pool).await?.len();
+        Budget::create(Default::default(), &category.id, &pool).await?;
+        let budgets = super::fetch_budgets(&pool).await?;
+        assert!(budgets.len() == len + 1);
         Ok(())
     }
 
