@@ -25,6 +25,7 @@ import type {
     Settings
 } from "./lib";
 import { AccountStore } from "./account.svelte";
+import { logger } from "./logger";
 
 // TODO: just manage state manually
 export class AppStore {
@@ -69,8 +70,12 @@ export class AppStore {
     }
 
     async deleteBudget(id: string) {
+        try{
+            await invoke("delete_budget", { id });
+        } catch(e){
+            logger.error(`${e}`);
+        }
         // FIXME: no longer exists
-        await invoke("delete_budget", { id });
         await this.load();
     }
 
@@ -157,7 +162,6 @@ export class AppStore {
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;
-        console.log(await invoke("fetch_budgets"));
     }
 }
 
