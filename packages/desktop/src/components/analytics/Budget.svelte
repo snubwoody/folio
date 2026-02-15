@@ -16,10 +16,17 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 
     const { budget }: Props = $props();
     // TODO: store as number
-    let percentage = Math.round((parseFloat(budget.totalSpent) / parseFloat(budget.amount)) * 100);
+    // TODO: create a budget for every category
+    const totalSpent = parseFloat(budget.totalSpent);
+    const amount = parseFloat(budget.amount);
+    const remaining = parseFloat(budget.remaining);
+    let percentage = Math.round((totalSpent / amount) * 100);
     let text = $state(`Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`)
-    if (parseFloat(budget.remaining) === 0){
+    if (totalSpent === amount){
         text = "Fully spent"
+    } else if (totalSpent > amount){
+        const excess = totalSpent -amount;
+        text = `Overspent by ${formatAmount(excess.toString())}`
     }
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)
@@ -50,7 +57,6 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     </div>
 </div>
 <MoneyCell symbol={getCurrencySymbol(appStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
-<!-- <p class="data-cell">{formatAmount(budget.totalSpent,{ currency: appStore.settings.currencyCode })}</p> -->
 <p>
     {formatAmount(budget.remaining,{ currency: appStore.settings.currencyCode })}
 </p>
