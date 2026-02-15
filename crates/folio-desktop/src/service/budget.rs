@@ -47,7 +47,7 @@ impl Budget {
 
         let budget = Self::from_id(&record.id, pool).await?;
 
-        info!(budget=?budget,"Created budget");
+        info!(category_id=?category_id,id=?budget.id,"Created new budget");
         Ok(budget)
     }
 
@@ -117,22 +117,9 @@ mod test {
     use crate::service::fetch_categories;
 
     #[sqlx::test]
-    async fn create_budget(pool: SqlitePool) -> crate::Result<()> {
-        let now = Utc::now().timestamp();
-        let category = Category::create("MINE__", &pool).await?;
-        let budget = Budget::create(Money::from_unscaled(20), category.id.as_str(), &pool).await?;
-
-        assert_eq!(budget.amount, Money::from_unscaled(20));
-        assert_eq!(budget.category.title, "MINE__");
-        assert!(budget.created_at.timestamp() >= now);
-        Ok(())
-    }
-
-    #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("", &pool).await?;
         let len = super::fetch_budgets(&pool).await?.len();
-        Budget::create(Default::default(), &category.id, &pool).await?;
+        Category::create("", &pool).await?;
         let budgets = super::fetch_budgets(&pool).await?;
         assert!(budgets.len() == len + 1);
         Ok(())

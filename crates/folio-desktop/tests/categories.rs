@@ -16,6 +16,19 @@ async fn delete_category(pool: SqlitePool) -> Result<()> {
 }
 
 #[sqlx::test]
+async fn create_budget_after_category(pool: SqlitePool) -> Result<()> {
+    let category = Category::create("__", &pool).await?;
+    // Category::delete(&category.id, &pool).await?;
+
+    let record = sqlx::query!("SELECT * FROM budgets WHERE category_id=$1", category.id)
+        .fetch_optional(&pool)
+        .await?;
+
+    assert!(record.is_some());
+    Ok(())
+}
+
+#[sqlx::test]
 async fn delete_category_with_budget(pool: SqlitePool) -> Result<()> {
     let _category = Category::create("__", &pool).await?;
     // FIXME: add deleted_at or is_deleted column
