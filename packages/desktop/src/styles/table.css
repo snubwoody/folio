@@ -2,8 +2,9 @@
 @layer components {
     .transaction-table{
         width: 100%;
-        border-collapse: collapse;
+        border-collapse:separate;
         table-layout: fixed;
+        border-spacing: 0;
 
 
         .table-header{
