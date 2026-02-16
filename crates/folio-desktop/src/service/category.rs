@@ -126,8 +126,6 @@ impl Category {
     }
 }
 
-
-
 pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate::Error> {
     let records: Vec<db::Category> =
         sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")

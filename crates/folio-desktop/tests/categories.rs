@@ -1,5 +1,7 @@
 use folio_lib::Result;
-use folio_lib::service::{Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets, fetch_categories};
+use folio_lib::service::{
+    Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets, fetch_categories,
+};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
@@ -14,10 +16,10 @@ async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn create_budgets_for_categories(pool: SqlitePool) -> Result<()> {
     let c = Category::create_raw("__", &pool).await?;
-    let result = Budget::from_category(&c.id,&pool).await;
+    let result = Budget::from_category(&c.id, &pool).await;
     assert!(result.is_err());
     create_missing_budgets(&pool).await?;
-    let result = Budget::from_category(&c.id,&pool).await;
+    let result = Budget::from_category(&c.id, &pool).await;
     assert!(result.is_ok());
     Ok(())
 }
