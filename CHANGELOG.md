@@ -1,5 +1,14 @@
 # Folio Changelog
 
+## 1.4.0 - 15-02-2026
+
+- Every category must now have a budget, new categories will be have a corresponding budget created
+  
+### Improvements
+
+- Added progress bar for budget spending
+- Table cells now highlight when focused
+
 ## 1.3.1 - 29-11-2025
 
 ### Improvements
