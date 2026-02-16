@@ -1,5 +1,7 @@
 # Folio Changelog
 
+## 1.4.0 - 15-02-2026
+
 ## 1.3.1 - 29-11-2025
 
 ### Improvements
