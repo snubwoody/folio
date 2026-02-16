@@ -2,9 +2,10 @@
 
 ## 1.4.0
 
-- Add `year` and `month` to `budget` table ([#212](https://github.com/snubwoody/folio/pull/212))
-- Output logs to file ([#213](https://github.com/snubwoody/folio/pull/213))
+- Soft delete categories instead of deleting entire row ([#220](https://github.com/snubwoody/folio/pull/220))
 - Added logger to frontend ([#219](https://github.com/snubwoody/folio/pull/219))
+- Output logs to file ([#213](https://github.com/snubwoody/folio/pull/213))
+- Add `year` and `month` to `budget` table ([#212](https://github.com/snubwoody/folio/pull/212))
 - Replace sqlx `query!` macros with `query` functions ([#199](https://github.com/snubwoody/folio/pull/199))
 
 ## 1.3.1
