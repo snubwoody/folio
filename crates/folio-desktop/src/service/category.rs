@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::{Row, SqlitePool};
+use sqlx::SqlitePool;
 
 use crate::{
     Money, db,

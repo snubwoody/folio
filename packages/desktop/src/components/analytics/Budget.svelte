@@ -19,18 +19,11 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // TODO: store as number
     // TODO: create a budget for every category
     // FIXME: overspent error
-    const totalSpent = $derived.by(()=>parseFloat(budget.totalSpent));
-    const amount = $derived.by(()=>parseFloat(budget.amount));
+    const totalSpent = parseFloat(budget.totalSpent);
+    const amount = parseFloat(budget.amount);
 
-    let percentage = $derived.by(() => Math.min(Math.round((totalSpent / amount) * 100),100));
-    let text = $derived.by(() => `Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`);
-
-    if (totalSpent === amount){
-        text = "Fully spent";
-    } else if (totalSpent > amount){
-        const excess = totalSpent -amount;
-        text = `Overspent by ${formatAmount(excess.toString())}`;
-    }
+    let percentage = Math.min(Math.round((totalSpent / amount) * 100),100);
+    
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)
     );
@@ -43,7 +36,14 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 <div class="flex flex-col relative gap-1.5 max-w-[600px]">
     <div class="flex items-center justify-between">
         <p>{budget.category?.title ?? " "}</p>
-        <p>{text}</p>
+        {#if totalSpent === amount && amount > 0}
+            <p>Fully spent</p>
+        {:else if totalSpent > amount}
+            {@const excess = totalSpent -amount}
+            Overspent by {formatAmount(excess.toString())}
+        {:else}
+            Spent {formatAmount(budget.totalSpent)} of {formatAmount(budget.amount)}
+        {/if}
     </div>
     <div>
         <div class="budget-bar">

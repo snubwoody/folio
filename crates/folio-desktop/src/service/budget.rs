@@ -116,7 +116,7 @@ impl Budget {
 }
 
 pub async fn create_missing_budgets(pool: &SqlitePool) -> crate::Result<()> {
-    let categories = fetch_categories(&pool).await?;
+    let categories = fetch_categories(pool).await?;
     let budgets = fetch_budgets(pool).await?;
 
     let mut filtered = vec![];
