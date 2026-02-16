@@ -56,6 +56,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         create_income_stream,
         delete_income_stream,
         fetch_categories,
+        create_missing_budgets,
         edit_income,
         log_info,
         log_error,
@@ -115,6 +116,11 @@ pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense)
 #[tauri::command]
 pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
     Category::delete(&id, &state.pool).await
+}
+
+#[tauri::command]
+pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
+    service::create_missing_budgets(&state.pool).await
 }
 
 #[tauri::command]

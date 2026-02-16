@@ -9,6 +9,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     import { formatAmount, type Budget } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import { Trash2 } from "@lucide/svelte";
+    import { logger } from "$lib/logger";
 
     type Props = {
         budget: Budget;
@@ -18,8 +19,8 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // TODO: store as number
     // TODO: create a budget for every category
     // FIXME: overspent error
-    const totalSpent = parseFloat(budget.totalSpent);
-    const amount = parseFloat(budget.amount);
+    const totalSpent = $derived.by(()=>parseFloat(budget.totalSpent));
+    const amount = $derived.by(()=>parseFloat(budget.amount));
 
     let percentage = $derived.by(() => Math.min(Math.round((totalSpent / amount) * 100),100));
     let text = $derived.by(() => `Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`);

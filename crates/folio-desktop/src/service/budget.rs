@@ -16,9 +16,12 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
-use tracing::info;
+use tracing::{debug, info, warn};
 
-use crate::{Money, db, service::Category};
+use crate::{
+    Money, db,
+    service::{Category, fetch_categories},
+};
 
 // TODO: soft delete categories
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -112,7 +115,41 @@ impl Budget {
     }
 }
 
+pub async fn create_missing_budgets(pool: &SqlitePool) -> crate::Result<()> {
+    let categories = fetch_categories(&pool).await?;
+    let budgets = fetch_budgets(pool).await?;
+
+    let mut filtered = vec![];
+    for c in categories {
+        let mut contains = false;
+        for b in &budgets {
+            if b.category.id == c.id {
+                contains = true;
+                break;
+            }
+        }
+        if !contains {
+            filtered.push(c);
+        }
+    }
+
+    let len = filtered.len();
+    if len != 0 {
+        debug!("Found {len} categories without budgets")
+    }
+
+    for c in filtered {
+        let result = Budget::create(Money::ZERO, &c.id, pool).await;
+        if let Err(err) = result {
+            warn!("Failed to create budget: {err}")
+        }
+    }
+
+    Ok(())
+}
+
 pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
+    // TODO: filter categories that are deleted
     let records = sqlx::query("SELECT id FROM budgets")
         .fetch_all(pool)
         .await?;

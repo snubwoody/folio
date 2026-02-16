@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{Row, SqlitePool};
 
 use crate::{
     Money, db,
@@ -46,6 +46,21 @@ impl Category {
         tracing::info!(id=?record.id,"Created new category");
 
         Budget::create(Money::ZERO, &record.id, pool).await?;
+
+        Category::from_id(&record.id, pool).await
+    }
+
+    /// Creates a category without creating a corresponding budget.
+    pub async fn create_raw(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let now = Utc::now().timestamp();
+        let record: db::Category =
+            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
+                .bind(title)
+                .bind(now)
+                .fetch_one(pool)
+                .await?;
+
+        tracing::info!(id=?record.id,"Created new category");
 
         Category::from_id(&record.id, pool).await
     }
@@ -111,8 +126,9 @@ impl Category {
     }
 }
 
+
+
 pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate::Error> {
-    // TODO: filter deleted_at
     let records: Vec<db::Category> =
         sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
             .fetch_all(pool)
