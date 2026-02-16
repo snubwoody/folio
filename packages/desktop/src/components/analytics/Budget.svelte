@@ -5,11 +5,8 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 <script lang="ts">
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import MoneyCell from "$components/MoneyCell.svelte";
-    import IconButton from "$components/button/IconButton.svelte";
     import { formatAmount, type Budget } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
-    import { Trash2 } from "@lucide/svelte";
-    import { logger } from "$lib/logger";
 
     type Props = {
         budget: Budget;
@@ -23,7 +20,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     const amount = parseFloat(budget.amount);
 
     let percentage = Math.min(Math.round((totalSpent / amount) * 100),100);
-    
+
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)
     );
