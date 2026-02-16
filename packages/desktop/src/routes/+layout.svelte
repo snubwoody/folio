@@ -21,11 +21,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import "../styles/global.css";
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
+    import { invoke } from "@tauri-apps/api/core";
 
     const { children } = $props();
 
     onMount(async () => {
         await appStore.load();
+        await invoke("create_missing_budgets");
+        appStore.load();
     });
 </script>
 

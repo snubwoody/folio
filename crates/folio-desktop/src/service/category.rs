@@ -30,6 +30,7 @@ pub struct Category {
     pub id: String,
     pub title: String,
     pub created_at: Option<DateTime<Utc>>,
+    pub deleted_at: Option<DateTime<Utc>>,
 }
 
 impl Category {
@@ -49,6 +50,21 @@ impl Category {
         Category::from_id(&record.id, pool).await
     }
 
+    /// Creates a category without creating a corresponding budget.
+    pub async fn create_raw(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let now = Utc::now().timestamp();
+        let record: db::Category =
+            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
+                .bind(title)
+                .bind(now)
+                .fetch_one(pool)
+                .await?;
+
+        tracing::info!(id=?record.id,"Created new category");
+
+        Category::from_id(&record.id, pool).await
+    }
+
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let record: db::Category = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
             .bind(id)
@@ -58,11 +74,15 @@ impl Category {
         let created_at = record
             .created_at
             .and_then(|t| DateTime::from_timestamp(t, 0));
+        let deleted_at = record
+            .deleted_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
 
         let category = Category {
             id: record.id,
             title: record.title,
             created_at,
+            deleted_at,
         };
 
         Ok(category)
@@ -79,8 +99,10 @@ impl Category {
     }
 
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query("DELETE FROM categories WHERE id=$1")
+        let now = Utc::now().timestamp();
+        sqlx::query("UPDATE categories SET deleted_at=$2 WHERE id=$1")
             .bind(id)
+            .bind(now)
             .execute(pool)
             .await?;
 
@@ -105,9 +127,10 @@ impl Category {
 }
 
 pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate::Error> {
-    let records: Vec<db::Category> = sqlx::query_as("SELECT * FROM categories")
-        .fetch_all(pool)
-        .await?;
+    let records: Vec<db::Category> =
+        sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
+            .fetch_all(pool)
+            .await?;
 
     let mut categories = vec![];
     for record in records {

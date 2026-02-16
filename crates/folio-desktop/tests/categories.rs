@@ -1,45 +1,38 @@
 use folio_lib::Result;
-use folio_lib::service::{Category, CreateIncome, Income, IncomeStream};
+use folio_lib::service::{
+    Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets, fetch_categories,
+};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
-async fn delete_category(pool: SqlitePool) -> Result<()> {
-    let _category = Category::create("__", &pool).await?;
-    // Category::delete(&category.id, &pool).await?;
+async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
+    let category = Category::create("__", &pool).await?;
+    Category::delete(&category.id, &pool).await?;
+    let c = Category::from_id(&category.id, &pool).await?;
+    assert!(c.deleted_at.is_some());
+    Ok(())
+}
 
-    // let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
-    //     .fetch_optional(&pool)
-    //     .await?;
-
-    // assert!(record.is_none());
+#[sqlx::test]
+async fn create_budgets_for_categories(pool: SqlitePool) -> Result<()> {
+    let c = Category::create_raw("__", &pool).await?;
+    let result = Budget::from_category(&c.id, &pool).await;
+    assert!(result.is_err());
+    create_missing_budgets(&pool).await?;
+    let result = Budget::from_category(&c.id, &pool).await;
+    assert!(result.is_ok());
     Ok(())
 }
 
 #[sqlx::test]
 async fn create_budget_after_category(pool: SqlitePool) -> Result<()> {
     let category = Category::create("__", &pool).await?;
-    // Category::delete(&category.id, &pool).await?;
 
     let record = sqlx::query!("SELECT * FROM budgets WHERE category_id=$1", category.id)
         .fetch_optional(&pool)
         .await?;
 
     assert!(record.is_some());
-    Ok(())
-}
-
-#[sqlx::test]
-async fn delete_category_with_budget(pool: SqlitePool) -> Result<()> {
-    let _category = Category::create("__", &pool).await?;
-    // FIXME: add deleted_at or is_deleted column
-    // let budget = Budget::create(Default::default(), &category.id, &pool).await?;
-    // Category::delete(&category.id, &pool).await?;
-
-    // let record = sqlx::query!("SELECT * FROM budgets WHERE id=$1", budget.id)
-    //     .fetch_optional(&pool)
-    //     .await?;
-
-    // assert!(record.is_none());
     Ok(())
 }
 
@@ -83,19 +76,13 @@ async fn edit_income_stream(pool: SqlitePool) -> Result<()> {
 }
 
 #[sqlx::test]
-async fn delete_category_from_expense(pool: SqlitePool) -> Result<()> {
-    // FIXME
-    let _category = Category::create("__", &pool).await?;
-    // let data = CreateExpense {
-    //     category_id: Some(category.id.clone()),
-    //     ..Default::default()
-    // };
-    // let expense = Expense::create(data, &pool).await?;
-    // assert!(expense.category.is_some());
-    // Category::delete(&category.id, &pool).await?;
-
-    // let expense = Expense::from_id(&expense.id, &pool).await?;
-    // assert!(expense.category.is_none());
+async fn fetch_categories_not_deleted(pool: SqlitePool) -> crate::Result<()> {
+    let len1 = fetch_categories(&pool).await?.len();
+    Category::create("title", &pool).await?;
+    let c = Category::create("title", &pool).await?;
+    Category::delete(&c.id, &pool).await?;
+    let len2 = fetch_categories(&pool).await?.len();
+    assert!(len1 + 1 == len2);
     Ok(())
 }
 

@@ -5,10 +5,8 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 <script lang="ts">
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import MoneyCell from "$components/MoneyCell.svelte";
-    import IconButton from "$components/button/IconButton.svelte";
     import { formatAmount, type Budget } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
-    import { Trash2 } from "@lucide/svelte";
 
     type Props = {
         budget: Budget;
@@ -21,15 +19,8 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     const totalSpent = parseFloat(budget.totalSpent);
     const amount = parseFloat(budget.amount);
 
-    let percentage = $derived.by(() => Math.min(Math.round((totalSpent / amount) * 100),100));
-    let text = $derived.by(() => `Spent ${formatAmount(budget.totalSpent)} of ${formatAmount(budget.amount)}`);
+    let percentage = Math.min(Math.round((totalSpent / amount) * 100),100);
 
-    if (totalSpent === amount){
-        text = "Fully spent";
-    } else if (totalSpent > amount){
-        const excess = totalSpent -amount;
-        text = `Overspent by ${formatAmount(excess.toString())}`;
-    }
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)
     );
@@ -40,17 +31,16 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 </script>
 
 <div class="flex flex-col relative gap-1.5 max-w-[600px]">
-    <IconButton
-        class="absolute -left-3 opacity-0 hover:opacity-100"
-        size="small"
-        variant="ghost"
-        onclick={() => appStore.deleteBudget(budget.id)}
-    >
-        <Trash2 />
-    </IconButton>
     <div class="flex items-center justify-between">
         <p>{budget.category?.title ?? " "}</p>
-        <p>{text}</p>
+        {#if totalSpent === amount && amount > 0}
+            <p>Fully spent</p>
+        {:else if totalSpent > amount}
+            {@const excess = totalSpent -amount}
+            Overspent by {formatAmount(excess.toString())}
+        {:else}
+            Spent {formatAmount(budget.totalSpent)} of {formatAmount(budget.amount)}
+        {/if}
     </div>
     <div>
         <div class="budget-bar">

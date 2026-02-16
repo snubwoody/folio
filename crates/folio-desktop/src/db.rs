@@ -16,6 +16,7 @@ pub struct Category {
     pub id: String,
     pub title: String,
     pub created_at: Option<i64>,
+    pub deleted_at: Option<i64>,
 }
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq)]
