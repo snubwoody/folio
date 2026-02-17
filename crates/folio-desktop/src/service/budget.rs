@@ -149,14 +149,20 @@ pub async fn create_missing_budgets(pool: &SqlitePool) -> crate::Result<()> {
 }
 
 pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
-    // TODO: filter categories that are deleted
-    let records = sqlx::query("SELECT id FROM budgets")
+    let records = sqlx::query("SELECT id,category_id FROM budgets")
         .fetch_all(pool)
         .await?;
+
+    let categories = fetch_categories(pool).await?;
 
     let mut budgets = vec![];
     for record in records {
         let id: String = record.get("id");
+        let category_id: String = record.get("category_id");
+        // Filter budgets with a deleted category
+        if !categories.iter().any(|c| c.id == category_id) {
+            continue;
+        }
         let budget = Budget::from_id(&id, pool).await?;
         budgets.push(budget);
     }
