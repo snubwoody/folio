@@ -16,11 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { SelectCell, Table, TableCell, TableHeader } from "$components/table";
-    import { appStore } from "$lib/state.svelte.js";
+    import { appStore, expenseStore } from "$lib/state.svelte.js";
     import type { DataCellParams, DataColumn, DataRow } from "$lib/table";
     import { formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import DatePicker from "$components/DatePicker.svelte";
     import MoneyCell from "$components/MoneyCell.svelte";
+    import { logger } from "$lib/logger";
 
     const symbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 
@@ -32,15 +33,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         { id: "Amount" }
     ];
 
-    const rows: DataRow[] = $derived.by(() =>
-        appStore.expenses.map(expense => {
+    // const rows: DataRow[] = $derived.by(() =>{
+    //     logger.debug("Loaded expense rows");
+    //     let expenses = expenseStore.expenses;
+    //     return expenses.map(expense => {
+    //         {return { id: expense.id };}
+    //     })}
+    // );
+    
+    const rows: DataRow[] = $derived(
+        expenseStore.expenses.map(expense => {
             {return { id: expense.id };}
         })
     );
 
     const cells = $derived.by(() => {
         const cells: DataCellParams[] = [];
-        appStore.expenses.forEach(expense => {
+        expenseStore.expenses.forEach(expense => {
             // FIXME allow null values
             cells.push({ value: expense.category?.id ?? "" });
             cells.push({ value: expense.account?.id ?? "" });
@@ -87,6 +96,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
+{#key rows}
+
 <Table aria-label="Expense table" {cells} {columns} {rows}>
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
@@ -119,4 +130,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {/if}
     {/snippet}
 </Table>
+    
+{/key}
 
