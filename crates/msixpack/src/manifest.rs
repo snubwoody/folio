@@ -24,7 +24,7 @@ pub struct AppxManifest {
 }
 
 impl AppxManifest {
-    /// Create a new appxmanifest.
+    /// Creates a new appxmanifest.
     pub fn new() -> AppxManifest {
         Self {
             xmlns: String::from("http://schemas.microsoft.com/appx/manifest/foundation/windows10"),
