@@ -164,7 +164,6 @@ export class AppStore {
         logger.debug("Loaded expenses from database");
     }
 
-
     async load() {
         this.categories = (await invoke("fetch_categories")) as Category[];
         this.incomes = (await invoke("fetch_incomes")) as Income[];
