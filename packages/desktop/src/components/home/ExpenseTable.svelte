@@ -32,7 +32,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         { id: "Amount" }
     ];
 
-    const rows: DataRow[] = $derived.by(() =>
+    const rows: DataRow[] = $derived(
         appStore.expenses.map(expense => {
             {return { id: expense.id };}
         })
@@ -87,6 +87,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
+{#key rows}
+
 <Table aria-label="Expense table" {cells} {columns} {rows}>
     {#snippet header(label)}
         <TableHeader>{label}</TableHeader>
@@ -119,4 +121,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {/if}
     {/snippet}
 </Table>
+
+{/key}
 

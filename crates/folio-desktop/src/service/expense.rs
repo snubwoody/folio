@@ -139,6 +139,8 @@ impl Expense {
         .execute(pool)
         .await?;
 
+        info!(id=?id,"Updated expense");
+
         Ok(())
     }
 
@@ -147,6 +149,8 @@ impl Expense {
             .bind(id)
             .execute(pool)
             .await?;
+
+        info!(id=?id,"Deleted expense");
 
         Ok(())
     }

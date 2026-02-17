@@ -29,6 +29,7 @@ import { logger } from "./logger";
 
 // TODO: just manage state manually
 export class AppStore {
+    // TODO: add getters
     expenses: Expense[] = $state([]);
     incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
@@ -41,6 +42,11 @@ export class AppStore {
     settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
     accountStore = new AccountStore(this);
+
+    /// Returns a list of all the user's expenses.
+    // get expenses(): Expense[]{
+    //     return this.expenses;
+    // }
 
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
@@ -149,8 +155,16 @@ export class AppStore {
         this.incomeStreams.push(stream);
     }
 
+    async loadExpenses(){
+        const e = (await invoke("fetch_expenses")) as Expense[];
+        this.expenses = this.expenses.filter(() => false);
+        for (const expense of e){
+            this.expenses.push(expense);
+        }
+        logger.debug("Loaded expenses from database");
+    }
+
     async load() {
-        this.expenses = (await invoke("fetch_expenses")) as Expense[];
         this.categories = (await invoke("fetch_categories")) as Category[];
         this.incomes = (await invoke("fetch_incomes")) as Income[];
         this.incomeStreams = (await invoke(
@@ -162,6 +176,8 @@ export class AppStore {
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;
+        await this.loadExpenses();
+        logger.info("Loaded data from backend");
     }
 }
 

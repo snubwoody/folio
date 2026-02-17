@@ -6,7 +6,9 @@ afterEach(() => {
     clearMocks();
 });
 
+// TODO: add more tests
 test("Delete category", async () => {
+    // TODO: split these
     mockIPC((cmd) => {
         if (cmd === "delete_category") {
             return;
@@ -19,7 +21,6 @@ test("Delete category", async () => {
     appStore.expenses = [
         { id: "id-1", amount: "", date: "", currencyCode: "" }
     ];
-
     await appStore.deleteCategory("id-1");
     expect(appStore.categories.length).toBe(0);
     expect(appStore.expenses.length).toBe(0);

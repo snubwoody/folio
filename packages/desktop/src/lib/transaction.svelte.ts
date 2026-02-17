@@ -108,12 +108,14 @@ export class TransactionStore{
         }
         await this.#rootStore.load();
     }
+    // TODO: return the expense
     /**
      * Create a new expense.
      *
      * @param opts - The options for creating the new expense.
      */
     async addExpense(opts:CreateExpense){
+        // TODO: currency code should be optional
         const {
             amount = "0",
             accountId,

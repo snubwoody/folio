@@ -26,9 +26,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const { children } = $props();
 
     onMount(async () => {
-        await appStore.load();
         await invoke("create_missing_budgets");
-        appStore.load();
+        await appStore.load();
     });
 </script>
 
