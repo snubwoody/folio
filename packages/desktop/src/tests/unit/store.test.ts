@@ -21,7 +21,7 @@ test("Delete category", async () => {
     // appStore.expenses = [
     //     { id: "id-1", amount: "", date: "", currencyCode: "" }
     // ];
-    appStore.transactions.addExpense({amount: "0",currencyCode: "CAD"});
+    appStore.transactions.addExpense({ amount: "0",currencyCode: "CAD" });
     await appStore.deleteCategory("id-1");
     expect(appStore.categories.length).toBe(0);
     expect(appStore.expenses.length).toBe(0);

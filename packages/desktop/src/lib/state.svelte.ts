@@ -27,46 +27,6 @@ import type {
 import { AccountStore } from "./account.svelte";
 import { logger } from "./logger";
 
-const createExpenseStore = () => {
-    let expenses: Expense[] = $state([]);
-
-    return {
-        get expenses(): Expense[]{
-            return expenses;
-        },
-        async load(){
-            const e = (await invoke("fetch_expenses")) as Expense[];
-            expenses = expenses.filter(_ => false);
-            logger.debug("Loaded expenses");
-            expenses.push({
-                id:"1",
-                category: {id: "2",title:"New category",createdAt:""},
-                amount:"20.00",
-                date:"2025-12-12",
-                currencyCode: "CAD"
-            });
-            for (const expense of e){
-                expenses.push(expense);
-            }
-        }
-    };
-};
-
-export class ExpenseStore{
-    #expenses: Expense[] = $state([]);
-
-    get expenses(){
-        return this.#expenses;
-    }
-
-    async load() {
-        logger.debug("Loaded expenses");
-        let a = [...((await invoke("fetch_expenses")) as Expense[])];
-        this.#expenses = [...((await invoke("fetch_expenses")) as Expense[])];
-		logger.info("Loaded expenses from backend");
-    }
-}
-
 // TODO: just manage state manually
 export class AppStore {
     // TODO: add getters
@@ -197,7 +157,7 @@ export class AppStore {
 
     async loadExpenses(){
         const e = (await invoke("fetch_expenses")) as Expense[];
-        this.#expenses = this.#expenses.filter(_ => false);
+        this.#expenses = this.#expenses.filter(() => false);
         for (const expense of e){
             this.#expenses.push(expense);
         }
@@ -205,8 +165,6 @@ export class AppStore {
     }
 
     async load() {
-        // this.#expenses = (await invoke("fetch_expenses")) as Expense[];
-        await this.loadExpenses();
         this.categories = (await invoke("fetch_categories")) as Category[];
         this.incomes = (await invoke("fetch_incomes")) as Income[];
         this.incomeStreams = (await invoke(
@@ -218,9 +176,9 @@ export class AppStore {
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;
-		logger.info("Loaded data from backend");
+        await this.loadExpenses();
+        logger.info("Loaded data from backend");
     }
 }
 
 export const appStore = new AppStore();
-export const expenseStore = createExpenseStore();
