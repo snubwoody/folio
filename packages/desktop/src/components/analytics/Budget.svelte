@@ -19,7 +19,8 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     const totalSpent = parseFloat(budget.totalSpent);
     const amount = parseFloat(budget.amount);
 
-    let percentage = Math.min(Math.round((totalSpent / amount) * 100),100);
+    /// Max 1 to prevent NaN and mess up the bar width
+    let percentage = Math.min(Math.round((totalSpent / Math.max(amount,1)) * 100),100);
 
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)
