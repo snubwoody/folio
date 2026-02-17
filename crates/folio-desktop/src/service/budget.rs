@@ -160,7 +160,7 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
         let id: String = record.get("id");
         let category_id: String = record.get("category_id");
         // Filter budgets with a deleted category
-        if !categories.iter().any(|c|c.id == category_id){
+        if !categories.iter().any(|c| c.id == category_id) {
             continue;
         }
         let budget = Budget::from_id(&id, pool).await?;
