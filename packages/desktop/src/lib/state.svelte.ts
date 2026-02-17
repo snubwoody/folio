@@ -30,7 +30,7 @@ import { logger } from "./logger";
 // TODO: just manage state manually
 export class AppStore {
     // TODO: add getters
-    #expenses: Expense[] = $state([]);
+    expenses: Expense[] = $state([]);
     incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
@@ -44,9 +44,9 @@ export class AppStore {
     accountStore = new AccountStore(this);
 
     /// Returns a list of all the user's expenses.
-    get expenses(): Expense[]{
-        return this.#expenses;
-    }
+    // get expenses(): Expense[]{
+    //     return this.expenses;
+    // }
 
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
@@ -65,7 +65,7 @@ export class AppStore {
 
     async setCurrencyCode(currency: string) {
         await invoke("set_currency_code", { currency });
-        this.#expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
         this.incomes = (await invoke("fetch_incomes")) as Income[];
         this.settings = (await invoke("settings")) as Settings;
     }
@@ -95,7 +95,7 @@ export class AppStore {
     async deleteCategory(id: string) {
         await invoke("delete_category", { id });
         this.categories = this.categories.filter((c) => c.id !== id);
-        this.#expenses = (await invoke("fetch_expenses")) as Expense[];
+        this.expenses = (await invoke("fetch_expenses")) as Expense[];
     }
 
     async editCategory(id: string, title: string) {
@@ -157,12 +157,13 @@ export class AppStore {
 
     async loadExpenses(){
         const e = (await invoke("fetch_expenses")) as Expense[];
-        this.#expenses = this.#expenses.filter(() => false);
+        this.expenses = this.expenses.filter(() => false);
         for (const expense of e){
-            this.#expenses.push(expense);
+            this.expenses.push(expense);
         }
         logger.debug("Loaded expenses from database");
     }
+
 
     async load() {
         this.categories = (await invoke("fetch_categories")) as Category[];
