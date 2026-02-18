@@ -49,9 +49,9 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     Ok(())
 }
 
+// TODO: log migrations
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
-    // TODO: log to file, format folio-2026-02-12.log
     // TODO: add database backup before migrating
 
     #[cfg(debug_assertions)]

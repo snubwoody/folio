@@ -18,6 +18,7 @@ mod category;
 mod expense;
 mod income;
 mod income_stream;
+mod transaction;
 
 pub use account::*;
 pub use budget::*;

@@ -1,6 +1,5 @@
 .DS_Store
-node_modules
-data.db
+*.db
 logs/
 
 # Build output
@@ -8,6 +7,7 @@ logs/
 *.msix
 build
 target/
+node_modules/
 
 # Env variables and secrets
 .env
@@ -17,6 +17,7 @@ target/
 
 # IDE settings
 .idea/
+.vs/
 
 # Vite output
 vite.config.js.timestamp-*

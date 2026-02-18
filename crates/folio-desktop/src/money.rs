@@ -21,6 +21,7 @@ use std::{
     str::FromStr,
 };
 
+// TODO: impl FromRow?
 /// A type that stores money with 6 digits after the decimal point.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Money(i64);
