@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import { parse } from "date-fns";
+import { localCurrencySymbols } from "./money";
 
 export type Account = {
     id: string;
@@ -104,6 +105,7 @@ export type NumberFormatOpts = {
 };
 export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
     // TODO: use appStore currency
+    const symbol = localCurrencySymbols["USD"];
     const currency = opts?.currency ?? "USD";
     let notation:
         | "compact"
