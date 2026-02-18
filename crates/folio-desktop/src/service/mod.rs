@@ -26,3 +26,4 @@ pub use category::*;
 pub use expense::*;
 pub use income::*;
 pub use income_stream::*;
+pub use transaction::*;
