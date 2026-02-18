@@ -33,9 +33,45 @@ async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()>{
         .amount(Money::MAX)
         .create(&pool)
         .await?;
-    
+
     assert_eq!(expense.amount,Money::MAX.inner());
     assert_eq!(expense.transaction_date,date);
     assert_eq!(expense.from_account_id.unwrap(),account.id);
+    Ok(())
+}
+
+#[sqlx::test]
+async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()>{
+    let account = Account::create("",Money::ZERO,&pool).await?;
+    let date = NaiveDate::from_str("2024-12-12")?;
+    let expense = Transaction::income()
+        .account_id(&account.id)
+        .date(date)
+        .amount(Money::MAX)
+        .create(&pool)
+        .await?;
+
+    assert_eq!(expense.amount,Money::MAX.inner());
+    assert_eq!(expense.transaction_date,date);
+    assert_eq!(expense.to_account_id.unwrap(),account.id);
+    Ok(())
+}
+
+#[sqlx::test]
+async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()>{
+    let a1 = Account::create("",Money::ZERO,&pool).await?;
+    let a2 = Account::create("",Money::ZERO,&pool).await?;
+    let date = NaiveDate::from_str("2024-12-12")?;
+    let expense = Transaction::transfer()
+        .accounts(&a1.id,&a2.id)
+        .date(date)
+        .amount(Money::MAX)
+        .create(&pool)
+        .await?;
+
+    assert_eq!(expense.amount,Money::MAX.inner());
+    assert_eq!(expense.transaction_date,date);
+    assert_eq!(expense.from_account_id.unwrap(),a1.id);
+    assert_eq!(expense.to_account_id.unwrap(),a2.id);
     Ok(())
 }

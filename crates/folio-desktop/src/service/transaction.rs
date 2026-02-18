@@ -60,12 +60,46 @@ impl TransactionBuilder<Transfer>{
         self.to_account_id = Some(to.to_owned());
         self
     }
+
+
+    pub async fn create(self,pool: &sqlx::SqlitePool) -> crate::Result<Transaction>{
+        let row: Transaction = sqlx::query_as(
+            "INSERT INTO transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id)
+                VALUES ($1,$2,$3,$4,$5,$6)
+                RETURNING *"
+        )
+            .bind(self.transaction_date)
+            .bind(self.from_account_id.unwrap_or_default())
+            .bind(self.to_account_id.unwrap_or_default())
+            .bind(self.amount.inner())
+            .bind(self.note)
+            .bind(self.category_id)
+            .fetch_one(pool)
+            .await?;
+        Ok(row)
+    }
 }
 
 impl TransactionBuilder<Income>{
     pub fn account_id(mut self, id: &str) -> Self{
         self.to_account_id = Some(id.to_owned());
         self
+    }
+
+    pub async fn create(self,pool: &sqlx::SqlitePool) -> crate::Result<Transaction>{
+        let row: Transaction = sqlx::query_as(
+            "INSERT INTO transactions(transaction_date,to_account_id,amount,note,category_id)
+                VALUES ($1,$2,$3,$4,$5)
+                RETURNING *"
+        )
+            .bind(self.transaction_date)
+            .bind(self.to_account_id.unwrap_or_default())
+            .bind(self.amount.inner())
+            .bind(self.note)
+            .bind(self.category_id)
+            .fetch_one(pool)
+            .await?;
+        Ok(row)
     }
 }
 
@@ -78,7 +112,7 @@ impl TransactionBuilder<Expense>{
     pub async fn create(self,pool: &sqlx::SqlitePool) -> crate::Result<Transaction>{
         let row: Transaction = sqlx::query_as(
             "INSERT INTO transactions(transaction_date,from_account_id,amount,note,category_id)
-                VALUES ($1,$2)
+                VALUES ($1,$2,$3,$4,$5)
                 RETURNING *"
         )
             .bind(self.transaction_date)
