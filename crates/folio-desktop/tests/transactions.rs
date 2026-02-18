@@ -1,5 +1,7 @@
+use std::str::FromStr;
+use chrono::NaiveDate;
 use sqlx::Row;
-use folio_lib::{db, service, Money};
+use folio_lib::Money;
 use folio_lib::service::{Account, Transaction};
 
 #[sqlx::test]
@@ -13,9 +15,27 @@ async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()>{
         .bind(&account.id)
         .fetch_one(&pool)
         .await?;
-    
-    let id: String = row.get("id");    
+
+    let id: String = row.get("id");
     let transaction = Transaction::fetch(&id, &pool).await?;
-    assert_eq!(transaction.amount,0);
+    assert_eq!(transaction.amount,10);
+    Ok(())
+}
+
+
+#[sqlx::test]
+async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()>{
+    let account = Account::create("",Money::ZERO,&pool).await?;
+    let date = NaiveDate::from_str("2024-12-12")?;
+    let expense = Transaction::expense()
+        .account_id(&account.id)
+        .date(date)
+        .amount(Money::MAX)
+        .create(&pool)
+        .await?;
+    
+    assert_eq!(expense.amount,Money::MAX.inner());
+    assert_eq!(expense.transaction_date,date);
+    assert_eq!(expense.from_account_id.unwrap(),account.id);
     Ok(())
 }
