@@ -1,5 +1,5 @@
 CREATE TABLE transactions (
-    id TEXT PRIMARY KEY NOT NULL,
+    id TEXT PRIMARY KEY NOT NULL DEFAULT (hex(randomBlob(8))),
     amount INT NOT NULL DEFAULT 0,
     -- The sending account
     from_account_id TEXT NULL REFERENCES accounts(id),
