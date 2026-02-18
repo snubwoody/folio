@@ -114,6 +114,13 @@ pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense)
 }
 
 #[tauri::command]
+pub async fn fetch_transactions(state: tauri::State<'_, State>,) -> Result<Vec<Transaction>> {
+    Transaction::fetch_all(&state.pool)
+        .await
+        .inspect_err(|err|warn!("{err}"))
+}
+
+#[tauri::command]
 pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
     Category::delete(&id, &state.pool).await
 }

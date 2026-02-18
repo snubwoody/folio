@@ -1,7 +1,8 @@
 use std::marker::PhantomData;
 use chrono::{Local, NaiveDate};
-use sqlx::FromRow;
-use crate::{service, Money};
+use serde::Serialize;
+use sqlx::{FromRow, SqlitePool};
+use crate::{db, service, Money};
 
 pub struct Expense;
 pub struct Income;
@@ -126,7 +127,8 @@ impl TransactionBuilder<Expense>{
     }
 }
 
-#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq)]
+// TODO: replace amount with Money
+#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq,Serialize)]
 pub struct Transaction{
     pub id: String,
     pub amount: i64,
@@ -160,6 +162,15 @@ impl Transaction{
             .await?;
 
         Ok(transaction)
+    }
+
+    /// Fetch all the transactions from the database.
+    pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
+        let rows: Vec<Self> = sqlx::query_as("SELECT * from transactions")
+            .fetch_all(pool)
+            .await?;
+
+        Ok(rows)
     }
 }
 
