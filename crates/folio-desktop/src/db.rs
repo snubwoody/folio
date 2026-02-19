@@ -1,6 +1,5 @@
 //! Contains database types
 
-use chrono::NaiveDate;
 use sqlx::FromRow;
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq)]

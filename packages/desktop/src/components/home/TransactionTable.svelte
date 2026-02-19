@@ -5,21 +5,21 @@
     interface Transaction{
         id: string,
         amount: string
-        from_account_id?: string 
-        to_account_id?: string 
-        category_id?: string 
+        from_account_id?: string
+        to_account_id?: string
+        category_id?: string
         note?: string
         date: string
     };
 
     const transactions: Transaction[] = [
-        {id:"1",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
-        {id:"2",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
-        {id:"3",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
-        {id:"4",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
-        {id:"5",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
-        {id:"6",amount: "0.25",from_account_id:"",category_id: "",note:"",date:"2024-12-12"},
-    ]
+        { id:"1",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
+        { id:"2",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
+        { id:"3",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
+        { id:"4",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
+        { id:"5",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
+        { id:"6",amount: "0.25",from_account_id:"",category_id: "",note:"",date:"2024-12-12" }
+    ];
 </script>
 
 <table>
@@ -81,7 +81,7 @@
 
     tr{
         border-bottom: 1px solid var(--color-neutral-50);
-        
+
         &:first-child{
             border-top: 1px solid var(--color-neutral-50);
         }
