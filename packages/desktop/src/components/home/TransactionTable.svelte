@@ -1,5 +1,25 @@
 <script lang="ts">
+    import InlineTextField from "$components/InlineTextField.svelte";
+    // TODO: make the row a form
 
+    interface Transaction{
+        id: string,
+        amount: string
+        from_account_id?: string 
+        to_account_id?: string 
+        category_id?: string 
+        note?: string
+        date: string
+    };
+
+    const transactions: Transaction[] = [
+        {id:"1",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
+        {id:"2",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
+        {id:"3",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
+        {id:"4",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
+        {id:"5",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12"},
+        {id:"6",amount: "0.25",from_account_id:"",category_id: "",note:"",date:"2024-12-12"},
+    ]
 </script>
 
 <table>
@@ -15,33 +35,27 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>12/12/12</td>
-            <td>Account</td>
-            <td>Payee</td>
-            <td>Note</td>
-            <td>Category</td>
-            <td>$0.00</td>
-            <td>$0.00</td>
-        </tr>
-        <tr>
-            <td>12/12/12</td>
-            <td>Account</td>
-            <td>Payee</td>
-            <td>Note</td>
-            <td>Category</td>
-            <td>$0.00</td>
-            <td>$0.00</td>
-        </tr>
-        <tr>
-            <td>12/12/12</td>
-            <td>Account</td>
-            <td>Payee</td>
-            <td>Note</td>
-            <td>Category</td>
-            <td>$0.00</td>
-            <td>$0.00</td>
-        </tr>
+        {#each transactions as transaction (transaction.id)}
+            <tr>
+                <td>
+                    <InlineTextField value="12/12/12"/>
+                </td>
+                <td>
+                    {#if transaction.from_account_id !== undefined}
+                        Account
+                    {/if}
+                </td>
+                <td>
+                    {#if transaction.to_account_id !== undefined}
+                        Payee
+                    {/if}
+                </td>
+                <td>Note</td>
+                <td>Category</td>
+                <td>${transaction.amount}</td>
+                <td>${transaction.amount}</td>
+            </tr>
+        {/each}
     </tbody>
 </table>
 
