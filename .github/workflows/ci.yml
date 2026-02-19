@@ -55,7 +55,7 @@ jobs:
           run_install: false
       - uses: taiki-e/install-action@v2
         with:
-          tool: nextest
+          tool: nextest,sqlx-cli
       - name: Setup database
         run: just db-setup
       - name: Run cargo clippy
