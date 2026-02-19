@@ -18,6 +18,7 @@ db-setup:
 dev:
     cargo tauri dev
 
+# Format and lint all the code
 lint:
     cargo clippy --all-targets --all-features --fix
     cargo fmt

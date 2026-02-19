@@ -19,7 +19,6 @@ mod error;
 mod money;
 pub mod service;
 mod settings;
-mod support;
 
 use crate::settings::Settings;
 pub use error::{Error, Result};

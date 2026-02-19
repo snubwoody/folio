@@ -62,8 +62,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         log_error,
         log_debug,
         log_warn,
-        feature_request,
-        bug_report,
     ])
 }
 
@@ -320,20 +318,6 @@ pub async fn create_income_stream(
     title: &str,
 ) -> Result<IncomeStream> {
     IncomeStream::create(title, &state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn feature_request(request: FeatureRequest) -> Result<SupportResponse> {
-    crate::support::feature_request(request)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn bug_report(request: BugReport) -> Result<SupportResponse> {
-    crate::support::bug_report(request)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
 }
