@@ -1,19 +1,8 @@
 <script lang="ts">
     import InlineTextField from "$components/InlineTextField.svelte";
+    import { formatDate } from "$lib/lib";
     import {transactionStore} from "$lib/transaction.svelte";
-    // TODO: make the row a form
-
-    interface Transaction{
-        id: string,
-        amount: string
-        from_account_id?: string
-        to_account_id?: string
-        category_id?: string
-        note?: string
-        date: string
-    };
-
-    $inspect(transactionStore.transactions);
+    import Transaction from "./Transaction.svelte";
 </script>
 
 <table>
@@ -30,25 +19,7 @@
     </thead>
     <tbody>
         {#each transactionStore.transactions as transaction (transaction.id)}
-            <tr>
-                <td>
-                    <InlineTextField value={transaction.transaction_date}/>
-                </td>
-                <td>
-                    {#if transaction.from_account_id !== undefined}
-                        Account
-                    {/if}
-                </td>
-                <td>
-                    {#if transaction.to_account_id !== undefined}
-                        Payee
-                    {/if}
-                </td>
-                <td>{transaction.note}</td>
-                <td>{transaction.category_id}</td>
-                <td>${transaction.amount}</td>
-                <td>${transaction.amount}</td>
-            </tr>
+            <Transaction {transaction}/>
         {/each}
     </tbody>
 </table>
