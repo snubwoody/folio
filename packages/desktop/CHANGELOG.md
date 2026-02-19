@@ -1,5 +1,10 @@
 # @folio/desktop
 
+## 1.4.1
+
+- Filter budgets with deleted categories ([#229](https://github.com/snubwoody/folio/pull/229))
+- Fix empty budget bar width ([#227](https://github.com/snubwoody/folio/pull/227))
+
 ## 1.4.0
 
 - Soft delete categories instead of deleting entire row ([#220](https://github.com/snubwoody/folio/pull/220))
