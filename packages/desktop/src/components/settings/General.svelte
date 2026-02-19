@@ -56,7 +56,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             {/each}
         </ul>
     </section>
-    <div class="w-full h-[1px] bg-neutral-50"></div>
-    <Support/>
 </div>
 
