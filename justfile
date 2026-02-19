@@ -22,8 +22,5 @@ dev:
 lint:
     cargo clippy --all-targets --all-features --fix
     cargo fmt
-    pnpm lint:fix
-
-lint-web:
-    pnpm eslint . --max-warnings 0
-#    pnpm stylelint **/*.{css,svelte} --max-warnings 0
+    eslint . --max-warnings 0 --fix
+    stylelint **/*.{css,svelte} --max-warnings 0 --fix
