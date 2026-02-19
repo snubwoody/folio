@@ -23,7 +23,6 @@ import type {
     Budget,
     Settings
 } from "./lib";
-import { AccountStore } from "./account.svelte";
 import { logger } from "./logger";
 import { AppError, type ErrorResponse } from "./error";
 
@@ -183,7 +182,36 @@ export class TransactionStore{
     }
 }
 
+interface EditAccount{
+    name?: string
+    startingBalance?: string
+}
 
+export class AccountStore {
+    #rootStore: AppStore;
+
+    constructor(store: AppStore) {
+        this.#rootStore = store;
+    }
+
+    async addAccount(name: string, startingBalance: string) {
+        try {
+            await invoke("create_account", { name, startingBalance });
+        } catch (e) {
+            console.error(e);
+        }
+        await this.#rootStore.load();
+    }
+
+    async editAccount(id: string, opts: EditAccount) {
+        try {
+            await invoke("edit_account", { id, opts });
+        } catch (e) {
+            console.error(e);
+        }
+        await this.#rootStore.load();
+    }
+}
 
 // TODO: just manage state manually
 export class AppStore {

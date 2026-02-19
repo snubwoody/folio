@@ -1,5 +1,6 @@
 <script lang="ts">
     import InlineTextField from "$components/InlineTextField.svelte";
+    import { accountStore } from "$lib/account.svelte";
     import { formatDate } from "$lib/lib";
     import {transactionStore,type Transaction} from "$lib/transaction.svelte";
     // TODO: make the row a form
@@ -11,25 +12,28 @@
     type TransactionType = "Expense" | "Income" | "Transfer"
 
     const {transaction}: Props = $props();
+    const account = accountStore.accountMap.get(transaction.fromAccountId!);
+    const payee = accountStore.accountMap.get(transaction.toAccountId??"");
     // TODO: make the row a form
 </script>
 
 <tr>
     <td>
-        <InlineTextField value={formatDate(transaction.transaction_date)}/>
+        <InlineTextField value={formatDate(transaction.transactionDate)}/>
     </td>
     <td>
-        {#if transaction.from_account_id !== undefined}
-            Account
+        {#if transaction.fromAccountId !== undefined}
+            {account?.name}
         {/if}
     </td>
     <td>
-        {#if transaction.to_account_id !== undefined}
-            Payee
+        {#if transaction.toAccountId !== undefined}
+            {@const payee = accountStore.accountMap.get(transaction.toAccountId)}
+            {payee?.name}
         {/if}
     </td>
     <td>{transaction.note}</td>
-    <td>{transaction.category_id}</td>
+    <td>{transaction.categoryId}</td>
     <td>${transaction.amount}</td>
     <td>${transaction.amount}</td>
 </tr>

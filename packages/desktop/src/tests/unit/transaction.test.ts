@@ -12,9 +12,9 @@ describe("TransactionStore",()=>{
         mockIPC((cmd) => {
             if (cmd === "fetch_transactions" ) {
                 let transactions: Transaction[] = [
-                    {id:"1",from_account_id:"A1",transaction_date:"",amount:""},
-                    {id:"2",from_account_id:"A1",transaction_date:"",amount:""},
-                    {id:"3",from_account_id:"A1",transaction_date:"",amount:""},
+                    {id:"1",fromAccountId:"A1",transactionDate:"",amount:""},
+                    {id:"2",fromAccountId:"A1",transactionDate:"",amount:""},
+                    {id:"3",fromAccountId:"A1",transactionDate:"",amount:""},
                 ];
                 return transactions;
             }

@@ -5,10 +5,10 @@ import { invoke } from "@tauri-apps/api/core";
 export interface Transaction{
     id: string,
     amount: string,
-    from_account_id?: string,
-    to_account_id?: string,
-    transaction_date: string,
-    category_id?: string,
+    fromAccountId?: string,
+    toAccountId?: string,
+    transactionDate: string,
+    categoryId?: string,
     note?: string,
 }
 
