@@ -20,7 +20,6 @@ dev:
 
 # Format and lint all the code
 lint:
-    cargo clippy --all-targets --all-features --fix
+    cargo clippy --all-targets --all-features --allow-dirty --fix
     cargo fmt
-    eslint . --max-warnings 0 --fix
-    stylelint **/*.{css,svelte} --max-warnings 0 --fix
+    pnpm lint:fix
