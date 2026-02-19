@@ -19,7 +19,6 @@ use crate::{
     analytics::{self, IncomeAnalytic, SpendingAnalytic},
     service::{self, *},
 };
-use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
@@ -62,9 +61,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         log_error,
         log_debug,
         log_warn,
-        feature_request,
         fetch_transactions,
-        bug_report,
     ])
 }
 
@@ -321,20 +318,6 @@ pub async fn create_income_stream(
     title: &str,
 ) -> Result<IncomeStream> {
     IncomeStream::create(title, &state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn feature_request(request: FeatureRequest) -> Result<SupportResponse> {
-    crate::support::feature_request(request)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn bug_report(request: BugReport) -> Result<SupportResponse> {
-    crate::support::bug_report(request)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
 }
