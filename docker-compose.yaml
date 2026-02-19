@@ -1,7 +1,0 @@
-services:
-  folio-worker:
-    image: folio/worker
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"

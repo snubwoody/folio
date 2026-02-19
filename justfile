@@ -18,6 +18,8 @@ db-setup:
 dev:
     cargo tauri dev
 
-lint-web:
-    pnpm eslint . --max-warnings 0
-#    pnpm stylelint **/*.{css,svelte} --max-warnings 0
+# Format and lint all the code
+lint:
+    cargo clippy --all-targets --all-features --allow-dirty --fix
+    cargo fmt
+    pnpm lint:fix

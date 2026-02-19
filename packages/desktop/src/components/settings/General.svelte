@@ -19,7 +19,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectMenu from "$components/SelectMenu.svelte";
     import { appStore } from "$lib/state.svelte";
     import Account from "./general/Account.svelte";
-    import Support from "./support/Support.svelte";
 
     let currencies: string[] = $state([]);
     $effect(() => {
@@ -56,7 +55,5 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             {/each}
         </ul>
     </section>
-    <div class="w-full h-[1px] bg-neutral-50"></div>
-    <Support/>
 </div>
 
