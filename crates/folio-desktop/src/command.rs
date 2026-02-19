@@ -19,7 +19,6 @@ use crate::{
     analytics::{self, IncomeAnalytic, SpendingAnalytic},
     service::{self, *},
 };
-use folio_core::{BugReport, FeatureRequest, SupportResponse};
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
