@@ -63,6 +63,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         log_debug,
         log_warn,
         feature_request,
+        fetch_transactions,
         bug_report,
     ])
 }
