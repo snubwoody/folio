@@ -1,5 +1,6 @@
 <script lang="ts">
     import InlineTextField from "$components/InlineTextField.svelte";
+    import {transactionStore} from "$lib/transaction.svelte";
     // TODO: make the row a form
 
     interface Transaction{
@@ -12,14 +13,7 @@
         date: string
     };
 
-    const transactions: Transaction[] = [
-        { id:"1",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"2",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"3",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"4",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"5",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"6",amount: "0.25",from_account_id:"",category_id: "",note:"",date:"2024-12-12" }
-    ];
+    $inspect(transactionStore.transactions);
 </script>
 
 <table>
@@ -35,10 +29,10 @@
         </tr>
     </thead>
     <tbody>
-        {#each transactions as transaction (transaction.id)}
+        {#each transactionStore.transactions as transaction (transaction.id)}
             <tr>
                 <td>
-                    <InlineTextField value="12/12/12"/>
+                    <InlineTextField value={transaction.transaction_date}/>
                 </td>
                 <td>
                     {#if transaction.from_account_id !== undefined}
@@ -50,8 +44,8 @@
                         Payee
                     {/if}
                 </td>
-                <td>Note</td>
-                <td>Category</td>
+                <td>{transaction.note}</td>
+                <td>{transaction.category_id}</td>
                 <td>${transaction.amount}</td>
                 <td>${transaction.amount}</td>
             </tr>

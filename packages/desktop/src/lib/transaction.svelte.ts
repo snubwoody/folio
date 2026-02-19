@@ -75,10 +75,13 @@ export interface Transaction{
 }
 
 export function createTransactionStore(){
+    let transactions: Transaction[] = $state([]);
     return {
+        get transactions(){
+            return transactions;
+        },
         async load(){
-            const a  = await invoke("fetch_transactions");
-            console.log(a);
+            transactions = await invoke("fetch_transactions");
         }
     };
 }
