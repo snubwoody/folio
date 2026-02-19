@@ -61,7 +61,8 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         log_error,
         log_debug,
         log_warn,
-    ])
+        fetch_transactions,
+    ]);
 }
 
 #[tauri::command]
