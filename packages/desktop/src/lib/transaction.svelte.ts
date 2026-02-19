@@ -53,6 +53,40 @@ export type EditIncome = {
     incomeStreamId?: string,
 };
 
+// pub struct Transaction {
+//     pub id: String,
+//     pub amount: i64,
+//     pub from_account_id: Option<String>,
+//     pub to_account_id: Option<String>,
+//     pub transaction_date: NaiveDate,
+//     pub category_id: Option<String>,
+//     pub created_at: i64,
+//     pub note: Option<String>,
+// }
+
+export interface Transaction{
+    id: string,
+    amount: string,
+    from_account_id?: string,
+    to_account_id?: string,
+    transaction_date: string,
+    category_id?: string,
+    note?: string,
+}
+
+export function createTransactionStore(){
+    const transactions: Transaction[] = [];
+
+    return {
+        async load(){
+            const a  = await invoke("fetch_transactions");
+            console.log(a);
+        }
+    };
+}
+
+export const transactionStore = createTransactionStore();
+
 export class TransactionStore{
     #rootStore: AppStore;
     constructor(root: AppStore){

@@ -16,7 +16,7 @@
 use crate::Money;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{Row, SqlitePool};
 
 // TODO: test the command input
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -62,16 +62,17 @@ impl Account {
         // TODO: add currency code
         let now = Utc::now().timestamp();
         let balance = starting_balance.inner();
-        let record = sqlx::query!(
+        let record = sqlx::query(
             "INSERT INTO accounts(name,starting_balance,created_at) VALUES($1,$2,$3) RETURNING id",
-            name,
-            balance,
-            now
         )
+        .bind(name)
+        .bind(balance)
+        .bind(now)
         .fetch_one(pool)
         .await?;
 
-        Self::from_id(&record.id, pool).await
+        let id:String = record.get("id");
+        Self::from_id(&id, pool).await
     }
 
     pub async fn edit(
@@ -86,12 +87,12 @@ impl Account {
             .inner();
         let name = opts.name.unwrap_or(account.name);
 
-        sqlx::query!(
+        sqlx::query(
             "UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3",
-            name,
-            starting_balance,
-            id
         )
+        .bind(name)
+        .bind(starting_balance)
+        .bind(id)
         .execute(pool)
         .await?;
 
