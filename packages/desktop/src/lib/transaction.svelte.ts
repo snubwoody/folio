@@ -75,8 +75,6 @@ export interface Transaction{
 }
 
 export function createTransactionStore(){
-    const transactions: Transaction[] = [];
-
     return {
         async load(){
             const a  = await invoke("fetch_transactions");

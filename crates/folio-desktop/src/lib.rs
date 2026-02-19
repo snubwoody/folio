@@ -57,7 +57,9 @@ pub async fn run() {
     #[cfg(debug_assertions)]
     let log_dir = "logs";
     #[cfg(not(debug_assertions))]
-    let log_dir = get_data_dir().expect("failed to get data directory").join("logs");
+    let log_dir = get_data_dir()
+        .expect("failed to get data directory")
+        .join("logs");
 
     let file_appender = RollingFileAppender::builder()
         .rotation(Rotation::DAILY)
@@ -96,7 +98,7 @@ pub async fn run() {
     let app = command::handlers(app);
 
     app.run(tauri::generate_context!())
-        .inspect_err(|err|tracing::error!("{err}"))
+        .inspect_err(|err| tracing::error!("{err}"))
         .expect("error while running tauri application");
 }
 

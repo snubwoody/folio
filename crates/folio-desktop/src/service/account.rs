@@ -71,7 +71,7 @@ impl Account {
         .fetch_one(pool)
         .await?;
 
-        let id:String = record.get("id");
+        let id: String = record.get("id");
         Self::from_id(&id, pool).await
     }
 
@@ -87,14 +87,12 @@ impl Account {
             .inner();
         let name = opts.name.unwrap_or(account.name);
 
-        sqlx::query(
-            "UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3",
-        )
-        .bind(name)
-        .bind(starting_balance)
-        .bind(id)
-        .execute(pool)
-        .await?;
+        sqlx::query("UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3")
+            .bind(name)
+            .bind(starting_balance)
+            .bind(id)
+            .execute(pool)
+            .await?;
 
         Self::from_id(id, pool).await
     }

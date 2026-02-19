@@ -24,7 +24,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { transactionStore } from "$lib/transaction.svelte";
     import { invoke } from "@tauri-apps/api/core";
 
-
     const { children } = $props();
 
     onMount(async () => {
