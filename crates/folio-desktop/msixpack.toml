@@ -1,5 +1,5 @@
 [package]
-version = "1.4.0.0" # TODO: inherit package version
+version = "1.4.1.0" # TODO: inherit package version
 name = "Wakunguma.Folio-Budgetingapp"
 display-name = "Folio - Budgeting app"
 publisher = "CN=70A3CBD3-185D-4DDE-9F41-27073B2FE013"
