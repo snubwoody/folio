@@ -1,5 +1,10 @@
 # Folio Changelog
 
+## 1.4.1 - 19-02-2026
+
+- Fixed an issue with the budget bar width
+- Fixed an issue causing deleted budgets to still appear in the UI
+
 ## 1.4.0 - 15-02-2026
 
 - Every category must now have a budget, new categories will be have a corresponding budget created
