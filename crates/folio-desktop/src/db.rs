@@ -1,4 +1,5 @@
 //! Contains database types
+
 use sqlx::FromRow;
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq)]
