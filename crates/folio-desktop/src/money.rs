@@ -14,9 +14,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use rust_decimal::Decimal;
-use serde::{Deserialize, Serialize, de};
+use serde::{Deserialize, Serialize};
 use sqlx::{Database, Decode, Sqlite, Type, sqlite::SqliteTypeInfo};
-use tracing::info;
 use std::{
     fmt::Display,
     ops::{Add, AddAssign, Sub, SubAssign},
@@ -141,18 +140,22 @@ impl<'de> Deserialize<'de> for Money {
     }
 }
 
-impl Type<Sqlite> for Money{
-    fn type_info() -> SqliteTypeInfo{
+impl Type<Sqlite> for Money {
+    fn type_info() -> SqliteTypeInfo {
         <i64 as Type<Sqlite>>::type_info()
     }
 }
 
-impl<'r, DB: Database> Decode<'r,DB> for Money
-where i64: Decode<'r,DB>{
-    fn decode(value: <DB as sqlx::Database>::ValueRef<'r>) -> Result<Self, sqlx::error::BoxDynError> {
-       let value = <i64 as Decode<DB>>::decode(value)?;
-       Ok(Money(value)) 
-    }  
+impl<'r, DB: Database> Decode<'r, DB> for Money
+where
+    i64: Decode<'r, DB>,
+{
+    fn decode(
+        value: <DB as sqlx::Database>::ValueRef<'r>,
+    ) -> Result<Self, sqlx::error::BoxDynError> {
+        let value = <i64 as Decode<DB>>::decode(value)?;
+        Ok(Money(value))
+    }
 }
 
 #[cfg(test)]
