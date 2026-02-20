@@ -24,6 +24,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Sync types
+        run: pnpm -r sync
       - name: Collect code coverage
         run: pnpm vitest run --coverage
       - name: Upload coverage reports to Codecov
