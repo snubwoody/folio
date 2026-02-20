@@ -2,6 +2,7 @@
     import InlineTextField from "$components/InlineTextField.svelte";
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
+    import { categoryStore } from "$lib/categories.svelte";
     import { formatDate } from "$lib/lib";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
     // TODO: make the row a form
@@ -14,6 +15,7 @@
 
     const { transaction }: Props = $props();
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
+    const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
     // TODO: add checkbox for selection
 	// TODO:
@@ -22,7 +24,6 @@
     // - edit amount
     // - edit category
     // - edit note
-    // FIXME select cell not staying updated
 </script>
 
 <tr>
@@ -45,7 +46,15 @@
         {/if}
     </td>
     <td>{transaction.note}</td>
-    <td>{transaction.categoryId}</td>
+    <td>
+        {#if transaction.categoryId !== undefined}
+            <SelectCell
+                value={category?.id}
+                onChange={(id) => transactionStore.editTransaction({id: transaction.id,categoryId: id})}
+                items={categoryStore.categories.map(a => ({ value: a.id, label: a.title }))}
+            />
+        {/if}
+    </td>
     <td>${transaction.amount}</td>
     <td>${transaction.amount}</td>
 </tr>
