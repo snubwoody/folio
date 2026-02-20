@@ -131,7 +131,7 @@ impl TransactionBuilder<Expense> {
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub id: String,
-    pub amount: i64,
+    pub amount: Money,
     pub from_account_id: Option<String>,
     pub to_account_id: Option<String>,
     pub transaction_date: NaiveDate,
