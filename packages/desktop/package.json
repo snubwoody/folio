@@ -13,7 +13,7 @@
         "test": "vitest --browser=chromium",
         "test:browser": "vitest --browser=chromium",
         "test:headless": "vitest --browser.headless run",
-        "test:unit": "vitest --project unit run"
+        "test:unit": "vitest --project unit"
     },
     "dependencies": {
         "@internationalized/date": "^3.10.0",
