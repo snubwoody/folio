@@ -19,7 +19,7 @@ async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 
     let id: String = row.get("id");
     let transaction = Transaction::fetch(&id, &pool).await?;
-    assert_eq!(transaction.amount, 10);
+    assert_eq!(transaction.amount, Money::from_scaled(10));
     Ok(())
 }
 
@@ -34,7 +34,7 @@ async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    assert_eq!(expense.amount, Money::MAX.inner());
+    assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
     assert_eq!(expense.from_account_id.unwrap(), account.id);
     Ok(())
@@ -51,7 +51,7 @@ async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    assert_eq!(expense.amount, Money::MAX.inner());
+    assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
     assert_eq!(expense.to_account_id.unwrap(), account.id);
     Ok(())
@@ -69,7 +69,7 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    assert_eq!(expense.amount, Money::MAX.inner());
+    assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
     assert_eq!(expense.from_account_id.unwrap(), a1.id);
     assert_eq!(expense.to_account_id.unwrap(), a2.id);
