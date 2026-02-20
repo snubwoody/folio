@@ -3,7 +3,7 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
     import { formatDate } from "$lib/lib";
-    import type { Transaction } from "$lib/transaction.svelte";
+    import { transactionStore, type Transaction } from "$lib/transaction.svelte";
     // TODO: make the row a form
 
     interface Props {
@@ -22,6 +22,7 @@
     // - edit amount
     // - edit category
     // - edit note
+    // FIXME select cell not staying updated
 </script>
 
 <tr>
@@ -32,7 +33,7 @@
         {#if transaction.fromAccountId !== undefined}
             <SelectCell
                 value={account?.id}
-                onChange={() => {}}
+                onChange={(id) => transactionStore.editTransaction({id: transaction.id,fromAccountId: id})}
                 items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {/if}

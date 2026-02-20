@@ -127,6 +127,7 @@ impl TransactionBuilder<Expense> {
 }
 
 #[derive(Debug, Clone, PartialOrd, PartialEq, Serialize,Deserialize,Default)]
+#[serde(rename_all="camelCase")]
 pub struct EditBuilder{
     pub id: String,
     pub amount: Option<Money>,

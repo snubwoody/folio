@@ -59,6 +59,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         edit_income,
         log_info,
         log_error,
+        edit_transaction,
         log_debug,
         log_warn,
         fetch_transactions,
@@ -109,6 +110,11 @@ pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense)
     data.currency_code = state.settings.lock().await.currency_code().to_string();
     Expense::create(data, &state.pool).await?;
     Ok(())
+}
+
+#[tauri::command]
+pub async fn edit_transaction(state: tauri::State<'_, State>, data: EditBuilder) -> Result<Transaction> {
+    data.update(&state.pool).await.inspect_err(|err|warn!("{err}"))
 }
 
 #[tauri::command]
