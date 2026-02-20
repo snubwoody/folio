@@ -21,5 +21,6 @@ node_modules/
 
 # Vite output
 vite.config.js.timestamp-*
+coverage/
 vite.config.ts.timestamp-*
 __screenshots__
