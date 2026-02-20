@@ -1,29 +1,31 @@
 
 @layer components {
-    .transaction-table{
-        width: 100%;
-        border-collapse:separate;
+    /* .transaction-table{
         table-layout: fixed;
-        border-spacing: 0;
-
-
-        .table-header{
-            width: 100%;
-            color: var(--color-text-muted);
-            padding: 12px;
-            text-align: left;
-        }
-
-        .table-data {
-            align-items: center;
-            padding: 12px;
-            border: 2px solid var(--color-neutral-50);
-            transition: all 250ms;
-
-            &:focus-within{
-                border-color: var(--color-border-focus);
-            }
-        }
+        width: 100%;
     }
+
+    .table-data,.table-head{
+        text-align: left;
+
+        &:last-child{
+            text-align: right;
+        }
+
+        padding: 8px 16px;
+        border: 1px solid var(--color-neutral-50);
+    }
+
+    .table-header{
+        background: var(--color-neutral-25);
+    }
+
+    .table-row{
+        border-bottom: 1px solid var(--color-neutral-50);
+
+        &:first-child{
+            border-top: 1px solid var(--color-neutral-50);
+        }
+    } */
 
 }

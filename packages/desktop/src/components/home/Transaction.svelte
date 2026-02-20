@@ -12,9 +12,10 @@
     type TransactionType = "Expense" | "Income" | "Transfer"
 
     const {transaction}: Props = $props();
-    const account = accountStore.accountMap.get(transaction.fromAccountId!);
     const payee = accountStore.accountMap.get(transaction.toAccountId??"");
+    const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     // TODO: make the row a form
+    // TODO: add checkbox for selection
 </script>
 
 <tr>
@@ -45,7 +46,7 @@
         width: 100%;
     }
 
-    td,th{
+    td{
         text-align: left;
 
         &:last-child{
@@ -53,10 +54,7 @@
         }
 
         padding: 8px 16px;
-    }
-
-    thead{
-        background: var(--color-neutral-25);
+        border: 1px solid var(--color-neutral-50);
     }
 
     tr{

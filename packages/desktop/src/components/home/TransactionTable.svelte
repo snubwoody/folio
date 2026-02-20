@@ -30,7 +30,7 @@
         width: 100%;
     }
 
-    td,th{
+    th{
         text-align: left;
 
         &:last-child{
@@ -38,7 +38,10 @@
         }
 
         padding: 8px 16px;
+        border: 1px solid var(--color-neutral-50);
     }
+
+
 
     thead{
         background: var(--color-neutral-25);
