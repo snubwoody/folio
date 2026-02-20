@@ -14,7 +14,7 @@ export interface Transaction{
 
 export class TransactionStore{
     #transactions: Transaction[] = $state([]);
-    
+
     get transactions(){
         return this.#transactions;
     }

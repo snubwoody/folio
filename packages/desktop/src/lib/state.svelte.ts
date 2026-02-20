@@ -26,7 +26,6 @@ import type {
 import { logger } from "./logger";
 import { AppError, type ErrorResponse } from "./error";
 
-
 export type CreateExpense = {
     amount: string,
     date?: string,

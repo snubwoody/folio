@@ -23,7 +23,7 @@ export class AccountStore{
     get accounts(): Account[]{
         return this.#accounts;
     }
-    
+
     get accountMap(){
         return this.#accountMap;
     }

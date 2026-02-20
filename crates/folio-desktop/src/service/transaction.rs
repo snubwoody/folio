@@ -126,13 +126,9 @@ impl TransactionBuilder<Expense> {
     }
 }
 
-pub struct UpdateBuilder{
-    
-}
-
 // TODO: replace amount with Money
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub id: String,
     pub amount: i64,

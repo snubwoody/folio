@@ -3,21 +3,20 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
     import { formatDate } from "$lib/lib";
-    import {transactionStore,type Transaction} from "$lib/transaction.svelte";
+    import type { Transaction } from "$lib/transaction.svelte";
     // TODO: make the row a form
 
     interface Props {
         transaction: Transaction
     }
 
-    type TransactionType = "Expense" | "Income" | "Transfer"
+    // type TransactionType = "Expense" | "Income" | "Transfer";
 
-    const {transaction}: Props = $props();
-    const payee = accountStore.accountMap.get(transaction.toAccountId??"");
+    const { transaction }: Props = $props();
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     // TODO: make the row a form
     // TODO: add checkbox for selection
-	// TODO: 
+	// TODO:
     // - edit account
     // - edit date
     // - edit amount
@@ -33,8 +32,8 @@
         {#if transaction.fromAccountId !== undefined}
             <SelectCell
                 value={account?.id}
-                onChange={(value) => console.log(value)}
-                items={accountStore.accounts.map(a => ({value: a.id, label: a.name}))}
+                onChange={() => {}}
+                items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {/if}
     </td>
@@ -49,7 +48,6 @@
     <td>${transaction.amount}</td>
     <td>${transaction.amount}</td>
 </tr>
-
 
 <style>
     td{

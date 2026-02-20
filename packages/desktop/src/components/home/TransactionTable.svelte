@@ -1,7 +1,5 @@
 <script lang="ts">
-    import InlineTextField from "$components/InlineTextField.svelte";
-    import { formatDate } from "$lib/lib";
-    import {transactionStore} from "$lib/transaction.svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
     import Transaction from "./Transaction.svelte";
 </script>
 
@@ -42,8 +40,6 @@
         padding: 8px 16px;
         border: 1px solid var(--color-neutral-50);
     }
-
-
 
     thead{
         background: var(--color-neutral-25);

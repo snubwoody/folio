@@ -7,14 +7,14 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("TransactionStore",()=>{
-    test("loads transactions from IPC",async ()=>{
+describe("TransactionStore",() => {
+    test("loads transactions from IPC",async () => {
         mockIPC((cmd) => {
             if (cmd === "fetch_transactions" ) {
                 let transactions: Transaction[] = [
-                    {id:"1",fromAccountId:"A1",transactionDate:"",amount:""},
-                    {id:"2",fromAccountId:"A1",transactionDate:"",amount:""},
-                    {id:"3",fromAccountId:"A1",transactionDate:"",amount:""},
+                    { id:"1",fromAccountId:"A1",transactionDate:"",amount:"" },
+                    { id:"2",fromAccountId:"A1",transactionDate:"",amount:"" },
+                    { id:"3",fromAccountId:"A1",transactionDate:"",amount:"" }
                 ];
                 return transactions;
             }
@@ -26,5 +26,4 @@ describe("TransactionStore",()=>{
         expect(transactionStore.transactions[1].id).toBe("2");
     });
 });
-
 
