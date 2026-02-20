@@ -1,5 +1,6 @@
 <script lang="ts">
     import InlineTextField from "$components/InlineTextField.svelte";
+    import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
     import { formatDate } from "$lib/lib";
     import {transactionStore,type Transaction} from "$lib/transaction.svelte";
@@ -24,7 +25,11 @@
     </td>
     <td>
         {#if transaction.fromAccountId !== undefined}
-            {account?.name}
+            <SelectCell
+                value={account?.id}
+                onChange={(value) => console.log(value)}
+                items={accountStore.accounts.map(a => ({value: a.id, label: a.name}))}
+            />
         {/if}
     </td>
     <td>
@@ -41,11 +46,6 @@
 
 
 <style>
-    table{
-        table-layout: fixed;
-        width: 100%;
-    }
-
     td{
         text-align: left;
 
@@ -55,6 +55,11 @@
 
         padding: 8px 16px;
         border: 1px solid var(--color-neutral-50);
+
+        &:focus-within{
+            background: var(--color-purple-50);
+            border-color: var(--color-purple-500);
+        }
     }
 
     tr{
