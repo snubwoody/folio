@@ -1,12 +1,23 @@
 import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwind from "@tailwindcss/vite";
+import istanbul from "vite-plugin-istanbul";
 
 // eslint-disable-next-line
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig({
-    plugins: [sveltekit(), tailwind()],
+    plugins: [
+        sveltekit(), 
+        tailwind(),
+        istanbul({
+            include: "src/*",
+            exclude: ["node_modules", "test/"],
+            extension: [".ts", ".svelte"],
+            requireEnv: false,
+            forceBuildInstrument: true,
+        }),
+    ],
     // Prevent Vite from obscuring rust errors
     clearScreen: false,
     server: {
@@ -26,6 +37,12 @@ export default defineConfig({
     },
     test: {
         exclude: ["e2e", "node_modules", ".vercel", "dist"],
+        coverage: {
+            enabled: true,
+            provider: "istanbul",
+            include: ["src/lib/**","src/components/**"],
+            exclude: ["src/test/**"],
+        },
         // eslint-disable-next-line no-undef
         reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
         projects: [
