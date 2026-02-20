@@ -126,6 +126,10 @@ impl TransactionBuilder<Expense> {
     }
 }
 
+pub struct UpdateBuilder{
+    
+}
+
 // TODO: replace amount with Money
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize)]
 #[serde(rename_all="camelCase")]

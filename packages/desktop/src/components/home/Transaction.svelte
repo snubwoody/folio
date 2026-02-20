@@ -17,6 +17,12 @@
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     // TODO: make the row a form
     // TODO: add checkbox for selection
+	// TODO: 
+    // - edit account
+    // - edit date
+    // - edit amount
+    // - edit category
+    // - edit note
 </script>
 
 <tr>
