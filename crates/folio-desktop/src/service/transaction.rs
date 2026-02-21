@@ -2,8 +2,8 @@ use crate::Money;
 use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqlitePool};
-use tracing::info;
 use std::marker::PhantomData;
+use tracing::info;
 
 pub struct Expense;
 pub struct Income;
@@ -127,9 +127,9 @@ impl TransactionBuilder<Expense> {
     }
 }
 
-#[derive(Debug, Clone, PartialOrd, PartialEq, Serialize,Deserialize,Default)]
-#[serde(rename_all="camelCase")]
-pub struct EditBuilder{
+#[derive(Debug, Clone, PartialOrd, PartialEq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct EditBuilder {
     pub id: String,
     pub amount: Option<Money>,
     pub category_id: Option<String>,
@@ -139,49 +139,49 @@ pub struct EditBuilder{
     pub transaction_date: Option<NaiveDate>,
 }
 
-impl EditBuilder{
-    pub fn new(id: &str) -> Self{
-        Self{
+impl EditBuilder {
+    pub fn new(id: &str) -> Self {
+        Self {
             id: id.to_owned(),
             ..Default::default()
         }
     }
     /// Set the new transaction amount
-    pub fn amount(mut self,value: Money) -> Self{
+    pub fn amount(mut self, value: Money) -> Self {
         self.amount = Some(value);
         self
     }
-    
+
     /// Set the new transaction category
-    pub fn category(mut self,id: &str) -> Self{
-        self.category_id =  Some(id.to_owned());
-        self
-    }
-    
-    /// Set the new transaction transaction
-    pub fn note(mut self,value: &str) -> Self{
-        self.note = Some(value.to_owned());
-        self
-    }
-    
-    pub fn date(mut self,date: NaiveDate) -> Self{
-        self.transaction_date =  Some(date);
+    pub fn category(mut self, id: &str) -> Self {
+        self.category_id = Some(id.to_owned());
         self
     }
 
-    pub fn from_account(mut self, id: &str) -> Self{
+    /// Set the new transaction transaction
+    pub fn note(mut self, value: &str) -> Self {
+        self.note = Some(value.to_owned());
+        self
+    }
+
+    pub fn date(mut self, date: NaiveDate) -> Self {
+        self.transaction_date = Some(date);
+        self
+    }
+
+    pub fn from_account(mut self, id: &str) -> Self {
         self.from_account_id = Some(id.to_owned());
         self
     }
-    
-    pub fn to_account(mut self, id: &str) -> Self{
+
+    pub fn to_account(mut self, id: &str) -> Self {
         self.to_account_id = Some(id.to_owned());
         self
     }
 
     pub async fn update(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
         let row: Transaction = sqlx::query_as(
-        "UPDATE transactions 
+            "UPDATE transactions 
             SET amount = COALESCE($1,amount),
                 note = COALESCE($2,note),
                 transaction_date = COALESCE($3,transaction_date),
@@ -202,7 +202,7 @@ impl EditBuilder{
         .fetch_one(pool)
         .await?;
 
-        info!(id=self.id,"Updated transaction");
+        info!(id = self.id, "Updated transaction");
         Ok(row)
     }
 }
@@ -233,7 +233,7 @@ impl Transaction {
         Default::default()
     }
 
-    pub fn edit(id: &str) -> EditBuilder{
+    pub fn edit(id: &str) -> EditBuilder {
         EditBuilder::new(id)
     }
 
@@ -276,7 +276,7 @@ mod test {
         assert_eq!(builder.transaction_date, date);
         assert_eq!(builder.amount, Money::MAX);
     }
-    
+
     #[test]
     fn edit_builder_fields() {
         let date = NaiveDate::parse_from_str("2024-12-12", "%Y-%m-%d").unwrap();

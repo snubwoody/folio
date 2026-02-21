@@ -1,5 +1,4 @@
 <script lang="ts">
-    import InlineTextField from "$components/InlineTextField.svelte";
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
@@ -12,14 +11,14 @@
     }
 
     type TransactionType = "Expense" | "Income" | "Transfer";
-    
+
     const { transaction }: Props = $props();
 
     let transactionType = $state<TransactionType>("Expense");
     if (transaction.fromAccountId && transaction.toAccountId){
-        transactionType = "Transfer"
+        transactionType = "Transfer";
     } else if (transaction.toAccountId !== undefined && transaction.fromAccountId === undefined){
-        transactionType = "Income"
+        transactionType = "Income";
     }
 
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
@@ -32,17 +31,25 @@
     // - edit note
     //   - add x button to clear
     let note = $state(transaction.note);
+    let date = $state(formatDate(transaction.transactionDate));
 </script>
 
 <tr>
     <td>
-        <InlineTextField value={formatDate(transaction.transactionDate)}/>
+        <!--TODO: parse dates-->
+        <!--TODO: Add calendar below-->
+        <input
+            class="note-input"
+            type="text"
+            bind:value={date}
+            onblur={() => transactionStore.editTransaction({ id: transaction.id,transactionDate: date })}
+        >
     </td>
     <td>
         {#if transaction.fromAccountId !== undefined}
             <SelectCell
                 value={account?.id}
-                onChange={(id) => transactionStore.editTransaction({id: transaction.id,fromAccountId: id})}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
                 items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {/if}
@@ -54,18 +61,18 @@
         {/if}
     </td>
     <td>
-        <input 
-            class="note-input" 
-            type="text" 
+        <input
+            class="note-input"
+            type="text"
             bind:value={note}
-            onblur={() => transactionStore.editTransaction({id: transaction.id,note: note})}
+            onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
         >
     </td>
     <td>
         {#if transaction.categoryId !== undefined}
             <SelectCell
                 value={category?.id}
-                onChange={(id) => transactionStore.editTransaction({id: transaction.id,categoryId: id})}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
                 items={categoryStore.categories.map(a => ({ value: a.id, label: a.title }))}
             />
         {/if}
@@ -86,7 +93,7 @@
     .note-input{
         outline: none;
     }
-    
+
     td{
         text-align: left;
 

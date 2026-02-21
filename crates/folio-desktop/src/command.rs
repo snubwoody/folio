@@ -113,8 +113,13 @@ pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense)
 }
 
 #[tauri::command]
-pub async fn edit_transaction(state: tauri::State<'_, State>, data: EditBuilder) -> Result<Transaction> {
-    data.update(&state.pool).await.inspect_err(|err|warn!("{err}"))
+pub async fn edit_transaction(
+    state: tauri::State<'_, State>,
+    data: EditBuilder,
+) -> Result<Transaction> {
+    data.update(&state.pool)
+        .await
+        .inspect_err(|err| warn!("{err}"))
 }
 
 #[tauri::command]

@@ -12,7 +12,6 @@ export class CategoriyStore {
     // TODO: add getters
     #categories: Category[] = $state([]);
     #categoryMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.#categories.map(a => [a.id,a])));
-    
 
     get categories(): Category[]{
         return this.#categories;

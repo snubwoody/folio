@@ -146,8 +146,11 @@ impl Type<Sqlite> for Money {
     }
 }
 
-impl<'a> Encode<'a,Sqlite> for Money{
-    fn encode_by_ref(&self,buf: &mut <Sqlite as Database>::ArgumentBuffer<'a>,) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
+impl<'a> Encode<'a, Sqlite> for Money {
+    fn encode_by_ref(
+        &self,
+        buf: &mut <Sqlite as Database>::ArgumentBuffer<'a>,
+    ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
         <i64 as Encode<Sqlite>>::encode_by_ref(&self.0, buf)
     }
 }

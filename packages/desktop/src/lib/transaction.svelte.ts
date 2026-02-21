@@ -31,12 +31,12 @@ export class TransactionStore{
     }
 
     async editTransaction(opts: EditTransaction){
-        const transaction = await invoke<Transaction>("edit_transaction",{data:opts});
+        const transaction = await invoke<Transaction>("edit_transaction",{ data:opts });
         const index = this.#transactions.findIndex(t => t.id === transaction.id);
         this.#transactions[index] = transaction;
         // TODO: resort because of date
     }
-    
+
     async load(){
         let transactions = await invoke<Transaction[]>("fetch_transactions");
         transactions
