@@ -1,6 +1,17 @@
 // Copyright (C) 2025 Wakunguma Kalimukwa
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { invoke } from "@tauri-apps/api/core";
+import { SvelteDate } from "svelte/reactivity";
+
+export interface EditTransaction{
+    id: string,
+    fromAccountId?: string,
+    note?: string,
+    categoryId?: string,
+    transactionDate?: string,
+    amount?: string,
+    toAccountId?:string
+}
 
 export interface Transaction{
     id: string,
@@ -19,8 +30,19 @@ export class TransactionStore{
         return this.#transactions;
     }
 
+    async editTransaction(opts: EditTransaction){
+        const transaction = await invoke<Transaction>("edit_transaction",{ data:opts });
+        const index = this.#transactions.findIndex(t => t.id === transaction.id);
+        this.#transactions[index] = transaction;
+        // TODO: resort because of date
+    }
+
     async load(){
-        this.#transactions = await invoke("fetch_transactions");
+        let transactions = await invoke<Transaction[]>("fetch_transactions");
+        transactions
+            .sort((a,b) => new SvelteDate(a.transactionDate).getTime()-new SvelteDate(b.transactionDate).getTime())
+            .reverse();
+        this.#transactions = transactions;
     }
 }
 

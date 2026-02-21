@@ -1,38 +1,55 @@
 <script lang="ts">
-    import InlineTextField from "$components/InlineTextField.svelte";
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
-    import { formatDate } from "$lib/lib";
-    import type { Transaction } from "$lib/transaction.svelte";
+    import { categoryStore } from "$lib/categories.svelte";
+    import { formatAmount, formatDate } from "$lib/lib";
+    import { transactionStore, type Transaction } from "$lib/transaction.svelte";
     // TODO: make the row a form
 
     interface Props {
         transaction: Transaction
     }
 
-    // type TransactionType = "Expense" | "Income" | "Transfer";
+    type TransactionType = "Expense" | "Income" | "Transfer";
 
     const { transaction }: Props = $props();
+
+    let transactionType = $state<TransactionType>("Expense");
+    if (transaction.fromAccountId && transaction.toAccountId){
+        transactionType = "Transfer";
+    } else if (transaction.toAccountId !== undefined && transaction.fromAccountId === undefined){
+        transactionType = "Income";
+    }
+
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
+    const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
     // TODO: add checkbox for selection
 	// TODO:
-    // - edit account
     // - edit date
     // - edit amount
-    // - edit category
     // - edit note
+    //   - add x button to clear
+    let note = $state(transaction.note);
+    let date = $state(formatDate(transaction.transactionDate));
 </script>
 
 <tr>
     <td>
-        <InlineTextField value={formatDate(transaction.transactionDate)}/>
+        <!--TODO: parse dates-->
+        <!--TODO: Add calendar below-->
+        <input
+            class="note-input"
+            type="text"
+            bind:value={date}
+            onblur={() => transactionStore.editTransaction({ id: transaction.id,transactionDate: date })}
+        >
     </td>
     <td>
         {#if transaction.fromAccountId !== undefined}
             <SelectCell
                 value={account?.id}
-                onChange={() => {}}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
                 items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {/if}
@@ -43,13 +60,40 @@
             {payee?.name}
         {/if}
     </td>
-    <td>{transaction.note}</td>
-    <td>{transaction.categoryId}</td>
-    <td>${transaction.amount}</td>
-    <td>${transaction.amount}</td>
+    <td>
+        <input
+            class="note-input"
+            type="text"
+            bind:value={note}
+            onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
+        >
+    </td>
+    <td>
+        {#if transaction.categoryId !== undefined}
+            <SelectCell
+                value={category?.id}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
+                items={categoryStore.categories.map(a => ({ value: a.id, label: a.title }))}
+            />
+        {/if}
+    </td>
+    <td>
+        {#if transactionType === "Expense" }
+            {formatAmount(transaction.amount)}
+        {/if}
+    </td>
+    <td>
+        {#if transactionType === "Income" }
+            ${transaction.amount}
+        {/if}
+    </td>
 </tr>
 
 <style>
+    .note-input{
+        outline: none;
+    }
+
     td{
         text-align: left;
 
