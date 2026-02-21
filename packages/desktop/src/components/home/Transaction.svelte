@@ -3,7 +3,9 @@
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
     import { formatAmount, formatDate } from "$lib/lib";
+    import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
+    import { getContext } from "svelte";
     // TODO: make the row a form
 
     interface Props {
@@ -13,6 +15,9 @@
     type TransactionType = "Expense" | "Income" | "Transfer";
 
     const { transaction }: Props = $props();
+
+    const tableStore: TableStore = getContext("tableStore");
+    tableStore.toggleSelect(transaction.id);
 
     let transactionType = $state<TransactionType>("Expense");
     if (transaction.fromAccountId && transaction.toAccountId){
@@ -32,9 +37,27 @@
     //   - add x button to clear
     let note = $state(transaction.note);
     let date = $state(formatDate(transaction.transactionDate));
+    let selected = $derived(tableStore.isSelected(transaction.id));
+    console.log(tableStore.isSelected(transaction.id));
 </script>
 
-<tr>
+<tr data-selected={selected}>
+    <td >
+        <input 
+            checked={selected}
+            type="checkbox" name="" id="" 
+            onclick={(e)=>{
+                if (!e.isTrusted) return
+                console.log("Changed")
+                if(e.currentTarget.checked){
+                    tableStore.select(transaction.id)
+                    console.log("Changed")
+                    return
+                }
+                tableStore.deselect(transaction.id)
+            }}
+        >
+    </td>
     <td>
         <!--TODO: parse dates-->
         <!--TODO: Add calendar below-->
@@ -115,6 +138,11 @@
 
         &:first-child{
             border-top: 1px solid var(--color-neutral-50);
+        }
+
+        &[data-selected="true"]{
+            background: var(--color-purple-50);
+            border-color: black;
         }
     }
 </style>

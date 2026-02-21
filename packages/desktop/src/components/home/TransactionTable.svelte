@@ -1,11 +1,37 @@
 <script lang="ts">
+    import { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
+    import { setContext } from "svelte";
     import Transaction from "./Transaction.svelte";
+    const tableStore = new TableStore();
+
+    setContext("tableStore",tableStore);
 </script>
 
 <table>
+    <colgroup>
+        <col class="w-8">
+        <col>
+        <col>
+        <col>
+        <col>
+        <col>
+        <col>
+        <col>
+    </colgroup>
     <thead>
         <tr>
+            <th>
+                <input type="checkbox" name="selected" id="row-checkbox"
+                onclick={(e)=>{
+                    if(e.currentTarget.checked){
+                        tableStore.toggleSelectAll();
+                        return
+                    }
+                    tableStore.toggleSelectAll();
+                }}
+                >
+            </th>
             <th>Date</th>
             <th>Account</th>
             <th>Payee</th>
