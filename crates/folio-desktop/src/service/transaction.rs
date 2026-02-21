@@ -2,6 +2,7 @@ use crate::Money;
 use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqlitePool};
+use tracing::info;
 use std::marker::PhantomData;
 
 pub struct Expense;
@@ -197,9 +198,11 @@ impl EditBuilder{
         .bind(self.from_account_id)
         .bind(self.to_account_id)
         .bind(self.category_id)
-        .bind(self.id)
+        .bind(&self.id)
         .fetch_one(pool)
         .await?;
+
+        info!(id=self.id,"Updated transaction");
         Ok(row)
     }
 }
