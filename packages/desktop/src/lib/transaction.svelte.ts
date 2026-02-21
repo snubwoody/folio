@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { invoke } from "@tauri-apps/api/core";
 import { SvelteDate } from "svelte/reactivity";
+import { logger } from "./logger";
 
 export interface EditTransaction{
     id: string,
@@ -31,10 +32,16 @@ export class TransactionStore{
     }
 
     async editTransaction(opts: EditTransaction){
-        const transaction = await invoke<Transaction>("edit_transaction",{ data:opts });
-        const index = this.#transactions.findIndex(t => t.id === transaction.id);
-        this.#transactions[index] = transaction;
-        // TODO: resort because of date
+        // TODO: re-sort because of date
+        try{
+            const transaction = await invoke<Transaction>("edit_transaction",{ data:opts });
+            const index = this.#transactions.findIndex(t => t.id === transaction.id);
+            this.#transactions[index] = transaction;
+        }catch (e){
+            const error = e as Error;
+            logger.warn(`Failed to edit transaction: ${error.message}`);
+        }
+
     }
 
     async load(){
