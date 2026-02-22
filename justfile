@@ -1,5 +1,13 @@
 set windows-shell := ["powershell"]
 
+[working-directory: "crates/folio-desktop"]
+add-migration name:
+    cargo sqlx migrate add {{name}}
+
+# Run migrations on the sqlite database
+migrate:
+    cargo sqlx migrate run --source crates/folio-desktop/migrations
+
 # Create a new sqlite database
 db-create:
     cargo sqlx database create
