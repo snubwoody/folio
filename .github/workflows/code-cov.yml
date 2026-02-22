@@ -24,6 +24,8 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Install playwright browsers
+        run: pnpm playwright install --with-deps
       - name: Sync types
         run: pnpm -r sync
       - name: Collect code coverage
