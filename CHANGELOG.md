@@ -1,5 +1,9 @@
 # Folio Changelog
 
+## (unreleased)
+
+- Combined incomes and expenses into transactions table
+
 ## 1.4.1 - 19-02-2026
 
 - Fixed an issue with the budget bar width
