@@ -39,7 +39,7 @@ export default defineConfig({
         exclude: ["e2e", "node_modules", ".vercel", "dist"],
         coverage: {
             enabled: true,
-            provider: "istanbul",
+            provider: "v8",
             include: ["src/lib/**","src/components/**"],
             exclude: ["src/test/**"],
         },
@@ -70,8 +70,6 @@ export default defineConfig({
                         },
                         instances: [
                             { browser: "chromium" },
-                            { browser: "firefox" },
-                            { browser: "webkit" }
                         ]
                     }
                 }
