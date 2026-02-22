@@ -5,6 +5,7 @@
     import { formatAmount, formatDate } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
+    import { table } from "console";
     import { getContext } from "svelte";
     // TODO: make the row a form
 
@@ -38,13 +39,13 @@
     let note = $state(transaction.note);
     let date = $state(formatDate(transaction.transactionDate));
     let selected = $derived(tableStore.isSelected(transaction.id));
-    console.log(tableStore.isSelected(transaction.id));
+    // console.log(tableStore.isSelected(transaction.id));
 </script>
 
 <tr data-selected={selected}>
     <td >
         <input 
-            checked={selected}
+            checked={tableStore.isSelected(transaction.id)}
             type="checkbox" name="" id="" 
             onclick={(e)=>{
                 if (!e.isTrusted) return

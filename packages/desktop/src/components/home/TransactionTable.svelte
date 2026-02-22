@@ -3,9 +3,8 @@
     import { transactionStore } from "$lib/transaction.svelte";
     import { setContext } from "svelte";
     import Transaction from "./Transaction.svelte";
-    const tableStore = new TableStore();
 
-    setContext("tableStore",tableStore);
+    const tableStore = setContext("tableStore",new TableStore());
 </script>
 
 <table>
