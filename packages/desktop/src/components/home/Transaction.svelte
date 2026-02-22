@@ -5,9 +5,7 @@
     import { formatAmount, formatDate } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
-    import { table } from "console";
     import { getContext } from "svelte";
-    // TODO: make the row a form
 
     interface Props {
         transaction: Transaction
@@ -30,7 +28,6 @@
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
-    // TODO: add checkbox for selection
 	// TODO:
     // - edit date
     // - edit amount
@@ -39,23 +36,20 @@
     let note = $state(transaction.note);
     let date = $state(formatDate(transaction.transactionDate));
     let selected = $derived(tableStore.isSelected(transaction.id));
-    // console.log(tableStore.isSelected(transaction.id));
 </script>
 
 <tr data-selected={selected}>
     <td >
-        <input 
+        <input
             checked={tableStore.isSelected(transaction.id)}
-            type="checkbox" name="" id="" 
-            onclick={(e)=>{
-                if (!e.isTrusted) return
-                console.log("Changed")
+            type="checkbox" name="" id=""
+            onclick={(e) => {
+                if (!e.isTrusted) return;
                 if(e.currentTarget.checked){
-                    tableStore.select(transaction.id)
-                    console.log("Changed")
-                    return
+                    tableStore.select(transaction.id);
+                    return;
                 }
-                tableStore.deselect(transaction.id)
+                tableStore.deselect(transaction.id);
             }}
         >
     </td>

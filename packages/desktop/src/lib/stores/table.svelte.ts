@@ -11,7 +11,7 @@ export class TableStore{
 
     /**
      * Toggle selects a row
-     * @param id - The row of the id to select 
+     * @param id - The row of the id to select
      */
     toggleSelect(id: string){
         if (this.#selectedRows.has(id)){
@@ -20,12 +20,12 @@ export class TableStore{
         }
         this.select(id);
     }
-    
+
     /// Selects a row
     select(id: string){
         this.#selectedRows.add(id);
     }
-    
+
     deselect(id: string){
         this.#selectedRows.delete(id);
     }

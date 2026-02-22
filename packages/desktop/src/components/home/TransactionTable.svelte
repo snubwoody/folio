@@ -22,10 +22,10 @@
         <tr>
             <th>
                 <input type="checkbox" name="selected" id="row-checkbox"
-                onclick={(e)=>{
+                onclick={(e) => {
                     if(e.currentTarget.checked){
                         tableStore.toggleSelectAll();
-                        return
+                        return;
                     }
                     tableStore.toggleSelectAll();
                 }}
