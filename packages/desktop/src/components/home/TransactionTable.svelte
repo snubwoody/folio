@@ -1,25 +1,6 @@
 <script lang="ts">
-    import InlineTextField from "$components/InlineTextField.svelte";
-    // TODO: make the row a form
-
-    interface Transaction{
-        id: string,
-        amount: string
-        from_account_id?: string
-        to_account_id?: string
-        category_id?: string
-        note?: string
-        date: string
-    };
-
-    const transactions: Transaction[] = [
-        { id:"1",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"2",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"3",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"4",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"5",amount: "0.25",from_account_id:"",to_account_id: "",category_id: "",note:"",date:"2024-12-12" },
-        { id:"6",amount: "0.25",from_account_id:"",category_id: "",note:"",date:"2024-12-12" }
-    ];
+    import { transactionStore } from "$lib/transaction.svelte";
+    import Transaction from "./Transaction.svelte";
 </script>
 
 <table>
@@ -35,26 +16,8 @@
         </tr>
     </thead>
     <tbody>
-        {#each transactions as transaction (transaction.id)}
-            <tr>
-                <td>
-                    <InlineTextField value="12/12/12"/>
-                </td>
-                <td>
-                    {#if transaction.from_account_id !== undefined}
-                        Account
-                    {/if}
-                </td>
-                <td>
-                    {#if transaction.to_account_id !== undefined}
-                        Payee
-                    {/if}
-                </td>
-                <td>Note</td>
-                <td>Category</td>
-                <td>${transaction.amount}</td>
-                <td>${transaction.amount}</td>
-            </tr>
+        {#each transactionStore.transactions as transaction (transaction.id)}
+            <Transaction {transaction}/>
         {/each}
     </tbody>
 </table>
@@ -63,9 +26,11 @@
     table{
         table-layout: fixed;
         width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
-    td,th{
+    th{
         text-align: left;
 
         &:last-child{
@@ -73,6 +38,7 @@
         }
 
         padding: 8px 16px;
+        border: 1px solid var(--color-neutral-50);
     }
 
     thead{

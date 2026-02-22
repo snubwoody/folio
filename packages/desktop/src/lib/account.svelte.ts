@@ -13,35 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import type { AppStore } from "./state.svelte";
+import type { Account } from "./lib";
+import { SvelteMap } from "svelte/reactivity";
 
-interface EditAccount{
-    name?: string
-    startingBalance?: string
-}
+export class AccountStore{
+    #accounts: Account[] = $state([]);
+    #accountMap: SvelteMap<string,Account> = $derived(new SvelteMap(this.accounts.map(a => [a.id,a])));
 
-export class AccountStore {
-    #rootStore: AppStore;
-
-    constructor(store: AppStore) {
-        this.#rootStore = store;
+    get accounts(): Account[]{
+        return this.#accounts;
     }
 
-    async addAccount(name: string, startingBalance: string) {
-        try {
-            await invoke("create_account", { name, startingBalance });
-        } catch (e) {
-            console.error(e);
-        }
-        await this.#rootStore.load();
+    get accountMap(){
+        return this.#accountMap;
     }
 
-    async editAccount(id: string, opts: EditAccount) {
-        try {
-            await invoke("edit_account", { id, opts });
-        } catch (e) {
-            console.error(e);
-        }
-        await this.#rootStore.load();
+    /// Loads the accounts from the backend
+    async load(){
+        this.#accounts = await invoke("fetch_accounts");
     }
 }
+
+export const accountStore = new AccountStore();
