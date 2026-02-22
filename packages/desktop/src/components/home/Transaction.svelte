@@ -3,8 +3,9 @@
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
     import { formatAmount, formatDate } from "$lib/lib";
+    import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
-    // TODO: make the row a form
+    import { getContext } from "svelte";
 
     interface Props {
         transaction: Transaction
@@ -13,6 +14,9 @@
     type TransactionType = "Expense" | "Income" | "Transfer";
 
     const { transaction }: Props = $props();
+
+    const tableStore: TableStore = getContext("tableStore");
+    tableStore.toggleSelect(transaction.id);
 
     let transactionType = $state<TransactionType>("Expense");
     if (transaction.fromAccountId && transaction.toAccountId){
@@ -24,7 +28,6 @@
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
-    // TODO: add checkbox for selection
 	// TODO:
     // - edit date
     // - edit amount
@@ -32,9 +35,24 @@
     //   - add x button to clear
     let note = $state(transaction.note);
     let date = $state(formatDate(transaction.transactionDate));
+    let selected = $derived(tableStore.isSelected(transaction.id));
 </script>
 
-<tr>
+<tr data-selected={selected}>
+    <td >
+        <input
+            checked={tableStore.isSelected(transaction.id)}
+            type="checkbox" name="" id=""
+            onclick={(e) => {
+                if (!e.isTrusted) return;
+                if(e.currentTarget.checked){
+                    tableStore.select(transaction.id);
+                    return;
+                }
+                tableStore.deselect(transaction.id);
+            }}
+        >
+    </td>
     <td>
         <!--TODO: parse dates-->
         <!--TODO: Add calendar below-->
@@ -115,6 +133,11 @@
 
         &:first-child{
             border-top: 1px solid var(--color-neutral-50);
+        }
+
+        &[data-selected="true"]{
+            background: var(--color-purple-50);
+            border-color: black;
         }
     }
 </style>
