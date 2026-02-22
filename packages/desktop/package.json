@@ -13,13 +13,14 @@
         "test": "vitest --browser=chromium",
         "test:browser": "vitest --browser=chromium",
         "test:headless": "vitest --browser.headless run",
+        "coverage": "vitest run --coverage --browser.headless",
         "test:unit": "vitest --project unit"
     },
     "dependencies": {
         "@internationalized/date": "^3.10.0",
         "@tauri-apps/api": "^2.9.0",
         "@tauri-apps/plugin-opener": "^2",
-        "@tauri-apps/plugin-os": "~2",
+        "@tauri-apps/plugin-os": "^2.3.1",
         "date-fns": "^4.1.0"
     },
     "devDependencies": {
