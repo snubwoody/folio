@@ -8,15 +8,15 @@ const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig({
     plugins: [
-        sveltekit(), 
+        sveltekit(),
         tailwind(),
         istanbul({
             include: "src/*",
             exclude: ["node_modules", "test/"],
             extension: [".ts", ".svelte"],
             requireEnv: false,
-            forceBuildInstrument: true,
-        }),
+            forceBuildInstrument: true
+        })
     ],
     // Prevent Vite from obscuring rust errors
     clearScreen: false,
@@ -41,7 +41,7 @@ export default defineConfig({
             enabled: true,
             provider: "v8",
             include: ["src/lib/**","src/components/**"],
-            exclude: ["src/test/**"],
+            exclude: ["src/test/**"]
         },
         // eslint-disable-next-line no-undef
         reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
@@ -69,7 +69,7 @@ export default defineConfig({
                             port: 4040
                         },
                         instances: [
-                            { browser: "chromium" },
+                            { browser: "chromium" }
                         ]
                     }
                 }
