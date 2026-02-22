@@ -154,7 +154,7 @@ importers:
         specifier: ^2
         version: 2.5.0
       '@tauri-apps/plugin-os':
-        specifier: ~2
+        specifier: ^2.3.1
         version: 2.3.1
       date-fns:
         specifier: ^4.1.0
