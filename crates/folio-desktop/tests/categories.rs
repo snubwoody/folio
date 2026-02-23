@@ -1,6 +1,6 @@
 use folio_lib::Result;
 use folio_lib::service::{
-    Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets, fetch_categories,
+    Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets,
 };
 use sqlx::SqlitePool;
 
@@ -77,11 +77,11 @@ async fn edit_income_stream(pool: SqlitePool) -> Result<()> {
 
 #[sqlx::test]
 async fn fetch_categories_not_deleted(pool: SqlitePool) -> crate::Result<()> {
-    let len1 = fetch_categories(&pool).await?.len();
+    let len1 = Category::fetch_categories(&pool).await?.len();
     Category::create("title", &pool).await?;
     let c = Category::create("title", &pool).await?;
     Category::delete(&c.id, &pool).await?;
-    let len2 = fetch_categories(&pool).await?.len();
+    let len2 = Category::fetch_categories(&pool).await?.len();
     assert!(len1 + 1 == len2);
     Ok(())
 }
