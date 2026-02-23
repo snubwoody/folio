@@ -20,7 +20,7 @@ use tracing::{debug, info, warn};
 
 use crate::{
     Money, db,
-    service::{Category, fetch_categories},
+    service::{Category},
 };
 
 // TODO: soft delete categories
@@ -116,7 +116,7 @@ impl Budget {
 }
 
 pub async fn create_missing_budgets(pool: &SqlitePool) -> crate::Result<()> {
-    let categories = fetch_categories(pool).await?;
+    let categories = Category::fetch_categories(pool).await?;
     let budgets = fetch_budgets(pool).await?;
 
     let mut filtered = vec![];
@@ -153,7 +153,7 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
         .fetch_all(pool)
         .await?;
 
-    let categories = fetch_categories(pool).await?;
+    let categories = Category::fetch_categories(pool).await?;
 
     let mut budgets = vec![];
     for record in records {

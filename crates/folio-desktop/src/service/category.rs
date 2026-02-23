@@ -31,8 +31,13 @@ pub struct Category {
     pub title: String,
     pub created_at: Option<DateTime<Utc>>,
     pub deleted_at: Option<DateTime<Utc>>,
+    /// `true` if the category is used incomes, false otherwise 
+    pub is_income_stream: bool
 }
 
+
+
+// TODO: add fetch_all, fetch_categories, fetch_income_streams, create_income_stream
 impl Category {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
@@ -83,6 +88,7 @@ impl Category {
             title: record.title,
             created_at,
             deleted_at,
+            is_income_stream: record.is_income_stream
         };
 
         Ok(category)
@@ -124,21 +130,37 @@ impl Category {
             .fold(Money::ZERO, |acc, e| e.amount + acc);
         Ok(total)
     }
-}
 
-pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Category>, crate::Error> {
-    let records: Vec<db::Category> =
-        sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
-            .fetch_all(pool)
-            .await?;
-
-    let mut categories = vec![];
-    for record in records {
-        let category = Category::from_id(&record.id, pool).await?;
-        categories.push(category);
+    /// Fetches all the categories from the database
+    pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
+        let records: Vec<db::Category> =
+            sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
+                .fetch_all(pool)
+                .await?;
+    
+        let mut categories = vec![];
+        for record in records {
+            let category = Self::from_id(&record.id, pool).await?;
+            categories.push(category);
+        }
+        Ok(categories)
     }
-    Ok(categories)
+
+    pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
+        let records: Vec<db::Category> =
+            sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false")
+                .fetch_all(pool)
+                .await?;
+    
+        let mut categories = vec![];
+        for record in records {
+            let category = Self::from_id(&record.id, pool).await?;
+            categories.push(category);
+        }
+        Ok(categories)
+    }
 }
+
 
 #[cfg(test)]
 mod test {
@@ -171,7 +193,7 @@ mod test {
         Category::create("", &pool).await?;
         Category::create("", &pool).await?;
         Category::create("", &pool).await?;
-        let categories = fetch_categories(&pool).await?;
+        let categories = Category::fetch_all(&pool).await?;
         assert_eq!(categories.len(), rows.len() + 3);
         Ok(())
     }

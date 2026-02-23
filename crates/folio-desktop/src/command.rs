@@ -243,7 +243,7 @@ pub async fn fetch_incomes(state: tauri::State<'_, State>) -> Result<Vec<Income>
 
 #[tauri::command]
 pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
-    service::fetch_categories(&state.pool)
+    Category::fetch_all(&state.pool)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
 }
