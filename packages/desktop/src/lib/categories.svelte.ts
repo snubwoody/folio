@@ -6,10 +6,10 @@ export type Category = {
     id: string;
     title: string;
     createdAt: string;
+    isIncomeStream: boolean
 };
 
 export class CategoriyStore {
-    // TODO: add getters
     #categories: Category[] = $state([]);
     #categoryMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.#categories.map(a => [a.id,a])));
 

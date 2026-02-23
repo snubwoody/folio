@@ -18,10 +18,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::{debug, info, warn};
 
-use crate::{
-    Money, db,
-    service::{Category},
-};
+use crate::{Money, db, service::Category};
 
 // TODO: soft delete categories
 #[derive(Debug, Clone, Serialize, Deserialize)]

@@ -31,11 +31,9 @@ pub struct Category {
     pub title: String,
     pub created_at: Option<DateTime<Utc>>,
     pub deleted_at: Option<DateTime<Utc>>,
-    /// `true` if the category is used incomes, false otherwise 
-    pub is_income_stream: bool
+    /// `true` if the category is used incomes, false otherwise
+    pub is_income_stream: bool,
 }
-
-
 
 // TODO: add fetch_all, fetch_categories, fetch_income_streams, create_income_stream
 impl Category {
@@ -88,7 +86,7 @@ impl Category {
             title: record.title,
             created_at,
             deleted_at,
-            is_income_stream: record.is_income_stream
+            is_income_stream: record.is_income_stream,
         };
 
         Ok(category)
@@ -137,7 +135,7 @@ impl Category {
             sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
                 .fetch_all(pool)
                 .await?;
-    
+
         let mut categories = vec![];
         for record in records {
             let category = Self::from_id(&record.id, pool).await?;
@@ -147,11 +145,12 @@ impl Category {
     }
 
     pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
-        let records: Vec<db::Category> =
-            sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false")
-                .fetch_all(pool)
-                .await?;
-    
+        let records: Vec<db::Category> = sqlx::query_as(
+            "SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false",
+        )
+        .fetch_all(pool)
+        .await?;
+
         let mut categories = vec![];
         for record in records {
             let category = Self::from_id(&record.id, pool).await?;
@@ -160,7 +159,6 @@ impl Category {
         Ok(categories)
     }
 }
-
 
 #[cfg(test)]
 mod test {

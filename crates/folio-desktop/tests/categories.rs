@@ -1,6 +1,6 @@
 use folio_lib::Result;
 use folio_lib::service::{
-    Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets, 
+    Budget, Category, CreateIncome, Income, IncomeStream, create_missing_budgets,
 };
 use sqlx::SqlitePool;
 

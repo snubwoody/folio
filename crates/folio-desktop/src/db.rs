@@ -18,7 +18,7 @@ pub struct Category {
     pub title: String,
     pub created_at: Option<i64>,
     pub deleted_at: Option<i64>,
-    pub is_income_stream: bool
+    pub is_income_stream: bool,
 }
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq)]
