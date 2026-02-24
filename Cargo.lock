@@ -1341,6 +1341,7 @@ version = "1.4.1"
 dependencies = [
  "chrono",
  "directories",
+ "dotenvy",
  "iso_currency",
  "reqwest",
  "rust_decimal",
