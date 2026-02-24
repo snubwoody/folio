@@ -66,7 +66,7 @@ pub async fn run() {
         .max_log_files(10)
         .filename_suffix("log")
         .build(log_dir)
-        .expect("Failed to setup logging");
+        .expect("Failed to setup logging"); // FIXME: return error
 
     // Keep guard in scope
     let (file_writer, _guard) = tracing_appender::non_blocking(file_appender);
@@ -114,8 +114,9 @@ impl State {
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
+        // FIXME: return error
         #[cfg(not(debug_assertions))]
-        let mut path = get_data_dir().unwrap();
+        let mut path = get_data_dir().expect("failed to get data directory");
 
         path = path.join("settings.json");
 
@@ -146,7 +147,6 @@ pub async fn init_database() -> Result<SqlitePool> {
     };
 
     let pool = SqlitePool::connect_with(opts).await?;
-
     sqlx::migrate!().run(&pool).await?;
 
     Ok(pool)
