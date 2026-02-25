@@ -28,6 +28,23 @@ export class AccountStore{
         return this.#accountMap;
     }
 
+    async createAccount({name}:{name:string}):Promise<Account>{
+        // Quick and dirty solution, replace later
+        const id = Math.random().toString(36).slice(2);
+        const account: Account = {
+            id,
+            name,
+            startingBalance: "0.0",
+            balance: "0.0"
+        };
+        this.#accounts.push(account);
+        return account;
+    }
+
+    clear(){
+        this.#accounts = [];
+    }
+
     /// Loads the accounts from the backend
     async load(){
         this.#accounts = await invoke("fetch_accounts");

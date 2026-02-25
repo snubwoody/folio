@@ -4,7 +4,7 @@
     import { setContext } from "svelte";
     import Transaction from "./Transaction.svelte";
 
-    const tableStore = setContext("tableStore",new TableStore());
+    const tableStore = new TableStore();
 </script>
 
 <table>
@@ -42,7 +42,7 @@
     </thead>
     <tbody>
         {#each transactionStore.transactions as transaction (transaction.id)}
-            <Transaction {transaction}/>
+            <Transaction {transaction} {tableStore}/>
         {/each}
     </tbody>
 </table>
