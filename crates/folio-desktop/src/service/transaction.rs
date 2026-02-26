@@ -274,7 +274,7 @@ impl Transaction {
         TransactionType::Transfer
     }
 
-    pub async fn set_outflow(id:&str,amount: Money,pool:&SqlitePool) -> crate::Result<()>{
+    pub async fn set_outflow(id:&str,amount: Money,pool:&SqlitePool) -> crate::Result<Self>{
         let transaction = Self::fetch(id,pool).await?;
         let mut query = QueryBuilder::new("UPDATE transactions ");
         query.push("SET amount = ")
@@ -290,7 +290,7 @@ impl Transaction {
         }
         query.build().execute(pool).await?;
         info!(id=id,"Updated transaction");
-        Ok(())
+        Self::fetch(id,pool).await
     }
 
     /// Fetches the transaction from the database with a matching `id`. If the matching row

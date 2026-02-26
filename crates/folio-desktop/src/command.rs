@@ -129,7 +129,7 @@ pub async fn set_transaction_outflow(
     state: tauri::State<'_, State>,
     id: String,
     amount: Money
-) -> Result<()> {
+) -> Result<Transaction> {
     Transaction::set_outflow(&id,amount,&state.pool)
         .await
         .inspect_err(|err|warn!("Failed to set transaction outflow {err}"))
