@@ -27,7 +27,6 @@
     // - edit note
     //   - add x button to clear
     let note = $state(transaction.note);
-    let date = $state(formatDate(transaction.transactionDate));
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 </script>
@@ -47,20 +46,6 @@
             }}
         >
     </td>
-<!--    <td data-col="date">-->
-<!--        &lt;!&ndash;TODO: parse dates&ndash;&gt;-->
-<!--        &lt;!&ndash;TODO: Add calendar below&ndash;&gt;-->
-<!--        &lt;!&ndash;TODO: use <time> tag&ndash;&gt;-->
-<!--&lt;!&ndash;        <input&ndash;&gt;-->
-<!--&lt;!&ndash;            class="note-input"&ndash;&gt;-->
-<!--&lt;!&ndash;            type="text"&ndash;&gt;-->
-<!--&lt;!&ndash;            bind:value={date}&ndash;&gt;-->
-<!--&lt;!&ndash;            onblur={() => transactionStore.editTransaction({ id: transaction.id,transactionDate: date })}&ndash;&gt;-->
-<!--&lt;!&ndash;        >&ndash;&gt;-->
-<!--        <div>-->
-<!--            hi-->
-<!--        </div>-->
-<!--    </td>-->
     <DateCell {transaction}/>
     <td data-col="account" data-testid="account">
         {#if isIncome}

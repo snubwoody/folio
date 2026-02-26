@@ -30,6 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     $effect(() => {
         if (!value || !onDateChange) return;
         onDateChange(value?.year, value?.month, value?.day);
+        console.log("Updated value");
     });
 </script>
 

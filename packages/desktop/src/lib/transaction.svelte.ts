@@ -42,14 +42,18 @@ export class TransactionStore{
         const transaction = await invoke<Transaction>("set_transaction_outflow",{ id,amount });
         const index = this.#transactions.findIndex(t => t.id === transaction.id);
         this.#transactions[index] = transaction;
+
     }
 
     async editTransaction(opts: EditTransaction){
-        // TODO: re-sort because of date
         try{
             const transaction = await invoke<Transaction>("edit_transaction",{ data:opts });
             const index = this.#transactions.findIndex(t => t.id === transaction.id);
             this.#transactions[index] = transaction;
+            // TODO: re-sort because of date
+            // this.#transactions
+            //     .sort((a,b) => new SvelteDate(a.transactionDate).getTime()-new SvelteDate(b.transactionDate).getTime())
+            //     .reverse();
         }catch (e){
             const error = e as Error;
             logger.warn(`Failed to edit transaction: ${error.message}`);

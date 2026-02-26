@@ -1,6 +1,10 @@
 <script lang="ts">
-    import type {Transaction} from "$lib/transaction.svelte";
+    import {type Transaction, transactionStore} from "$lib/transaction.svelte";
+    import {Popover} from "bits-ui";
     import {formatDate} from "$lib/lib";
+    import Calendar from "$components/Calendar.svelte";
+    import { parseDate } from "@internationalized/date";
+
 
     interface Props{
         transaction: Transaction
@@ -8,22 +12,27 @@
 
     const {transaction}: Props = $props();
 
-    const displayDate = $state(formatDate(transaction.transactionDate));
+    let displayDate = $state(formatDate(transaction.transactionDate));
+
+    const updateDate = (year:number,month:number,day:number) => {
+        transactionStore.editTransaction({ id: transaction.id,transactionDate: `${year}-${month}-${day}` });
+        displayDate = formatDate(`${year}-${month}-${day}`)
+    }
 </script>
 
 <td data-col="date">
-    <!--TODO: parse dates-->
-    <!--TODO: Add calendar below-->
-    <!--TODO: use <time> tag-->
-    <!--        <input-->
-    <!--            class="note-input"-->
-    <!--            type="text"-->
-    <!--            bind:value={date}-->
-    <!--            onblur={() => transactionStore.editTransaction({ id: transaction.id,transactionDate: date })}-->
-    <!--        >-->
-        <time datetime={transaction.transactionDate}>
-            {displayDate}
-        </time>
+    <Popover.Root>
+        <Popover.Trigger>
+            <time datetime={transaction.transactionDate}>
+                {displayDate}
+            </time>
+        </Popover.Trigger>
+        <Popover.Portal>
+            <Popover.Content>
+                <Calendar initialValue={parseDate(transaction.transactionDate)} onDateChange={updateDate}/>
+            </Popover.Content>
+        </Popover.Portal>
+    </Popover.Root>
 </td>
 
 <style>
