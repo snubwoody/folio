@@ -1,7 +1,7 @@
 <script lang="ts">
     import { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
-    import Transaction from "./Transaction.svelte";
+    import Transaction from "./transaction/Transaction.svelte";
 
     const tableStore = new TableStore();
 </script>

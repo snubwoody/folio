@@ -1,5 +1,5 @@
 import { test, beforeEach,describe, expect } from "vitest";
-import TransactionComponent from "$components/home/Transaction.svelte";
+import TransactionComponent from "$components/home/transaction/Transaction.svelte";
 import type { Transaction } from "$lib/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
