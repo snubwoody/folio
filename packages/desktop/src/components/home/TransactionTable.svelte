@@ -1,7 +1,6 @@
 <script lang="ts">
     import { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore } from "$lib/transaction.svelte";
-    import { setContext } from "svelte";
     import Transaction from "./Transaction.svelte";
 
     const tableStore = new TableStore();

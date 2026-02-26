@@ -1,17 +1,11 @@
-import { appStore } from "$lib/state.svelte";
 import { test, beforeEach,describe, expect } from "vitest";
 import TransactionComponent from "$components/home/Transaction.svelte";
 import type { Transaction } from "$lib/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
-import { page } from "@vitest/browser/context";
-import type { Account } from "$lib/lib";
 import { accountStore } from "$lib/account.svelte";
 
 beforeEach(() => {
-    // appStore.budgets = [];
-    // appStore.incomes = [];
-    // appStore.expenses = [];
     accountStore.clear();
 });
 
@@ -21,8 +15,8 @@ beforeEach(() => {
 // - expense
 // - transfer
 // - category
-describe("Transction component",async()=>{
-    test("shows outflow if transaction is an expense",async()=>{
+describe("Transction component",async() => {
+    test("shows outflow if transaction is an expense",async() => {
         const transaction: Transaction ={
             id: "1",
             fromAccountId: "A1",
@@ -32,13 +26,13 @@ describe("Transction component",async()=>{
 
         const tableStore = new TableStore();
 
-        const screen = render(TransactionComponent,{transaction,tableStore});
+        const screen = render(TransactionComponent,{ transaction,tableStore });
         const outflow = screen.getByRole("cell").nth(7);
         const inflow = screen.getByRole("cell").nth(8);
         expect(outflow).toHaveTextContent("$500.00");
         expect(inflow).toBeEmptyDOMElement();
     });
-    test("shows inflow if transaction is an income",async()=>{
+    test("shows inflow if transaction is an income",async() => {
         const transaction: Transaction ={
             id: "1",
             toAccountId: "A1",
@@ -50,7 +44,7 @@ describe("Transction component",async()=>{
 
         console.log(transaction.fromAccountId);
 
-        const screen = render(TransactionComponent,{transaction,tableStore});
+        const screen = render(TransactionComponent,{ transaction,tableStore });
         const outflow = screen.getByRole("cell").nth(7);
         const inflow = screen.getByRole("cell").nth(8);
         console.log(outflow);
@@ -58,9 +52,9 @@ describe("Transction component",async()=>{
         expect(outflow).toBeEmptyDOMElement();
         expect(inflow).toHaveTextContent("$500.00");
     });
-    test("shows account if expense",async()=>{
-        const account = await accountStore.createAccount({name:"Account 1"});
-        
+    test("shows account if expense",async() => {
+        const account = await accountStore.createAccount({ name:"Account 1" });
+
         const transaction: Transaction ={
             id: "1",
             fromAccountId: account.id,
@@ -72,16 +66,16 @@ describe("Transction component",async()=>{
 
         console.log(transaction.fromAccountId);
 
-        const screen = render(TransactionComponent,{transaction,tableStore});
+        const screen = render(TransactionComponent,{ transaction,tableStore });
         const accountCell = screen.getByTestId("account");
         const payeeCell = screen.getByTestId("payee");
         expect(accountCell).toHaveTextContent("Account 1");
         expect(payeeCell).toBeInTheDocument();
         expect(payeeCell.query()?.children).toHaveLength(0);
     });
-    test("shows account if income",async()=>{
-        const account = await accountStore.createAccount({name:"Account 1"});
-        
+    test("shows account if income",async() => {
+        const account = await accountStore.createAccount({ name:"Account 1" });
+
         const transaction: Transaction ={
             id: "1",
             toAccountId: account.id,
@@ -93,7 +87,7 @@ describe("Transction component",async()=>{
 
         console.log(transaction.fromAccountId);
 
-        const screen = render(TransactionComponent,{transaction,tableStore});
+        const screen = render(TransactionComponent,{ transaction,tableStore });
         const accountCell = screen.getByTestId("account");
         const payeeCell = screen.getByTestId("payee");
         expect(accountCell).toHaveTextContent("Account 1");

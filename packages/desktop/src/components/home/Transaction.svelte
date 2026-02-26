@@ -5,37 +5,18 @@
     import { formatAmount, formatDate } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
-    import { getContext } from "svelte";
 
     interface Props {
         transaction: Transaction,
         tableStore: TableStore
     }
 
-    // maybe use outflow and inflow
-    type TransactionType = "Expense" | "Income" | "Transfer";
-
     const { transaction,tableStore }: Props = $props();
 
-    let transactionType = $state<TransactionType>("Expense");
     const isIncome = transaction.toAccountId !== null && transaction.fromAccountId === null;
-    const isExpense = transaction.toAccountId === null && transaction.fromAccountId !== null;
+    // const isExpense = transaction.toAccountId === null && transaction.fromAccountId !== null;
     const isTransfer = transaction.toAccountId !== null && transaction.fromAccountId !== null;
 
-    console.log(isTransfer,transaction);
-
-    if (isTransfer){
-        // $inspect(transaction)
-        // console.log(transaction);
-    }
-
-    if (transaction.fromAccountId && transaction.toAccountId){
-        transactionType = "Transfer";
-    } else if (transaction.toAccountId !== undefined && transaction.fromAccountId === undefined){
-        transactionType = "Income";
-    }
-
-    const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
 	// TODO:

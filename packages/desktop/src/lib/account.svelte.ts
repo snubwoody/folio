@@ -28,7 +28,7 @@ export class AccountStore{
         return this.#accountMap;
     }
 
-    async createAccount({name}:{name:string}):Promise<Account>{
+    async createAccount({ name }:{name:string}):Promise<Account>{
         // Quick and dirty solution, replace later
         const id = Math.random().toString(36).slice(2);
         const account: Account = {
