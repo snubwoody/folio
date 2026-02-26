@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Calendar } from "bits-ui";
-    import {ChevronLeft,ChevronRight} from "@lucide/svelte";
-    import type {DateValue} from "@internationalized/date";
+    import { ChevronLeft,ChevronRight } from "@lucide/svelte";
+    import type { DateValue } from "@internationalized/date";
 
     type DateFn = (year: number, month: number, day: number) => void;
 
@@ -10,7 +10,7 @@
         initialValue?: DateValue
     };
 
-    const {onDateChange,initialValue}:Props = $props();
+    const { onDateChange,initialValue }:Props = $props();
     // let value = $state(today(getLocalTimeZone()));
     // TODO: add value input
     let value: DateValue | undefined = $state(initialValue);

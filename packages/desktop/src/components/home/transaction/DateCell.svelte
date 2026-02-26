@@ -1,23 +1,22 @@
 <script lang="ts">
-    import {type Transaction, transactionStore} from "$lib/transaction.svelte";
-    import {Popover} from "bits-ui";
-    import {formatDate} from "$lib/lib";
+    import { type Transaction, transactionStore } from "$lib/transaction.svelte";
+    import { Popover } from "bits-ui";
+    import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
     import { parseDate } from "@internationalized/date";
-
 
     interface Props{
         transaction: Transaction
     }
 
-    const {transaction}: Props = $props();
+    const { transaction }: Props = $props();
 
     let displayDate = $state(formatDate(transaction.transactionDate));
 
     const updateDate = (year:number,month:number,day:number) => {
         transactionStore.editTransaction({ id: transaction.id,transactionDate: `${year}-${month}-${day}` });
-        displayDate = formatDate(`${year}-${month}-${day}`)
-    }
+        displayDate = formatDate(`${year}-${month}-${day}`);
+    };
 </script>
 
 <td data-col="date">

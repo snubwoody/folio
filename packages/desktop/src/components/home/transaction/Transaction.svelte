@@ -2,7 +2,7 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte.js";
     import { categoryStore } from "$lib/categories.svelte.js";
-    import { formatAmount, formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
+    import { formatAmount, formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte.js";
     import { appStore } from "$lib/state.svelte.js";
