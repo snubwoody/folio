@@ -2,9 +2,10 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
-    import { formatAmount, formatDate } from "$lib/lib";
+    import {formatAmount, formatAmountWithoutSymbol, formatDate, getCurrencySymbol} from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
+    import {appStore} from "$lib/state.svelte";
 
     interface Props {
         transaction: Transaction,
@@ -27,6 +28,7 @@
     let note = $state(transaction.note);
     let date = $state(formatDate(transaction.transactionDate));
     let selected = $derived(tableStore.isSelected(transaction.id));
+    const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 </script>
 
 <tr data-selected={selected}>
@@ -95,9 +97,17 @@
             />
         {/if}
     </td>
-    <td data-col="outflow" data-testid="outflow">
+    <td data-col="outflow" data-testid="outflow" class="flex gap-1">
         {#if transaction.fromAccountId}
-            {formatAmount(transaction.amount)}
+            <p>
+                {currencySymbol}
+            </p>
+            <input
+                type="text"
+                value={formatAmountWithoutSymbol(transaction.amount)}
+                class="outline-none"
+                onblur={(e)=>transactionStore.setOutflow({id:transaction.id,amount:e.currentTarget.value})}
+            >
         {/if}
     </td>
     <td data-col="inflow" data-testid="inflow">
