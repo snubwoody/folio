@@ -5,27 +5,18 @@
     import { formatAmount, formatDate } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
-    import { getContext } from "svelte";
 
     interface Props {
-        transaction: Transaction
+        transaction: Transaction,
+        tableStore: TableStore
     }
 
-    type TransactionType = "Expense" | "Income" | "Transfer";
+    const { transaction,tableStore }: Props = $props();
 
-    const { transaction }: Props = $props();
+    const isIncome = transaction.toAccountId !== null && transaction.fromAccountId === null;
+    // const isExpense = transaction.toAccountId === null && transaction.fromAccountId !== null;
+    const isTransfer = transaction.toAccountId !== null && transaction.fromAccountId !== null;
 
-    const tableStore: TableStore = getContext("tableStore");
-    tableStore.toggleSelect(transaction.id);
-
-    let transactionType = $state<TransactionType>("Expense");
-    if (transaction.fromAccountId && transaction.toAccountId){
-        transactionType = "Transfer";
-    } else if (transaction.toAccountId !== undefined && transaction.fromAccountId === undefined){
-        transactionType = "Income";
-    }
-
-    const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
 	// TODO:
@@ -39,7 +30,7 @@
 </script>
 
 <tr data-selected={selected}>
-    <td >
+    <td data-col="checkbox">
         <input
             checked={tableStore.isSelected(transaction.id)}
             type="checkbox" name="" id=""
@@ -53,9 +44,10 @@
             }}
         >
     </td>
-    <td>
+    <td data-col="date">
         <!--TODO: parse dates-->
         <!--TODO: Add calendar below-->
+        <!--TODO: use <time> tag-->
         <input
             class="note-input"
             type="text"
@@ -63,8 +55,16 @@
             onblur={() => transactionStore.editTransaction({ id: transaction.id,transactionDate: date })}
         >
     </td>
-    <td>
-        {#if transaction.fromAccountId !== undefined}
+    <td data-col="account" data-testid="account">
+        {#if isIncome}
+            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
+            <SelectCell
+                value={account?.id}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
+                items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
+            />
+        {:else}
+            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
             <SelectCell
                 value={account?.id}
                 onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
@@ -72,13 +72,13 @@
             />
         {/if}
     </td>
-    <td>
-        {#if transaction.toAccountId !== undefined}
-            {@const payee = accountStore.accountMap.get(transaction.toAccountId)}
+    <td data-col="payee" data-testid="payee">
+        {#if isTransfer}
+            {@const payee = accountStore.accountMap.get(transaction.toAccountId??"")}
             {payee?.name}
         {/if}
     </td>
-    <td>
+    <td data-col="note" data-testid="note">
         <input
             class="note-input"
             type="text"
@@ -86,7 +86,7 @@
             onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
         >
     </td>
-    <td>
+    <td data-col="category" data-testid="category">
         {#if transaction.categoryId !== undefined}
             <SelectCell
                 value={category?.id}
@@ -95,14 +95,14 @@
             />
         {/if}
     </td>
-    <td>
-        {#if transactionType === "Expense" }
+    <td data-col="outflow" data-testid="outflow">
+        {#if transaction.fromAccountId}
             {formatAmount(transaction.amount)}
         {/if}
     </td>
-    <td>
-        {#if transactionType === "Income" }
-            ${transaction.amount}
+    <td data-col="inflow" data-testid="inflow">
+        {#if transaction.toAccountId }
+            {formatAmount(transaction.amount)}
         {/if}
     </td>
 </tr>
