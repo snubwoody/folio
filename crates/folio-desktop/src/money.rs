@@ -22,7 +22,6 @@ use std::{
     str::FromStr,
 };
 
-// TODO: impl FromRow?
 /// A type that stores money with 6 digits after the decimal point.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Money(i64);
@@ -34,6 +33,8 @@ impl Money {
     const FACTOR: u32 = 10u32.pow(Self::SCALE);
 
     pub const ZERO: Money = Money::new(0);
+
+    /// The largest value that can be represented by this type.
     pub const MAX: Money = Money::new(i64::MAX);
     pub const MIN: Money = Money::new(i64::MIN);
 
