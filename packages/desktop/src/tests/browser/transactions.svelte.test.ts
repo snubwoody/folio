@@ -15,7 +15,7 @@ beforeEach(() => {
 // - expense
 // - transfer
 // - category
-describe("Transction component",async() => {
+describe("Transaction component",async() => {
     test("shows outflow if transaction is an expense",async() => {
         const transaction: Transaction ={
             id: "1",
@@ -27,9 +27,10 @@ describe("Transction component",async() => {
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent,{ transaction,tableStore });
-        const outflow = screen.getByRole("cell").nth(7);
+        const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByRole("cell").nth(8);
-        expect(outflow).toHaveTextContent("$500.00");
+        expect(outflow.getByRole("paragraph")).toHaveTextContent("$");
+        expect(outflow.getByRole("textbox")).toHaveValue("500.00");
         expect(inflow).toBeEmptyDOMElement();
     });
     test("shows inflow if transaction is an income",async() => {

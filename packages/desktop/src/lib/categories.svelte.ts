@@ -53,7 +53,7 @@ export class CategoriyStore {
 
     async load() {
         this.#categories = await invoke<Category[]>("fetch_categories");
-        logger.info("Loaded categories from backend");
+        logger.debug("Loaded categories from backend");
     }
 }
 

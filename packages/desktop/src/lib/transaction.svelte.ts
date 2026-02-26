@@ -24,11 +24,24 @@ export interface Transaction{
     note?: string,
 }
 
+export type TransactionType = "Expense" | "Income" | "Transfer";
+
 export class TransactionStore{
     #transactions: Transaction[] = $state([]);
 
     get transactions(){
         return this.#transactions;
+    }
+
+    /**
+     * Sets the outflow property of a transaction
+     * @param id The id of the transaction
+     * @param amount The amount to set as the outflow
+     */
+    async setOutflow({ id,amount }: {id: string, amount: string}) {
+        const transaction = await invoke<Transaction>("set_transaction_outflow",{ id,amount });
+        const index = this.#transactions.findIndex(t => t.id === transaction.id);
+        this.#transactions[index] = transaction;
     }
 
     async editTransaction(opts: EditTransaction){

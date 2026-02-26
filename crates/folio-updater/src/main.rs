@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use tracing::info;
 
+// TODO: move to folio
 /// Release information generated on each new
 /// release to be used when updating Folio.
 #[derive(Debug, Serialize, Deserialize)]

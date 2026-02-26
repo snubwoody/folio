@@ -43,6 +43,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_account,
         fetch_budgets,
         create_account,
+        set_transaction_outflow,
         delete_expense,
         delete_income,
         create_budget,
@@ -120,6 +121,17 @@ pub async fn edit_transaction(
     data.update(&state.pool)
         .await
         .inspect_err(|err| warn!("{err}"))
+}
+
+#[tauri::command]
+pub async fn set_transaction_outflow(
+    state: tauri::State<'_, State>,
+    id: String,
+    amount: Money,
+) -> Result<Transaction> {
+    Transaction::set_outflow(&id, amount, &state.pool)
+        .await
+        .inspect_err(|err| warn!("Failed to set transaction outflow {err}"))
 }
 
 #[tauri::command]
