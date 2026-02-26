@@ -1,11 +1,12 @@
 <script lang="ts">
     import { SelectCell } from "$components/table";
-    import { accountStore } from "$lib/account.svelte";
-    import { categoryStore } from "$lib/categories.svelte";
-    import { formatAmount, formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
-    import type { TableStore } from "$lib/stores/table.svelte";
-    import { transactionStore, type Transaction } from "$lib/transaction.svelte";
-    import { appStore } from "$lib/state.svelte";
+    import { accountStore } from "$lib/account.svelte.js";
+    import { categoryStore } from "$lib/categories.svelte.js";
+    import { formatAmount, formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
+    import type { TableStore } from "$lib/stores/table.svelte.js";
+    import { transactionStore, type Transaction } from "$lib/transaction.svelte.js";
+    import { appStore } from "$lib/state.svelte.js";
+    import DateCell from "$components/home/transaction/DateCell.svelte";
 
     interface Props {
         transaction: Transaction,
@@ -26,7 +27,6 @@
     // - edit note
     //   - add x button to clear
     let note = $state(transaction.note);
-    let date = $state(formatDate(transaction.transactionDate));
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
 </script>
@@ -46,17 +46,7 @@
             }}
         >
     </td>
-    <td data-col="date">
-        <!--TODO: parse dates-->
-        <!--TODO: Add calendar below-->
-        <!--TODO: use <time> tag-->
-        <input
-            class="note-input"
-            type="text"
-            bind:value={date}
-            onblur={() => transactionStore.editTransaction({ id: transaction.id,transactionDate: date })}
-        >
-    </td>
+    <DateCell {transaction}/>
     <td data-col="account" data-testid="account">
         {#if isIncome}
             {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
