@@ -18,17 +18,22 @@
     const { transaction,tableStore }: Props = $props();
 
     let transactionType = $state<TransactionType>("Expense");
-    const isIncome = transaction.toAccountId !== null && !transaction.fromAccountId === null;
-    const isExpense = transaction.toAccountId === null && !transaction.fromAccountId !== null;
-    const isTransfer = transaction.toAccountId !== null && !transaction.fromAccountId !== null;
+    const isIncome = transaction.toAccountId !== null && transaction.fromAccountId === null;
+    const isExpense = transaction.toAccountId === null && transaction.fromAccountId !== null;
+    const isTransfer = transaction.toAccountId !== null && transaction.fromAccountId !== null;
+
+    console.log(isTransfer,transaction);
+
+    if (isTransfer){
+        // $inspect(transaction)
+        // console.log(transaction);
+    }
 
     if (transaction.fromAccountId && transaction.toAccountId){
         transactionType = "Transfer";
     } else if (transaction.toAccountId !== undefined && transaction.fromAccountId === undefined){
         transactionType = "Income";
     }
-
-    console.log(transactionType);
 
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId!));
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
@@ -71,13 +76,14 @@
     </td>
     <td data-col="account" data-testid="account">
         {#if isIncome}
-            {@const account = accountStore.accountMap.get(transaction.fromAccountId!)}
+            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
             <SelectCell
                 value={account?.id}
                 onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
                 items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {:else}
+            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
             <SelectCell
                 value={account?.id}
                 onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
@@ -87,7 +93,7 @@
     </td>
     <td data-col="payee" data-testid="payee">
         {#if isTransfer}
-            {@const payee = accountStore.accountMap.get(transaction.toAccountId!)}
+            {@const payee = accountStore.accountMap.get(transaction.toAccountId??"")}
             {payee?.name}
         {/if}
     </td>

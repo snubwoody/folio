@@ -5,7 +5,6 @@ export class TableStore{
     #allRowsSelected: boolean = $state(false);
 
     isSelected(id: string): boolean{
-        console.log(this.#selectedRows);
         return this.#selectedRows.has(id) || this.#allRowsSelected;
     }
 

@@ -76,7 +76,8 @@ describe("Transction component",async()=>{
         const accountCell = screen.getByTestId("account");
         const payeeCell = screen.getByTestId("payee");
         expect(accountCell).toHaveTextContent("Account 1");
-        expect(payeeCell).toBeEmptyDOMElement();
+        expect(payeeCell).toBeInTheDocument();
+        expect(payeeCell.query()?.children).toHaveLength(0);
     });
     test("shows account if income",async()=>{
         const account = await accountStore.createAccount({name:"Account 1"});
@@ -96,7 +97,8 @@ describe("Transction component",async()=>{
         const accountCell = screen.getByTestId("account");
         const payeeCell = screen.getByTestId("payee");
         expect(accountCell).toHaveTextContent("Account 1");
-        expect(payeeCell).toBeEmptyDOMElement();
+        expect(payeeCell).toBeInTheDocument();
+        expect(payeeCell.query()?.children).toHaveLength(0);
     });
 });
 
