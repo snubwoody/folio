@@ -2,10 +2,10 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
-    import {formatAmount, formatAmountWithoutSymbol, formatDate, getCurrencySymbol} from "$lib/lib";
+    import { formatAmount, formatAmountWithoutSymbol, formatDate, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore, type Transaction } from "$lib/transaction.svelte";
-    import {appStore} from "$lib/state.svelte";
+    import { appStore } from "$lib/state.svelte";
 
     interface Props {
         transaction: Transaction,
@@ -106,7 +106,7 @@
                 type="text"
                 value={formatAmountWithoutSymbol(transaction.amount)}
                 class="outline-none"
-                onblur={(e)=>transactionStore.setOutflow({id:transaction.id,amount:e.currentTarget.value})}
+                onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
             >
         {/if}
     </td>

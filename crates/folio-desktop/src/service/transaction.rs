@@ -223,16 +223,16 @@ impl EditBuilder {
     }
 }
 
-#[derive(Debug, Clone,Copy, PartialOrd, PartialEq, Serialize)]
-enum TransactionType{
+#[derive(Debug, Clone, Copy, PartialOrd, PartialEq, Serialize)]
+enum TransactionType {
     /// A transaction is an expense when `from_account_id` is not `None`
     /// and `to_account_id` is `None`
     Expense,
     Income,
-    Transfer
+    Transfer,
 }
 
-#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize,Default)]
+#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub id: String,
@@ -262,35 +262,32 @@ impl Transaction {
         EditBuilder::new(id)
     }
 
-    fn transaction_type(&self) -> TransactionType{
-        if self.to_account_id.is_none(){
-            return TransactionType::Expense
+    fn transaction_type(&self) -> TransactionType {
+        if self.to_account_id.is_none() {
+            return TransactionType::Expense;
         }
 
-        if self.from_account_id.is_none(){
-            return TransactionType::Income
+        if self.from_account_id.is_none() {
+            return TransactionType::Income;
         }
 
         TransactionType::Transfer
     }
 
-    pub async fn set_outflow(id:&str,amount: Money,pool:&SqlitePool) -> crate::Result<Self>{
-        let transaction = Self::fetch(id,pool).await?;
+    pub async fn set_outflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
+        let transaction = Self::fetch(id, pool).await?;
         let mut query = QueryBuilder::new("UPDATE transactions ");
-        query.push("SET amount = ")
-                .push_bind(amount);
+        query.push("SET amount = ").push_bind(amount);
 
         // Setting outflow on an income changes it to an expense
-        match transaction.transaction_type() {
-            TransactionType::Income => {
-                query.push(", to_account_id = NULL, from_account_id = ")
-                    .push_bind(transaction.to_account_id.unwrap_or_default());
-            },
-            _=>{}
+        if transaction.transaction_type() == TransactionType::Income {
+            query
+                .push(", to_account_id = NULL, from_account_id = ")
+                .push_bind(transaction.to_account_id.unwrap_or_default());
         }
         query.build().execute(pool).await?;
-        info!(id=id,"Updated transaction");
-        Self::fetch(id,pool).await
+        info!(id = id, "Updated transaction");
+        Self::fetch(id, pool).await
     }
 
     /// Fetches the transaction from the database with a matching `id`. If the matching row
@@ -316,51 +313,67 @@ impl Transaction {
 
 #[cfg(test)]
 mod test {
-    use crate::service::Account;
     use super::*;
+    use crate::service::Account;
 
     #[test]
-    fn transaction_type_expense(){
-        let expense = Transaction{from_account_id:Some("".to_owned()),..Default::default()};
-        let income = Transaction{to_account_id:Some("".to_owned()),..Default::default()};
-        let transfer = Transaction{from_account_id:Some("".to_owned()),to_account_id:Some("".to_owned()),..Default::default()};
+    fn transaction_type_expense() {
+        let expense = Transaction {
+            from_account_id: Some("".to_owned()),
+            ..Default::default()
+        };
+        let income = Transaction {
+            to_account_id: Some("".to_owned()),
+            ..Default::default()
+        };
+        let transfer = Transaction {
+            from_account_id: Some("".to_owned()),
+            to_account_id: Some("".to_owned()),
+            ..Default::default()
+        };
 
-        assert_eq!(expense.transaction_type(),TransactionType::Expense);
-        assert_eq!(income.transaction_type(),TransactionType::Income);
-        assert_eq!(transfer.transaction_type(),TransactionType::Transfer);
+        assert_eq!(expense.transaction_type(), TransactionType::Expense);
+        assert_eq!(income.transaction_type(), TransactionType::Income);
+        assert_eq!(transfer.transaction_type(), TransactionType::Transfer);
     }
 
     #[sqlx::test]
-    async fn set_outflow_for_expense(pool: SqlitePool) -> crate::Result<()>{
-        let account = Account::create("__",Money::ZERO,&pool).await?;
+    async fn set_outflow_for_expense(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
         let transaction = Transaction::expense()
             .amount(Money::MAX)
             .account_id(&account.id)
             .create(&pool)
             .await?;
 
-        Transaction::set_outflow(&transaction.id,Money::from_f64(10.0),&pool).await?;
-        let t = Transaction::fetch(&transaction.id,&pool).await?;
-        assert_eq!(t.amount,Money::from_f64(10.0));
-        assert_eq!(t.from_account_id.unwrap(),transaction.from_account_id.unwrap());
+        Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.amount, Money::from_f64(10.0));
+        assert_eq!(
+            t.from_account_id.unwrap(),
+            transaction.from_account_id.unwrap()
+        );
         assert!(t.to_account_id.is_none());
         Ok(())
     }
 
     #[sqlx::test]
-    async fn set_outflow_for_income(pool: SqlitePool) -> crate::Result<()>{
+    async fn set_outflow_for_income(pool: SqlitePool) -> crate::Result<()> {
         // Setting outflow on an income should turn it into an expense
-        let account = Account::create("__",Money::ZERO,&pool).await?;
+        let account = Account::create("__", Money::ZERO, &pool).await?;
         let transaction = Transaction::income()
             .amount(Money::MAX)
             .account_id(&account.id)
             .create(&pool)
             .await?;
 
-        Transaction::set_outflow(&transaction.id,Money::from_f64(10.0),&pool).await?;
-        let t = Transaction::fetch(&transaction.id,&pool).await?;
-        assert_eq!(t.amount,Money::from_f64(10.0));
-        assert_eq!(t.from_account_id.unwrap(),transaction.to_account_id.unwrap());
+        Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.amount, Money::from_f64(10.0));
+        assert_eq!(
+            t.from_account_id.unwrap(),
+            transaction.to_account_id.unwrap()
+        );
         assert!(t.to_account_id.is_none());
         Ok(())
     }

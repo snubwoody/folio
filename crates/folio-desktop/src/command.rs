@@ -123,16 +123,15 @@ pub async fn edit_transaction(
         .inspect_err(|err| warn!("{err}"))
 }
 
-
 #[tauri::command]
 pub async fn set_transaction_outflow(
     state: tauri::State<'_, State>,
     id: String,
-    amount: Money
+    amount: Money,
 ) -> Result<Transaction> {
-    Transaction::set_outflow(&id,amount,&state.pool)
+    Transaction::set_outflow(&id, amount, &state.pool)
         .await
-        .inspect_err(|err|warn!("Failed to set transaction outflow {err}"))
+        .inspect_err(|err| warn!("Failed to set transaction outflow {err}"))
 }
 
 #[tauri::command]
