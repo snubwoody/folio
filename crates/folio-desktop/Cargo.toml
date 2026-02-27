@@ -13,10 +13,6 @@ publish = false
 name = "folio_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
-[[bin]]
-name = "release-info"
-path = "src/bin/release_info.rs"
-
 [build-dependencies]
 tauri-build = { version = "2.5.2", features = [] }
 
@@ -28,6 +24,7 @@ reqwest.workspace = true
 tauri.workspace = true
 tauri-plugin-opener.workspace = true
 serde.workspace = true
+anyhow.workspace = true
 serde_json.workspace = true
 rust_decimal.workspace = true
 tokio.workspace = true

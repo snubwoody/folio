@@ -1,11 +1,15 @@
 {
+  "version": "v1.4.1",
   "notes": "## Changes\r\n\r\n- Fixed an issue with the budget bar width\r\n- Fixed an issue causing deleted budgets to still appear in the UI\r\n",
+  "pub_date": "2026-02-19T19:32:18Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTVBtcEpMTGgrODhVb0FpbjUwcWZZVEpZOWwxL2FEd253aHV5UFhWaWpTUTJ1RHhZVHJtOHoydFV3cWVuOTlaNzdDZ0o4R05wek5PWHhMbXZib3JBSVFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzcxNTI5MjU0CWZpbGU6Rm9saW9fMS40LjFfeDY0LXNldHVwLmV4ZQpsc1VNYTBzQmFDQS8zMTg1WWJNQ3hpWXdTWERiU3FkVjB2L0VjMnAzUGkwU0VhczBzSytHSWxwMjdLU1k4QWxXM0hmSFgrTVFLaUZYSS9ocmE5UG9Ddz09Cg==",
       "url": "https://github.com/snubwoody/folio/releases/download/v1.4.1/Folio_1.4.1_x64-setup.exe"
+    },
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUkvSVJDdlV0a3pmMEpCTUZxWDU1SmFjcWRiMVJ0SFRNNlNiVU4zNy9lbHNGUTgwUXVNNEI0MnpnUEcwTkl1YkFIQU1JdGxHWk5mMzZYV3hCaTlmSWdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzcxNTI4OTE0CWZpbGU6Rm9saW9fMS40LjFfYW1kNjQuQXBwSW1hZ2UKL3dBaGQrTXpJNUd6RHNWVmZTbVJRcGNqbU9oMUdaS2hlZVo5SGlEMy9xeFJmUGZYZi9GRkNqM21KaEZLbThzSzZsWWlEYVIyckNueGZJcWFEM3krRFE9PQo=",
+      "url": "https://github.com/snubwoody/folio/releases/download/v1.4.1/Folio_1.4.1_amd64.AppImage"
     }
-  },
-  "pub_date": "2026-02-19T19:32:18Z",
-  "version": "v1.4.1"
+  }
 }

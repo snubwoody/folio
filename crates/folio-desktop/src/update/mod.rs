@@ -26,22 +26,22 @@ use tracing::info;
 // TODO: add is updatable
 /// Generates a `release-info.json` file containing information about the
 /// latest release.
-pub async fn release_info() -> crate::Result<()>{
+pub async fn release_info() -> anyhow::Result<()>{
     // TODO: filter drafts
     let release = octocrab::instance()
         .repos("snubwoody", "folio")
         .releases()
         .get_latest()
-        .await
-        .unwrap();
+        .await?;
 
     // TODO: log version?
     info!("Fetched latest release from github");
 
     // TODO: if it fails leave it as null
+    // TODO: add macos
     let version = release.tag_name.clone();
     let notes = release.body.clone().unwrap_or_default();
-    let (windows_url,windows_sig) = windows_release_info(&release).await?;
+    let (windows_url,windows_sig) = windows_release_info("-setup.exe",&release).await?;
     let date = release.published_at.unwrap();
 
     let json = json!({
@@ -61,9 +61,9 @@ pub async fn release_info() -> crate::Result<()>{
 }
 
 /// Returns the download url and signature of the latest windows release
-async fn windows_release_info(release: &Release) -> crate::Result<(String,String)>{
-    let exe = &release.assets.iter().find(|a|a.name.ends_with("-setup.exe")).unwrap();
-    let exe_sig = &release.assets.iter().find(|a|a.name.ends_with("-setup.exe.sig")).unwrap();
+async fn windows_release_info(pattern:&str,release: &Release) -> anyhow::Result<(String,String)>{
+    let exe = &release.assets.iter().find(|a|a.name.ends_with(pattern)).unwrap();
+    let exe_sig = &release.assets.iter().find(|a|a.name.ends_with(&format!("{pattern}.sig"))).unwrap();
 
     let signature = reqwest::get(exe_sig.browser_download_url.as_str())
         .await?
@@ -74,16 +74,3 @@ async fn windows_release_info(release: &Release) -> crate::Result<(String,String
     Ok((download_url,signature))
 }
 
-/// Returns the download url and signature of the latest windows release
-async fn macos_release_info(release: &Release) -> crate::Result<(String,String)>{
-    let exe = &release.assets.iter().find(|a|a.name.ends_with("-setup.exe")).unwrap();
-    let exe_sig = &release.assets.iter().find(|a|a.name.ends_with("-setup.exe.sig")).unwrap();
-
-    let signature = reqwest::get(exe_sig.browser_download_url.as_str())
-        .await?
-        .text()
-        .await?;
-    let download_url = exe.browser_download_url.to_string();
-
-    Ok((download_url,signature))
-}

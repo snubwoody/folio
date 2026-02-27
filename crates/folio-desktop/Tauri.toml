@@ -13,7 +13,7 @@ enable-gtk-app-id = true
 
 [plugins.updater]
 pubkey = "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDMwRDhERTYyNEFGRTA5RTYKUldUbUNmNUtZdDdZTUhKbmNON1A2djFvNnpxUE9ha01ZdDlsOVhMQS9aaFhjL2xFMFFsWXhjc3UK"
-endpoint = ["https://github.com/snubwoody/folio/releases/latest/download/latest.json"]
+endpoints = ["https://raw.githubusercontent.com/snubwoody/folio/main/release-info.json"]
 
 [bundle]
 active = true
