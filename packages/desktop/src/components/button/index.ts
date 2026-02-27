@@ -14,3 +14,4 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 export { default as IconButton } from "./IconButton.svelte";
 export { default as Button } from "./Button.svelte";
+export { default as TextButton } from "./TextButton.svelte";
