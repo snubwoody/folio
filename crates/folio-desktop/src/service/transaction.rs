@@ -269,7 +269,7 @@ impl Transaction {
                 .push(", to_account_id = NULL, from_account_id = ")
                 .push_bind(transaction.to_account_id.unwrap_or_default());
         }
-        query.build().execute(pool).await?;
+        query.push("WHERE id = ").push_bind(id).build().execute(pool).await?;
         info!(id = id, "Updated transaction");
         Self::fetch(id, pool).await
     }
@@ -295,7 +295,7 @@ impl Transaction {
                 .push_bind(transaction.from_account_id.unwrap_or_default());
         }
 
-        query.build().execute(pool).await?;
+        query.push("WHERE id = ").push_bind(id).build().execute(pool).await?;
         info!(id = id, "Updated transaction");
         Self::fetch(id, pool).await
     }

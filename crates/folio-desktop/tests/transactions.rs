@@ -1,8 +1,62 @@
 use chrono::NaiveDate;
 use folio_lib::Money;
 use folio_lib::service::{Account, Transaction};
-use sqlx::Row;
+use sqlx::{Row, SqlitePool};
 use std::str::FromStr;
+
+#[sqlx::test]
+async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<()> {
+    let account = Account::create("__", Money::ZERO, &pool).await?;
+    let transaction = Transaction::income()
+        .amount(Money::MAX)
+        .account_id(&account.id)
+        .create(&pool)
+        .await?;
+    let transaction2 = Transaction::income()
+        .amount(Money::MAX)
+        .account_id(&account.id)
+        .create(&pool)
+        .await?;
+
+    Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    let t = Transaction::fetch(&transaction.id, &pool).await?;
+    let t2 = Transaction::fetch(&transaction2.id, &pool).await?;
+    assert_eq!(t2.amount, Money::MAX);
+    assert_eq!(t.amount, Money::from_f64(10.0));
+    assert_eq!(
+        t.to_account_id.unwrap(),
+        transaction.to_account_id.unwrap()
+    );
+    assert!(t.from_account_id.is_none());
+    Ok(())
+}
+
+#[sqlx::test]
+async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result<()> {
+    let account = Account::create("__", Money::ZERO, &pool).await?;
+    let transaction = Transaction::expense()
+        .amount(Money::MAX)
+        .account_id(&account.id)
+        .create(&pool)
+        .await?;
+    let transaction2 = Transaction::expense()
+        .amount(Money::MAX)
+        .account_id(&account.id)
+        .create(&pool)
+        .await?;
+
+    Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    let t = Transaction::fetch(&transaction.id, &pool).await?;
+    let t2 = Transaction::fetch(&transaction2.id, &pool).await?;
+    assert_eq!(t.amount, Money::from_f64(10.0));
+    assert_eq!(t2.amount, Money::MAX);
+    assert_eq!(
+        t.from_account_id.unwrap(),
+        transaction.from_account_id.unwrap()
+    );
+    assert!(t.to_account_id.is_none());
+    Ok(())
+}
 
 #[sqlx::test]
 async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
