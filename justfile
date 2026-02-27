@@ -1,4 +1,4 @@
-set windows-shell := ["powershell"]
+set windows-shell := ["nu","-c"]
 
 [working-directory: "crates/folio-desktop"]
 add-migration name:
