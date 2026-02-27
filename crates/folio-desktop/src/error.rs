@@ -38,6 +38,14 @@ pub enum Error {
     ReqwestError(#[from] reqwest::Error),
     #[error("Failed to parse float: {0}")]
     ParseFloatError(#[from] ParseFloatError),
+    #[error("Invalid operation: {0}")]
+    InvalidOperation(String),
+}
+
+impl Error {
+    pub fn invalid_op(message: &str) -> Self {
+        Self::InvalidOperation(message.to_owned())
+    }
 }
 
 impl Serialize for Error {

@@ -2,9 +2,9 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte.js";
     import { categoryStore } from "$lib/categories.svelte.js";
-    import { formatAmount, formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
+    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
-    import { transactionStore, type Transaction } from "$lib/transaction.svelte.js";
+    import { transactionStore, type Transaction,transactionType } from "$lib/transaction.svelte.js";
     import { appStore } from "$lib/state.svelte.js";
     import DateCell from "$components/home/transaction/DateCell.svelte";
 
@@ -15,20 +15,19 @@
 
     const { transaction,tableStore }: Props = $props();
 
-    const isIncome = transaction.toAccountId !== null && transaction.fromAccountId === null;
-    // const isExpense = transaction.toAccountId === null && transaction.fromAccountId !== null;
-    const isTransfer = transaction.toAccountId !== null && transaction.fromAccountId !== null;
+    const transType = $derived.by(() => {
+        return transactionType(transaction);
+    });
 
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
 	// TODO:
-    // - edit date
-    // - edit amount
     // - edit note
     //   - add x button to clear
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
+    // TODO: clear money fields if there was an error parsing or reset
 </script>
 
 <tr data-selected={selected}>
@@ -48,8 +47,8 @@
     </td>
     <DateCell {transaction}/>
     <td data-col="account" data-testid="account">
-        {#if isIncome}
-            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
+        {#if transType === "Income"}
+            {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
             <SelectCell
                 value={account?.id}
                 onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
@@ -65,7 +64,7 @@
         {/if}
     </td>
     <td data-col="payee" data-testid="payee">
-        {#if isTransfer}
+        {#if transType === "Transfer"}
             {@const payee = accountStore.accountMap.get(transaction.toAccountId??"")}
             {payee?.name}
         {/if}
@@ -87,23 +86,47 @@
             />
         {/if}
     </td>
-    <td data-col="outflow" data-testid="outflow" class="flex gap-1">
-        {#if transaction.fromAccountId}
-            <p>
-                {currencySymbol}
-            </p>
-            <input
-                type="text"
-                value={formatAmountWithoutSymbol(transaction.amount)}
-                class="outline-none"
-                onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
-            >
-        {/if}
+    <td data-col="outflow" data-testid="outflow">
+        <div class="flex gap-1">
+            {#if transType !== "Income"}
+                <p>
+                    {currencySymbol}
+                </p>
+                <input
+                    type="text"
+                    value={formatAmountWithoutSymbol(transaction.amount)}
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {:else}
+                <input
+                    type="text"
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {/if}
+        </div>
     </td>
     <td data-col="inflow" data-testid="inflow">
-        {#if transaction.toAccountId }
-            {formatAmount(transaction.amount)}
-        {/if}
+        <div class="flex gap-1">
+            {#if transType === "Income" }
+                <p>
+                    {currencySymbol}
+                </p>
+                <input
+                    type="text"
+                    value={formatAmountWithoutSymbol(transaction.amount)}
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setInflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {:else}
+                <input
+                    type="text"
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setInflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {/if}
+        </div>
     </td>
 </tr>
 

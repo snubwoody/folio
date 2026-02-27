@@ -28,12 +28,13 @@ describe("Transaction component",async() => {
 
         const screen = render(TransactionComponent,{ transaction,tableStore });
         const outflow = screen.getByTestId("outflow");
-        const inflow = screen.getByRole("cell").nth(8);
+        const inflow = screen.getByTestId("inflow");
         expect(outflow.getByRole("paragraph")).toHaveTextContent("$");
         expect(outflow.getByRole("textbox")).toHaveValue("500.00");
-        expect(inflow).toBeEmptyDOMElement();
+        expect(inflow.getByRole("textbox")).toHaveValue("");
     });
     test("shows inflow if transaction is an income",async() => {
+        // TODO: test edit
         const transaction: Transaction ={
             id: "1",
             toAccountId: "A1",
@@ -43,15 +44,12 @@ describe("Transaction component",async() => {
 
         const tableStore = new TableStore();
 
-        console.log(transaction.fromAccountId);
-
         const screen = render(TransactionComponent,{ transaction,tableStore });
-        const outflow = screen.getByRole("cell").nth(7);
-        const inflow = screen.getByRole("cell").nth(8);
-        console.log(outflow);
-        console.log(inflow);
-        expect(outflow).toBeEmptyDOMElement();
-        expect(inflow).toHaveTextContent("$500.00");
+        const outflow = screen.getByTestId("outflow");
+        const inflow = screen.getByTestId("inflow");
+        expect(outflow.getByRole("textbox")).toHaveValue("");
+        expect(inflow).toHaveTextContent("$");
+        expect(inflow.getByRole("textbox")).toHaveValue("500.00");
     });
     test("shows account if expense",async() => {
         const account = await accountStore.createAccount({ name:"Account 1" });
