@@ -1,51 +1,113 @@
-use serde::{Deserialize, Serialize};
+use anyhow::anyhow;
+use chrono::{DateTime, Utc};
+use octocrab::models::repos::Release;
+use serde::Serialize;
 use std::collections::HashMap;
+use std::fs;
 use tracing::info;
 
-// TODO: move to folio
-/// Release information generated on each new
-/// release to be used when updating Folio.
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ReleaseInfo {
-    version: String, // TODO: get cargo metadata version
+// {
+// "version": "",
+// "notes": "",
+// "pub_date": "",
+// "platforms": {
+// "linux-x86_64": {
+// "signature": "",
+// "url": ""
+// },
+// "windows-x86_64": {
+// "signature": "",
+// "url": ""
+// },
+// "darwin-x86_64": {
+// "signature": "",
+// "url": ""
+// }
+// }
+// }
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    tracing_subscriber::fmt().init();
+    release_info().await?;
+    Ok(())
+}
+
+#[derive(Serialize, Debug, Default)]
+struct ReleaseJson {
+    version: String,
     notes: String,
-    pub_date: String,
-    platforms: HashMap<Target, Platform>,
+    pub_date: DateTime<Utc>,
+    platforms: HashMap<String, Platform>,
 }
 
-#[allow(non_camel_case_types)]
-#[derive(Debug, Serialize, Deserialize, Hash, PartialEq, Eq, PartialOrd, Ord)]
-pub enum Target {
-    #[serde(rename = "linux-x86_64")]
-    Linux_x86_64,
-    #[serde(rename = "windows-x86_64")]
-    Windows_x86_64,
-    #[serde(rename = "darwin-aarch64")]
-    Darwin_AArch64,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
-pub struct Platform {
-    /// The content of the generated `.sig` file, a path or URL does not work.
+#[derive(Serialize, Debug, Default)]
+struct Platform {
     signature: String,
     url: String,
 }
 
-fn gen_release_info() -> anyhow::Result<()> {
-    let url = "https://github.com/repos/snubwoody/folio/releases/latest/download/Folio";
-    let response = reqwest::blocking::get(url)?;
-    // let text = response.text()?;
-    dbg!(&response);
+// TODO: add is updatable
+/// Generates a `release-info.json` file containing information about the
+/// latest release.
+pub async fn release_info() -> anyhow::Result<()> {
+    // TODO: filter drafts
+    let release = octocrab::instance()
+        .repos("snubwoody", "folio")
+        .releases()
+        .get_latest()
+        .await?;
+
+    // TODO: log version?
+    info!("Fetched latest release from github");
+
+    // TODO: if it fails leave it as null
+    // TODO: add macos
+    let mut json = ReleaseJson {
+        version: release.tag_name.clone(),
+        notes: release.body.clone().unwrap_or_default(),
+        pub_date: release.published_at.unwrap(),
+        ..Default::default()
+    };
+    if let Ok((url, signature)) = platform_info("-setup.exe", &release).await {
+        let platform = Platform { signature, url };
+        json.platforms.insert("windows-x86_64".to_owned(), platform);
+        info!("Found windows exe release");
+    }
+    if let Ok((url, signature)) = platform_info(".AppImage", &release).await {
+        let platform = Platform { signature, url };
+        json.platforms.insert("linux-x86_64".to_owned(), platform);
+        info!("Found linux AppImage release");
+    }
+    if let Ok((url, signature)) = platform_info(".app.tar.gz", &release).await {
+        let platform = Platform { signature, url };
+        json.platforms.insert("darwin-aarch64".to_owned(), platform);
+        info!("Found macos app release");
+    }
+
+    fs::write("release-info.json", serde_json::to_string_pretty(&json)?)?;
+    info!("Generated release info");
     Ok(())
 }
 
-fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt()
-        .without_time()
-        .with_target(false)
-        .with_file(false)
-        .init();
-    info!("Generating release info");
-    gen_release_info()?;
-    Ok(())
+/// Returns the download url and signature of the latest platform release
+async fn platform_info(pattern: &str, release: &Release) -> anyhow::Result<(String, String)> {
+    let exe = &release
+        .assets
+        .iter()
+        .find(|a| a.name.ends_with(pattern))
+        .ok_or(anyhow!("pattern {pattern} not found"))?;
+    let exe_sig = &release
+        .assets
+        .iter()
+        .find(|a| a.name.ends_with(&format!("{pattern}.sig")))
+        .ok_or(anyhow!("pattern {pattern} not found"))?;
+
+    let signature = reqwest::get(exe_sig.browser_download_url.as_str())
+        .await?
+        .text()
+        .await?;
+    let download_url = exe.browser_download_url.to_string();
+
+    Ok((download_url, signature))
 }

@@ -32,7 +32,6 @@ use tokio::sync::Mutex;
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
-// TODO: test this
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
         .title("Folio")
@@ -175,7 +174,6 @@ mod test {
     #[test]
     fn data_dir() -> crate::Result<()> {
         let data_dir = get_data_dir();
-
         dbg!(data_dir);
         Ok(())
     }

@@ -24,7 +24,7 @@ importers:
         specifier: ^0.546.0
         version: 0.546.0(svelte@5.43.0)
       '@tauri-apps/plugin-updater':
-        specifier: ~2
+        specifier: ~2.9.0
         version: 2.9.0
       astro:
         specifier: ^5.14.4
