@@ -18,7 +18,7 @@ endpoint = ["https://github.com/snubwoody/folio/releases/latest/download/latest.
 [bundle]
 active = true
 createUpdaterArtifacts = true
-targets = ["deb","rpm","appimage","nsis","dmg"]
+targets = ["deb","rpm","appimage","nsis","dmg","app"]
 publisher = "Wakunguma Kalimukwa"
 category = "Finance"
 homepage = "https://folio.wakunguma.com"

@@ -22,7 +22,9 @@ use tracing::info;
 // }
 // }
 // }
-/// Generates a `release-info.json` file containing information about the 
+
+// TODO: add is updatable
+/// Generates a `release-info.json` file containing information about the
 /// latest release.
 pub async fn release_info() -> crate::Result<()>{
     // TODO: filter drafts
@@ -32,10 +34,11 @@ pub async fn release_info() -> crate::Result<()>{
         .get_latest()
         .await
         .unwrap();
-    
+
     // TODO: log version?
     info!("Fetched latest release from github");
 
+    // TODO: if it fails leave it as null
     let version = release.tag_name.clone();
     let notes = release.body.clone().unwrap_or_default();
     let (windows_url,windows_sig) = windows_release_info(&release).await?;
