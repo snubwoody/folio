@@ -2,7 +2,7 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/account.svelte.js";
     import { categoryStore } from "$lib/categories.svelte.js";
-    import { formatAmount, formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
+    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore, type Transaction,transactionType } from "$lib/transaction.svelte.js";
     import { appStore } from "$lib/state.svelte.js";
@@ -15,8 +15,8 @@
 
     const { transaction,tableStore }: Props = $props();
 
-    const transType = $derived.by(()=>{
-        return transactionType(transaction)
+    const transType = $derived.by(() => {
+        return transactionType(transaction);
     });
 
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
