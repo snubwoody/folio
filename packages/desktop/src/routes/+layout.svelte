@@ -25,9 +25,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { invoke } from "@tauri-apps/api/core";
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
-    import { check } from '@tauri-apps/plugin-updater';
+    // import { check } from "@tauri-apps/plugin-updater";
 
     const { children } = $props();
+    // Check app bundle
+    // url: https://v2.tauri.app/reference/javascript/api/namespaceapp/
 
     // async function checkForUpdate(){
     //     // TODO: log
