@@ -15,9 +15,9 @@
 
     const { transaction,tableStore }: Props = $props();
 
-    const isIncome = transaction.toAccountId !== null && transaction.fromAccountId === null;
+    const isIncome = $derived(transaction.toAccountId !== null && transaction.fromAccountId === null);
     // const isExpense = transaction.toAccountId === null && transaction.fromAccountId !== null;
-    const isTransfer = transaction.toAccountId !== null && transaction.fromAccountId !== null;
+    const isTransfer = $derived(transaction.toAccountId !== null && transaction.fromAccountId !== null);
 
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
@@ -29,6 +29,7 @@
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
+    // TODO: clear money fields if there was an error parsing or reset
 </script>
 
 <tr data-selected={selected}>
@@ -49,7 +50,7 @@
     <DateCell {transaction}/>
     <td data-col="account" data-testid="account">
         {#if isIncome}
-            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
+            {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
             <SelectCell
                 value={account?.id}
                 onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
@@ -87,23 +88,47 @@
             />
         {/if}
     </td>
-    <td data-col="outflow" data-testid="outflow" class="flex gap-1">
-        {#if transaction.fromAccountId}
-            <p>
-                {currencySymbol}
-            </p>
-            <input
-                type="text"
-                value={formatAmountWithoutSymbol(transaction.amount)}
-                class="outline-none"
-                onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
-            >
-        {/if}
+    <td data-col="outflow" data-testid="outflow">
+        <div class="flex gap-1">
+            {#if !isIncome}
+                <p>
+                    {currencySymbol}
+                </p>
+                <input
+                    type="text"
+                    value={formatAmountWithoutSymbol(transaction.amount)}
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {:else}
+                <input
+                    type="text"
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {/if}
+        </div>
     </td>
     <td data-col="inflow" data-testid="inflow">
-        {#if transaction.toAccountId }
-            {formatAmount(transaction.amount)}
-        {/if}
+        <div class="flex gap-1">
+            {#if isIncome }
+                <p>
+                    {currencySymbol}
+                </p>
+                <input
+                    type="text"
+                    value={formatAmountWithoutSymbol(transaction.amount)}
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setInflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {:else}
+                <input
+                    type="text"
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setInflow({ id:transaction.id,amount:e.currentTarget.value })}
+                >
+            {/if}
+        </div>
     </td>
 </tr>
 

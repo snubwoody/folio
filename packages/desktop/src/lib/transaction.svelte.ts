@@ -42,7 +42,23 @@ export class TransactionStore{
         const transaction = await invoke<Transaction>("set_transaction_outflow",{ id,amount });
         const index = this.#transactions.findIndex(t => t.id === transaction.id);
         this.#transactions[index] = transaction;
+        console.log("Set outflow",transaction);
+    }
 
+    /**
+     * Sets the inflow property of a transaction
+     * @param id The id of the transaction
+     * @param amount The amount to set as the outflow
+     */
+    async setInflow({ id,amount }: {id: string, amount: string}) {
+        try{
+            const transaction = await invoke<Transaction>("set_transaction_inflow",{ id,amount });
+            const index = this.#transactions.findIndex(t => t.id === transaction.id);
+            this.#transactions[index] = transaction;
+            console.log(transaction);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     async editTransaction(opts: EditTransaction){
