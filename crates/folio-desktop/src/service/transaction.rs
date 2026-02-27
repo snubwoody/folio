@@ -1,4 +1,4 @@
-use crate::Money;
+use crate::{Error, Money};
 use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
@@ -158,7 +158,7 @@ impl EditBuilder {
         self
     }
 
-    /// Set the new transaction transaction
+    /// Set the new transaction note
     pub fn note(mut self, value: &str) -> Self {
         self.note = Some(value.to_owned());
         self
@@ -180,22 +180,6 @@ impl EditBuilder {
     }
 
     pub async fn update(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        // TODO: test all null
-        // let mut query = QueryBuilder::new("UPDATE transactions");
-        // if let Some(amount) = self.amount{
-        //     query.push("SET amount = ")
-        //         .push_bind(amount);
-        // }
-        // if let Some(note) = self.note{
-        //     query.push("note = ")
-        //         .push_bind(note);
-        // }
-        // if let Some(date) = self.transaction_date{
-        //     query.push("transaction_date = ")
-        //         .push_bind(date);
-        // }
-        // query.push("from_account= ")
-        //     .push_bind(date);
         let row: Transaction = sqlx::query_as(
             "UPDATE transactions 
             SET amount = COALESCE($1,amount),
@@ -290,9 +274,35 @@ impl Transaction {
         Self::fetch(id, pool).await
     }
 
+    pub async fn set_inflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
+        // TODO:
+        // - income
+        // - expense
+        // - transfer
+        let transaction = Self::fetch(id, pool).await?;
+
+        if transaction.transaction_type() == TransactionType::Transfer{
+            return Err(Error::invalid_op("Cannot set inflow for a transfer"))
+        }
+
+        let mut query = QueryBuilder::new("UPDATE transactions ");
+        query.push("SET amount = ").push_bind(amount);
+
+        // Setting inflow on an expense changes it to an income
+        if transaction.transaction_type() == TransactionType::Expense {
+            query
+                .push(", from_account_id = NULL, to_account_id = ")
+                .push_bind(transaction.from_account_id.unwrap_or_default());
+        }
+
+        query.build().execute(pool).await?;
+        info!(id = id, "Updated transaction");
+        Self::fetch(id, pool).await
+    }
+
     /// Fetches the transaction from the database with a matching `id`. If the matching row
     /// is not found an error will be returned.
-    pub async fn fetch(id: &str, pool: &sqlx::SqlitePool) -> crate::Result<Self> {
+    pub async fn fetch(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let transaction: Self = sqlx::query_as("SELECT * FROM transactions WHERE id=$1")
             .bind(id)
             .fetch_one(pool)
@@ -354,6 +364,61 @@ mod test {
             transaction.from_account_id.unwrap()
         );
         assert!(t.to_account_id.is_none());
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_inflow_for_income(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let transaction = Transaction::income()
+            .amount(Money::MAX)
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
+
+        Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.amount, Money::from_f64(10.0));
+        assert_eq!(
+            t.to_account_id.unwrap(),
+            transaction.to_account_id.unwrap()
+        );
+        assert!(t.from_account_id.is_none());
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_inflow_for_transfer(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let account2 = Account::create("__", Money::ZERO, &pool).await?;
+        let transaction = Transaction::transfer()
+            .amount(Money::MAX)
+            .accounts(&account.id,&account2.id)
+            .create(&pool)
+            .await?;
+
+        let result  = Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await;
+        assert!(result.is_err());
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_inflow_for_expense(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let transaction = Transaction::expense()
+            .amount(Money::MAX)
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
+
+        Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.amount, Money::from_f64(10.0));
+        assert_eq!(
+            t.to_account_id.unwrap(),
+            transaction.from_account_id.unwrap()
+        );
+        assert!(t.from_account_id.is_none());
         Ok(())
     }
 
