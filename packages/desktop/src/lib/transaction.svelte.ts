@@ -3,6 +3,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { SvelteDate } from "svelte/reactivity";
 import { logger } from "./logger";
+import {today} from "@internationalized/date";
 
 export interface EditTransaction{
     id: string,
@@ -47,6 +48,18 @@ export class TransactionStore{
 
     get transactions(){
         return this.#transactions;
+    }
+
+    /**
+     * Creates a new expense
+     * @param amount The amount
+     * @param date The date the expense occurred
+     * @param note An optional note for additional context
+     */
+    async createExpense({amount = "0.0",date,note}:{amount:string,date:string,note?:string}){
+        // TODO: get today
+        const transaction = await invoke<Transaction>("create_expense",{ amount,date,note });
+        this.#transactions.push(transaction);
     }
 
     /**

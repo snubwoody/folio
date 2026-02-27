@@ -26,6 +26,18 @@ db-setup:
 dev:
     cargo tauri dev
 
+# Test all the crates (rust code)
+test-backend:
+    cargo nextest run --no-fail-fast --all-targets --all-features
+
+# Test the frontend code (headless)
+test-frontend:
+    pnpm -F @folio/desktop test:headless
+
+# Test the frontend in browser mode
+test-browser:
+    pnpm -F @folio/desktop test:browser
+
 # Format and lint all the code
 lint:
     cargo clippy --all-targets --all-features --allow-dirty --fix
