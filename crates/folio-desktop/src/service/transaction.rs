@@ -269,7 +269,12 @@ impl Transaction {
                 .push(", to_account_id = NULL, from_account_id = ")
                 .push_bind(transaction.to_account_id.unwrap_or_default());
         }
-        query.push("WHERE id = ").push_bind(id).build().execute(pool).await?;
+        query
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build()
+            .execute(pool)
+            .await?;
         info!(id = id, "Updated transaction");
         Self::fetch(id, pool).await
     }
@@ -281,8 +286,8 @@ impl Transaction {
         // - transfer
         let transaction = Self::fetch(id, pool).await?;
 
-        if transaction.transaction_type() == TransactionType::Transfer{
-            return Err(Error::invalid_op("Cannot set inflow for a transfer"))
+        if transaction.transaction_type() == TransactionType::Transfer {
+            return Err(Error::invalid_op("Cannot set inflow for a transfer"));
         }
 
         let mut query = QueryBuilder::new("UPDATE transactions ");
@@ -295,7 +300,12 @@ impl Transaction {
                 .push_bind(transaction.from_account_id.unwrap_or_default());
         }
 
-        query.push("WHERE id = ").push_bind(id).build().execute(pool).await?;
+        query
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build()
+            .execute(pool)
+            .await?;
         info!(id = id, "Updated transaction");
         Self::fetch(id, pool).await
     }
@@ -379,10 +389,7 @@ mod test {
         Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
         let t = Transaction::fetch(&transaction.id, &pool).await?;
         assert_eq!(t.amount, Money::from_f64(10.0));
-        assert_eq!(
-            t.to_account_id.unwrap(),
-            transaction.to_account_id.unwrap()
-        );
+        assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
         assert!(t.from_account_id.is_none());
         Ok(())
     }
@@ -393,11 +400,11 @@ mod test {
         let account2 = Account::create("__", Money::ZERO, &pool).await?;
         let transaction = Transaction::transfer()
             .amount(Money::MAX)
-            .accounts(&account.id,&account2.id)
+            .accounts(&account.id, &account2.id)
             .create(&pool)
             .await?;
 
-        let result  = Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await;
+        let result = Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await;
         assert!(result.is_err());
         Ok(())
     }

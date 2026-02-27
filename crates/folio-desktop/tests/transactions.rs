@@ -23,10 +23,7 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
     let t2 = Transaction::fetch(&transaction2.id, &pool).await?;
     assert_eq!(t2.amount, Money::MAX);
     assert_eq!(t.amount, Money::from_f64(10.0));
-    assert_eq!(
-        t.to_account_id.unwrap(),
-        transaction.to_account_id.unwrap()
-    );
+    assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
     assert!(t.from_account_id.is_none());
     Ok(())
 }

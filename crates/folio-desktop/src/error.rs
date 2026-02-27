@@ -39,11 +39,11 @@ pub enum Error {
     #[error("Failed to parse float: {0}")]
     ParseFloatError(#[from] ParseFloatError),
     #[error("Invalid operation: {0}")]
-    InvalidOperation(String)
+    InvalidOperation(String),
 }
 
-impl Error{
-    pub fn invalid_op(message: &str) -> Self{
+impl Error {
+    pub fn invalid_op(message: &str) -> Self {
         Self::InvalidOperation(message.to_owned())
     }
 }
