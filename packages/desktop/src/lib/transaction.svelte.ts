@@ -26,6 +26,22 @@ export interface Transaction{
 
 export type TransactionType = "Expense" | "Income" | "Transfer";
 
+/**
+ * Returns the type of transaction
+ * @param transaction
+ */
+export const transactionType = (transaction: Transaction):TransactionType => {
+    if (transaction.toAccountId === null || transaction.toAccountId === undefined){
+        return "Expense";
+    }
+
+    if (transaction.fromAccountId === null || transaction.fromAccountId === undefined){
+        return "Income";
+    }
+
+    return "Transfer";
+};
+
 export class TransactionStore{
     #transactions: Transaction[] = $state([]);
 
@@ -42,7 +58,6 @@ export class TransactionStore{
         const transaction = await invoke<Transaction>("set_transaction_outflow",{ id,amount });
         const index = this.#transactions.findIndex(t => t.id === transaction.id);
         this.#transactions[index] = transaction;
-        console.log("Set outflow",transaction);
     }
 
     /**
@@ -55,7 +70,6 @@ export class TransactionStore{
             const transaction = await invoke<Transaction>("set_transaction_inflow",{ id,amount });
             const index = this.#transactions.findIndex(t => t.id === transaction.id);
             this.#transactions[index] = transaction;
-            console.log(transaction);
         } catch (e) {
             console.error(e);
         }
