@@ -3,7 +3,12 @@
     import { transactionStore } from "$lib/transaction.svelte";
     import Transaction from "./transaction/Transaction.svelte";
 
-    const tableStore = new TableStore();
+    interface Props {
+        tableStore: TableStore
+    }
+
+    const {tableStore}: Props = $props();
+
 </script>
 
 <table>

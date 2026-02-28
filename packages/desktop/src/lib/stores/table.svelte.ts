@@ -4,6 +4,14 @@ export class TableStore{
     #selectedRows: SvelteSet<string> = $state(new SvelteSet());
     #allRowsSelected: boolean = $state(false);
 
+    get selectedRows() {
+        return this.#selectedRows;
+    }
+
+    get allRowsSelected():  boolean{
+        return this.#allRowsSelected;
+    }
+
     isSelected(id: string): boolean{
         return this.#selectedRows.has(id) || this.#allRowsSelected;
     }
