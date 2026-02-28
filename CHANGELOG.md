@@ -4,6 +4,7 @@
 
 - Combined incomes and expenses into transactions table
 - Added transaction toolbar, containing essential commands like "Add Transaction"
+- Added action bar for manipulating transactions
 
 ## 1.4.1 - 19-02-2026
 

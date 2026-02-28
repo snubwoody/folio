@@ -8,7 +8,7 @@
     }
 
     const {tableStore}: Props = $props();
-
+    let selected = $derived(tableStore.allRowsSelected);
 </script>
 
 <table>
@@ -25,7 +25,7 @@
     <thead>
         <tr>
             <th>
-                <input type="checkbox" name="selected" id="row-checkbox"
+                <input type="checkbox" checked={selected} name="selected" id="row-checkbox"
                 onclick={(e) => {
                     if(e.currentTarget.checked){
                         tableStore.toggleSelectAll();

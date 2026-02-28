@@ -43,4 +43,9 @@ export class TableStore{
             this.#selectedRows.clear();
         }
     }
+
+    clear() {
+        this.#allRowsSelected = false;
+        this.#selectedRows.clear();
+    }
 }

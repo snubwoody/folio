@@ -22,7 +22,8 @@
             const ids = transactionStore.transactions.map(t => t.id);
             await transactionStore.deleteTransactions(ids);
         }
-        await transactionStore.deleteTransactions(Array.from(tableStore.selectedRows))
+        await transactionStore.deleteTransactions(Array.from(tableStore.selectedRows));
+        tableStore.clear();
     }
 </script>
 
@@ -42,7 +43,7 @@
             Delete
         </TextButton>
         <div class="w-[1px] h-full bg-neutral-50"></div>
-        <IconButton variant="ghost">
+        <IconButton variant="ghost" onclick={() => tableStore.clear()}>
             <X />
         </IconButton>
     </div>
@@ -60,5 +61,11 @@
         box-shadow: var(--shadow-purple-md);
         border-radius: var(--radius-md);
         border: 1px solid var(--color-purple-50);
+        /*top: 50%;*/
+        /*left: 50%;*/
+        /*transform: translate(-50%, -50%);*/
+        /*inset: 20rem;*/
+        left: 50%;
+        transform: translateX(-50%);
     }
 </style>
