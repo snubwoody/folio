@@ -31,6 +31,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         create_expense,
         create_income,
         fetch_expenses,
+        set_transaction_payee,
         fetch_incomes,
         fetch_income_streams,
         edit_expense,
@@ -101,6 +102,13 @@ pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currenc
     let mut settings = state.settings.lock().await;
     crate::settings::set_currency_code(currency, &state.pool, &mut settings).await?;
     Ok(())
+}
+
+#[tauri::command]
+pub async fn set_transaction_payee(state: tauri::State<'_, State>, id:String,account_id:String) -> Result<Transaction> {
+    Transaction::set_payee(&id, &account_id, &state.pool)
+        .await
+        .inspect_err(|err|warn!("Failed to set transaction payee: {err}"))
 }
 
 #[tauri::command]
