@@ -123,6 +123,7 @@ impl TransactionBuilder<Expense> {
         .bind(self.category_id)
         .fetch_one(pool)
         .await?;
+        info!(id=?row.id,"Created transaction");
         Ok(row)
     }
 }
@@ -271,7 +272,7 @@ impl Transaction {
 
         query.build().execute(pool).await?;
 
-        info!("Deleted {} transactions",ids.len());
+        info!("Deleted {} transactions", ids.len());
         Ok(())
     }
 

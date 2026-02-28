@@ -1,17 +1,16 @@
 <script lang="ts">
     import { TextButton,IconButton } from "$components/button";
-    import { CirclePlus,Trash2,X } from "@lucide/svelte";
+    import { Trash2, X } from "@lucide/svelte";
     import { transactionStore } from "$lib/transaction.svelte";
-    import { today, getLocalTimeZone } from "@internationalized/date";
-    import {TableStore} from "$lib/stores/table.svelte";
-    import { fly, slide } from "svelte/transition";
+    import { TableStore } from "$lib/stores/table.svelte";
+    import { fly } from "svelte/transition";
 
     interface Props{
         tableStore: TableStore
     }
 
     // TODO: fix divider
-    const {tableStore}:Props = $props();
+    const { tableStore }:Props = $props();
     const visible = $derived(tableStore.selectedRows.size > 0);
 
     async function deleteTransactions(){
@@ -25,7 +24,7 @@
 </script>
 
 {#if visible || tableStore.allRowsSelected}
-    <div class="action-bar" transition:fly={{y:200,duration: 250}}>
+    <div class="action-bar" transition:fly={{ y:200,duration: 250 }}>
         <!---TODO: test this -->
         {#if tableStore.selectedRows.size === 1}
             <p>1 transaction</p>

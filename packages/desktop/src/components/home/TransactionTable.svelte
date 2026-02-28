@@ -7,7 +7,7 @@
         tableStore: TableStore
     }
 
-    const {tableStore}: Props = $props();
+    const { tableStore }: Props = $props();
     let selected = $derived(tableStore.allRowsSelected);
 </script>
 

@@ -58,7 +58,7 @@ export class TransactionStore {
     async deleteTransactions(ids: string[]) {
         // TODO: resort
         await invoke("delete_transactions", { ids });
-        this.#transactions = this.#transactions.filter(t => !ids.includes(t.id))
+        this.#transactions = this.#transactions.filter(t => !ids.includes(t.id));
     }
 
     /**
