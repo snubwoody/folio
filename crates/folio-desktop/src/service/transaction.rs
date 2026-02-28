@@ -262,12 +262,12 @@ impl Transaction {
 
     // TODO: add duplicate method
     /// Deletes all the transactions with the corresponding ids
-    pub async fn delete(ids:&[&str],pool: &SqlitePool) -> crate::Result<()>{
+    pub async fn delete<S: AsRef<str>>(ids:&[S],pool: &SqlitePool) -> crate::Result<()>{
         let mut query = QueryBuilder::new("DELETE FROM transactions WHERE id IN ");
         query.push("(");
         let mut seperated = query.separated(", ");
         for id in ids{
-            seperated.push_bind(id);
+            seperated.push_bind(id.as_ref());
         }
         seperated.push_unseparated(")");
 
@@ -300,10 +300,6 @@ impl Transaction {
     }
 
     pub async fn set_inflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
-        // TODO:
-        // - income
-        // - expense
-        // - transfer
         let transaction = Self::fetch(id, pool).await?;
 
         if transaction.transaction_type() == TransactionType::Transfer {
@@ -380,17 +376,15 @@ mod test {
     #[sqlx::test]
     async fn delete_empty_slice(pool: SqlitePool) -> crate::Result<()>{
         let account = Account::create("__", Money::ZERO, &pool).await?;
-        let t1 = Transaction::expense()
+        Transaction::expense()
             .amount(Money::MAX)
             .account_id(&account.id)
             .create(&pool)
             .await?;
 
+        Transaction::delete::<String>(&[], &pool).await?;
         let length = Transaction::fetch_all(&pool).await?.len();
         assert_eq!(length,1);
-        Transaction::delete(&[], &pool).await?;
-        let length = Transaction::fetch_all(&pool).await?.len();
-        // assert_eq!(length,0);
         Ok(())
     }
 

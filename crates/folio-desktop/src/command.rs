@@ -39,6 +39,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_category,
         edit_category,
         spending_analytics,
+        delete_transactions,
         create_category,
         fetch_accounts,
         edit_account,
@@ -343,6 +344,13 @@ pub async fn delete_expense(state: tauri::State<'_, State>, id: String) -> Resul
     Expense::delete(&id, &state.pool)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
+}
+
+#[tauri::command]
+pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
+    Transaction::delete(ids.as_slice(), &state.pool)
+        .await
+        .inspect_err(|err|warn!("Failed to delete transactions: {err}"))
 }
 
 #[tauri::command]
