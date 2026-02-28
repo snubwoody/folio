@@ -21,7 +21,7 @@ describe("Transaction toolbar", () => {
     test("contains add transaction button", async () => {
         const screen = render(Toolbar);
         expect(
-            screen.getByRole("button", { name: "Add Transaction" }),
+            screen.getByRole("button", { name: "Add Transaction" })
         ).toBeInTheDocument();
     });
     test("add transaction button creates a new transaction", async () => {
@@ -29,7 +29,7 @@ describe("Transaction toolbar", () => {
             const transaction: Transaction = {
                 id: "t1",
                 amount: "",
-                transactionDate: "",
+                transactionDate: ""
             };
 
             if (cmd == "create_expense") {
@@ -54,14 +54,14 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: "A1",
             amount: "500.0",
-            transactionDate: "2024-12-12",
+            transactionDate: "2024-12-12"
         };
 
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore,
+            tableStore
         });
         const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByTestId("inflow");
@@ -75,14 +75,14 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: "A1",
             amount: "500.0",
-            transactionDate: "2024-12-12",
+            transactionDate: "2024-12-12"
         };
 
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore,
+            tableStore
         });
         const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByTestId("inflow");
@@ -97,7 +97,7 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: account.id,
             amount: "500.0",
-            transactionDate: "2024-12-12",
+            transactionDate: "2024-12-12"
         };
 
         const tableStore = new TableStore();
@@ -106,7 +106,7 @@ describe("Transaction component", async () => {
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore,
+            tableStore
         });
         const accountCell = screen.getByTestId("account");
         const payeeCell = screen.getByTestId("payee");
@@ -121,7 +121,7 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: account.id,
             amount: "500.0",
-            transactionDate: "2024-12-12",
+            transactionDate: "2024-12-12"
         };
 
         const tableStore = new TableStore();
@@ -130,7 +130,7 @@ describe("Transaction component", async () => {
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore,
+            tableStore
         });
         const accountCell = screen.getByTestId("account");
         const payeeCell = screen.getByTestId("payee");

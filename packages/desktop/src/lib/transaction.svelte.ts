@@ -65,7 +65,7 @@ export class TransactionStore {
         amount = "0.0",
         date,
         note,
-        account,
+        account
     }: {
         amount: string;
         date: string;
@@ -77,7 +77,7 @@ export class TransactionStore {
             amount,
             date,
             note,
-            account,
+            account
         });
         // this.#transactions.push(transaction);
         const transactions = this.transactions;
@@ -92,10 +92,10 @@ export class TransactionStore {
     async setOutflow({ id, amount }: { id: string; amount: string }) {
         const transaction = await invoke<Transaction>(
             "set_transaction_outflow",
-            { id, amount },
+            { id, amount }
         );
         const index = this.#transactions.findIndex(
-            (t) => t.id === transaction.id,
+            (t) => t.id === transaction.id
         );
         this.#transactions[index] = transaction;
     }
@@ -109,10 +109,10 @@ export class TransactionStore {
         try {
             const transaction = await invoke<Transaction>(
                 "set_transaction_inflow",
-                { id, amount },
+                { id, amount }
             );
             const index = this.#transactions.findIndex(
-                (t) => t.id === transaction.id,
+                (t) => t.id === transaction.id
             );
             this.#transactions[index] = transaction;
         } catch (e) {
@@ -123,10 +123,10 @@ export class TransactionStore {
     async editTransaction(opts: EditTransaction) {
         try {
             const transaction = await invoke<Transaction>("edit_transaction", {
-                data: opts,
+                data: opts
             });
             const index = this.#transactions.findIndex(
-                (t) => t.id === transaction.id,
+                (t) => t.id === transaction.id
             );
             this.#transactions[index] = transaction;
             // TODO: re-sort because of date
@@ -149,7 +149,7 @@ export class TransactionStore {
             .sort(
                 (a, b) =>
                     new SvelteDate(a.transactionDate).getTime() -
-                    new SvelteDate(b.transactionDate).getTime(),
+                    new SvelteDate(b.transactionDate).getTime()
             )
             .reverse();
         this.#transactions = transactions;
