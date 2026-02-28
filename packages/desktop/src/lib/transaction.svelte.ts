@@ -106,6 +106,17 @@ export class TransactionStore {
         this.#transactions[index] = transaction;
     }
 
+    async setPayee({ id, accountId }: { id: string; accountId: string }) {
+        const transaction = await invoke<Transaction>(
+            "set_transaction_payee",
+            { id, accountId }
+        );
+        const index = this.#transactions.findIndex(
+            (t) => t.id === transaction.id
+        );
+        this.#transactions[index] = transaction;
+    }
+
     /**
      * Sets the inflow property of a transaction
      * @param id The id of the transaction
