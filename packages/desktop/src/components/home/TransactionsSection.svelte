@@ -16,18 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import TransactionTable from "./TransactionTable.svelte";
-    import {TextButton} from "$components/button";
-    import {Plus} from "@lucide/svelte";
 </script>
 
 <section>
-    <TextButton>
-        <Plus/>
-        Add Transaction
-    </TextButton>
-    <TextButton theme="primary">
-        <Plus/>
-        Duplicate Transaction
-    </TextButton>
     <TransactionTable/>
 </section>
