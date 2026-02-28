@@ -12,7 +12,7 @@
         await transactionStore.createExpense({
             amount: "0.0",
             date: date.toString(),
-            account: account.id,
+            account: account.id
         });
     }
 </script>
