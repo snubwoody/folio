@@ -53,9 +53,11 @@ jobs:
         with:
           version: 10
           run_install: false
+      - name: Install sqlx-cli
+        run: nu scripts/download-sqlx.nu
       - uses: taiki-e/install-action@v2
         with:
-          tool: nextest,sqlx-cli
+          tool: nextest
       - name: Setup database
         run: just db-setup
       - name: Run cargo clippy
