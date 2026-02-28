@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { SelectCell } from "$components/table";
+    import SelectCell  from "./SelectCell.svelte";
     import { accountStore } from "$lib/account.svelte.js";
     import { categoryStore } from "$lib/categories.svelte.js";
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
@@ -27,7 +27,10 @@
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
+    const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId))
     // TODO: clear money fields if there was an error parsing or reset
+    console.log(transType,transaction);
+    // TODO: add set_account command instead
 </script>
 
 <tr data-selected={selected}>
@@ -65,8 +68,17 @@
     </td>
     <td data-col="payee" data-testid="payee">
         {#if transType === "Transfer"}
-            {@const payee = accountStore.accountMap.get(transaction.toAccountId??"")}
-            {payee?.name}
+            {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
+            <SelectCell
+                value={account?.id}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
+                items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
+            />
+        {:else}
+            <SelectCell
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
+                items={payeeOptions.map(a => ({ value: a.id, label: a.name }))}
+            />
         {/if}
     </td>
     <td data-col="note" data-testid="note">
