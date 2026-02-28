@@ -3,7 +3,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { SvelteDate } from "svelte/reactivity";
 import { logger } from "./logger";
-import { today } from "@internationalized/date";
 
 export interface EditTransaction {
     id: string;

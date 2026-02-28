@@ -1,4 +1,4 @@
-import { test, beforeEach, describe, expect, afterEach, vi } from "vitest";
+import { test, beforeEach, describe, expect, afterEach } from "vitest";
 import TransactionComponent from "$components/home/transaction/Transaction.svelte";
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
 import { transactionStore, type Transaction } from "$lib/transaction.svelte";

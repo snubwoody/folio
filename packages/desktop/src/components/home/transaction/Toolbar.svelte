@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {Toolbar} from "bits-ui";
-    import {TextButton} from "$components/button";
-    import {CirclePlus} from "@lucide/svelte";
-    import {transactionStore} from "$lib/transaction.svelte";
-    import {accountStore} from "$lib/account.svelte";
-    import {today,getLocalTimeZone} from "@internationalized/date";
+    import { Toolbar } from "bits-ui";
+    import { TextButton } from "$components/button";
+    import { CirclePlus } from "@lucide/svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
+    import { accountStore } from "$lib/account.svelte";
+    import { today,getLocalTimeZone } from "@internationalized/date";
 
     async function addTransaction(){
         const account = accountStore.accounts[0];
