@@ -58,6 +58,7 @@ impl Settings {
     }
 }
 
+/// Sets the app currency code in the settings file
 pub async fn set_currency_code(
     currency: Currency,
     pool: &SqlitePool,
@@ -65,7 +66,7 @@ pub async fn set_currency_code(
 ) -> crate::Result<()> {
     settings.set_currency_code(currency)?;
     let code = currency.code();
-    // TODO: remove currency_code field
+    // TODO: remove these
     sqlx::query("UPDATE expenses SET currency_code=$1")
         .bind(code)
         .execute(pool)
