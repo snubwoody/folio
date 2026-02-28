@@ -66,7 +66,7 @@
     }
 
     thead{
-        background: var(--color-neutral-25);
+        /*background: var(--color-neutral-25);*/
     }
 
     tr{
