@@ -49,6 +49,10 @@ jobs:
       - uses: actions/checkout@v5
       - uses: Swatinem/rust-cache@v2
       - uses: extractions/setup-just@v3
+      - name: Setup nu
+        uses: hustcer/setup-nu@v3
+        with:
+          version: 0.110.0
       - uses: pnpm/action-setup@v4
         with:
           version: 10
