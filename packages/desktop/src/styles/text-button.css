@@ -1,0 +1,48 @@
+@layer components {
+    .text-button{
+        display: flex;
+        padding: 4px;
+        gap: 8px;
+        border-radius: var(--radius-sm);
+        transition: all 200ms;
+        align-items: center;
+        justify-content: center;
+
+        svg{
+            width: 16px;
+            height: 16px;
+        }
+    }
+
+    .text-button[data-theme="neutral"]{
+        color: var(--color-text-body);
+
+        svg{
+            color: var(--color-text-muted);
+        }
+
+        &:hover{
+            background: var(--color-neutral-25);
+        }
+
+        &:active{
+            background: var(--color-neutral-50);
+        }
+    }
+
+    .text-button[data-theme="primary"]{
+        color: var(--color-purple-500);
+
+        svg{
+            color: var(--color-purple-400);
+        }
+
+        &:hover{
+            background: var(--color-purple-50);
+        }
+
+        &:active{
+            background: var(--color-purple-100);
+        }
+    }
+}
