@@ -1,12 +1,14 @@
 import { test, beforeEach, describe, expect, afterEach } from "vitest";
 import TransactionComponent from "$components/home/transaction/Transaction.svelte";
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
+import Actionbar from "$components/home/transaction/Actionbar.svelte";
 import { transactionStore, type Transaction } from "$lib/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/account.svelte";
 
 import { mockIPC, clearMocks } from "@tauri-apps/api/mocks";
+import { randomId } from "$lib/toast.svelte";
 
 beforeEach(() => {
     accountStore.clear();
@@ -42,6 +44,76 @@ describe("Transaction toolbar", () => {
         await screen.getByRole("button", { name: "Add Transaction" }).click();
         expect(transactionStore.transactions).toHaveLength(1);
         expect(transactionStore.transactions[0].id).toBe("t1");
+    });
+});
+
+describe("Transaction actionbar", () => {
+    test("show single transaction", async () => {
+        const tableStore = new TableStore();
+        tableStore.select("1");
+        const screen = render(Actionbar, { tableStore });
+        expect(screen.getByText("1 transaction")).toBeVisible();
+    });
+    test("show multiple transactions", async () => {
+        const tableStore = new TableStore();
+        tableStore.select("1");
+        tableStore.select("2");
+        tableStore.select("3");
+        const screen = render(Actionbar, { tableStore });
+        expect(screen.getByText("3 transactions")).toBeVisible();
+    });
+    test("show all transactions", async () => {
+        mockIPC((cmd) => {
+            if (cmd === "create_expense") {
+                const t1: Transaction = { id: randomId(),transactionDate:"",amount:"" };
+                return t1;
+            }
+        });
+        await transactionStore.createExpense({ amount: "", date: "", account: "" });
+        await transactionStore.createExpense({ amount: "", date: "", account: "" });
+        await transactionStore.createExpense({ amount: "", date: "", account: "" });
+        await transactionStore.createExpense({ amount: "", date: "", account: "" });
+
+        const tableStore = new TableStore();
+        tableStore.toggleSelectAll();
+        const screen = render(Actionbar, { tableStore });
+        expect(screen.getByText("4 transactions")).toBeVisible();
+    });
+    test("show delete button", async () => {
+        const tableStore = new TableStore();
+        tableStore.select("1");
+        const screen = render(Actionbar, { tableStore });
+        expect(screen.getByRole("button",{ name:"Delete" })).toBeVisible();
+    });
+    test("show close button", async () => {
+        const tableStore = new TableStore();
+        tableStore.select("1");
+        const screen = render(Actionbar, { tableStore });
+        expect(screen.getByRole("button",{ name:"Close" })).toBeVisible();
+    });
+    test("close button closes action bar", async () => {
+        const tableStore = new TableStore();
+        tableStore.select("1");
+        const screen = render(Actionbar, { tableStore });
+        await screen.getByRole("button", { name: "Close" }).click();
+        expect(tableStore.selectedRows.size).toBe(0);
+        expect(tableStore.allRowsSelected).toBe(false);
+    });
+    test("delete button deletes transactions", async () => {
+        mockIPC((cmd) => {
+            if (cmd === "create_expense") {
+                const t1: Transaction = { id: "t1",transactionDate:"",amount:"" };
+                return t1;
+            }
+        });
+
+        await transactionStore.createExpense({ amount: "", date:"",account:"" });
+        expect(transactionStore.transactions).toHaveLength(1);
+        const tableStore = new TableStore();
+        tableStore.select("t1");
+        const screen = render(Actionbar, { tableStore });
+        await screen.getByRole("button", { name: "Delete" }).click();
+        expect(transactionStore.transactions).toHaveLength(0);
     });
 });
 

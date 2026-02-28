@@ -1,5 +1,14 @@
 # @folio/desktop
 
+## (unreleased)
+
+- Add transaction toolbar ([#256](https://github.com/snubwoody/folio/pull/256))
+- Add TextButton component ([#255](https://github.com/snubwoody/folio/pull/255))
+- Add binary to generate release info ([#253](https://github.com/snubwoody/folio/pull/253))
+- Merge income_streams table info categories table ([#244](https://github.com/snubwoody/folio/pull/244))
+- Remove folio-worker ([#234](https://github.com/snubwoody/folio/pull/234))
+- Add transactions table ([#232](https://github.com/snubwoody/folio/pull/232))
+
 ## 1.4.1
 
 - Filter budgets with deleted categories ([#229](https://github.com/snubwoody/folio/pull/229))

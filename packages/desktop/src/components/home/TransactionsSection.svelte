@@ -17,9 +17,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import TransactionTable from "./TransactionTable.svelte";
     import Toolbar from "./transaction/Toolbar.svelte";
+    import Actionbar from "./transaction/Actionbar.svelte";
+    import { TableStore } from "$lib/stores/table.svelte";
+    const tableStore = new TableStore();
 </script>
 
 <section>
     <Toolbar/>
-    <TransactionTable/>
+    <TransactionTable {tableStore}/>
+    <Actionbar {tableStore}/>
 </section>
