@@ -10,13 +10,10 @@
         tableStore: TableStore
     }
 
-    // TODO: add bulk delete
-    // TODO: handle all selected
     // TODO: fix divider
     const {tableStore}:Props = $props();
     const visible = $derived(tableStore.selectedRows.size > 0);
 
-    // TODO: deselect after deleting
     async function deleteTransactions(){
         if (tableStore.allRowsSelected){
             const ids = transactionStore.transactions.map(t => t.id);
@@ -37,13 +34,13 @@
         {:else}
             <p>{tableStore.selectedRows.size} transactions</p>
         {/if}
-        <div class="w-[1px] h-full bg-neutral-50"></div>
+        <div class="w-px h-full bg-neutral-50"></div>
         <TextButton onclick={deleteTransactions}>
             <Trash2/>
             Delete
         </TextButton>
-        <div class="w-[1px] h-full bg-neutral-50"></div>
-        <IconButton variant="ghost" onclick={() => tableStore.clear()}>
+        <div class="w-px h-full bg-neutral-50"></div>
+        <IconButton aria-label="Close" variant="ghost" onclick={() => tableStore.clear()}>
             <X />
         </IconButton>
     </div>
@@ -61,10 +58,6 @@
         box-shadow: var(--shadow-purple-md);
         border-radius: var(--radius-md);
         border: 1px solid var(--color-purple-50);
-        /*top: 50%;*/
-        /*left: 50%;*/
-        /*transform: translate(-50%, -50%);*/
-        /*inset: 20rem;*/
         left: 50%;
         transform: translateX(-50%);
     }
