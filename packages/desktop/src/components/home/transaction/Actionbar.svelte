@@ -4,6 +4,7 @@
     import { transactionStore } from "$lib/transaction.svelte";
     import { today, getLocalTimeZone } from "@internationalized/date";
     import {TableStore} from "$lib/stores/table.svelte";
+    import { fly, slide } from "svelte/transition";
 
     interface Props{
         tableStore: TableStore
@@ -11,12 +12,13 @@
 
     // TODO: add bulk delete
     // TODO: handle all selected
+    // TODO: fix divider
     const {tableStore}:Props = $props();
     const visible = $derived(tableStore.selectedRows.size > 0)
 </script>
 
 {#if visible}
-    <div class="action-bar">
+    <div class="action-bar" transition:fly={{y:200,duration: 250}}>
         <!---TODO: test this -->
         {#if tableStore.selectedRows.size === 1}
             <p>1 transaction</p>
