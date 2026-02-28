@@ -6,10 +6,9 @@ if $os == "windows" {
     mkdir $path
     mv sqlx.exe $path
     print $"Installed sqlx.exe to ($path)"
+    $env.GITHUB_PATH ++= [$"($env.USERPROFILE)/.folio/bin"]
+    print $"Added ($path) to $PATH"
 
-    if "GITHUB_PATH" in $env {
-        $"($env.USERPROFILE)\\.folio\\bin\n" | save --append $env.GITHUB_PATH
-    }
 } else if $os == "linux" {
     curl -L -o sqlx https://github.com/ivy-net/sqlx/releases/download/v0.8.2/sqlx-cli-v0.8.2.x86_64-unknown-linux-musl
     chmod +x sqlx
