@@ -19,6 +19,7 @@ use crate::{
     analytics::{self, IncomeAnalytic, SpendingAnalytic},
     service::{self, *},
 };
+use chrono::NaiveDate;
 use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
@@ -107,11 +108,19 @@ pub fn currencies() -> Vec<Currency> {
 }
 
 #[tauri::command]
-pub async fn create_expense(state: tauri::State<'_, State>, data: CreateExpense) -> Result<()> {
-    let mut data = data;
-    data.currency_code = state.settings.lock().await.currency_code().to_string();
-    Expense::create(data, &state.pool).await?;
-    Ok(())
+pub async fn create_expense(
+    state: tauri::State<'_, State>,
+    amount: Money,
+    date: NaiveDate,
+    account: String,
+) -> Result<Transaction> {
+    Transaction::expense()
+        .amount(amount)
+        .account_id(&account)
+        .date(date)
+        .create(&state.pool)
+        .await
+        .inspect_err(|err| warn!("Failed to create transaction: {err}"))
 }
 
 #[tauri::command]

@@ -16,8 +16,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import TransactionTable from "./TransactionTable.svelte";
+    import Toolbar from "./transaction/Toolbar.svelte";
 </script>
 
 <section>
+    <Toolbar/>
     <TransactionTable/>
 </section>

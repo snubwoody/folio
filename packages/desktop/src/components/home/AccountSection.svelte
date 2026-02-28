@@ -42,7 +42,8 @@
 <style>
 	section{
 		display: grid;
-		gap: 20px
+		gap: 20px;
+        padding: 24px;
 	}
 
 	ul{
