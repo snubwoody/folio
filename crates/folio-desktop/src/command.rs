@@ -350,7 +350,7 @@ pub async fn delete_expense(state: tauri::State<'_, State>, id: String) -> Resul
 pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
     Transaction::delete(ids.as_slice(), &state.pool)
         .await
-        .inspect_err(|err|warn!("Failed to delete transactions: {err}"))
+        .inspect_err(|err| warn!("Failed to delete transactions: {err}"))
 }
 
 #[tauri::command]

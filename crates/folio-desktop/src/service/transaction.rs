@@ -229,8 +229,6 @@ pub struct Transaction {
     pub note: Option<String>,
 }
 
-
-
 impl Transaction {
     pub fn expense() -> TransactionBuilder<Expense> {
         Default::default()
@@ -262,18 +260,16 @@ impl Transaction {
 
     // TODO: add duplicate method
     /// Deletes all the transactions with the corresponding ids
-    pub async fn delete<S: AsRef<str>>(ids:&[S],pool: &SqlitePool) -> crate::Result<()>{
+    pub async fn delete<S: AsRef<str>>(ids: &[S], pool: &SqlitePool) -> crate::Result<()> {
         let mut query = QueryBuilder::new("DELETE FROM transactions WHERE id IN ");
         query.push("(");
         let mut seperated = query.separated(", ");
-        for id in ids{
+        for id in ids {
             seperated.push_bind(id.as_ref());
         }
         seperated.push_unseparated(")");
 
-        query.build()
-            .execute(pool)
-            .await?;
+        query.build().execute(pool).await?;
 
         Ok(())
     }
@@ -353,7 +349,7 @@ mod test {
     use crate::service::Account;
 
     #[sqlx::test]
-    async fn delete_multiple_transactions(pool: SqlitePool) -> crate::Result<()>{
+    async fn delete_multiple_transactions(pool: SqlitePool) -> crate::Result<()> {
         let account = Account::create("__", Money::ZERO, &pool).await?;
         let t1 = Transaction::expense()
             .amount(Money::MAX)
@@ -366,15 +362,15 @@ mod test {
             .create(&pool)
             .await?;
         let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length,2);
-        Transaction::delete(&[&t1.id,&t2.id], &pool).await?;
+        assert_eq!(length, 2);
+        Transaction::delete(&[&t1.id, &t2.id], &pool).await?;
         let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length,0);
+        assert_eq!(length, 0);
         Ok(())
     }
 
     #[sqlx::test]
-    async fn delete_empty_slice(pool: SqlitePool) -> crate::Result<()>{
+    async fn delete_empty_slice(pool: SqlitePool) -> crate::Result<()> {
         let account = Account::create("__", Money::ZERO, &pool).await?;
         Transaction::expense()
             .amount(Money::MAX)
@@ -384,12 +380,12 @@ mod test {
 
         Transaction::delete::<String>(&[], &pool).await?;
         let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length,1);
+        assert_eq!(length, 1);
         Ok(())
     }
 
     #[sqlx::test]
-    async fn delete_only_affected_transactions(pool: SqlitePool) -> crate::Result<()>{
+    async fn delete_only_affected_transactions(pool: SqlitePool) -> crate::Result<()> {
         let account = Account::create("__", Money::ZERO, &pool).await?;
         let t1 = Transaction::expense()
             .amount(Money::MAX)
@@ -402,10 +398,10 @@ mod test {
             .create(&pool)
             .await?;
         let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length,2);
+        assert_eq!(length, 2);
         Transaction::delete(&[&t1.id], &pool).await?;
         let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length,1);
+        assert_eq!(length, 1);
         Ok(())
     }
 
