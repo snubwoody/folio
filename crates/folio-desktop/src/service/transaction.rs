@@ -271,6 +271,7 @@ impl Transaction {
 
         query.build().execute(pool).await?;
 
+        info!("Deleted {} transactions",ids.len());
         Ok(())
     }
 

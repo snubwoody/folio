@@ -55,6 +55,12 @@ export class TransactionStore {
         return this.#transactions;
     }
 
+    async deleteTransactions(ids: string[]) {
+        // TODO: resort
+        await invoke("delete_transactions", { ids });
+        this.#transactions = this.#transactions.filter(t => !ids.includes(t.id))
+    }
+
     /**
      * Creates a new expense
      * @param amount The amount
