@@ -6,7 +6,9 @@ if $os == "windows" {
     mkdir $path
     mv sqlx.exe $path
     print $"Installed sqlx.exe to ($path)"
-    $env.GITHUB_PATH ++= [$"($env.USERPROFILE)/.folio/bin"]
+    print $env.GITHUB_PATH
+    $env.GITHUB_PATH ++= $";($env.USERPROFILE)/.folio/bin"
+    # $env.GITHUB_PATH ++= [$"($env.USERPROFILE)/.folio/bin"]
     print $"Added ($path) to $PATH"
 
 } else if $os == "linux" {
