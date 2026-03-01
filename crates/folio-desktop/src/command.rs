@@ -105,10 +105,14 @@ pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currenc
 }
 
 #[tauri::command]
-pub async fn set_transaction_payee(state: tauri::State<'_, State>, id:String,account_id:String) -> Result<Transaction> {
+pub async fn set_transaction_payee(
+    state: tauri::State<'_, State>,
+    id: String,
+    account_id: String,
+) -> Result<Transaction> {
     Transaction::set_payee(&id, &account_id, &state.pool)
         .await
-        .inspect_err(|err|warn!("Failed to set transaction payee: {err}"))
+        .inspect_err(|err| warn!("Failed to set transaction payee: {err}"))
 }
 
 #[tauri::command]

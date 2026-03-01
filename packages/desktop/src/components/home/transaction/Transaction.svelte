@@ -24,7 +24,7 @@
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
-    const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId))
+    const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
     // TODO: clear money fields if there was an error parsing or reset
     // TODO: add set_account command instead
     // FIXME: inflow causing overflow

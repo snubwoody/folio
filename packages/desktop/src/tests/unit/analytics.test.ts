@@ -124,6 +124,7 @@ test("Parse date only strings",() => {
     ];
 
     // Strip the timezone and extract the date
+    // TODO: use @internationalized/date
     const past = new Date(2000).toISOString().split("T")[0];
     const today = new Date().toISOString().split("T")[0];
     const future = new Date(4000).toISOString().split("T")[0];

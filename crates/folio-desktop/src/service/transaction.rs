@@ -1,7 +1,7 @@
 use crate::{Error, Money};
 use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
-use sqlx::{Execute, FromRow, QueryBuilder, SqlitePool};
+use sqlx::{FromRow, QueryBuilder, SqlitePool};
 use std::marker::PhantomData;
 use tracing::info;
 
@@ -259,10 +259,12 @@ impl Transaction {
         TransactionType::Transfer
     }
 
-    pub async fn set_payee(id: &str, account_id:&str,pool:&SqlitePool) -> crate::Result<Self>{
-        let transaction = Transaction::fetch(id,pool).await?;
+    pub async fn set_payee(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let transaction = Transaction::fetch(id, pool).await?;
         let mut query_builder = QueryBuilder::new("UPDATE transactions ");
-        query_builder.push("SET to_account_id = ").push_bind(account_id);
+        query_builder
+            .push("SET to_account_id = ")
+            .push_bind(account_id);
 
         if transaction.transaction_type() == TransactionType::Income {
             query_builder
@@ -480,11 +482,8 @@ mod test {
 
         Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
         let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(
-            t.from_account_id.unwrap(),
-            account.id
-        );
-        assert_eq!(t.to_account_id.unwrap(),account2.id);
+        assert_eq!(t.from_account_id.unwrap(), account.id);
+        assert_eq!(t.to_account_id.unwrap(), account2.id);
         Ok(())
     }
 
@@ -500,11 +499,8 @@ mod test {
 
         Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
         let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(
-            t.from_account_id.unwrap(),
-            account.id
-        );
-        assert_eq!(t.to_account_id.unwrap(),account2.id);
+        assert_eq!(t.from_account_id.unwrap(), account.id);
+        assert_eq!(t.to_account_id.unwrap(), account2.id);
         Ok(())
     }
 
@@ -521,11 +517,8 @@ mod test {
 
         Transaction::set_payee(&transaction.id, &account3.id, &pool).await?;
         let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(
-            t.from_account_id.unwrap(),
-            account.id
-        );
-        assert_eq!(t.to_account_id.unwrap(),account3.id);
+        assert_eq!(t.from_account_id.unwrap(), account.id);
+        assert_eq!(t.to_account_id.unwrap(), account3.id);
         Ok(())
     }
 
@@ -543,9 +536,7 @@ mod test {
 
         Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
         let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert!(
-            t.category_id.is_none()
-        );
+        assert!(t.category_id.is_none());
         Ok(())
     }
 
