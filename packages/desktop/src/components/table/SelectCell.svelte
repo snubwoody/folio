@@ -32,7 +32,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     let selectedItem = $state(items.find(item => item.value === value));
     // TODO: add selected style
-    console.log(selectedItem);
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
