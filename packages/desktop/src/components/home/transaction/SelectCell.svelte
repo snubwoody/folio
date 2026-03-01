@@ -31,7 +31,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const { items,value,onChange }: Props = $props();
 
     let selectedItem = $state(items.find(item => item.value === value));
-    // TODO: add selected style
+    // TODO: add style for selected items
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
@@ -41,7 +41,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <Select.Root {onValueChange} type="single" name="Combobox">
     <Select.Trigger class="w-full h-full flex justify-start outline-none">
-        {selectedItem?.label ?? ""}
+        {#if selectedItem}
+            <p>{selectedItem.label}</p>
+        {:else}
+            <p class="invisible">Select a payee</p>
+        {/if}
     </Select.Trigger>
     <Select.Portal>
         <!-- FIXME: make it fit the children -->

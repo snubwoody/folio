@@ -259,6 +259,28 @@ impl Transaction {
         TransactionType::Transfer
     }
 
+    pub async fn set_payee(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let transaction = Transaction::fetch(id, pool).await?;
+        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+        query_builder
+            .push("SET to_account_id = ")
+            .push_bind(account_id);
+
+        if transaction.transaction_type() == TransactionType::Income {
+            query_builder
+                .push(", from_account_id = ")
+                .push_bind(transaction.to_account_id.unwrap_or_default());
+        }
+        let query = query_builder
+            .push(",category_id = NULL ")
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build();
+        query.execute(pool).await?;
+        info!(id = id, "Set transaction payee");
+        Self::fetch(id, pool).await
+    }
+
     // TODO: add duplicate method
     /// Deletes all the transactions with the corresponding ids
     pub async fn delete<S: AsRef<str>>(ids: &[S], pool: &SqlitePool) -> crate::Result<()> {
@@ -348,7 +370,7 @@ impl Transaction {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::Account;
+    use crate::service::{Account, Category};
 
     #[sqlx::test]
     async fn delete_multiple_transactions(pool: SqlitePool) -> crate::Result<()> {
@@ -445,6 +467,76 @@ mod test {
             transaction.from_account_id.unwrap()
         );
         assert!(t.to_account_id.is_none());
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_payee_for_expense(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let account2 = Account::create("__", Money::ZERO, &pool).await?;
+        let transaction = Transaction::expense()
+            .amount(Money::MAX)
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
+
+        Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.from_account_id.unwrap(), account.id);
+        assert_eq!(t.to_account_id.unwrap(), account2.id);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_payee_for_income(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let account2 = Account::create("__", Money::ZERO, &pool).await?;
+        let transaction = Transaction::income()
+            .amount(Money::MAX)
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
+
+        Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.from_account_id.unwrap(), account.id);
+        assert_eq!(t.to_account_id.unwrap(), account2.id);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_payee_for_transfer(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let account2 = Account::create("__", Money::ZERO, &pool).await?;
+        let account3 = Account::create("__", Money::ZERO, &pool).await?;
+        let transaction = Transaction::transfer()
+            .amount(Money::MAX)
+            .accounts(&account.id, &account2.id)
+            .create(&pool)
+            .await?;
+
+        Transaction::set_payee(&transaction.id, &account3.id, &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert_eq!(t.from_account_id.unwrap(), account.id);
+        assert_eq!(t.to_account_id.unwrap(), account3.id);
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn set_payee_removes_category(pool: SqlitePool) -> crate::Result<()> {
+        let account = Account::create("__", Money::ZERO, &pool).await?;
+        let account2 = Account::create("__", Money::ZERO, &pool).await?;
+        let category = Category::create("", &pool).await?;
+        let transaction = Transaction::income()
+            .amount(Money::MAX)
+            .category(&category.id)
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
+
+        Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
+        let t = Transaction::fetch(&transaction.id, &pool).await?;
+        assert!(t.category_id.is_none());
         Ok(())
     }
 
