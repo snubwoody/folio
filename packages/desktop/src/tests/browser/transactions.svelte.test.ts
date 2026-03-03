@@ -38,7 +38,7 @@ describe("Transaction toolbar", () => {
                 return transaction;
             }
         });
-        await accountStore.createAccount({ name: "" });
+        await accountStore.createTestAccount({ name: "" });
         const screen = render(Toolbar);
         expect(transactionStore.transactions).toHaveLength(0);
         await screen.getByRole("button", { name: "Add Transaction" }).click();
@@ -163,7 +163,7 @@ describe("Transaction component", async () => {
         expect(inflow.getByRole("textbox")).toHaveValue("500.00");
     });
     test("shows account if expense", async () => {
-        const account = await accountStore.createAccount({ name: "Account 1" });
+        const account = await accountStore.createTestAccount({ name: "Account 1" });
 
         const transaction: Transaction = {
             id: "1",
@@ -184,7 +184,7 @@ describe("Transaction component", async () => {
         expect(accountCell).toHaveTextContent("Account 1");
     });
     test("shows account if income", async () => {
-        const account = await accountStore.createAccount({ name: "Account 1" });
+        const account = await accountStore.createTestAccount({ name: "Account 1" });
 
         const transaction: Transaction = {
             id: "1",

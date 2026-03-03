@@ -257,11 +257,10 @@ pub async fn create_account(
     state: tauri::State<'_, State>,
     name: &str,
     starting_balance: Money,
-) -> Result<()> {
+) -> Result<Account> {
     Account::create(name, starting_balance, &state.pool)
         .await
-        .inspect_err(|err| tracing::warn!("{err}"))?;
-    Ok(())
+        .inspect_err(|err| tracing::warn!("Failed to create account: {err}"))
 }
 
 #[tauri::command]

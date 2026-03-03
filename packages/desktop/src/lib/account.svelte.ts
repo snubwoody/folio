@@ -28,7 +28,22 @@ export class AccountStore{
         return this.#accountMap;
     }
 
-    async createAccount({ name }:{name:string}):Promise<Account>{
+    async createAccount({name,startingBalance}:{name: string, startingBalance?: string}) {
+        const balance = startingBalance ?? "0";
+        const account = await invoke<Account>("create_account", { name, startingBalance: balance });
+        this.#accounts.push(account);
+    }
+    //
+    // async editAccount(id: string, opts: EditAccount) {
+    //     try {
+    //         await invoke("edit_account", { id, opts });
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    //     await this.#rootStore.load();
+    // }
+
+    async createTestAccount({ name }:{name:string}):Promise<Account>{
         // Quick and dirty solution, replace later
         const id = Math.random().toString(36).slice(2);
         const account: Account = {
