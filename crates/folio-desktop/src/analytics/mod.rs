@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use chrono::NaiveDate;
+use chrono::{Datelike, Local, NaiveDate};
 // Copyright (C) 2025 Wakunguma Kalimukwa
 //
 // This program is free software: you can redistribute it and/or modify
@@ -26,15 +26,18 @@ use crate::service::{Account, Transaction};
 
 // TODO: move to singular file
 async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
-    // TODO: return Hashmap?
+    let today = Local::now();
+    let month_start = today.date_naive().with_day(1);
+    // TODO: skip here?
     let rows = sqlx::query("
             SELECT
                 t.amount,t.transaction_date,
                 c.title,c.id,c.is_income_stream,c.created_at
             FROM transactions AS t
             JOIN categories c on c.id = t.category_id
-            WHERE c.deleted_at IS NULL
+            WHERE c.deleted_at IS NULL AND t.transaction_date >= $1
         ")
+        .bind(month_start)
         .fetch_all(pool)
         .await?;
     // TODO: skip not in this month
@@ -42,6 +45,9 @@ async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
     for row in rows{
         let amount: Money = row.get("amount");
         let date: NaiveDate = row.get("transaction_date");
+        // if date.year() != today.year() || date.month() != today.month() {
+        //     continue
+        // }
         let category = Category{
             id: row.get("id"),
             title: row.get("title"),
@@ -176,6 +182,31 @@ mod test {
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics.len(), 1);
         assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(200));
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn fetch_analytics_in_current_month(pool:SqlitePool) -> crate::Result<()>{
+        let c1 = Category::create("Expense",&pool).await?;
+        let a1 = Account::create("Expense",Money::ZERO,&pool).await?;
+        Transaction::expense()
+            .account_id(&a1.id)
+            .category(&c1.id)
+            .date(NaiveDate::MIN)
+            .amount(Money::from_unscaled(100))
+            .create(&pool)
+            .await?;
+
+        Transaction::expense()
+            .account_id(&a1.id)
+            .category(&c1.id)
+            .amount(Money::from_unscaled(100))
+            .create(&pool)
+            .await?;
+
+        let analytics = analytics(&pool).await?;
+        assert_eq!(analytics.len(), 1);
+        assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(100));
         Ok(())
     }
 
