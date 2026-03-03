@@ -13,7 +13,7 @@ beforeEach(() => {
     appStore.expenses = [];
 });
 
-test("Dummy",()=>{});
+test("Dummy",() => {});
 //
 // test("Show monthly budget", async () => {
 //     const budgets: Budget[] = [

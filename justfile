@@ -43,3 +43,7 @@ lint:
     cargo clippy --all-targets --all-features --allow-dirty --fix
     cargo fmt
     pnpm lint:fix
+
+# Format and lint the frontend
+lint-frontend:
+    pnpm lint:fix
