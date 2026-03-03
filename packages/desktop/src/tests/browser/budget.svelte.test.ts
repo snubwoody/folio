@@ -1,17 +1,19 @@
-// import { appStore } from "$lib/state.svelte";
+import { appStore } from "$lib/state.svelte";
 // import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
 // import BudgetSection from "../../components/analytics/BudgetSection.svelte";
 // import BudgetComponent from "../../components/analytics/Budget.svelte";
-// import { expect, test, beforeEach, describe } from "vitest";
+import { test, beforeEach } from "vitest";
 // import { render } from "vitest-browser-svelte";
 // import { formatAmount, type Budget, type Expense, type Income, type Category } from "$lib/lib";
 // import {type Transaction, transactionStore} from "$lib/transaction.svelte";
 //
-// beforeEach(() => {
-//     appStore.budgets = [];
-//     appStore.incomes = [];
-//     appStore.expenses = [];
-// });
+beforeEach(() => {
+    appStore.budgets = [];
+    appStore.incomes = [];
+    appStore.expenses = [];
+});
+
+test("Dummy",()=>{});
 //
 // test("Show monthly budget", async () => {
 //     const budgets: Budget[] = [

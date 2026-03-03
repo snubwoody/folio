@@ -17,7 +17,6 @@ use crate::db;
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-#[deprecated]
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
 #[serde(rename_all = "camelCase")]
 pub struct IncomeStream {

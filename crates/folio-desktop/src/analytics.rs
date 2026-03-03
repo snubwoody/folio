@@ -82,7 +82,6 @@ mod test {
     use chrono::NaiveDate;
 
     use crate::service::{Account, Transaction};
-    use sqlx::Row;
 
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
