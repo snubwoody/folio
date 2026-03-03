@@ -24,6 +24,7 @@ use crate::{
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
     category: Category,
+    // TODO: replace with Money
     total: Decimal,
 }
 
@@ -105,12 +106,55 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 
 #[cfg(test)]
 mod test {
+    use chrono::NaiveDate;
+    use iso_currency::Country::MO;
     use super::*;
     use crate::{
         Money,
         service::{CreateExpense, CreateIncome, Expense, Income},
     };
     use rust_decimal::dec;
+    use sqlx::Row;
+    use crate::service::{Account, Transaction};
+
+    #[sqlx::test]
+    async fn spending_test(pool:SqlitePool) -> crate::Result<()>{
+
+        let c1 = Category::create("Expense",&pool).await?;
+        let a1 = Account::create("Expense",Money::ZERO,&pool).await?;
+        let t1 = Transaction::expense()
+            .account_id(&a1.id)
+            .category(&c1.id)
+            .amount(Money::from_unscaled(100))
+            .create(&pool)
+            .await?;
+
+        // TODO: return Hashmap?
+        let rows = sqlx::query("
+            SELECT
+                t.amount,t.transaction_date,
+                c.title,c.id,c.is_income_stream,c.created_at
+            FROM transactions AS t
+            JOIN categories c on c.id = t.category_id
+            WHERE c.deleted_at IS NULL
+        ")
+            .fetch_all(&pool)
+            .await?;
+        for row in rows{
+            let amount: Money = row.get("amount");
+            let date: NaiveDate = row.get("transaction_date");
+            let category = Category{
+                id: row.get("id"),
+                title: row.get("title"),
+                created_at: row.get("created_at"),
+                is_income_stream: row.get("is_income_stream"),
+                deleted_at: None
+            };
+            dbg!(date);
+            dbg!(category);
+        }
+        Ok(())
+    }
 
     #[sqlx::test]
     async fn get_spending_analytics(pool: SqlitePool) -> crate::Result<()> {

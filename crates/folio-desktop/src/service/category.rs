@@ -31,7 +31,7 @@ pub struct Category {
     pub title: String,
     pub created_at: Option<DateTime<Utc>>,
     pub deleted_at: Option<DateTime<Utc>>,
-    /// `true` if the category is used incomes, false otherwise
+    /// `true` if the category is used for incomes, false otherwise
     pub is_income_stream: bool,
 }
 
