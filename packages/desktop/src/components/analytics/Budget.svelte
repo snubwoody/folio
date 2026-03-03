@@ -16,6 +16,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // TODO: store as number
     // TODO: create a budget for every category
     // FIXME: overspent error
+    // FIXME: add a budget_amount field to categories
     const totalSpent = parseFloat(budget.totalSpent);
     const amount = parseFloat(budget.amount);
 

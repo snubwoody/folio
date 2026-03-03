@@ -66,6 +66,7 @@ export class TransactionStore {
      * @param amount The amount
      * @param date The date the expense occurred
      * @param note An optional note for additional context
+     * @param account The id of the account
      */
     async createExpense({
         amount = "0.0",
@@ -78,14 +79,13 @@ export class TransactionStore {
         note?: string;
         account: string;
     }) {
-        // TODO: get today
+        // TODO: set current date as default
         const transaction = await invoke<Transaction>("create_expense", {
             amount,
             date,
             note,
             account
         });
-        // this.#transactions.push(transaction);
         const transactions = this.transactions;
         this.#transactions = [transaction, ...transactions];
     }
@@ -156,10 +156,16 @@ export class TransactionStore {
         }
     }
 
+    /**
+     * Empties the transaction list
+     */
     clear() {
         this.#transactions = [];
     }
 
+    /**
+     * Loads the transactions from the backend
+     */
     async load() {
         let transactions = await invoke<Transaction[]>("fetch_transactions");
         transactions

@@ -6,26 +6,6 @@ use std::collections::HashMap;
 use std::fs;
 use tracing::info;
 
-// {
-// "version": "",
-// "notes": "",
-// "pub_date": "",
-// "platforms": {
-// "linux-x86_64": {
-// "signature": "",
-// "url": ""
-// },
-// "windows-x86_64": {
-// "signature": "",
-// "url": ""
-// },
-// "darwin-x86_64": {
-// "signature": "",
-// "url": ""
-// }
-// }
-// }
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt().init();

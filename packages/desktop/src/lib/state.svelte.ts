@@ -14,7 +14,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import type {
-    IncomeAnalytic,
     Category,
     IncomeStream,
     Account,
@@ -63,6 +62,7 @@ export type EditIncome = {
     incomeStreamId?: string,
 };
 
+// TODO: deprecate this
 export class TransactionStore{
     #rootStore: AppStore;
     constructor(root: AppStore){
@@ -213,16 +213,21 @@ export class AccountStore {
 }
 
 // TODO: just manage state manually
+/**
+ * @deprecated
+ */
 export class AppStore {
     // TODO: add getters
     expenses: Expense[] = $state([]);
     incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
+    /**
+     * @deprecated
+     */
     accounts: Account[] = $state([]);
 
     budgets: Budget[] = $state([]);
-    incomeAnalytics: IncomeAnalytic[] = $state([]);
 
     settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
@@ -236,16 +241,6 @@ export class AppStore {
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
         await this.load();
-    }
-
-    /**
-     * Returns an array of sorted income analytics. The analytics
-     * are sorted in descending order.
-     */
-    sortedIncomeAnalytics(): IncomeAnalytic[] {
-        return this.incomeAnalytics
-            .toSorted((a,b) => parseFloat(a.total) - parseFloat(b.total))
-            .reverse();
     }
 
     async setCurrencyCode(currency: string) {
@@ -355,9 +350,6 @@ export class AppStore {
         this.incomeStreams = (await invoke(
             "fetch_income_streams"
         )) as IncomeStream[];
-        this.incomeAnalytics = (await invoke(
-            "income_analytics"
-        )) as IncomeAnalytic[];
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;
