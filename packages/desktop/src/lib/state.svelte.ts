@@ -214,16 +214,21 @@ export class AccountStore {
 }
 
 // TODO: just manage state manually
+/**
+ * @deprecated
+ */
 export class AppStore {
     // TODO: add getters
     expenses: Expense[] = $state([]);
     incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
+    /**
+     * @deprecated
+     */
     accounts: Account[] = $state([]);
 
     budgets: Budget[] = $state([]);
-    incomeAnalytics: IncomeAnalytic[] = $state([]);
 
     settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
@@ -237,16 +242,6 @@ export class AppStore {
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
         await this.load();
-    }
-
-    /**
-     * Returns an array of sorted income analytics. The analytics
-     * are sorted in descending order.
-     */
-    sortedIncomeAnalytics(): IncomeAnalytic[] {
-        return this.incomeAnalytics
-            .toSorted((a,b) => parseFloat(a.total) - parseFloat(b.total))
-            .reverse();
     }
 
     async setCurrencyCode(currency: string) {
