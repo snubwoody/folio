@@ -28,20 +28,25 @@ export class AccountStore{
         return this.#accountMap;
     }
 
-    async createAccount({name,startingBalance}:{name: string, startingBalance?: string}) {
+    /**
+     * Create a new account
+     * @param name The name of the account
+     * @param startingBalance The starting balance
+     */
+    async createAccount({name,startingBalance}:{name: string, startingBalance?: string}): Account {
         const balance = startingBalance ?? "0";
         const account = await invoke<Account>("create_account", { name, startingBalance: balance });
         this.#accounts.push(account);
+        return account;
     }
-    //
-    // async editAccount(id: string, opts: EditAccount) {
-    //     try {
-    //         await invoke("edit_account", { id, opts });
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    //     await this.#rootStore.load();
-    // }
+
+    async editAccount(id: string, opts: EditAccount) {
+        const account = await invoke<Account>("edit_account", { id, opts });
+        const index = this.#accounts.findIndex(
+            (a) => a.id === transaction.id
+        );
+        this.#accounts[index] = account;
+    }
 
     async createTestAccount({ name }:{name:string}):Promise<Account>{
         // Quick and dirty solution, replace later
