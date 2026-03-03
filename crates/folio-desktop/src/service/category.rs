@@ -24,14 +24,14 @@ use crate::{
 // TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
 
-#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
     pub id: String,
     pub title: String,
     pub created_at: Option<DateTime<Utc>>,
     pub deleted_at: Option<DateTime<Utc>>,
-    /// `true` if the category is used incomes, false otherwise
+    /// `true` if the category is used for incomes, false otherwise
     pub is_income_stream: bool,
 }
 

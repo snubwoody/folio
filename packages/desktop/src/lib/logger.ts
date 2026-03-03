@@ -1,5 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
 
+/**
+ * Global logger
+ */
 export const logger = {
     info(message: string){
         // TODO: forward console

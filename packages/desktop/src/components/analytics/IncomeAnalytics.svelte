@@ -15,9 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { appStore } from "$lib/state.svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
+    import { invoke } from "@tauri-apps/api/core";
+    import type { Analytic } from "$lib/analytics.svelte";
 
-    const analytics = $derived.by(() => appStore.sortedIncomeAnalytics());
+    let analytics:Analytic[] = $state([]);
+    $effect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _ = transactionStore.transactions;
+        invoke<Analytic[]>("analytics").then(val => {
+            // TODO: this might update it twice
+            analytics = val.filter(a => a.category.isIncomeStream === true);
+        });
+    });
     const total = $derived.by(() => analytics.reduce((acc,item) => acc + parseFloat(item.total),0));
 
     const blueShades = [
@@ -40,13 +50,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <section class="space-y-2">
     <h6>Income streams</h6>
     <ul>
-        {#each analytics as item,index (item.stream.id)}
+        {#each analytics as item,index (item.category.id)}
             {#if parseFloat(item.total) > 0}
                 {@const percent = (parseFloat(item.total)/total) * 100}
                 {@const color = blueShades[(index+5) % blueShades.length]}
                 <li style={`--percent: ${percent}; --bar-color: ${color}`}>
                     <div style={`--percent: ${percent}; --bar-color: ${color}`} class="graph-bar mb-1.5"></div>
-                    <p class="category-title">{item.stream.title}</p>
+                    <p class="category-title">{item.category.title}</p>
                     <p class="text-sm text-text-muted">{percent.toFixed(2)}%</p>
                 </li>
             {/if}

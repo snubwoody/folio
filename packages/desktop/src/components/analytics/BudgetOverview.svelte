@@ -18,19 +18,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { formatAmount } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import { isThisMonth } from "date-fns";
+    import { transactionStore, transactionType } from "$lib/transaction.svelte";
 
-    const income = appStore.incomes.filter((income) => {
-        const date = new Date(income.date);
-        return isThisMonth(date);
+    const incomes = transactionStore.transactions.filter(transaction => {
+        const transType = transactionType(transaction);
+        const date = new Date(transaction.transactionDate);
+        return isThisMonth(date) && transType === "Income";
     });
-    const expenses = appStore.expenses.filter((expense) => {
-        const date = new Date(expense.date);
-        return isThisMonth(date);
+    const expenses = transactionStore.transactions.filter(transaction => {
+        const transType = transactionType(transaction);
+        const date = new Date(transaction.transactionDate);
+        return isThisMonth(date) && transType === "Expense";
     });
+
     const budgets = appStore.budgets;
     // FIXME: broken state
     const totalExpenses = $derived.by(() => expenses.reduce((acc,item) => acc + parseFloat(item.amount),0));
-    const totalIncome = $derived.by(() => income.reduce((acc,item) => acc + parseFloat(item.amount),0));
+    const totalIncome = $derived.by(() => incomes.reduce((acc,item) => acc + parseFloat(item.amount),0));
     const totalBudget = $derived.by(() => budgets.reduce((acc,item) => acc + parseFloat(item.amount),0));
     // TODO: format large values
     const percentage = $derived.by(() => (totalExpenses/totalIncome) * 100);
@@ -39,7 +43,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <section class="flex items-center justify-between">
     <div>
-        <h5>Montly budget</h5>
+        <h5>Monthly budget</h5>
         <h3>{formatAmount(totalBudget.toString(),{ compact: true,currency: appStore.settings.currencyCode })}</h3>
     </div>
     <div>
