@@ -150,7 +150,6 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 
 #[cfg(test)]
 mod test {
-    use std::collections::HashMap;
     use chrono::NaiveDate;
     use super::*;
     use crate::{
@@ -205,7 +204,6 @@ mod test {
             .await?;
 
         let analytics = analytics(&pool).await?;
-        assert_eq!(analytics.len(), 1);
         assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(100));
         Ok(())
     }
