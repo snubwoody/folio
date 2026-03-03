@@ -13,11 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::collections::HashMap;
+use crate::analytics::Analytic;
 use crate::settings::Settings;
 use crate::{
-    Money, Result, State,
-    analytics,
+    Money, Result, State, analytics,
     service::{self, *},
 };
 use chrono::NaiveDate;
@@ -25,7 +24,6 @@ use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
 use tracing::{debug, error, info, warn};
-use crate::analytics::Analytic;
 
 /// Adds tauri commands to the app instance.
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {

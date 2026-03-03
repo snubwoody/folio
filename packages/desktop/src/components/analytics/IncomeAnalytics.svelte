@@ -15,18 +15,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import {transactionStore} from "$lib/transaction.svelte";
-    import {invoke} from "@tauri-apps/api/core";
-    import {type Analytic} from "$lib/analytics.svelte";
+    import { transactionStore } from "$lib/transaction.svelte";
+    import { invoke } from "@tauri-apps/api/core";
+    import type { Analytic } from "$lib/analytics.svelte";
 
     let analytics:Analytic[] = $state([]);
-    $effect(()=>{
-        // eslint-ignore-next-line no-unused
+    $effect(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const _ = transactionStore.transactions;
         invoke<Analytic[]>("analytics").then(val => {
             // TODO: this might update it twice
-            analytics = val.filter(a => a.category.isIncomeStream === true)
-        })
+            analytics = val.filter(a => a.category.isIncomeStream === true);
+        });
     });
     const total = $derived.by(() => analytics.reduce((acc,item) => acc + parseFloat(item.total),0));
 

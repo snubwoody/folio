@@ -14,7 +14,6 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import type {
-    IncomeAnalytic,
     Category,
     IncomeStream,
     Account,
