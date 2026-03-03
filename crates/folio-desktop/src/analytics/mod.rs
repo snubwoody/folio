@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use chrono::NaiveDate;
 // Copyright (C) 2025 Wakunguma Kalimukwa
 //
 // This program is free software: you can redistribute it and/or modify
@@ -14,12 +16,48 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{Row, SqlitePool};
 
 use crate::{
     Money, db,
     service::{Category, IncomeStream},
 };
+use crate::service::{Account, Transaction};
+
+// TODO: move to singular file
+async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
+    // TODO: return Hashmap?
+    let rows = sqlx::query("
+            SELECT
+                t.amount,t.transaction_date,
+                c.title,c.id,c.is_income_stream,c.created_at
+            FROM transactions AS t
+            JOIN categories c on c.id = t.category_id
+            WHERE c.deleted_at IS NULL
+        ")
+        .fetch_all(pool)
+        .await?;
+    // TODO: skip not in this month
+    let mut analytics: HashMap<Category,Money> = HashMap::new();
+    for row in rows{
+        let amount: Money = row.get("amount");
+        let date: NaiveDate = row.get("transaction_date");
+        let category = Category{
+            id: row.get("id"),
+            title: row.get("title"),
+            created_at: row.get("created_at"),
+            is_income_stream: row.get("is_income_stream"),
+            deleted_at: None
+        };
+
+        match analytics.get(&category) {
+            Some(total) => analytics.insert(category, *total + amount),
+            None => analytics.insert(category, amount)
+        };
+    }
+
+    Ok(analytics)
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpendingAnalytic {
@@ -106,8 +144,8 @@ pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnal
 
 #[cfg(test)]
 mod test {
+    use std::collections::HashMap;
     use chrono::NaiveDate;
-    use iso_currency::Country::MO;
     use super::*;
     use crate::{
         Money,
@@ -118,41 +156,26 @@ mod test {
     use crate::service::{Account, Transaction};
 
     #[sqlx::test]
-    async fn spending_test(pool:SqlitePool) -> crate::Result<()>{
-
+    async fn fetch_analytics(pool:SqlitePool) -> crate::Result<()>{
         let c1 = Category::create("Expense",&pool).await?;
         let a1 = Account::create("Expense",Money::ZERO,&pool).await?;
-        let t1 = Transaction::expense()
+        Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
             .create(&pool)
             .await?;
 
-        // TODO: return Hashmap?
-        let rows = sqlx::query("
-            SELECT
-                t.amount,t.transaction_date,
-                c.title,c.id,c.is_income_stream,c.created_at
-            FROM transactions AS t
-            JOIN categories c on c.id = t.category_id
-            WHERE c.deleted_at IS NULL
-        ")
-            .fetch_all(&pool)
+        Transaction::expense()
+            .account_id(&a1.id)
+            .category(&c1.id)
+            .amount(Money::from_unscaled(100))
+            .create(&pool)
             .await?;
-        for row in rows{
-            let amount: Money = row.get("amount");
-            let date: NaiveDate = row.get("transaction_date");
-            let category = Category{
-                id: row.get("id"),
-                title: row.get("title"),
-                created_at: row.get("created_at"),
-                is_income_stream: row.get("is_income_stream"),
-                deleted_at: None
-            };
-            dbg!(date);
-            dbg!(category);
-        }
+
+        let analytics = analytics(&pool).await?;
+        assert_eq!(analytics.len(), 1);
+        assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(200));
         Ok(())
     }
 

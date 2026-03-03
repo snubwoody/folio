@@ -24,7 +24,7 @@ use crate::{
 // TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
 
-#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd,Eq,Ord,Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
     pub id: String,
