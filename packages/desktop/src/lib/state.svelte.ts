@@ -63,6 +63,7 @@ export type EditIncome = {
     incomeStreamId?: string,
 };
 
+// TODO: deprecate this
 export class TransactionStore{
     #rootStore: AppStore;
     constructor(root: AppStore){
@@ -355,9 +356,6 @@ export class AppStore {
         this.incomeStreams = (await invoke(
             "fetch_income_streams"
         )) as IncomeStream[];
-        this.incomeAnalytics = (await invoke(
-            "income_analytics"
-        )) as IncomeAnalytic[];
         this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;

@@ -24,9 +24,21 @@ use crate::{
 };
 use crate::service::{Account, Transaction};
 
+#[derive(Serialize,Deserialize,Debug,PartialOrd, PartialEq)]
+pub struct Analytic{
+    category: Category,
+    total: Money
+}
+
+impl Analytic{
+    pub fn new(category: Category,total: Money) -> Self{
+        Self{category,total}
+    }
+}
+
 /// Fetches the total spend per category and total received per income stream. Only
 /// transactions in the current month will be counted.
-pub async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
+pub async fn analytics(pool:&SqlitePool) -> crate::Result<Vec<Analytic>>{
     let today = Local::now();
     let month_start = today.date_naive().with_day(1);
     let rows = sqlx::query("
@@ -57,6 +69,8 @@ pub async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money
             None => analytics.insert(category, amount)
         };
     }
+
+    let analytics = analytics.into_iter().map(|a|Analytic::new(a.0,a.1)).collect();
 
     Ok(analytics)
 }
@@ -93,7 +107,7 @@ mod test {
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics.len(), 1);
-        assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(200));
+        assert_eq!(analytics[0].total, Money::from_unscaled(200));
         Ok(())
     }
 
@@ -117,7 +131,7 @@ mod test {
             .await?;
 
         let analytics = analytics(&pool).await?;
-        assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(100));
+        assert_eq!(analytics[0].total, Money::from_unscaled(100));
         Ok(())
     }
 }

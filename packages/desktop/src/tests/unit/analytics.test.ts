@@ -1,4 +1,4 @@
-import { calculateSpendingAnalytics } from "$lib/analytics";
+import { calculateSpendingAnalytics } from "$lib/analytics.svelte";
 import { expect, test } from "vitest";
 import type { Category, Expense, IncomeAnalytic, IncomeStream } from "$lib/lib";
 import { AppStore } from "$lib/state.svelte";

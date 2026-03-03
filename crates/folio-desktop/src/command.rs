@@ -25,6 +25,7 @@ use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
 use tracing::{debug, error, info, warn};
+use crate::analytics::Analytic;
 
 /// Adds tauri commands to the app instance.
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
@@ -239,7 +240,7 @@ pub async fn edit_income(
 }
 
 #[tauri::command]
-pub async fn analytics(state: tauri::State<'_, State>) -> Result<HashMap<Category,Money>> {
+pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> {
     analytics::analytics(&state.pool)
         .await
         .inspect_err(|err| tracing::warn!("Failed to fetch analytics: {err}"))

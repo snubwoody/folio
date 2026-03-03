@@ -15,11 +15,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { calculateSpendingAnalytics } from "$lib/analytics";
-    import { appStore } from "$lib/state.svelte";
+    import {type Analytic} from "$lib/analytics.svelte";
+    import {invoke} from "@tauri-apps/api/core";
+    import {transactionStore} from "$lib/transaction.svelte";
 
-    const analytics = $derived.by(() => calculateSpendingAnalytics(appStore.expenses));
-    const total = $derived(Math.max(...analytics.map(a => a.total)));
+
+    let analytics:Analytic[] = $state([]);
+    $effect(()=>{
+        // eslint-ignore-next-line no-unused
+        const _ = transactionStore.transactions;
+        invoke<Analytic[]>("analytics").then(val => {
+            // TODO: this might update it twice
+            analytics = val.filter(a => a.category.isIncomeStream === false)
+        })
+    });
+
+    const total = $derived(Math.max(...analytics.map(a => parseFloat(a.total))));
 
     const purpleShades = [
         "var(--color-purple-50)",
@@ -39,8 +50,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <h6>Spending</h6>
     <ul>
         {#each analytics as item,index (item.category.id)}
-            {#if item.total > 0}
-                {@const percent = (item.total/total) * 100}
+            {@const amount = parseFloat(item.total)}
+            {#if amount > 0}
+                {@const percent = (amount/total) * 100}
                 {@const color = purpleShades[(index+2) % purpleShades.length]}
                 <li class="category-title">{item.category.title}</li>
                 <li style={`--percent: ${percent}%;--bar-color:${color}`} class="graph-bar"></li>
