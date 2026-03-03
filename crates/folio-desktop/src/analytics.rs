@@ -24,11 +24,11 @@ use crate::{
 };
 use crate::service::{Account, Transaction};
 
-// TODO: move to singular file
-async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
+/// Fetches the total spend per category and total received per income stream. Only
+/// transactions in the current month will be counted.
+pub async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
     let today = Local::now();
     let month_start = today.date_naive().with_day(1);
-    // TODO: skip here?
     let rows = sqlx::query("
             SELECT
                 t.amount,t.transaction_date,
@@ -40,14 +40,10 @@ async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
         .bind(month_start)
         .fetch_all(pool)
         .await?;
-    // TODO: skip not in this month
-    let mut analytics: HashMap<Category,Money> = HashMap::new();
+
+    let mut analytics = HashMap::new();
     for row in rows{
         let amount: Money = row.get("amount");
-        let date: NaiveDate = row.get("transaction_date");
-        // if date.year() != today.year() || date.month() != today.month() {
-        //     continue
-        // }
         let category = Category{
             id: row.get("id"),
             title: row.get("title"),
@@ -62,89 +58,6 @@ async fn analytics(pool:&SqlitePool) -> crate::Result<HashMap<Category,Money>>{
         };
     }
 
-    Ok(analytics)
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SpendingAnalytic {
-    category: Category,
-    // TODO: replace with Money
-    total: Decimal,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct IncomeAnalytic {
-    stream: IncomeStream,
-    total: Decimal,
-}
-
-impl SpendingAnalytic {
-    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let records: Vec<db::Expense> =
-            sqlx::query_as("SELECT * FROM expenses WHERE category_id=$1")
-                .bind(id)
-                .fetch_all(pool)
-                .await?;
-
-        // Fail the whole operation instead of skipping errors,
-        // to avoid false analytics.
-        let totals = records
-            .iter()
-            .map(|row| Money::new(row.amount).to_decimal())
-            .collect::<Vec<_>>();
-
-        let total: Decimal = totals.iter().sum();
-        let category = Category::from_id(id, pool).await?;
-
-        Ok(Self { total, category })
-    }
-}
-
-impl IncomeAnalytic {
-    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let records: Vec<db::Income> =
-            sqlx::query_as("SELECT * FROM incomes WHERE income_stream=$1")
-                .bind(id)
-                .fetch_all(pool)
-                .await?;
-
-        // Fail the whole operation instead of skipping errors,
-        // to avoid false analytics.
-        let totals = records
-            .iter()
-            .map(|row| Money::from_scaled(row.amount).to_decimal())
-            .collect::<Vec<_>>();
-
-        let total: Decimal = totals.iter().sum();
-        let stream = IncomeStream::from_id(id, pool).await?;
-
-        Ok(Self { total, stream })
-    }
-}
-
-pub async fn spending_analytics(pool: &SqlitePool) -> crate::Result<Vec<SpendingAnalytic>> {
-    let records: Vec<db::Category> = sqlx::query_as("SELECT * FROM categories")
-        .fetch_all(pool)
-        .await?;
-
-    let mut analytics = vec![];
-    for record in records {
-        let a = SpendingAnalytic::from_id(&record.id, pool).await?;
-        analytics.push(a);
-    }
-    Ok(analytics)
-}
-
-pub async fn income_analytics(pool: &SqlitePool) -> crate::Result<Vec<IncomeAnalytic>> {
-    let records: Vec<db::IncomeStream> = sqlx::query_as("SELECT * FROM income_streams")
-        .fetch_all(pool)
-        .await?;
-
-    let mut analytics = vec![];
-    for record in records {
-        let a = IncomeAnalytic::from_id(&record.id, pool).await?;
-        analytics.push(a);
-    }
     Ok(analytics)
 }
 
@@ -205,42 +118,6 @@ mod test {
 
         let analytics = analytics(&pool).await?;
         assert_eq!(*analytics.get(&c1).unwrap(), Money::from_unscaled(100));
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn get_spending_analytics(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("MONEY", &pool).await?;
-        let mut data = CreateExpense {
-            amount: Money::from_f64(20.2),
-            category_id: Some(category.id.clone()),
-            ..Default::default()
-        };
-        Expense::create(data.clone(), &pool).await?;
-        data.amount = Money::from_f64(500.23);
-        Expense::create(data.clone(), &pool).await?;
-
-        let analytic = SpendingAnalytic::from_id(&category.id, &pool).await?;
-        assert_eq!(analytic.category.title, "MONEY");
-        assert_eq!(analytic.total, dec!(520.43));
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn get_income_analytics(pool: SqlitePool) -> crate::Result<()> {
-        let stream = IncomeStream::create("SALARY__", &pool).await?;
-        let mut data = CreateIncome {
-            amount: Money::from_f64(20.2),
-            income_stream_id: Some(stream.id.clone()),
-            ..Default::default()
-        };
-        Income::create(data.clone(), &pool).await?;
-        data.amount = Money::from_f64(500.23);
-        Income::create(data.clone(), &pool).await?;
-
-        let analytic = IncomeAnalytic::from_id(&stream.id, &pool).await?;
-        assert_eq!(analytic.stream.title, "SALARY__");
-        assert_eq!(analytic.total, dec!(520.43));
         Ok(())
     }
 }

@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use std::collections::HashMap;
 use crate::settings::Settings;
 use crate::{
     Money, Result, State,
-    analytics::{self, IncomeAnalytic, SpendingAnalytic},
+    analytics,
     service::{self, *},
 };
 use chrono::NaiveDate;
@@ -39,7 +40,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         create_account,
         delete_category,
         edit_category,
-        spending_analytics,
         delete_transactions,
         create_category,
         fetch_accounts,
@@ -55,7 +55,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         currencies,
         set_currency_code,
         settings,
-        income_analytics,
+        analytics,
         edit_income_stream,
         create_income_stream,
         delete_income_stream,
@@ -239,17 +239,10 @@ pub async fn edit_income(
 }
 
 #[tauri::command]
-pub async fn spending_analytics(state: tauri::State<'_, State>) -> Result<Vec<SpendingAnalytic>> {
-    analytics::spending_analytics(&state.pool)
+pub async fn analytics(state: tauri::State<'_, State>) -> Result<HashMap<Category,Money>> {
+    analytics::analytics(&state.pool)
         .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn income_analytics(state: tauri::State<'_, State>) -> Result<Vec<IncomeAnalytic>> {
-    analytics::income_analytics(&state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
+        .inspect_err(|err| tracing::warn!("Failed to fetch analytics: {err}"))
 }
 
 #[tauri::command]
