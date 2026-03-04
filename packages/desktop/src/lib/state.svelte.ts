@@ -181,36 +181,7 @@ export class TransactionStore{
     }
 }
 
-interface EditAccount{
-    name?: string
-    startingBalance?: string
-}
 
-export class AccountStore {
-    #rootStore: AppStore;
-
-    constructor(store: AppStore) {
-        this.#rootStore = store;
-    }
-
-    async addAccount(name: string, startingBalance: string) {
-        try {
-            await invoke("create_account", { name, startingBalance });
-        } catch (e) {
-            console.error(e);
-        }
-        await this.#rootStore.load();
-    }
-
-    async editAccount(id: string, opts: EditAccount) {
-        try {
-            await invoke("edit_account", { id, opts });
-        } catch (e) {
-            console.error(e);
-        }
-        await this.#rootStore.load();
-    }
-}
 
 // TODO: just manage state manually
 /**
@@ -222,21 +193,11 @@ export class AppStore {
     incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
-    /**
-     * @deprecated
-     */
-    accounts: Account[] = $state([]);
 
     budgets: Budget[] = $state([]);
 
     settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
-    accountStore = new AccountStore(this);
-
-    /// Returns a list of all the user's expenses.
-    // get expenses(): Expense[]{
-    //     return this.expenses;
-    // }
 
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
@@ -318,10 +279,6 @@ export class AppStore {
         this.categories.push(category);
     }
 
-    async deleteAccount(id: string) {
-        await invoke("delete_account",{ id });
-        await this.load();
-    }
 
     /**
      * Creates a new {@link IncomeStream}.
@@ -350,7 +307,6 @@ export class AppStore {
         this.incomeStreams = (await invoke(
             "fetch_income_streams"
         )) as IncomeStream[];
-        this.accounts = (await invoke("fetch_accounts")) as Account[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         this.settings = (await invoke("settings")) as Settings;
         await this.loadExpenses();
