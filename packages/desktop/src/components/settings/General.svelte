@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import SelectMenu from "$components/SelectMenu.svelte";
     import { accountStore } from "$lib/account.svelte";
     import Account from "./general/Account.svelte";
-    import {settingsStore} from "$lib/stores/settings.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
 
     let currencies: string[] = $state([]);
     $effect(() => {

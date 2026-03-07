@@ -10,10 +10,9 @@ afterEach(() => {
 describe("SettingsStore",() => {
     test("set currency code",async () => {
         mockIPC((cmd) => {
-            if (cmd === "set_currency_code" ) {
-            } else {
+            if (cmd !== "set_currency_code") {
                 throw "Invalid command";
-            }
+            } 
         });
 
         const settingsStore = new SettingsStore();

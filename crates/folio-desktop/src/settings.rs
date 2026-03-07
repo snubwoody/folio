@@ -1,6 +1,5 @@
 use iso_currency::Currency;
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 
@@ -58,11 +57,10 @@ impl Settings {
     }
 }
 
-
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{Expense, Income};
+
     use serde_json::json;
     use std::fs;
     use tempfile::tempdir;

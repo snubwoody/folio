@@ -2,6 +2,8 @@
 
 ## (unreleased)
 
+- Add SettingsStore ([#265](https://github.com/snubwoody/folio/pull/265))
+- Add action bar for transactions ([#259](https://github.com/snubwoody/folio/pull/259))
 - Add transaction toolbar ([#256](https://github.com/snubwoody/folio/pull/256))
 - Add TextButton component ([#255](https://github.com/snubwoody/folio/pull/255))
 - Add binary to generate release info ([#253](https://github.com/snubwoody/folio/pull/253))

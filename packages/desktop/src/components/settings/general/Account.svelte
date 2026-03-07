@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { Trash2 } from "@lucide/svelte";
     import type { Account } from "$lib/lib";
     import InlineTextField from "$components/InlineTextField.svelte";
-    import {settingsStore} from "$lib/stores/settings.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
 
     interface Props{
         account: Account

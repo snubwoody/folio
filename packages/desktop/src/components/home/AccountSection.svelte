@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
-    import { appStore } from "$lib/state.svelte";
     import { accountStore } from "$lib/account.svelte";
     import { formatAmount } from "$lib/lib";
     import { IconButton,Button } from "$components/button";
     import { Plus } from "@lucide/svelte";
-    import {settingsStore} from "$lib/stores/settings.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
 
 	const popover = new Popover();
 	let name = $state("My account");

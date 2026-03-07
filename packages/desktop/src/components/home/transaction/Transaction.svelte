@@ -5,9 +5,8 @@
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore, type Transaction,transactionType } from "$lib/transaction.svelte.js";
-    import { appStore } from "$lib/state.svelte.js";
     import DateCell from "$components/home/transaction/DateCell.svelte";
-    import {settingsStore} from "$lib/stores/settings.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
 
     interface Props {
         transaction: Transaction,
