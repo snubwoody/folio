@@ -259,9 +259,9 @@ pub async fn create_account(
 
 #[tauri::command]
 pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
-    service::fetch_accounts(&state.pool)
+    Account::fetch_all(&state.pool)
         .await
-        .inspect_err(|err| tracing::warn!("{err}"))
+        .inspect_err(|err| tracing::warn!("Failed to fetch accounts: {err}"))
 }
 
 #[tauri::command]

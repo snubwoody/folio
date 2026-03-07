@@ -49,6 +49,7 @@ pub struct Account {
     pub id: String,
     pub name: String,
     pub starting_balance: Money,
+    // TODO: fetch balance on demand
     pub balance: Money,
     pub created_at: Option<DateTime<Utc>>,
 }
@@ -154,22 +155,24 @@ impl Account {
         info!(id=?id,"Deleted account");
         Ok(())
     }
-}
 
-/// Fetch all the accounts from the database.
-pub async fn fetch_accounts(pool: &SqlitePool) -> Result<Vec<Account>, crate::Error> {
-    let records = sqlx::query!("SELECT id FROM accounts")
-        .fetch_all(pool)
-        .await?;
-
-    let mut accounts = vec![];
-    for record in records {
-        let account = Account::from_id(&record.id, pool).await?;
-        accounts.push(account);
+    /// Fetch all the accounts from the database.
+    pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Account>, crate::Error> {
+        let records = sqlx::query!("SELECT id FROM accounts")
+            .fetch_all(pool)
+            .await?;
+    
+        let mut accounts = vec![];
+        for record in records {
+            let account = Account::from_id(&record.id, pool).await?;
+            accounts.push(account);
+        }
+    
+        Ok(accounts)
     }
-
-    Ok(accounts)
 }
+
+
 
 #[cfg(test)]
 mod test {
@@ -182,7 +185,7 @@ mod test {
         Account::create("", Money::ZERO, &pool).await?;
         Account::create("", Money::ZERO, &pool).await?;
 
-        let accounts = fetch_accounts(&pool).await?;
+        let accounts = Account::fetch_all(&pool).await?;
         assert_eq!(accounts.len(), 3);
         Ok(())
     }
