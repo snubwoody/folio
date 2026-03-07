@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { getCurrencies } from "$lib/lib.js";
     import SelectMenu from "$components/SelectMenu.svelte";
-    import { appStore } from "$lib/state.svelte";
     import { accountStore } from "$lib/account.svelte";
     import Account from "./general/Account.svelte";
+    import {settingsStore} from "$lib/stores/settings.svelte";
 
     let currencies: string[] = $state([]);
     $effect(() => {
@@ -39,9 +39,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         </div>
         <SelectMenu
             class="w-full max-w-12"
-            defaultValue={appStore.settings.currencyCode}
+            defaultValue={settingsStore.settings.currencyCode}
             items={currencies}
-            onChange={(c) => appStore.setCurrencyCode(c)}
+            onChange={(c) => settingsStore.setCurrencyCode(c)}
             toOption={(item) => {
                 return { label: item,value: item };
             }}

@@ -20,6 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { appStore } from "$lib/state.svelte";
     import Category from "./Category.svelte";
 
+    // FIXME: use categoriesStore
     const categories = $derived.by(() => {
         return (appStore.categories ?? [])
             .toSorted(

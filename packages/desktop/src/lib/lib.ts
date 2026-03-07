@@ -72,11 +72,17 @@ export type Settings = {
     currencyCode: string;
 };
 
+/**
+ * @deprecated
+ */
 export type SupportResponse = {
     issue_url: string;
     issue_id: number;
 };
 
+/**
+ * @deprecated
+ */
 export type FeatureRequest = {
     title: string;
     description: string;
@@ -84,6 +90,9 @@ export type FeatureRequest = {
     os: string;
 };
 
+/**
+ * @deprecated
+ */
 export type BugReport = FeatureRequest;
 
 export function parseDate(str: string): Date{

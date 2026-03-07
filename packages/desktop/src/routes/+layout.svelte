@@ -25,6 +25,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { invoke } from "@tauri-apps/api/core";
     import { accountStore } from "$lib/account.svelte";
     import { categoryStore } from "$lib/categories.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
     // import { check } from "@tauri-apps/plugin-updater";
 
     const { children } = $props();
@@ -42,6 +43,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     onMount(async () => {
         await invoke("create_missing_budgets");
+        await settingsStore.load();
         await appStore.load();
         await transactionStore.load();
         await accountStore.load();

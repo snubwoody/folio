@@ -16,12 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { formatAmountWithoutSymbol, getCurrencySymbol  } from "$lib/lib.js";
-    import { appStore } from "$lib/state.svelte";
     import { accountStore } from "$lib/account.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
     import type { Account } from "$lib/lib";
     import InlineTextField from "$components/InlineTextField.svelte";
+    import {settingsStore} from "$lib/stores/settings.svelte";
 
     interface Props{
         account: Account
@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { account }:Props = $props();
     const amount = $derived.by(() => formatAmountWithoutSymbol(account.startingBalance));
-    const symbol = getCurrencySymbol(appStore.settings.currencyCode);
+    const symbol = getCurrencySymbol(settingsStore.settings.currencyCode);
 </script>
 
 <li class="flex items-center justify-between">

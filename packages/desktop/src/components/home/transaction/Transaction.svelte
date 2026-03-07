@@ -7,6 +7,7 @@
     import { transactionStore, type Transaction,transactionType } from "$lib/transaction.svelte.js";
     import { appStore } from "$lib/state.svelte.js";
     import DateCell from "$components/home/transaction/DateCell.svelte";
+    import {settingsStore} from "$lib/stores/settings.svelte";
 
     interface Props {
         transaction: Transaction,
@@ -23,7 +24,7 @@
     // TODO: make the row a form
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
-    const currencySymbol = $derived(getCurrencySymbol(appStore.settings.currencyCode));
+    const currencySymbol = $derived(getCurrencySymbol(settingsStore.settings.currencyCode));
     const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
     // TODO: clear money fields if there was an error parsing or reset
     // TODO: add set_account command instead
