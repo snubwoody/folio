@@ -1,23 +1,24 @@
-import {getCurrencySymbol, parseMoney, parseDate, type Account} from "$lib/lib";
+import { getCurrencySymbol, parseMoney, parseDate, type Account } from "$lib/lib";
 import { describe, expect, test } from "vitest";
-import {AccountStore} from "$lib/account.svelte";
-import {mockIPC} from "@tauri-apps/api/mocks";
+import { AccountStore } from "$lib/account.svelte";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
-describe("AccountStore",()=>{
-    test("create a new account",async()=>{
-        mockIPC((cmd,args)=>{
+describe("AccountStore",() => {
+    test("create a new account",async() => {
+        mockIPC((cmd,args) => {
             if (cmd === "create_account"){
+                const payload = args as {name: string,startingBalance: string};
                 const account: Account = {
                     id:"1",
-                    name:args.name,
+                    name: payload.name,
                     balance: "0.00",
-                    startingBalance:args.startingBalance
+                    startingBalance:payload.startingBalance
                 };
                 return account;
             }
         });
         const accountStore = new AccountStore();
-        const account = await accountStore.createAccount({name:"Account 10",startingBalance:"10.00"});
+        const account = await accountStore.createAccount({ name:"Account 10",startingBalance:"10.00" });
         expect(accountStore.accounts).toHaveLength(1);
         expect(accountStore.accounts[0].id).toBe(account.id);
         expect(accountStore.accounts[0].name).toBe("Account 10");

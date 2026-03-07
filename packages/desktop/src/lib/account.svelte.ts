@@ -38,7 +38,7 @@ export class AccountStore{
      * @param name The name of the account
      * @param startingBalance The starting balance
      */
-    async createAccount({name,startingBalance}:{name: string, startingBalance?: string}): Promise<Account> {
+    async createAccount({ name,startingBalance }:{name: string, startingBalance?: string}): Promise<Account> {
         const balance = startingBalance ?? "0";
         const account = await invoke<Account>("create_account", { name, startingBalance: balance });
         this.#accounts.push(account);
@@ -57,7 +57,6 @@ export class AccountStore{
         await invoke("delete_account",{ id });
         this.#accounts = this.#accounts.filter(a => a.id !== id);
     }
-
 
     async createTestAccount({ name }:{name:string}):Promise<Account>{
         const id = Math.random().toString(36).slice(2);

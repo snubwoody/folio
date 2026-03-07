@@ -16,7 +16,6 @@ import { invoke } from "@tauri-apps/api/core";
 import type {
     Category,
     IncomeStream,
-    Account,
     Income,
     Expense,
     Budget,
@@ -181,8 +180,6 @@ export class TransactionStore{
     }
 }
 
-
-
 // TODO: just manage state manually
 /**
  * @deprecated
@@ -278,7 +275,6 @@ export class AppStore {
         })) as Category;
         this.categories.push(category);
     }
-
 
     /**
      * Creates a new {@link IncomeStream}.

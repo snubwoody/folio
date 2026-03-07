@@ -12,7 +12,7 @@
 	let startingBalance = $state("0.00");
 
 	async function createAccount() {
-	    await accountStore.createAccount({name,startingBalance});
+	    await accountStore.createAccount({ name,startingBalance });
 	    popover.open = false;
 	}
     // TODO: replace popover with bits-ui
