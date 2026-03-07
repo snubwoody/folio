@@ -18,7 +18,7 @@ import type {
     IncomeStream,
     Income,
     Expense,
-    Budget,
+    Budget
 } from "./lib";
 import { logger } from "./logger";
 import { AppError, type ErrorResponse } from "./error";

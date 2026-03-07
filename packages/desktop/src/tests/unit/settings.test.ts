@@ -12,7 +12,7 @@ describe("SettingsStore",() => {
         mockIPC((cmd) => {
             if (cmd !== "set_currency_code") {
                 throw "Invalid command";
-            } 
+            }
         });
 
         const settingsStore = new SettingsStore();
