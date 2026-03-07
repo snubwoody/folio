@@ -16,6 +16,11 @@ import { invoke } from "@tauri-apps/api/core";
 import type { Account } from "./lib";
 import { SvelteMap } from "svelte/reactivity";
 
+interface EditAccount{
+    name?: string
+    startingBalance?: string
+}
+
 export class AccountStore{
     #accounts: Account[] = $state([]);
     #accountMap: SvelteMap<string,Account> = $derived(new SvelteMap(this.accounts.map(a => [a.id,a])));
@@ -28,8 +33,32 @@ export class AccountStore{
         return this.#accountMap;
     }
 
-    async createAccount({ name }:{name:string}):Promise<Account>{
-        // Quick and dirty solution, replace later
+    /**
+     * Create a new account
+     * @param name The name of the account
+     * @param startingBalance The starting balance
+     */
+    async createAccount({ name,startingBalance }:{name: string, startingBalance?: string}): Promise<Account> {
+        const balance = startingBalance ?? "0";
+        const account = await invoke<Account>("create_account", { name, startingBalance: balance });
+        this.#accounts.push(account);
+        return account;
+    }
+
+    async editAccount(id: string, opts: EditAccount) {
+        const account = await invoke<Account>("edit_account", { id, opts });
+        const index = this.#accounts.findIndex(
+            (a) => a.id === account.id
+        );
+        this.#accounts[index] = account;
+    }
+
+    async deleteAccount(id: string) {
+        await invoke("delete_account",{ id });
+        this.#accounts = this.#accounts.filter(a => a.id !== id);
+    }
+
+    async createTestAccount({ name }:{name:string}):Promise<Account>{
         const id = Math.random().toString(36).slice(2);
         const account: Account = {
             id,

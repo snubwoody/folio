@@ -18,6 +18,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { getCurrencies } from "$lib/lib.js";
     import SelectMenu from "$components/SelectMenu.svelte";
     import { appStore } from "$lib/state.svelte";
+    import { accountStore } from "$lib/account.svelte";
     import Account from "./general/Account.svelte";
 
     let currencies: string[] = $state([]);
@@ -50,7 +51,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <section class="space-y-1">
         <h6>Accounts</h6>
         <ul class="space-y-2">
-            {#each appStore.accounts as account (account.id)}
+            {#each accountStore.accounts as account (account.id)}
                 <Account {account}/>
             {/each}
         </ul>

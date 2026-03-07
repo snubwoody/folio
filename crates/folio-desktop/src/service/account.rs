@@ -17,6 +17,7 @@ use crate::Money;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
+use tracing::info;
 
 // TODO: test the command input
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -72,6 +73,7 @@ impl Account {
         .await?;
 
         let id: String = record.get("id");
+        info!(id=?id,"Created new account");
         Self::from_id(&id, pool).await
     }
 
@@ -94,6 +96,7 @@ impl Account {
             .execute(pool)
             .await?;
 
+        info!(id=?id,"Updated account");
         Self::from_id(id, pool).await
     }
 
@@ -148,6 +151,7 @@ impl Account {
             .execute(pool)
             .await?;
 
+        info!(id=?id,"Deleted account");
         Ok(())
     }
 }

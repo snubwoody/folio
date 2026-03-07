@@ -17,6 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { formatAmountWithoutSymbol, getCurrencySymbol  } from "$lib/lib.js";
     import { appStore } from "$lib/state.svelte";
+    import { accountStore } from "$lib/account.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
     import type { Account } from "$lib/lib";
@@ -35,7 +36,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="space-y-0.5">
         <InlineTextField
             value={account.name}
-            onChange={(value) => appStore.accountStore.editAccount(account.id, { name: value })}
+            onChange={(value) => accountStore.editAccount(account.id, { name: value })}
         />
         <div class="flex gap-0.5 items-center">
             <p class="text-sm">
@@ -44,11 +45,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <InlineTextField
                 class="text-sm"
                 value={amount}
-                onChange={(value) => appStore.accountStore.editAccount(account.id, { startingBalance: value })}
+                onChange={(value) => accountStore.editAccount(account.id, { startingBalance: value })}
             />
         </div>
     </div>
-    <IconButton aria-label="Delete account" onclick={() => appStore.deleteAccount(account.id)} variant="ghost">
+    <IconButton aria-label="Delete account" onclick={() => accountStore.deleteAccount(account.id)} variant="ghost">
         <Trash2/>
     </IconButton>
 </li>
