@@ -7,6 +7,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     import MoneyCell from "$components/MoneyCell.svelte";
     import { formatAmount, type Budget } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
 
     type Props = {
         budget: Budget;
@@ -50,9 +51,9 @@ Copyright (C) 2025 Wakunguma Kalimukwa
         </div>
     </div>
 </div>
-<MoneyCell symbol={getCurrencySymbol(appStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
+<MoneyCell symbol={getCurrencySymbol(settingsStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
 <p>
-    {formatAmount(budget.remaining,{ currency: appStore.settings.currencyCode })}
+    {formatAmount(budget.remaining,{ currency: settingsStore.settings.currencyCode })}
 </p>
 
 <style>

@@ -1,6 +1,5 @@
 use iso_currency::Currency;
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 
@@ -58,50 +57,14 @@ impl Settings {
     }
 }
 
-/// Sets the app currency code in the settings file
-pub async fn set_currency_code(
-    currency: Currency,
-    pool: &SqlitePool,
-    settings: &mut Settings,
-) -> crate::Result<()> {
-    settings.set_currency_code(currency)?;
-    let code = currency.code();
-    // TODO: remove these
-    sqlx::query("UPDATE expenses SET currency_code=$1")
-        .bind(code)
-        .execute(pool)
-        .await?;
-    sqlx::query("UPDATE incomes SET currency_code=$1")
-        .bind(code)
-        .execute(pool)
-        .await?;
-    Ok(())
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{Expense, Income};
+
     use serde_json::json;
     use std::fs;
     use tempfile::tempdir;
 
-    #[sqlx::test]
-    async fn update_transactions(pool: SqlitePool) -> crate::Result<()> {
-        let dir = tempdir()?;
-        let path = dir.path().join("settings.json");
-
-        let expense = Expense::create(Default::default(), &pool).await?;
-        let income = Income::create(Default::default(), &pool).await?;
-        let mut settings = Settings::open(&path)?;
-        set_currency_code(Currency::ZMW, &pool, &mut settings).await?;
-
-        let income = Income::from_id(&income.id, &pool).await?;
-        let expense = Expense::from_id(&expense.id, &pool).await?;
-        assert_eq!(expense.currency_code, "ZMW");
-        assert_eq!(income.currency_code, "ZMW");
-        Ok(())
-    }
     #[test]
     fn init_settings() -> crate::Result<()> {
         let dir = tempdir()?;

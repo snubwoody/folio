@@ -18,8 +18,7 @@ import type {
     IncomeStream,
     Income,
     Expense,
-    Budget,
-    Settings
+    Budget
 } from "./lib";
 import { logger } from "./logger";
 import { AppError, type ErrorResponse } from "./error";
@@ -193,19 +192,11 @@ export class AppStore {
 
     budgets: Budget[] = $state([]);
 
-    settings: Settings = $state({ currencyCode: "USD" });
     transactions = new TransactionStore(this);
 
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
         await this.load();
-    }
-
-    async setCurrencyCode(currency: string) {
-        await invoke("set_currency_code", { currency });
-        this.expenses = (await invoke("fetch_expenses")) as Expense[];
-        this.incomes = (await invoke("fetch_incomes")) as Income[];
-        this.settings = (await invoke("settings")) as Settings;
     }
 
     async editBudget(id: string, amount: string) {
@@ -304,7 +295,6 @@ export class AppStore {
             "fetch_income_streams"
         )) as IncomeStream[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
-        this.settings = (await invoke("settings")) as Settings;
         await this.loadExpenses();
         logger.info("Loaded data from backend");
     }
