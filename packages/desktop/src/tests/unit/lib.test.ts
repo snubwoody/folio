@@ -1,7 +1,8 @@
 import { getCurrencySymbol, parseMoney, parseDate, type Account } from "$lib/lib";
 import { describe, expect, test } from "vitest";
-import { AccountStore } from "$lib/account.svelte";
+import { accountBalance, AccountStore } from "$lib/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
+import type { Transaction } from "$lib/transaction.svelte";
 
 describe("AccountStore",() => {
     test("create a new account",async() => {
@@ -25,6 +26,25 @@ describe("AccountStore",() => {
         expect(accountStore.accounts[0].startingBalance).toBe("10.00");
     });
 });
+
+test("Account balance",()=>{
+    const expense: Transaction = {
+        id:"",
+        fromAccountId: "A1",
+        amount: "5.00",
+        transactionDate:""
+    };
+    const income: Transaction = {
+        id:"",
+        toAccountId: "A1",
+        amount: "25.00",
+        transactionDate:""
+    };
+
+    const balance = accountBalance("A1",[expense,income]);
+    expect(balance).toBe(20);
+});
+
 test("Get currency symbol",() => {
     expect(getCurrencySymbol("USD")).toBe("$");
     expect(getCurrencySymbol("ZAR")).toBe("ZAR");
