@@ -30,11 +30,8 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
     app.invoke_handler(tauri::generate_handler![
         create_expense,
         create_income,
-        fetch_expenses,
         set_transaction_payee,
-        fetch_incomes,
         fetch_income_streams,
-        edit_expense,
         set_transaction_inflow,
         create_account,
         delete_category,
@@ -47,8 +44,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         fetch_budgets,
         create_account,
         set_transaction_outflow,
-        delete_expense,
-        delete_income,
         account_balance,
         create_budget,
         edit_budget,
@@ -218,27 +213,6 @@ pub async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -
     Ok(())
 }
 
-#[tauri::command]
-pub async fn edit_expense(
-    state: tauri::State<'_, State>,
-    id: String,
-    data: EditExpense,
-) -> Result<()> {
-    Expense::update(&id, data, &state.pool).await?;
-    Ok(())
-}
-
-#[tauri::command]
-pub async fn edit_income(
-    state: tauri::State<'_, State>,
-    id: String,
-    data: EditIncome,
-) -> Result<()> {
-    Income::update(&id, data, &state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))?;
-    Ok(())
-}
 
 #[tauri::command]
 pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> {
@@ -270,22 +244,6 @@ pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Accoun
     Account::fetch_all(&state.pool)
         .await
         .inspect_err(|err| tracing::warn!("Failed to fetch accounts: {err}"))
-}
-
-#[tauri::command]
-pub async fn fetch_expenses(state: tauri::State<'_, State>) -> Result<Vec<Expense>> {
-    let expenses = service::fetch_expenses(&state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))?;
-    Ok(expenses)
-}
-
-#[tauri::command]
-pub async fn fetch_incomes(state: tauri::State<'_, State>) -> Result<Vec<Income>> {
-    let incomes = service::fetch_incomes(&state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))?;
-    Ok(incomes)
 }
 
 #[tauri::command]
@@ -341,20 +299,6 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
 #[tauri::command]
 pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
     Account::delete(&id, &state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn delete_income(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Income::delete(&id, &state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn delete_expense(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Expense::delete(&id, &state.pool)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
 }
