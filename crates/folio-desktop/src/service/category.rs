@@ -12,15 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
-use crate::service::{Transaction};
 use sqlx::SqlitePool;
 
-use crate::{
-    Money, db,
-    service::{Budget},
-};
+use crate::{Money, db, service::Budget};
 
 // TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
@@ -118,14 +115,15 @@ impl Category {
     pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();
         let mut total = Money::ZERO;
-        let transactions: Vec<Transaction> = sqlx::query_as("SELECT * FROM transactions WHERE category_id = $1")
-            .bind(id)
-            .fetch_all(pool)
-            .await?;
+        let transactions: Vec<Transaction> =
+            sqlx::query_as("SELECT * FROM transactions WHERE category_id = $1")
+                .bind(id)
+                .fetch_all(pool)
+                .await?;
 
-        for transaction in transactions{
+        for transaction in transactions {
             let date = transaction.transaction_date;
-            if date.year() != now.year() || date.month() != now.month(){
+            if date.year() != now.year() || date.month() != now.month() {
                 continue;
             }
             total += transaction.amount;
@@ -172,14 +170,14 @@ mod test {
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("", &pool).await?;
-        let account = Account::create("",Money::ZERO,&pool).await?;
+        let account = Account::create("", Money::ZERO, &pool).await?;
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(100))
             .category(&category.id)
             .create(&pool)
             .await?;
-        
+
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(20))

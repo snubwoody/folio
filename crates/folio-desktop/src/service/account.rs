@@ -175,7 +175,7 @@ impl Account {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{Transaction};
+    use crate::service::Transaction;
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {

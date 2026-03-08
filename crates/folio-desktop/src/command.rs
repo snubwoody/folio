@@ -29,7 +29,6 @@ use tracing::{debug, error, info, warn};
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
     app.invoke_handler(tauri::generate_handler![
         create_expense,
-        create_income,
         set_transaction_payee,
         fetch_income_streams,
         set_transaction_inflow,
@@ -56,7 +55,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_income_stream,
         fetch_categories,
         create_missing_budgets,
-        edit_income,
         log_info,
         log_error,
         edit_transaction,
@@ -204,15 +202,6 @@ pub async fn edit_income_stream(
 pub async fn delete_income_stream(state: tauri::State<'_, State>, id: String) -> Result<()> {
     IncomeStream::delete(&id, &state.pool).await
 }
-
-#[tauri::command]
-pub async fn create_income(state: tauri::State<'_, State>, data: CreateIncome) -> Result<()> {
-    let mut data = data;
-    data.currency_code = state.settings.lock().await.currency_code().to_string();
-    Income::create(data, &state.pool).await?;
-    Ok(())
-}
-
 
 #[tauri::command]
 pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> {

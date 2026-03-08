@@ -15,13 +15,11 @@
 mod account;
 mod budget;
 mod category;
-mod income;
 mod income_stream;
 mod transaction;
 
 pub use account::*;
 pub use budget::*;
 pub use category::*;
-pub use income::*;
 pub use income_stream::*;
 pub use transaction::{EditBuilder, Transaction, TransactionBuilder};
