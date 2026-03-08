@@ -161,18 +161,16 @@ impl Account {
         let records = sqlx::query!("SELECT id FROM accounts")
             .fetch_all(pool)
             .await?;
-    
+
         let mut accounts = vec![];
         for record in records {
             let account = Account::from_id(&record.id, pool).await?;
             accounts.push(account);
         }
-    
+
         Ok(accounts)
     }
 }
-
-
 
 #[cfg(test)]
 mod test {

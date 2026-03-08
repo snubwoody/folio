@@ -27,7 +27,7 @@ describe("AccountStore",() => {
     });
 });
 
-test("Account balance",()=>{
+test("Account balance",() => {
     const expense: Transaction = {
         id:"",
         fromAccountId: "A1",

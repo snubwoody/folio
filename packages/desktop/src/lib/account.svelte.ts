@@ -15,7 +15,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { Account } from "./lib";
 import { SvelteMap } from "svelte/reactivity";
-import { transactionType, type Transaction } from "./transaction.svelte";
+import type { Transaction } from "./transaction.svelte";
 
 interface EditAccount{
     name?: string
@@ -39,7 +39,7 @@ export class AccountStore{
      * @param id The id of the account
      */
     async accountBalance(id:string):Promise<string>{
-        const balance = await invoke<string>("account_balance", {id});
+        const balance = await invoke<string>("account_balance", { id });
         return balance;
     }
 
@@ -94,7 +94,7 @@ export const accountStore = new AccountStore();
 
 /**
  * Calculates the account balance
- * 
+ *
  * @param accountId The id of the account
  * @param transactions The list of transactions
  * @returns The account balance

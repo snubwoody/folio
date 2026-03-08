@@ -1,7 +1,5 @@
 use folio_lib::Result;
-use folio_lib::service::{
-    Budget, Category, CreateIncome, Income, create_missing_budgets,
-};
+use folio_lib::service::{Budget, Category, create_missing_budgets};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
@@ -48,8 +46,6 @@ async fn edit_category(pool: SqlitePool) -> Result<()> {
     assert_eq!(record.title, "__MINE__");
     Ok(())
 }
-
-
 
 #[sqlx::test]
 async fn fetch_categories_not_deleted(pool: SqlitePool) -> crate::Result<()> {

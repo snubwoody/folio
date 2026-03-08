@@ -259,10 +259,7 @@ pub async fn create_account(
 }
 
 #[tauri::command]
-pub async fn account_balance(
-    state: tauri::State<'_, State>,
-    id: String,
-) -> Result<Money> {
+pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
     Account::calculate_balance(&id, &state.pool)
         .await
         .inspect_err(|err| tracing::warn!("Failed to calculate account balance: {err}"))
