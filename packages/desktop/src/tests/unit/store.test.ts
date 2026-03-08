@@ -1,27 +1,34 @@
 import { test, expect, afterEach } from "vitest";
-import { appStore } from "$lib/state.svelte";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { describe } from "node:test";
+import type { Category } from "$lib/lib";
+import { CategoryStore } from "$lib/categories.svelte";
 
 afterEach(() => {
     clearMocks();
 });
 
-// TODO: add more tests
-test("Delete category", async () => {
-    // TODO: split these
-    mockIPC((cmd) => {
-        if (cmd === "delete_category") {
-            return;
-        }
-        if (cmd === "fetch_expenses" || cmd === "spending_analytics") {
-            return [];
-        }
+describe("CategoryStore",() => {
+    test("delete category", async () => {
+        mockIPC((cmd,args) => {
+            if (cmd === "delete_category") {
+                return;
+            }
+            if (cmd === "create_category") {
+                const payload = args as {title:string};
+                const category: Category = {
+                    id: Math.random().toString(),
+                    title: payload.title,
+                    createdAt: ""
+                };
+                return category;
+            }
+        });
+        const categoryStore = new CategoryStore();
+        const category = await categoryStore.createCategory("");
+        expect(categoryStore.categories.length).toBe(1);
+        await categoryStore.deleteCategory(category.id);
+        expect(categoryStore.categories.length).toBe(0);
     });
-    appStore.categories = [{ id: "id-1", title: "", createdAt: "" }];
-    appStore.expenses = [
-        { id: "id-1", amount: "", date: "", currencyCode: "" }
-    ];
-    await appStore.deleteCategory("id-1");
-    expect(appStore.categories.length).toBe(0);
-    expect(appStore.expenses.length).toBe(0);
 });
+

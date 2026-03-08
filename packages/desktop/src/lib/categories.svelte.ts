@@ -9,7 +9,7 @@ export type Category = {
     isIncomeStream: boolean
 };
 
-export class CategoriyStore {
+export class CategoryStore {
     #categories: Category[] = $state([]);
     #categoryMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.#categories.map(a => [a.id,a])));
 
@@ -34,8 +34,9 @@ export class CategoriyStore {
     }
 
     async editCategory(id: string, title: string) {
-        await invoke("edit_category", { id, title });
-        // FIXME: edit the category in place
+        const category = await invoke<Category>("edit_category", { id, title });
+        const index = this.#categories.findIndex((c) => c.id === category.id);
+        this.#categories[index] = category;
         await this.load();
     }
 
@@ -43,12 +44,14 @@ export class CategoriyStore {
      * Creates a new {@link Category}.
      *
      * @param title The title of the category
+     * @returns The new category
      */
-    async createCategory(title: string = "New category") {
+    async createCategory(title: string = "New category"):Promise<Category> {
         const category = await invoke<Category>("create_category", {
             title
         });
         this.categories.push(category);
+        return category;
     }
 
     async load() {
@@ -57,5 +60,5 @@ export class CategoriyStore {
     }
 }
 
-export const categoryStore = new CategoriyStore();
+export const categoryStore = new CategoryStore();
 

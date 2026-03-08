@@ -16,183 +16,19 @@ import { invoke } from "@tauri-apps/api/core";
 import type {
     Category,
     IncomeStream,
-    Income,
-    Expense,
     Budget
 } from "./lib";
 import { logger } from "./logger";
-import { AppError, type ErrorResponse } from "./error";
-
-export type CreateExpense = {
-    amount: string,
-    date?: string,
-    accountId?: string,
-    categoryId?: string,
-    currencyCode: string
-};
-
-export type CreateIncome = {
-    amount: string,
-    date?: string,
-    accountId?: string,
-    incomeStreamId?: string,
-    currencyCode: string
-};
-
-export type EditExpense = {
-    id: string,
-    amount?: string,
-    date?: string,
-    accountId?: string,
-    categoryId?: string,
-};
-
-/** Data used for editing an `Income`,
- * values left as `undefined` or `null`  will be
- * left as their current values.
- *
- */
-export type EditIncome = {
-    id: string,
-    amount?: string,
-    date?: string,
-    accountId?: string,
-    incomeStreamId?: string,
-};
-
-// TODO: deprecate this
-export class TransactionStore{
-    #rootStore: AppStore;
-    constructor(root: AppStore){
-        this.#rootStore = root;
-    }
-
-    // TODO: return from data base and update local
-    async editExpense(opts: EditExpense){
-        const { id,...data } = opts;
-        data.amount = data.amount?.replaceAll(",","");
-
-        try{
-            await invoke("edit_expense",{ id,data });
-
-        } catch(e){
-            const error = e as ErrorResponse;
-            throw new AppError(error.message);
-        }
-        await this.#rootStore.load();
-    }
-
-    async deleteExpense(id: string){
-        try{
-            await invoke("delete_expense",{ id });
-
-        } catch(e){
-            const error = e as ErrorResponse;
-            throw new AppError(error.message);
-        }
-        await this.#rootStore.load();
-    }
-
-    async deleteIncome(id: string){
-        try{
-            await invoke("delete_income",{ id });
-
-        } catch(e){
-            const error = e as ErrorResponse;
-            throw new AppError(error.message);
-        }
-        await this.#rootStore.load();
-    }
-
-    async editIncome(opts: EditIncome){
-        const { id,...data } = opts;
-        data.amount = data.amount?.replaceAll(",","");
-        try{
-            await invoke("edit_income",{ id,data });
-
-        } catch(e){
-            const error = e as ErrorResponse;
-            throw new AppError(error.message);
-        }
-        await this.#rootStore.load();
-    }
-    // TODO: return the expense
-    /**
-     * Create a new expense.
-     *
-     * @param opts - The options for creating the new expense.
-     */
-    async addExpense(opts:CreateExpense){
-        // TODO: currency code should be optional
-        const {
-            amount = "0",
-            accountId,
-            categoryId,
-            currencyCode = "USD",
-            date
-        } = opts;
-        // TODO: use default currency code
-        const data: CreateExpense = {
-            amount,
-            accountId,
-            currencyCode,
-            categoryId,
-            date
-        };
-
-        try{
-            await invoke("create_expense",{ data });
-        } catch(e){
-            console.error(e);
-        }
-        await this.#rootStore.load();
-    }
-    /**
-     * Create a new expense.
-     *
-     * @param opts - The options for creating the new expense.
-     */
-    async addIncome(opts:CreateIncome){
-        // TODO: make amount nullable and currency code nullable on backend
-        const {
-            amount = "0",
-            accountId,
-            incomeStreamId,
-            currencyCode = "USD",
-            date
-        } = opts;
-        // TODO: use default currency code
-        const data: CreateIncome = {
-            amount,
-            accountId,
-            currencyCode,
-            incomeStreamId,
-            date
-        };
-
-        try{
-            await invoke("create_income",{ data });
-        } catch(e){
-            console.error(e);
-        }
-        await this.#rootStore.load();
-    }
-}
 
 // TODO: just manage state manually
 /**
  * @deprecated
  */
 export class AppStore {
-    // TODO: add getters
-    expenses: Expense[] = $state([]);
-    incomes: Income[] = $state([]);
     categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
 
     budgets: Budget[] = $state([]);
-
-    transactions = new TransactionStore(this);
 
     async createBudget(amount: string, categoryId: string) {
         await invoke("create_budget", { amount, categoryId });
@@ -224,7 +60,7 @@ export class AppStore {
     async deleteCategory(id: string) {
         await invoke("delete_category", { id });
         this.categories = this.categories.filter((c) => c.id !== id);
-        this.expenses = (await invoke("fetch_expenses")) as Expense[];
+        // this.expenses = (await invoke("fetch_expenses")) as Expense[];
     }
 
     async editCategory(id: string, title: string) {
@@ -279,23 +115,13 @@ export class AppStore {
         this.incomeStreams.push(stream);
     }
 
-    async loadExpenses(){
-        const e = (await invoke("fetch_expenses")) as Expense[];
-        this.expenses = this.expenses.filter(() => false);
-        for (const expense of e){
-            this.expenses.push(expense);
-        }
-        logger.debug("Loaded expenses from database");
-    }
-
     async load() {
         this.categories = (await invoke("fetch_categories")) as Category[];
-        this.incomes = (await invoke("fetch_incomes")) as Income[];
+        // FIXME: remove this
         this.incomeStreams = (await invoke(
             "fetch_income_streams"
         )) as IncomeStream[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
-        await this.loadExpenses();
         logger.info("Loaded data from backend");
     }
 }

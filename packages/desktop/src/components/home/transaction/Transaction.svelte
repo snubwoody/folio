@@ -21,6 +21,7 @@
 
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
+    // FIXME: category not reactive
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(settingsStore.settings.currencyCode));

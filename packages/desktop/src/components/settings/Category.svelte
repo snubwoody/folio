@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import IconButton from "$components/button/IconButton.svelte";
     import Delete from "@lucide/svelte/icons/trash-2";
-    import { appStore } from "$lib/state.svelte";
+    import { categoryStore } from "$lib/categories.svelte";
     import type { Category } from "$lib/lib";
     import InlineTextField from "$components/InlineTextField.svelte";
     type Props = {
@@ -30,9 +30,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <li class="flex items-center justify-between">
-    <InlineTextField value={title} onChange={(value) => appStore.editCategory(category.id,value)}/>
+    <InlineTextField value={title} onChange={(value) => categoryStore.editCategory(category.id,value)}/>
     <IconButton
-        onclick={() => appStore.deleteCategory(category.id)}
+        onclick={() => categoryStore.deleteCategory(category.id)}
         variant="ghost"
     >
         <Delete />

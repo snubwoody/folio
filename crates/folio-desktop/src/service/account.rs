@@ -175,7 +175,7 @@ impl Account {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{CreateExpense, Expense, Transaction};
+    use crate::service::Transaction;
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
@@ -262,11 +262,10 @@ mod test {
     #[sqlx::test]
     async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("My account", Money::ZERO, &pool).await?;
-        let data = CreateExpense {
-            account_id: Some(account.id.clone()),
-            ..Default::default()
-        };
-        Expense::create(data, &pool).await?;
+        Transaction::expense()
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;

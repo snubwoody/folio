@@ -12,14 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 
-use crate::{
-    Money, db,
-    service::{Budget, fetch_expenses},
-};
+use crate::{Money, db, service::Budget};
 
 // TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
@@ -116,16 +114,20 @@ impl Category {
     /// Get the total amount spent in the month for the [`Category`].
     pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();
-        let total = fetch_expenses(pool)
-            .await?
-            .iter()
-            .filter(|e| e.category.is_some())
-            .filter(|e| {
-                e.category.as_ref().unwrap().id == id
-                    && e.date.year() == now.year()
-                    && e.date.month() == now.month()
-            })
-            .fold(Money::ZERO, |acc, e| e.amount + acc);
+        let mut total = Money::ZERO;
+        let transactions: Vec<Transaction> =
+            sqlx::query_as("SELECT * FROM transactions WHERE category_id = $1")
+                .bind(id)
+                .fetch_all(pool)
+                .await?;
+
+        for transaction in transactions {
+            let date = transaction.transaction_date;
+            if date.year() != now.year() || date.month() != now.month() {
+                continue;
+            }
+            total += transaction.amount;
+        }
         Ok(total)
     }
 
@@ -163,20 +165,25 @@ impl Category {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{CreateExpense, Expense};
+    use crate::service::{Account, Transaction};
 
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
         let category = Category::create("", &pool).await?;
-        let mut data = CreateExpense {
-            amount: Money::from_unscaled(20),
-            category_id: Some(category.id.clone()),
-            ..Default::default()
-        };
+        let account = Account::create("", Money::ZERO, &pool).await?;
+        Transaction::expense()
+            .account_id(&account.id)
+            .amount(Money::from_unscaled(100))
+            .category(&category.id)
+            .create(&pool)
+            .await?;
 
-        Expense::create(data.clone(), &pool).await?;
-        data.amount = Money::from_unscaled(100);
-        Expense::create(data.clone(), &pool).await?;
+        Transaction::expense()
+            .account_id(&account.id)
+            .amount(Money::from_unscaled(20))
+            .category(&category.id)
+            .create(&pool)
+            .await?;
 
         let total = Category::total_spent(&category.id, &pool).await?;
         assert_eq!(total, Money::from_unscaled(120));

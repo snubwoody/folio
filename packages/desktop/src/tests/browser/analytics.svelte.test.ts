@@ -6,8 +6,6 @@ import { formatAmount, type Budget } from "$lib/lib";
 
 beforeEach(() => {
     appStore.budgets = [];
-    appStore.incomes = [];
-    appStore.expenses = [];
 });
 
 test("Show monthly budget", async () => {
