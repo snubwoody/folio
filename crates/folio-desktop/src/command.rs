@@ -49,6 +49,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         set_transaction_outflow,
         delete_expense,
         delete_income,
+        account_balance,
         create_budget,
         edit_budget,
         currencies,
@@ -255,6 +256,16 @@ pub async fn create_account(
     Account::create(name, starting_balance, &state.pool)
         .await
         .inspect_err(|err| tracing::warn!("Failed to create account: {err}"))
+}
+
+#[tauri::command]
+pub async fn account_balance(
+    state: tauri::State<'_, State>,
+    id: String,
+) -> Result<Money> {
+    Account::calculate_balance(&id, &state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("Failed to calculate account balance: {err}"))
 }
 
 #[tauri::command]
