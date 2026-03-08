@@ -9,8 +9,6 @@ import { test, beforeEach } from "vitest";
 //
 beforeEach(() => {
     appStore.budgets = [];
-    appStore.incomes = [];
-    appStore.expenses = [];
 });
 
 test("Dummy",() => {});
