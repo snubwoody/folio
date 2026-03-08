@@ -1,5 +1,4 @@
 import { test, expect, afterEach } from "vitest";
-import { appStore } from "$lib/state.svelte";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
 import type { Category } from "$lib/lib";
@@ -9,7 +8,7 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("CategoryStore",()=>{
+describe("CategoryStore",() => {
     test("delete category", async () => {
         mockIPC((cmd,args) => {
             if (cmd === "delete_category") {
