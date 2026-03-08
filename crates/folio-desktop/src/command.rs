@@ -49,6 +49,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         set_transaction_outflow,
         delete_expense,
         delete_income,
+        account_balance,
         create_budget,
         edit_budget,
         currencies,
@@ -258,10 +259,17 @@ pub async fn create_account(
 }
 
 #[tauri::command]
-pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
-    service::fetch_accounts(&state.pool)
+pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
+    Account::calculate_balance(&id, &state.pool)
         .await
-        .inspect_err(|err| tracing::warn!("{err}"))
+        .inspect_err(|err| tracing::warn!("Failed to calculate account balance: {err}"))
+}
+
+#[tauri::command]
+pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
+    Account::fetch_all(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("Failed to fetch accounts: {err}"))
 }
 
 #[tauri::command]

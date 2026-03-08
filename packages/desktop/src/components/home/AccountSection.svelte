@@ -2,10 +2,9 @@
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
     import { accountStore } from "$lib/account.svelte";
-    import { formatAmount } from "$lib/lib";
     import { IconButton,Button } from "$components/button";
     import { Plus } from "@lucide/svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
+    import Account from "./Account.svelte";
 
 	const popover = new Popover();
 	let name = $state("My account");
@@ -32,10 +31,7 @@
 	</header>
 	<ul>
 		{#each accountStore.accounts as account (account.id)}
-			<li class="shadow-purple-sm p-2 rounded-md">
-				<p>{account.name}</p>
-				<h6>{formatAmount(account.balance,{ currency: settingsStore.settings.currencyCode })}</h6>
-			</li>
+            <Account {account}/>
 		{/each}
 	</ul>
 </section>
