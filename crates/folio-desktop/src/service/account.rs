@@ -124,7 +124,7 @@ impl Account {
     pub async fn calculate_balance(id: &str, pool: &SqlitePool) -> Result<Money, crate::Error> {
         let total_expenses = sqlx::query!(
             "
-                SELECT COALESCE(SUM(amount),0) as total FROM expenses WHERE account_id = $1
+                SELECT COALESCE(SUM(amount),0) as total FROM transactions WHERE from_account_id = $1
                 ",
             id
         )
@@ -134,7 +134,7 @@ impl Account {
 
         let total_income = sqlx::query!(
             "
-            SELECT COALESCE(SUM(amount),0) as total FROM incomes WHERE account_id = $1",
+            SELECT COALESCE(SUM(amount),0) as total FROM transactions WHERE to_account_id = $1",
             id
         )
         .fetch_one(pool)
@@ -177,7 +177,7 @@ impl Account {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{CreateExpense, CreateIncome, Expense, Income};
+    use crate::service::{CreateExpense, Expense, Transaction};
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
@@ -193,19 +193,21 @@ mod test {
     #[sqlx::test]
     async fn calculate_account_balance(pool: SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("", Money::ZERO, &pool).await?;
-        let data = CreateExpense {
-            amount: Money::from_unscaled(20),
-            account_id: Some(account.id.clone()),
-            ..Default::default()
-        };
-        let income_data = CreateIncome {
-            amount: Money::from_unscaled(50),
-            account_id: Some(account.id.clone()),
-            ..Default::default()
-        };
-        Expense::create(data.clone(), &pool).await?;
-        Expense::create(data, &pool).await?;
-        Income::create(income_data, &pool).await?;
+        Transaction::expense()
+            .account_id(&account.id)
+            .amount(Money::from_unscaled(20))
+            .create(&pool)
+            .await?;
+        Transaction::expense()
+            .account_id(&account.id)
+            .amount(Money::from_unscaled(20))
+            .create(&pool)
+            .await?;
+        Transaction::income()
+            .account_id(&account.id)
+            .amount(Money::from_unscaled(50))
+            .create(&pool)
+            .await?;
         let balance = Account::calculate_balance(&account.id, &pool).await?;
         assert_eq!(balance, Money::from_unscaled(10));
         Ok(())
@@ -283,11 +285,10 @@ mod test {
     #[sqlx::test]
     async fn delete_account_with_income(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let account = Account::create("My account", Money::ZERO, &pool).await?;
-        let data = CreateIncome {
-            account_id: Some(account.id.clone()),
-            ..Default::default()
-        };
-        Income::create(data, &pool).await?;
+        Transaction::income()
+            .account_id(&account.id)
+            .create(&pool)
+            .await?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;
