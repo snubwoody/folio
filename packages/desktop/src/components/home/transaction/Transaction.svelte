@@ -49,23 +49,6 @@
     </td>
     <DateCell {transaction}/>
     <AccountCell {transaction}/>
-    <!-- <td data-col="account" data-testid="account">
-        {#if transType === "Income"}
-            {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
-            <SelectCell
-                value={account?.id}
-                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
-                items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
-            />
-        {:else}
-            {@const account = accountStore.accountMap.get(transaction.fromAccountId??"")}
-            <SelectCell
-                value={account?.id}
-                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
-                items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
-            />
-        {/if}
-    </td> -->
     <td data-col="payee" data-testid="payee">
         {#if transType === "Transfer"}
             {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
