@@ -17,7 +17,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import IconButton from "$components/button/IconButton.svelte";
     import Plus from "@lucide/svelte/icons/plus";
-    import { appStore } from "$lib/state.svelte";
     import Category from "./Category.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
 
