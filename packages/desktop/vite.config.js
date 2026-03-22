@@ -45,19 +45,20 @@ export default defineConfig({
         },
         // eslint-disable-next-line no-undef
         reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
+        // .test.ts are for unit tests, .spec.ts are for browser tests
         projects: [
             {
                 extends: true,
                 test: {
                     name: "unit",
-                    include: ["src/tests/unit/**/*.test.ts"],
+                    include: ["src/**/*.test.ts"],
                     environment: "jsdom"
                 }
             },
             {
                 extends: true,
                 test: {
-                    include: ["src/tests/browser/**/*.test.ts"],
+                    include: ["src/**/*.spec.ts"],
                     name: "browser",
                     environment: "jsdom",
                     browser: {
