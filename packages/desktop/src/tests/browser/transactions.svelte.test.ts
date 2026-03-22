@@ -2,6 +2,7 @@ import { test, beforeEach, describe, expect, afterEach } from "vitest";
 import TransactionComponent from "$components/home/transaction/Transaction.svelte";
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
 import Actionbar from "$components/home/transaction/Actionbar.svelte";
+import AccountCell from "$components/home/transaction/AccountCell.svelte";
 import { transactionStore, type Transaction } from "$lib/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
@@ -117,9 +118,6 @@ describe("Transaction actionbar", () => {
     });
 });
 
-// TODO: test
-// - select
-// - category
 describe("Transaction component", async () => {
     test("shows outflow if transaction is an expense", async () => {
         const transaction: Transaction = {
@@ -142,7 +140,6 @@ describe("Transaction component", async () => {
         expect(inflow.getByRole("textbox")).toHaveValue("");
     });
     test("shows inflow if transaction is an income", async () => {
-        // TODO: test edit
         const transaction: Transaction = {
             id: "1",
             toAccountId: "A1",
@@ -174,8 +171,6 @@ describe("Transaction component", async () => {
 
         const tableStore = new TableStore();
 
-        console.log(transaction.fromAccountId);
-
         const screen = render(TransactionComponent, {
             transaction,
             tableStore
@@ -195,13 +190,48 @@ describe("Transaction component", async () => {
 
         const tableStore = new TableStore();
 
-        console.log(transaction.fromAccountId);
-
         const screen = render(TransactionComponent, {
             transaction,
             tableStore
         });
         const accountCell = screen.getByTestId("account");
         expect(accountCell).toHaveTextContent("Account 1");
+    });
+});
+
+describe("AccountCell", async () => {
+    test("shows account if income", async () => {
+        const account = await accountStore.createTestAccount({ name: "Income account" });
+
+        const transaction: Transaction = {
+            id: "1",
+            toAccountId: account.id,
+            amount: "500.0",
+            transactionDate: "2024-12-12"
+        };
+
+        const screen = render(AccountCell, {
+            transaction
+        });
+        const accountCell = screen.getByTestId("account");
+        expect(accountCell).toHaveTextContent("Income account");
+    });
+    test("shows expense account if transfer", async () => {
+        const account = await accountStore.createTestAccount({ name: "Income account" });
+        const account2 = await accountStore.createTestAccount({ name: "Expense account" });
+
+        const transaction: Transaction = {
+            id: "1",
+            toAccountId: account.id,
+            fromAccountId: account2.id,
+            amount: "500.0",
+            transactionDate: "2024-12-12"
+        };
+
+        const screen = render(AccountCell, {
+            transaction
+        });
+        const accountCell = screen.getByTestId("account");
+        expect(accountCell).toHaveTextContent("Expense account");
     });
 });
