@@ -3,7 +3,7 @@ import TransactionComponent from "$components/home/transaction/Transaction.svelt
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
 import Actionbar from "$components/home/transaction/Actionbar.svelte";
 import AccountCell from "$components/home/transaction/AccountCell.svelte";
-import { transactionStore, type Transaction } from "$lib/transaction.svelte";
+import { transactionStore, type Transaction } from "$lib/stores/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/account.svelte";

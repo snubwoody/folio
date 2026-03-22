@@ -2,7 +2,7 @@
     import { Toolbar } from "bits-ui";
     import { TextButton } from "$components/button";
     import { CirclePlus } from "@lucide/svelte";
-    import { transactionStore } from "$lib/transaction.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountStore } from "$lib/account.svelte";
     import { today, getLocalTimeZone } from "@internationalized/date";
 

@@ -1,7 +1,7 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import { type Transaction,TransactionStore } from "$lib/transaction.svelte";
+import { type Transaction,TransactionStore } from "$lib/stores/transaction.svelte";
 
 afterEach(() => {
     clearMocks();

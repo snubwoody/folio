@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { type Transaction, transactionStore } from "$lib/transaction.svelte";
+    import { type Transaction, transactionStore } from "$lib/stores/transaction.svelte";
     import { Popover } from "bits-ui";
     import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";

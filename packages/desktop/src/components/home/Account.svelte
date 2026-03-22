@@ -2,7 +2,7 @@
     import { formatAmount } from "$lib/lib";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import type { Account } from "$lib/lib";
-    import { transactionStore } from "$lib/transaction.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountBalance } from "$lib/account.svelte";
 
     interface Props {
