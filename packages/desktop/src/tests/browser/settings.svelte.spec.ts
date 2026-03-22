@@ -4,9 +4,9 @@ import Sidebar from "$components/Sidebar.svelte";
 import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { accountStore } from "$lib/stores/account.svelte";
+import { categoryStore, type Category } from "$lib/stores/categories.svelte";
 
 beforeEach(() => {
-    appStore.categories = [];
 });
 
 mockIPC((cmd) => {
@@ -50,10 +50,20 @@ test("Show accounts", async () => {
 });
 
 test("Show categories", async () => {
-    appStore.categories = [
-        { id: "1", title: "Rent", createdAt: new Date().toUTCString() },
-        { id: "2", title: "Groceries", createdAt: new Date().toUTCString() }
-    ];
+    mockIPC((cmd,args) => {
+        if (cmd === "create_category") {
+            const payload = args as {title:string};
+            const category: Category = {
+                id: Math.random().toString(),
+                title: payload.title,
+                createdAt: new Date().toUTCString(),
+                isIncomeStream: false
+            };
+            return category;
+        }
+    });
+    categoryStore.createCategory("");
+    categoryStore.createCategory("");
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
     await page.getByText("Categories").click();

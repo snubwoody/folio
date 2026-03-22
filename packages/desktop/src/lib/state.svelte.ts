@@ -25,7 +25,6 @@ import type { Category } from "./stores/categories.svelte";
  * @deprecated
  */
 export class AppStore {
-    categories: Category[] = $state([]);
     incomeStreams: IncomeStream[] = $state([]);
 
     budgets: Budget[] = $state([]);
@@ -47,24 +46,6 @@ export class AppStore {
             logger.error(`${e}`);
         }
         // FIXME: no longer exists
-        await this.load();
-    }
-
-    /**
-     * Delete a category from the user store. Any transactions
-     * referencing this category will have their category field
-     * set to `null`.
-     *
-     * @param id The id of the {@link Category} to delete
-     */
-    async deleteCategory(id: string) {
-        await invoke("delete_category", { id });
-        this.categories = this.categories.filter((c) => c.id !== id);
-        // this.expenses = (await invoke("fetch_expenses")) as Expense[];
-    }
-
-    async editCategory(id: string, title: string) {
-        await invoke("edit_category", { id, title });
         await this.load();
     }
 
@@ -92,18 +73,6 @@ export class AppStore {
     }
 
     /**
-     * Creates a new {@link Category}.
-     *
-     * @param title The title of the category
-     */
-    async createCategory(title: string = "New category") {
-        const category = (await invoke("create_category", {
-            title
-        })) as Category;
-        this.categories.push(category);
-    }
-
-    /**
      * Creates a new {@link IncomeStream}.
      *
      * @param title The title of the income stream
@@ -116,7 +85,6 @@ export class AppStore {
     }
 
     async load() {
-        this.categories = (await invoke("fetch_categories")) as Category[];
         // FIXME: remove this
         this.incomeStreams = (await invoke(
             "fetch_income_streams"
