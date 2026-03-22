@@ -1,7 +1,7 @@
 <script lang="ts">
     import SelectCell  from "./SelectCell.svelte";
-    import { accountStore } from "$lib/account.svelte";
-    import { transactionStore, transactionType, type Transaction } from "$lib/transaction.svelte";
+    import { accountStore } from "$lib/stores/account.svelte";
+    import { transactionStore, transactionType, type Transaction } from "$lib/stores/transaction.svelte";
 
     interface Props {
         transaction: Transaction

@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { formatAmountWithoutSymbol, getCurrencySymbol  } from "$lib/lib.js";
-    import { accountStore } from "$lib/account.svelte";
+    import { accountStore } from "$lib/stores/account.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
     import type { Account } from "$lib/lib";

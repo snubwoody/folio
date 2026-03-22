@@ -3,7 +3,7 @@ import { appStore } from "$lib/state.svelte";
 import Sidebar from "$components/Sidebar.svelte";
 import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
-import { accountStore } from "$lib/account.svelte";
+import { accountStore } from "$lib/stores/account.svelte";
 
 beforeEach(() => {
     appStore.categories = [];

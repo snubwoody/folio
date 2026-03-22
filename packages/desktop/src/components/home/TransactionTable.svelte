@@ -1,6 +1,6 @@
 <script lang="ts">
     import { TableStore } from "$lib/stores/table.svelte";
-    import { transactionStore } from "$lib/transaction.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
     import Transaction from "./transaction/Transaction.svelte";
 
     interface Props {

@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import type { Analytic } from "$lib/analytics.svelte";
     import { invoke } from "@tauri-apps/api/core";
-    import { transactionStore } from "$lib/transaction.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
 
     let analytics:Analytic[] = $state([]);
     $effect(() => {

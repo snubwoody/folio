@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import type { Account } from "./lib";
+import type { Account } from "../lib";
 import { SvelteMap } from "svelte/reactivity";
 import type { Transaction } from "./transaction.svelte";
-import { logger } from "./logger";
+import { logger } from "../logger";
 
 interface EditAccount{
     name?: string

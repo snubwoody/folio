@@ -18,7 +18,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { formatAmount } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import { isThisMonth } from "date-fns";
-    import { transactionStore, transactionType } from "$lib/transaction.svelte";
+    import { transactionStore, transactionType } from "$lib/stores/transaction.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
 
     const incomes = transactionStore.transactions.filter(transaction => {

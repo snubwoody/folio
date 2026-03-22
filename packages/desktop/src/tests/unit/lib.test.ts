@@ -1,8 +1,8 @@
 import { getCurrencySymbol, parseMoney, parseDate, type Account } from "$lib/lib";
 import { describe, expect, test } from "vitest";
-import { accountBalance, AccountStore } from "$lib/account.svelte";
+import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
-import type { Transaction } from "$lib/transaction.svelte";
+import type { Transaction } from "$lib/stores/transaction.svelte";
 
 describe("AccountStore",() => {
     test("create a new account",async() => {

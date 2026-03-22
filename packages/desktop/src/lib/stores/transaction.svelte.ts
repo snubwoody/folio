@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { invoke } from "@tauri-apps/api/core";
 import { SvelteDate } from "svelte/reactivity";
-import { logger } from "./logger";
+import { logger } from "../logger";
 
 export interface EditTransaction {
     id: string;
