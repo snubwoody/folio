@@ -6,19 +6,19 @@ add-migration name:
 
 # Run migrations on the sqlite database
 migrate:
-    cargo sqlx migrate run --source crates/folio-desktop/migrations
+    sqlx migrate run --source crates/folio-desktop/migrations
 
 # Create a new sqlite database
 db-create:
-    cargo sqlx database create
+    sqlx database create
 
 # Run migrations on the sqlite database
 db-migrate:
-    cargo sqlx migrate run --source crates/folio-desktop/migrations
+    sqlx migrate run --source crates/folio-desktop/migrations
 
 # Setup a local sqlite database
 db-setup:
-    cargo sqlx database drop -y
+    sqlx database drop -y
     just db-create
     just db-migrate
 

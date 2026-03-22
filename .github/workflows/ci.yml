@@ -136,7 +136,7 @@ jobs:
           run_install: false
       - uses: Swatinem/rust-cache@v2
       - name: Install sqlx-cli
-        run: nu scripts/download-sqlx.nu
+        run: cargo install sqlx-cli
       - uses: taiki-e/install-action@v2
         with:
           tool: nextest
