@@ -7,7 +7,7 @@
         transaction: Transaction
     }
 
-    const {transaction}: Props = $props();
+    const { transaction }: Props = $props();
 
     const transType = $derived.by(() => {
         return transactionType(transaction);
