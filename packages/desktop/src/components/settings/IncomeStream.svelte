@@ -17,10 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import IconButton from "$components/button/IconButton.svelte";
     import Delete from "@lucide/svelte/icons/trash-2";
-    import { appStore } from "$lib/state.svelte";
-    import type { IncomeStream } from "$lib/lib";
+    import { categoryStore, type Category } from "$lib/stores/categories.svelte";
     type Props = {
-        stream: IncomeStream;
+        stream: Category;
     };
 
     const { stream }: Props = $props();
@@ -32,13 +31,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="inline-text-field">
         <input
             type="text"
-            onblur={() => appStore.editIncomeStream(stream.id, title)}
+            onblur={() => categoryStore.editCategory(stream.id, title)}
             bind:value={title}
         />
     </div>
     <IconButton
         aria-label="Delete"
-        onclick={() => appStore.deleteIncomeStream(stream.id)}
+        onclick={() => categoryStore.deleteCategory(stream.id)}
         variant="ghost"
     >
         <Delete />

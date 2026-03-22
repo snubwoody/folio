@@ -38,7 +38,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="flex items-center justify-between">
             <h6>Categories</h6>
             <IconButton
-                onclick={() => appStore.createCategory()}
+                onclick={() => categoryStore.createCategory()}
                 variant="neutral"
             >
                 <Plus />

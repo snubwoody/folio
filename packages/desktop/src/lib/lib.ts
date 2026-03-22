@@ -24,13 +24,6 @@ export type Account = {
 };
 
 
-export type IncomeStream = {
-    id: string;
-    title: string;
-    createdAt: string;
-};
-
-
 export type Budget = {
     id: string;
     amount: string;
@@ -40,7 +33,7 @@ export type Budget = {
 };
 
 export type IncomeAnalytic = {
-    stream: IncomeStream;
+    stream: Category;
     total: string;
 };
 

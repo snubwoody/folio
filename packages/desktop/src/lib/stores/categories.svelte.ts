@@ -57,13 +57,27 @@ export class CategoryStore {
     }
 
     /**
-     * Creates a new {@link Category}.
+     * Creates a new category.
      *
      * @param title The title of the category
      * @returns The new category
      */
     async createCategory(title: string = "New category"):Promise<Category> {
         const category = await invoke<Category>("create_category", {
+            title
+        });
+        this.#categories.push(category);
+        return category;
+    }
+    
+    /**
+     * Creates a new income stream.
+     *
+     * @param title The title of the category
+     * @returns The new category
+     */
+    async createIncomeStream(title: string = "New income stream"):Promise<Category> {
+        const category = await invoke<Category>("create_income_stream", {
             title
         });
         this.#categories.push(category);

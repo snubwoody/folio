@@ -14,19 +14,15 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import type {
-    IncomeStream,
     Budget
 } from "./lib";
 import { logger } from "./logger";
-import type { Category } from "./stores/categories.svelte";
 
 // TODO: just manage state manually
 /**
  * @deprecated
  */
 export class AppStore {
-    incomeStreams: IncomeStream[] = $state([]);
-
     budgets: Budget[] = $state([]);
 
     async createBudget(amount: string, categoryId: string) {
@@ -49,40 +45,6 @@ export class AppStore {
         await this.load();
     }
 
-    /**
-     * Edit an income stream.
-     *
-     * @param id The id of the {@link IncomeStream} to edit
-     * @param title The new title
-     */
-    async editIncomeStream(id: string, title: string) {
-        await invoke("edit_income_stream", { id, title });
-        await this.load();
-    }
-
-    /**
-     * Deletes an income stream from the user store. Any transactions
-     * referencing this income stream will have their referencing field
-     * set to `null`.
-     *
-     * @param id The id of the {@link IncomeStream} to delete
-     */
-    async deleteIncomeStream(id: string) {
-        await invoke("delete_income_stream", { id });
-        await this.load();
-    }
-
-    /**
-     * Creates a new {@link IncomeStream}.
-     *
-     * @param title The title of the income stream
-     */
-    async createIncomeStream(title: string = "New income stream") {
-        const stream = (await invoke("create_income_stream", {
-            title
-        })) as IncomeStream;
-        this.incomeStreams.push(stream);
-    }
 
     async load() {
         this.budgets = (await invoke("fetch_budgets")) as Budget[];

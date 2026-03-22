@@ -36,7 +36,7 @@ export class SettingsStore{
 
     async load(){
         this.#settings = (await invoke("settings")) as Settings;
-        logger.info("Loaded settings from backend");
+        logger.debug("Loaded settings from backend");
     }
 }
 
