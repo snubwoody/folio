@@ -5,11 +5,7 @@ import { mockIPC } from "@tauri-apps/api/mocks";
 import { accountStore } from "$lib/stores/account.svelte";
 import { categoryStore, type Category } from "$lib/stores/categories.svelte";
 
-
 mockIPC((cmd) => {
-    if (cmd === "fetch_incomes" || cmd === "fetch_expenses") {
-        return [];
-    }
     if (cmd === "settings") {
         return { currencyCode: "USD" };
     }
@@ -59,8 +55,8 @@ test("Show categories", async () => {
             return category;
         }
     });
-    categoryStore.createCategory("");
-    categoryStore.createCategory("");
+    categoryStore.createCategory("Category");
+    categoryStore.createCategory("Category");
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
     await page.getByText("Categories").click();

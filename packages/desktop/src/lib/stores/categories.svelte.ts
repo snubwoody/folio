@@ -32,7 +32,7 @@ export class CategoryStore {
     get categoryMap(){
         return this.#categoryMap;
     }
-    
+
     get incomeStreamMap(){
         return this.#incomeStreamMap;
     }
@@ -69,7 +69,7 @@ export class CategoryStore {
         this.#categories.push(category);
         return category;
     }
-    
+
     /**
      * Creates a new income stream.
      *

@@ -35,7 +35,7 @@ export class SettingsStore{
     }
 
     async load(){
-        this.#settings = (await invoke("settings")) as Settings;
+        this.#settings = await invoke<Settings>("settings");
         logger.debug("Loaded settings from backend");
     }
 }

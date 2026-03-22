@@ -23,7 +23,6 @@ export type Account = {
     balance: string;
 };
 
-
 export type Budget = {
     id: string;
     amount: string;

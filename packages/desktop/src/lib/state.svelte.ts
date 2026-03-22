@@ -45,7 +45,6 @@ export class AppStore {
         await this.load();
     }
 
-
     async load() {
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
         logger.debug("Loaded budgets from backend");

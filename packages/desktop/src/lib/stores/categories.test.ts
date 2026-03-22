@@ -30,16 +30,5 @@ describe("CategoryStore",() => {
         await categoryStore.deleteCategory(category.id);
         expect(categoryStore.categories.length).toBe(0);
     });
-    test("get categories", async () => {
-        const categories: Category[] = [
-        ];
-        mockIPC((cmd,args) => {
-            if (cmd === "delete_category") {
-                return;
-            }
-        });
-        const categoryStore = new CategoryStore();
-        const category = await categoryStore.createCategory("");
-    });
 });
 
