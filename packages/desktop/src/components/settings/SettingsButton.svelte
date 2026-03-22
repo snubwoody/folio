@@ -20,7 +20,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import IconButton from "$components/button/IconButton.svelte";
     import { Dialog } from "bits-ui";
     import SettingsPanel from "$components/settings/SettingsPanel.svelte";
-
 </script>
 
 <Dialog.Root>

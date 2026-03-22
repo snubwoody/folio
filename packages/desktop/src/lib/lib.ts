@@ -14,42 +14,13 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import { parse } from "date-fns";
+import type { Category } from "./stores/categories.svelte";
 
 export type Account = {
     id: string;
     name: string;
     startingBalance: string;
     balance: string;
-};
-
-export type Category = {
-    id: string;
-    title: string;
-    createdAt: string;
-};
-
-export type IncomeStream = {
-    id: string;
-    title: string;
-    createdAt: string;
-};
-
-export type Income = {
-    id: string;
-    amount: string;
-    incomeStream?: IncomeStream;
-    account?: Account;
-    date: string;
-    currencyCode: string;
-};
-
-export type Expense = {
-    id: string;
-    amount: string;
-    category?: Category;
-    account?: Account;
-    date: string;
-    currencyCode: string;
 };
 
 export type Budget = {
@@ -61,7 +32,7 @@ export type Budget = {
 };
 
 export type IncomeAnalytic = {
-    stream: IncomeStream;
+    stream: Category;
     total: string;
 };
 

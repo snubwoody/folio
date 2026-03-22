@@ -1,8 +1,7 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import type { Category } from "$lib/lib";
-import { CategoryStore } from "$lib/stores/categories.svelte";
+import { CategoryStore, type Category } from "$lib/stores/categories.svelte";
 
 afterEach(() => {
     clearMocks();
@@ -19,7 +18,8 @@ describe("CategoryStore",() => {
                 const category: Category = {
                     id: Math.random().toString(),
                     title: payload.title,
-                    createdAt: ""
+                    createdAt: "",
+                    isIncomeStream: false
                 };
                 return category;
             }

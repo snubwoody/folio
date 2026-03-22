@@ -15,21 +15,21 @@ test("Show monthly budget", async () => {
             amount: "20",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "" }
+            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
         },
         {
             id: "",
             amount: "50",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "" }
+            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
         },
         {
             id: "",
             amount: "20",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "" }
+            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
         }
     ];
     appStore.budgets = budgets;

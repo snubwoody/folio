@@ -17,12 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import IconButton from "$components/button/IconButton.svelte";
     import Plus from "@lucide/svelte/icons/plus";
-    import { appStore } from "$lib/state.svelte";
     import Category from "./Category.svelte";
+    import { categoryStore } from "$lib/stores/categories.svelte";
 
     // FIXME: use categoriesStore
     const categories = $derived.by(() => {
-        return (appStore.categories ?? [])
+        return (categoryStore.categories ?? [])
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -
@@ -37,7 +37,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="flex items-center justify-between">
             <h6>Categories</h6>
             <IconButton
-                onclick={() => appStore.createCategory()}
+                onclick={() => categoryStore.createCategory()}
                 variant="neutral"
             >
                 <Plus />

@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import tailwind from "@tailwindcss/vite";
-import istanbul from "vite-plugin-istanbul";
 
 // eslint-disable-next-line
 const host = process.env.TAURI_DEV_HOST;
@@ -9,14 +8,7 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig({
     plugins: [
         sveltekit(),
-        tailwind(),
-        istanbul({
-            include: "src/*",
-            exclude: ["node_modules", "test/"],
-            extension: [".ts", ".svelte"],
-            requireEnv: false,
-            forceBuildInstrument: true
-        })
+        tailwind()
     ],
     // Prevent Vite from obscuring rust errors
     clearScreen: false,
@@ -41,23 +33,24 @@ export default defineConfig({
             enabled: true,
             provider: "v8",
             include: ["src/lib/**","src/components/**"],
-            exclude: ["src/test/**"]
+            exclude: ["src/**/*.spec.ts","src/**/*.test.ts"]
         },
         // eslint-disable-next-line no-undef
         reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
+        // .test.ts are for unit tests, .spec.ts are for browser tests
         projects: [
             {
                 extends: true,
                 test: {
                     name: "unit",
-                    include: ["src/tests/unit/**/*.test.ts"],
+                    include: ["src/**/*.test.ts"],
                     environment: "jsdom"
                 }
             },
             {
                 extends: true,
                 test: {
-                    include: ["src/tests/browser/**/*.test.ts"],
+                    include: ["src/**/*.spec.ts"],
                     name: "browser",
                     environment: "jsdom",
                     browser: {

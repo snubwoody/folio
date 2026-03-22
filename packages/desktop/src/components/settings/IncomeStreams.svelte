@@ -17,11 +17,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import IconButton from "$components/button/IconButton.svelte";
     import Plus from "@lucide/svelte/icons/plus";
-    import { appStore } from "$lib/state.svelte";
     import IncomeStream from "./IncomeStream.svelte";
+    import { categoryStore } from "$lib/stores/categories.svelte";
 
     const incomeStreams = $derived.by(() => {
-        return (appStore.incomeStreams ?? [])
+        return (categoryStore.incomeStreams ?? [])
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -
@@ -36,7 +36,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="flex items-center justify-between">
             <h6>Income streams</h6>
             <IconButton
-                onclick={() => appStore.createIncomeStream()}
+                onclick={() => categoryStore.createIncomeStream()}
                 variant="neutral"
             >
                 <Plus />

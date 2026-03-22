@@ -1,18 +1,11 @@
-import { beforeEach, test, expect } from "vitest";
-import { appStore } from "$lib/state.svelte";
+import { test, expect } from "vitest";
 import Sidebar from "$components/Sidebar.svelte";
 import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { accountStore } from "$lib/stores/account.svelte";
-
-beforeEach(() => {
-    appStore.categories = [];
-});
+import { categoryStore, type Category } from "$lib/stores/categories.svelte";
 
 mockIPC((cmd) => {
-    if (cmd === "fetch_incomes" || cmd === "fetch_expenses") {
-        return [];
-    }
     if (cmd === "settings") {
         return { currencyCode: "USD" };
     }
@@ -50,10 +43,20 @@ test("Show accounts", async () => {
 });
 
 test("Show categories", async () => {
-    appStore.categories = [
-        { id: "1", title: "Rent", createdAt: new Date().toUTCString() },
-        { id: "2", title: "Groceries", createdAt: new Date().toUTCString() }
-    ];
+    mockIPC((cmd,args) => {
+        if (cmd === "create_category") {
+            const payload = args as {title:string};
+            const category: Category = {
+                id: Math.random().toString(),
+                title: payload.title,
+                createdAt: new Date().toUTCString(),
+                isIncomeStream: false
+            };
+            return category;
+        }
+    });
+    categoryStore.createCategory("Category");
+    categoryStore.createCategory("Category");
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
     await page.getByText("Categories").click();
@@ -63,10 +66,20 @@ test("Show categories", async () => {
 });
 
 test("Show income streams", async () => {
-    appStore.incomeStreams = [
-        { id: "1", title: "Salary", createdAt: "" },
-        { id: "2", title: "Dividends", createdAt: "" }
-    ];
+    mockIPC((cmd,args) => {
+        if (cmd === "create_income_stream") {
+            const payload = args as {title:string};
+            const category: Category = {
+                id: Math.random().toString(),
+                title: payload.title,
+                createdAt: new Date().toUTCString(),
+                isIncomeStream: true
+            };
+            return category;
+        }
+    });
+    await categoryStore.createIncomeStream();
+    await categoryStore.createIncomeStream();
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
     await page.getByText("Income streams").click();
