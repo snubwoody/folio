@@ -22,11 +22,6 @@ export type Account = {
     balance: string;
 };
 
-export type Category = {
-    id: string;
-    title: string;
-    createdAt: string;
-};
 
 export type IncomeStream = {
     id: string;
@@ -34,23 +29,6 @@ export type IncomeStream = {
     createdAt: string;
 };
 
-export type Income = {
-    id: string;
-    amount: string;
-    incomeStream?: IncomeStream;
-    account?: Account;
-    date: string;
-    currencyCode: string;
-};
-
-export type Expense = {
-    id: string;
-    amount: string;
-    category?: Category;
-    account?: Account;
-    date: string;
-    currencyCode: string;
-};
 
 export type Budget = {
     id: string;

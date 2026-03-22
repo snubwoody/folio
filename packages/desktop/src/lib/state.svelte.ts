@@ -14,11 +14,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import type {
-    Category,
     IncomeStream,
     Budget
 } from "./lib";
 import { logger } from "./logger";
+import type { Category } from "./stores/categories.svelte";
 
 // TODO: just manage state manually
 /**
