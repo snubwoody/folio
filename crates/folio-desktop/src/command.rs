@@ -30,7 +30,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
     app.invoke_handler(tauri::generate_handler![
         create_expense,
         set_transaction_payee,
-        fetch_income_streams,
         set_transaction_inflow,
         create_account,
         delete_category,
@@ -50,9 +49,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         set_currency_code,
         settings,
         analytics,
-        edit_income_stream,
         create_income_stream,
-        delete_income_stream,
         fetch_categories,
         create_missing_budgets,
         log_info,
@@ -190,20 +187,6 @@ pub async fn edit_category(
 }
 
 #[tauri::command]
-pub async fn edit_income_stream(
-    state: tauri::State<'_, State>,
-    id: String,
-    title: String,
-) -> Result<IncomeStream> {
-    IncomeStream::edit(&id, &title, &state.pool).await
-}
-
-#[tauri::command]
-pub async fn delete_income_stream(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    IncomeStream::delete(&id, &state.pool).await
-}
-
-#[tauri::command]
 pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> {
     analytics::analytics(&state.pool)
         .await
@@ -238,13 +221,6 @@ pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Accoun
 #[tauri::command]
 pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
     Category::fetch_all(&state.pool)
-        .await
-        .inspect_err(|err| tracing::warn!("{err}"))
-}
-
-#[tauri::command]
-pub async fn fetch_income_streams(state: tauri::State<'_, State>) -> Result<Vec<IncomeStream>> {
-    service::fetch_income_streams(&state.pool)
         .await
         .inspect_err(|err| tracing::warn!("{err}"))
 }
@@ -314,8 +290,8 @@ pub async fn edit_account(
 pub async fn create_income_stream(
     state: tauri::State<'_, State>,
     title: &str,
-) -> Result<IncomeStream> {
-    IncomeStream::create(title, &state.pool)
+) -> Result<Category> {
+    Category::create_income_stream(title, &state.pool)
         .await
-        .inspect_err(|err| tracing::warn!("{err}"))
+        .inspect_err(|err| tracing::warn!("Failed to create income stream: {err}"))
 }

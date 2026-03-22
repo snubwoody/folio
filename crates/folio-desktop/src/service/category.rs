@@ -50,6 +50,20 @@ impl Category {
 
         Category::from_id(&record.id, pool).await
     }
+    
+    pub async fn create_income_stream(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let now = Utc::now().timestamp();
+        let record: db::Category =
+            sqlx::query_as("INSERT INTO categories(title,created_at,is_income_stream) VALUES($1,$2,true) RETURNING *")
+                .bind(title)
+                .bind(now)
+                .fetch_one(pool)
+                .await?;
+
+        tracing::info!(id=?record.id,"Created new income stream");
+
+        Category::from_id(&record.id, pool).await
+    }
 
     /// Creates a category without creating a corresponding budget.
     pub async fn create_raw(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
@@ -224,6 +238,21 @@ mod test {
 
         assert!(record.created_at.unwrap() >= now);
         assert_eq!(record.title, "Ent");
+        assert!(!record.is_income_stream.unwrap());
+        Ok(())
+    }
+
+    #[sqlx::test]
+    async fn create_income_stream(pool: SqlitePool) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
+        let category = Category::create_income_stream("Ent", &pool).await?;
+        let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
+            .fetch_one(&pool)
+            .await?;
+
+        assert!(record.created_at.unwrap() >= now);
+        assert_eq!(record.title, "Ent");
+        assert!(record.is_income_stream.unwrap());
         Ok(())
     }
 }

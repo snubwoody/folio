@@ -85,12 +85,8 @@ export class AppStore {
     }
 
     async load() {
-        // FIXME: remove this
-        this.incomeStreams = (await invoke(
-            "fetch_income_streams"
-        )) as IncomeStream[];
         this.budgets = (await invoke("fetch_budgets")) as Budget[];
-        logger.info("Loaded data from backend");
+        logger.debug("Loaded budgets from backend");
     }
 }
 
