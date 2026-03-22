@@ -6,6 +6,7 @@
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore, type Transaction,transactionType } from "$lib/transaction.svelte.js";
     import DateCell from "$components/home/transaction/DateCell.svelte";
+    import AccountCell from "./AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
 
     interface Props {
@@ -47,7 +48,8 @@
         >
     </td>
     <DateCell {transaction}/>
-    <td data-col="account" data-testid="account">
+    <AccountCell {transaction}/>
+    <!-- <td data-col="account" data-testid="account">
         {#if transType === "Income"}
             {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
             <SelectCell
@@ -63,7 +65,7 @@
                 items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {/if}
-    </td>
+    </td> -->
     <td data-col="payee" data-testid="payee">
         {#if transType === "Transfer"}
             {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}

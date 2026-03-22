@@ -16,6 +16,7 @@ import { invoke } from "@tauri-apps/api/core";
 import type { Account } from "./lib";
 import { SvelteMap } from "svelte/reactivity";
 import type { Transaction } from "./transaction.svelte";
+import { logger } from "./logger";
 
 interface EditAccount{
     name?: string
@@ -87,6 +88,7 @@ export class AccountStore{
     /// Loads the accounts from the backend
     async load(){
         this.#accounts = await invoke("fetch_accounts");
+        logger.debug("Loaded accounts from backend");
     }
 }
 
