@@ -41,7 +41,7 @@
 }
 
 *{
-    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-touch-callout: none; /* Safari */
     user-select: none;
 }
 
