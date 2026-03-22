@@ -19,10 +19,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Plus from "@lucide/svelte/icons/plus";
     import { appStore } from "$lib/state.svelte";
     import Category from "./Category.svelte";
+    import { categoryStore } from "$lib/stores/categories.svelte";
 
     // FIXME: use categoriesStore
     const categories = $derived.by(() => {
-        return (appStore.categories ?? [])
+        return (categoryStore.categories ?? [])
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -

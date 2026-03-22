@@ -11,14 +11,30 @@ export type Category = {
 
 export class CategoryStore {
     #categories: Category[] = $state([]);
-    #categoryMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.#categories.map(a => [a.id,a])));
 
+    #categoryMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.categories.map(a => [a.id,a])));
+    #incomeStreamMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.incomeStreams.map(a => [a.id,a])));
+
+    /**
+     * Returns a list of all the categories
+     */
     get categories(): Category[]{
-        return this.#categories;
+        return this.#categories.filter(c => !c.isIncomeStream);
+    }
+
+    /**
+     * Returns a list of all the income streams
+     */
+    get incomeStreams(): Category[]{
+        return this.#categories.filter(c => c.isIncomeStream);
     }
 
     get categoryMap(){
         return this.#categoryMap;
+    }
+    
+    get incomeStreamMap(){
+        return this.#incomeStreamMap;
     }
 
     /**
@@ -50,7 +66,7 @@ export class CategoryStore {
         const category = await invoke<Category>("create_category", {
             title
         });
-        this.categories.push(category);
+        this.#categories.push(category);
         return category;
     }
 
