@@ -1,6 +1,6 @@
 <script lang="ts">
     import SelectCell  from "./SelectCell.svelte";
-    import { accountStore } from "$lib/account.svelte.js";
+    import { accountStore } from "$lib/stores/account.svelte.js";
     import { categoryStore } from "$lib/stores/categories.svelte.js";
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";

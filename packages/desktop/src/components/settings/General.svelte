@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { getCurrencies } from "$lib/lib.js";
     import SelectMenu from "$components/SelectMenu.svelte";
-    import { accountStore } from "$lib/account.svelte";
+    import { accountStore } from "$lib/stores/account.svelte";
     import Account from "./general/Account.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
 

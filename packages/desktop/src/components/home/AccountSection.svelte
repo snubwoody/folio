@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Popover } from "melt/builders";
     import TextField from "../TextField.svelte";
-    import { accountStore } from "$lib/account.svelte";
+    import { accountStore } from "$lib/stores/account.svelte";
     import { IconButton,Button } from "$components/button";
     import { Plus } from "@lucide/svelte";
     import Account from "./Account.svelte";
