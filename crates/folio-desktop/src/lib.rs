@@ -29,6 +29,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
+use tracing::error;
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -42,8 +43,7 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     #[cfg(windows)]
     let builder = builder.decorations(false);
 
-    // FIXME: don't unwrap
-    builder.build().unwrap();
+    builder.build()?;
     Ok(())
 }
 
@@ -65,7 +65,7 @@ pub async fn run() {
         .max_log_files(10)
         .filename_suffix("log")
         .build(log_dir)
-        .expect("Failed to setup logging"); // FIXME: return error
+        .expect("Failed to setup logging");
 
     // Keep guard in scope
     let (file_writer, _guard) = tracing_appender::non_blocking(file_appender);
@@ -127,11 +127,10 @@ impl State {
     }
 }
 
-// TODO: run this after opening the app
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
     let opts = SqliteConnectOptions::new()
-        .filename("./data.db") // FIXME
+        .filename("./data.db")
         .create_if_missing(true);
 
     #[cfg(not(debug_assertions))]
@@ -146,7 +145,10 @@ pub async fn init_database() -> Result<SqlitePool> {
     };
 
     let pool = SqlitePool::connect_with(opts).await?;
-    sqlx::migrate!().run(&pool).await?;
+    sqlx::migrate!()
+        .run(&pool)
+        .await
+        .inspect_err(|err| error!("Failed to run migration: {err}"))?;
 
     Ok(pool)
 }

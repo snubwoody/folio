@@ -50,7 +50,7 @@ impl Category {
 
         Category::from_id(&record.id, pool).await
     }
-    
+
     pub async fn create_income_stream(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
         let record: db::Category =

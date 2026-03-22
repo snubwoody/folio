@@ -287,10 +287,7 @@ pub async fn edit_account(
 }
 
 #[tauri::command]
-pub async fn create_income_stream(
-    state: tauri::State<'_, State>,
-    title: &str,
-) -> Result<Category> {
+pub async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
     Category::create_income_stream(title, &state.pool)
         .await
         .inspect_err(|err| tracing::warn!("Failed to create income stream: {err}"))
