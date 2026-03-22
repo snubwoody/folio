@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { Select } from "bits-ui";
 
+
     interface Props{
         items: {value: string, label: string}[],
-        // TODO: make bindable?
         value?: string,
         /**
          * Callback that runs when the selected value changes.
@@ -30,7 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { items,value,onChange }: Props = $props();
 
-    let selectedItem = $state(items.find(item => item.value === value));
+    let selectedItem = $derived(items.find(item => item.value === value));
     // TODO: add style for selected items
 
     const onValueChange = (value: string) => {

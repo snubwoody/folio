@@ -9,15 +9,20 @@
 
     const {transaction}: Props = $props();
     const account = $derived(accountStore.accountMap.get(transaction.fromAccountId??""));
+
+    $inspect(account);
 </script>
 
-<td data-col="account" data-testid="account" class="table-cell">
-    <SelectCell
-        value={account?.id}
-        onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
-        items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
-    />
-</td>
+<!-- {#key account?.id} -->
+    <td data-col="account" data-testid="account" class="table-cell">
+        <SelectCell
+            value={account?.id}
+            onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
+            items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
+        />
+    </td>
+<!-- {/key} -->
+
 <!-- <td data-col="account" data-testid="account">
     {#if transType === "Income"}
         {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
