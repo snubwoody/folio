@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { logger } from "./logger";
+import { logger } from "../logger";
 import { SvelteMap } from "svelte/reactivity";
 
 export type Category = {

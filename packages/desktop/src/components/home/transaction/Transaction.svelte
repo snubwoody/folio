@@ -1,7 +1,7 @@
 <script lang="ts">
     import SelectCell  from "./SelectCell.svelte";
     import { accountStore } from "$lib/account.svelte.js";
-    import { categoryStore } from "$lib/categories.svelte.js";
+    import { categoryStore } from "$lib/stores/categories.svelte.js";
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore, type Transaction,transactionType } from "$lib/transaction.svelte.js";

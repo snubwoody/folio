@@ -24,7 +24,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { transactionStore } from "$lib/transaction.svelte";
     import { invoke } from "@tauri-apps/api/core";
     import { accountStore } from "$lib/account.svelte";
-    import { categoryStore } from "$lib/categories.svelte";
+    import { categoryStore } from "$lib/stores/categories.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     // import { check } from "@tauri-apps/plugin-updater";
 

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import type { Category } from "./categories.svelte";
+import type { Category } from "./stores/categories.svelte";
 
 export interface Analytic {
     category: Category,

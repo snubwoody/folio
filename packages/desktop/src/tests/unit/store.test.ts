@@ -2,7 +2,7 @@ import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
 import type { Category } from "$lib/lib";
-import { CategoryStore } from "$lib/categories.svelte";
+import { CategoryStore } from "$lib/stores/categories.svelte";
 
 afterEach(() => {
     clearMocks();
