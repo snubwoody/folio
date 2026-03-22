@@ -1,8 +1,7 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import type { Category } from "$lib/lib";
-import { CategoryStore } from "$lib/stores/categories.svelte";
+import { CategoryStore, type Category } from "$lib/stores/categories.svelte";
 
 afterEach(() => {
     clearMocks();
@@ -19,7 +18,8 @@ describe("CategoryStore",() => {
                 const category: Category = {
                     id: Math.random().toString(),
                     title: payload.title,
-                    createdAt: ""
+                    createdAt: "",
+                    isIncomeStream: false
                 };
                 return category;
             }
@@ -29,6 +29,17 @@ describe("CategoryStore",() => {
         expect(categoryStore.categories.length).toBe(1);
         await categoryStore.deleteCategory(category.id);
         expect(categoryStore.categories.length).toBe(0);
+    });
+    test("get categories", async () => {
+        const categories: Category[] = [
+        ];
+        mockIPC((cmd,args) => {
+            if (cmd === "delete_category") {
+                return;
+            }
+        });
+        const categoryStore = new CategoryStore();
+        const category = await categoryStore.createCategory("");
     });
 });
 
