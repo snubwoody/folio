@@ -1,0 +1,1 @@
+DROP TABLE income_streams;
