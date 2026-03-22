@@ -61,7 +61,7 @@ jobs:
           version: 10
           run_install: false
       - name: Install sqlx-cli
-        run: nu scripts/download-sqlx.nu
+        run: cargo install sqlx-cli
       - uses: taiki-e/install-action@v2
         with:
           tool: nextest
