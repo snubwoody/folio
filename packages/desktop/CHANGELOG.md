@@ -1,7 +1,9 @@
 # @folio/desktop
 
-## (unreleased)
+## 2.0.0
 
+- Delete income_streams table ([#271](https://github.com/snubwoody/folio/pull/271))
+- Delete income and expense tables ([#267](https://github.com/snubwoody/folio/pull/267))
 - Add SettingsStore ([#265](https://github.com/snubwoody/folio/pull/265))
 - Add action bar for transactions ([#259](https://github.com/snubwoody/folio/pull/259))
 - Add transaction toolbar ([#256](https://github.com/snubwoody/folio/pull/256))

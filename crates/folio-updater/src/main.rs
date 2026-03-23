@@ -27,7 +27,6 @@ struct Platform {
     url: String,
 }
 
-// TODO: add is updatable
 /// Generates a `release-info.json` file containing information about the
 /// latest release.
 pub async fn release_info() -> anyhow::Result<()> {
@@ -38,11 +37,8 @@ pub async fn release_info() -> anyhow::Result<()> {
         .get_latest()
         .await?;
 
-    // TODO: log version?
     info!("Fetched latest release from github");
 
-    // TODO: if it fails leave it as null
-    // TODO: add macos
     let mut json = ReleaseJson {
         version: release.tag_name.clone(),
         notes: release.body.clone().unwrap_or_default(),
