@@ -3,7 +3,7 @@
     import { Popover } from "bits-ui";
     import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
-    import { parseDate } from "@internationalized/date";
+    import { parseDate, type DateValue } from "@internationalized/date";
 
     interface Props{
         transaction: Transaction
@@ -13,10 +13,11 @@
 
     let displayDate = $state(formatDate(transaction.transactionDate));
 
-    const updateDate = (year:number,month:number,day:number) => {
-        transactionStore.editTransaction({ id: transaction.id,transactionDate: `${year}-${month}-${day}` });
-        displayDate = formatDate(`${year}-${month}-${day}`);
+    const updateDate = (date: DateValue) => {
+        transactionStore.editTransaction({ id: transaction.id,transactionDate: `${date.year}-${date.month}-${date.day}` });
+        displayDate = formatDate(`${date.year}-${date.month}-${date.day}`);
     };
+    let date = $state(parseDate(transaction.transactionDate));
 </script>
 
 <td data-col="date">
@@ -28,7 +29,7 @@
         </Popover.Trigger>
         <Popover.Portal>
             <Popover.Content>
-                <Calendar initialValue={parseDate(transaction.transactionDate)} onDateChange={updateDate}/>
+                <Calendar bind:value={date} onDateChange={updateDate}/>
             </Popover.Content>
         </Popover.Portal>
     </Popover.Root>

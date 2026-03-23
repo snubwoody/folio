@@ -3,27 +3,29 @@
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
     import type { DateValue } from "@internationalized/date";
 
-    type DateFn = (year: number, month: number, day: number) => void;
+    type DateFn = (date: DateValue) => void;
 
     type Props = {
         onDateChange?: DateFn;
-        initialValue?: DateValue
+        value?: DateValue
     };
 
-    const { onDateChange,initialValue }:Props = $props();
-    // let value = $state(today(getLocalTimeZone()));
-    // TODO: add value input
-    let value: DateValue | undefined = $state(initialValue);
-    $effect(() => {
-        if (!value || !onDateChange) return;
-        onDateChange(value?.year, value?.month, value?.day);
-    });
+    let { 
+        value = $bindable(),
+        onDateChange
+    }:Props = $props();
+
+    function updateDate(date: DateValue | undefined){
+        if (!date || !onDateChange) return;
+        onDateChange(date);
+    }
 </script>
 
 <Calendar.Root
     weekdayFormat="short"
     fixedWeeks={true}
     type="single"
+    onValueChange={updateDate}
     bind:value
 >
     {#snippet children({ months, weekdays })}
@@ -38,8 +40,7 @@
                 <ChevronRight />
             </Calendar.NextButton>
         </Calendar.Header>
-        <div
-        >
+        <div>
             {#each months as month, i (i)}
                 <Calendar.Grid>
                     <Calendar.GridHead>
@@ -56,12 +57,8 @@
                         {#each month.weeks as weekDates, i (i)}
                             <Calendar.GridRow>
                                 {#each weekDates as date, i (i)}
-                                    <Calendar.Cell
-                                        {date}
-                                        month={month.value}
-                                    >
-                                        <Calendar.Day
-                                        >
+                                    <Calendar.Cell {date} month={month.value}>
+                                        <Calendar.Day>
                                             {date.day}
                                         </Calendar.Day>
                                     </Calendar.Cell>
