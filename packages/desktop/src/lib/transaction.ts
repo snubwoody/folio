@@ -1,8 +1,6 @@
 import { CalendarDate, getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 import { invoke } from "@tauri-apps/api/core";
 
-
-
 /**
  * Raw transaction from the backend
  */
@@ -35,6 +33,16 @@ interface CreateTransactionOpts{
     amount?: string,
     /** The date the transaction occurred. */
     date?: CalendarDate,
+}
+
+export interface EditTransactionOpts {
+    id: string;
+    fromAccountId?: string;
+    note?: string;
+    categoryId?: string;
+    transactionDate?: string;
+    amount?: string;
+    toAccountId?: string;
 }
 
 
@@ -70,7 +78,7 @@ export async function getTransactions(): Promise<Transaction[]>{
 
 
 /** 
- * Creates a new transaction
+ * Creates a new transaction.
  */
 export async function createTransaction({
     accountId,
@@ -113,6 +121,15 @@ export async function setInflow(id:string,amount:string): Promise<Transaction> {
     );
     return parseTransaction(transaction);
 }
+
+export async function editTransaction(opts: EditTransactionOpts) {
+    const transaction = await invoke<RawTransaction>("edit_transaction", {
+        data: opts
+    });
+
+    return parseTransaction(transaction);
+}
+
 
 /**
  * Deletes a list of transactions.

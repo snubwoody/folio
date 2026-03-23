@@ -160,14 +160,14 @@ export class TransactionStore {
     }
 
     /**
-     * Empties the transaction list
+     * Empties the transaction list.
      */
     clear() {
         this.#transactions = [];
     }
 
     /**
-     * Loads the transactions from the backend
+     * Loads the transactions from the backend.
      */
     async load() {
         let transactions = await invoke<Transaction[]>("fetch_transactions");
