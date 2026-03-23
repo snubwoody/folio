@@ -3,7 +3,7 @@ import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
 import { type Transaction,TransactionStore } from "$lib/stores/transaction.svelte";
 import {createTransaction, getTransactions} from "./transaction";
-import { parseDate } from "@internationalized/date";
+import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 
 afterEach(() => {
     clearMocks();
@@ -38,30 +38,76 @@ test("getTransactions",async()=>{
     expect(transaction.note).toBe("Note");
 });
 
-test("createTransaction",async()=>{
-    mockIPC((cmd,args) => {
-        if (cmd === "create_expense" ) {
-            console.log(args);
-            const payload = args as {amount:string,date:string,account:string};
-            let transactions: Transaction = {
-                id:"1",
-                fromAccountId:payload.account,
-                transactionDate:payload.date,
-                amount:payload.amount, 
-            };
-            return transactions;
-        }
-    });
+describe("createTransaction",()=>{
+    test("parse args",async()=>{
+        mockIPC((cmd,args) => {
+            if (cmd === "create_expense" ) {
+                const payload = args as {amount:string,date:string,account:string};
+                let transactions: Transaction = {
+                    id:"1",
+                    fromAccountId:payload.account,
+                    transactionDate:payload.date,
+                    amount:payload.amount, 
+                };
+                return transactions;
+            }
+        });
 
-    const transaction = await createTransaction({
-        accountId:"A1",
-        amount:"120",
-        date: parseDate("2024-12-12")
-    });
+        const transaction = await createTransaction({
+            accountId:"A1",
+            amount:"120",
+            date: parseDate("2024-12-12")
+        });
 
-    expect(transaction.date).toBe(parseDate("2024-12-12"));
-    expect(transaction.fromAccountId).toBe("A1");
-    expect(transaction.amount).toBe("120");
+        expect(transaction.date).toStrictEqual(parseDate("2024-12-12"));
+        expect(transaction.fromAccountId).toBe("A1");
+        expect(transaction.amount).toBe("120");
+    });
+    test("default date is today",async()=>{
+        mockIPC((cmd,args) => {
+            if (cmd === "create_expense" ) {
+                const payload = args as {amount:string,date:string,account:string};
+                let transactions: Transaction = {
+                    id:"1",
+                    fromAccountId:payload.account,
+                    transactionDate:payload.date,
+                    amount:payload.amount, 
+                };
+                return transactions;
+            }
+        });
+
+        const today = toCalendarDate(now(getLocalTimeZone()));
+        const transaction = await createTransaction({
+            accountId:"A1",
+            amount:"120",
+        });
+
+        expect(transaction.date).toStrictEqual(today);
+    });
+    test("default amount is 0",async()=>{
+        mockIPC((cmd,args) => {
+            if (cmd === "create_expense" ) {
+                const payload = args as {amount:string,date:string,account:string};
+                let transactions: Transaction = {
+                    id:"1",
+                    fromAccountId:payload.account,
+                    transactionDate:payload.date,
+                    amount:payload.amount, 
+                };
+                return transactions;
+            }
+        });
+
+        const transaction = await createTransaction({
+            accountId:"A1",
+        });
+
+        expect(transaction.amount).toBe("0");
+    });
 });
+
+// TODO: test default date
+
 
 

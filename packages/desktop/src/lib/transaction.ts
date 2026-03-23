@@ -28,6 +28,16 @@ interface Transaction{
     note?: string,
 }
 
+interface CreateTransactionOpts{
+    /** The account id. */
+    accountId: string
+    /** The amount exchanged, defaults to 0. */
+    amount?: string,
+    /** The date the transaction occurred. */
+    date?: CalendarDate,
+}
+
+
 /**
  * Parses a raw transaction from the backend into the user facing 
  * {@link Transaction} type.
@@ -58,14 +68,6 @@ export async function getTransactions(): Promise<Transaction[]>{
     return transactions;
 }
 
-interface CreateTransactionOpts{
-    /** The account id. */
-    accountId: string
-    /** The amount exchanged, defaults to 0. */
-    amount?: string,
-    /** The date the transaction occurred. */
-    date?: CalendarDate,
-}
 
 /** 
  * Creates a new transaction
@@ -77,37 +79,45 @@ export async function createTransaction({
 }:CreateTransactionOpts): Promise<Transaction>{
     const response = await invoke<RawTransaction>("create_expense", {
         amount,
-        date,
+        date: date.toString(),
         account: accountId
     });
 
     return parseTransaction(response);
 }
 
-    // async createExpense({
-    //     amount = "0.0",
-    //     date,
-    //     note,
-    //     account
-    // }: {
-    //     amount: string;
-    //     date: string;
-    //     note?: string;
-    //     account: string;
-    // }) {
-    //     // TODO: set current date as default
-    //     const transaction = await invoke<Transaction>("create_expense", {
-    //         amount,
-    //         date,
-    //         note,
-    //         account
-    //     });
-    //     const transactions = this.transactions;
-    //     this.#transactions = [transaction, ...transactions];
-    // }
+/**
+ * Sets the outflow property of a transaction. Calling this on an income
+ * will convert it into an expense.
+ * @param id The id of the transaction
+ * @param amount The amount to set as the outflow
+ */
+export async function setOutflow(id:string,amount:string): Promise<Transaction> {
+    const transaction = await invoke<RawTransaction>(
+        "set_transaction_outflow",
+        { id, amount }
+    );
+    return parseTransaction(transaction);
+}
 
+/**
+ * Sets the inflow property of a transaction. Calling this on an expense
+ * will convert it into an income.
+ * @param id The id of the transaction
+ * @param amount The amount to set as the outflow
+ */
+export async function setInflow(id:string,amount:string): Promise<Transaction> {
+    const transaction = await invoke<RawTransaction>(
+        "set_transaction_inflow",
+        { id, amount }
+    );
+    return parseTransaction(transaction);
+}
 
-async function deleteTransactions(ids: string[]) {
-    // TODO: resort
+/**
+ * Deletes a list of transactions.
+ * @param ids The ids of the transactions to delete
+ */
+export async function deleteTransactions(ids: string[]) {
     await invoke("delete_transactions", { ids });
 }
