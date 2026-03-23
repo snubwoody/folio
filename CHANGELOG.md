@@ -1,10 +1,11 @@
 # Folio Changelog
 
-## (unreleased)
+## 2.0.0 - 23-03-2026
 
 - Combined incomes and expenses into transactions table
-- Added transaction toolbar, containing essential commands like "Add Transaction"
+- Added transaction toolbar
 - Added action bar for manipulating transactions
+- Removed support section from settings
 
 ## 1.4.1 - 19-02-2026
 
