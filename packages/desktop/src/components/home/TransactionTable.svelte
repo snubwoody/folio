@@ -13,7 +13,7 @@
 
 <table>
     <colgroup>
-        <col class="w-8">
+        <col class="w-7">
         <col>
         <col>
         <col>
@@ -62,9 +62,9 @@
     th{
         text-align: left;
 
-        &:last-child{
+        /* &:last-child{
             text-align: right;
-        }
+        } */
 
         padding: 8px 16px;
         border: 1px solid var(--color-neutral-50);
