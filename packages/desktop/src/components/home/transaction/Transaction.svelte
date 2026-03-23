@@ -30,6 +30,7 @@
     // TODO: clear money fields if there was an error parsing or reset
     // TODO: add set_account command instead
     // FIXME: inflow causing overflow
+    // TODO: switch to divs or ul
 </script>
 
 <tr data-selected={selected}>
