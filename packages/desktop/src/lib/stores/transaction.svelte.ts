@@ -55,8 +55,11 @@ export class TransactionStore {
         return this.#transactions;
     }
 
+    /**
+     * Deletes a list of transactions.
+     * @param ids The ids of the transactions to delete.
+     */
     async deleteTransactions(ids: string[]) {
-        // TODO: resort
         await invoke("delete_transactions", { ids });
         this.#transactions = this.#transactions.filter(t => !ids.includes(t.id));
     }
