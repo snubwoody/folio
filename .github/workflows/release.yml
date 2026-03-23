@@ -86,7 +86,7 @@ jobs:
             target/release/**/*.sig
             target/release/**/*.rpm
             target/release/**/PKGBUILD
-            target/release/**/.AppImage
+            target/release/**/*.AppImage
             target/release/**/*.msi
             target/release/**/*.msix
             target/release/**/*-setup.exe
