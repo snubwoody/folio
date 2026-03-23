@@ -4,6 +4,7 @@
     import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
     import { parseDate, type DateValue } from "@internationalized/date";
+    import { fa } from "zod/locales";
 
     interface Props{
         transaction: Transaction
@@ -13,15 +14,17 @@
 
     let displayDate = $state(formatDate(transaction.transactionDate));
 
-    const updateDate = (date: DateValue) => {
-        transactionStore.editTransaction({ id: transaction.id,transactionDate: `${date.year}-${date.month}-${date.day}` });
+    const updateDate = async (date: DateValue) => {
+        calendarOpen = false;
+        await transactionStore.editTransaction({ id: transaction.id,transactionDate: `${date.year}-${date.month}-${date.day}` });
         displayDate = formatDate(`${date.year}-${date.month}-${date.day}`);
     };
     let date = $state(parseDate(transaction.transactionDate));
+    let calendarOpen = $state(false);
 </script>
 
 <td data-col="date">
-    <Popover.Root>
+    <Popover.Root bind:open={calendarOpen}>
         <Popover.Trigger>
             <time datetime={transaction.transactionDate}>
                 {displayDate}
