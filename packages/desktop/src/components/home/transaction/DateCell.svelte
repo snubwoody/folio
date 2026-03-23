@@ -4,7 +4,6 @@
     import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
     import { parseDate, type DateValue } from "@internationalized/date";
-    import { fa } from "zod/locales";
 
     interface Props{
         transaction: Transaction

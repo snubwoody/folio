@@ -10,7 +10,7 @@
         value?: DateValue
     };
 
-    let { 
+    let {
         value = $bindable(),
         onDateChange
     }:Props = $props();
