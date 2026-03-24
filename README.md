@@ -28,7 +28,7 @@ See the [website](https://folio.wakunguma.com) for more details.
 
 ## Roadmap
 
-Folio is currently in beta, see the [open issues](https://github.com/snubwoody/folio/issues) for a list of upcoming changes.
+See the [open issues](https://github.com/snubwoody/folio/issues) for a list of proposed changes.
 
 - [Feature requests](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Afeature)
 - [Known bugs](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Abug)
