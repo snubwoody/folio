@@ -26,20 +26,38 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    // import { check } from "@tauri-apps/plugin-updater";
+    import { check, type Update } from "@tauri-apps/plugin-updater";
+    import {relaunch} from "@tauri-apps/plugin-process";
+    import { addToast } from "$lib/toast.svelte";
+    import { logger } from "$lib/logger";
+    import { BundleType, getBundleType } from "@tauri-apps/api/app";
 
     const { children } = $props();
-    // Check app bundle
-    // url: https://v2.tauri.app/reference/javascript/api/namespaceapp/
 
-    // async function checkForUpdate(){
-    //     // TODO: log
-    //     console.log("Checking for updates");
-    //     const update = await check();
-    //     if(update){
-    //         await update.downloadAndInstall()
-    //     }
-    // }
+    async function installUpdate(update: Update){
+        logger.info(`Downloading new update (${update.version})`);
+        await update.downloadAndInstall().catch(err => logger.error(`Failed to install new update: ${err.message}`));
+        logger.info(`Installed update (${update.version}), relaunching app...`);
+        await relaunch();
+    }
+
+    async function checkForUpdate(){
+        const bundleType = await getBundleType();
+        const updatableBundles = [BundleType.AppImage,BundleType.Nsis,BundleType.App];
+        if (!updatableBundles.includes(bundleType)) return;
+
+        const update = await check();
+        if (update){
+            addToast({
+                title: "A new update is available",
+                primaryAction:{
+                    text: "Download and install",
+                    action: () => installUpdate(update)
+                }
+            });
+        }
+
+    }
 
     onMount(async () => {
         await invoke("create_missing_budgets");
@@ -48,6 +66,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         await transactionStore.load();
         await accountStore.load();
         await categoryStore.load();
+        checkForUpdate();
     });
 </script>
 
