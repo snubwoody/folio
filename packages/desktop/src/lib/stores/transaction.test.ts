@@ -44,7 +44,7 @@ describe("TransactionStore",() => {
 
         const transactionStore = new TransactionStore();
         await transactionStore.load();
-        transactionStore.deleteTransactions(["1","2"]);
+        await transactionStore.deleteTransactions(["1","2"]);
         expect(transactionStore.transactions).toHaveLength(1);
         expect(transactionStore.transactions[0].id).toBe("3");
     });
