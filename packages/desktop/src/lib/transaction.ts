@@ -14,7 +14,7 @@ interface RawTransaction {
     note?: string;
 }
 
-interface Transaction{
+export interface Transaction{
     id: string,
     amount: string,
     fromAccountId?: string,
@@ -118,6 +118,19 @@ export async function setInflow(id:string,amount:string): Promise<Transaction> {
     const transaction = await invoke<RawTransaction>(
         "set_transaction_inflow",
         { id, amount }
+    );
+    return parseTransaction(transaction);
+}
+
+/**
+ * Sets the payee of a transaction.
+ * @param id The id of the transaction
+ * @param accountId The id of the payee account
+ */
+export async function setPayee(id:string,accountId:string): Promise<Transaction> {
+    const transaction = await invoke<RawTransaction>(
+        "set_transaction_payee",
+        { id, accountId }
     );
     return parseTransaction(transaction);
 }
