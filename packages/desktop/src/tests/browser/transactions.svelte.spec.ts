@@ -9,7 +9,7 @@ import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
 import { mockIPC, clearMocks } from "@tauri-apps/api/mocks";
 import { randomId } from "$lib/toast.svelte";
-import type { Transaction } from "$lib/transaction";
+import type { RawTransaction, Transaction } from "$lib/transaction";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 
 beforeEach(() => {
@@ -30,10 +30,10 @@ describe("Transaction toolbar", () => {
     });
     test("add transaction button creates a new transaction", async () => {
         mockIPC((cmd) => {
-            const transaction: Transaction = {
+            const transaction: RawTransaction = {
                 id: "t1",
                 amount: "",
-                date: today(getLocalTimeZone())
+                transactionDate: today(getLocalTimeZone()).toString()
             };
 
             if (cmd == "create_expense") {
@@ -67,7 +67,7 @@ describe("Transaction actionbar", () => {
     test("show all transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "create_expense") {
-                const t1: Transaction = { id: randomId(),date: today(getLocalTimeZone()),amount:"" };
+                const t1: RawTransaction = { id: randomId(),transactionDate: today(getLocalTimeZone()).toString(),amount:"" };
                 return t1;
             }
         });
@@ -104,7 +104,7 @@ describe("Transaction actionbar", () => {
     test("delete button deletes transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "create_expense") {
-                const t1: Transaction = { id: "t1",date: today(getLocalTimeZone()),amount:"" };
+                const t1: RawTransaction = { id: "t1",transactionDate: today(getLocalTimeZone()).toString(),amount:"" };
                 return t1;
             }
         });

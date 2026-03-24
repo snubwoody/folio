@@ -1,7 +1,7 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import { createTransaction, getTransactions, type Transaction } from "./transaction";
+import { createTransaction, getTransactions, type RawTransaction, type Transaction } from "./transaction";
 import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 
 afterEach(() => {
@@ -11,12 +11,12 @@ afterEach(() => {
 test("getTransactions",async() => {
     mockIPC((cmd) => {
         if (cmd === "fetch_transactions" ) {
-            let transactions: Transaction[] = [
+            let transactions: RawTransaction[] = [
                 {
                     id:"1",
                     fromAccountId:"A1",
                     toAccountId:"A2",
-                    date: parseDate("2023-12-01"),
+                    transactionDate: "2023-12-01",
                     amount:"24.24",
                     note: "Note",
                     categoryId: "C1"
@@ -42,10 +42,10 @@ describe("createTransaction",() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {
                 const payload = args as {amount:string,date:string,account:string};
-                let transactions: Transaction = {
+                let transactions: RawTransaction = {
                     id:"1",
                     fromAccountId:payload.account,
-                    date: parseDate("2023-12-01"),
+                    transactionDate:payload.date,
                     amount:payload.amount
                 };
                 return transactions;
@@ -66,10 +66,10 @@ describe("createTransaction",() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {
                 const payload = args as {amount:string,date:string,account:string};
-                let transactions: Transaction = {
+                let transactions: RawTransaction = {
                     id:"1",
                     fromAccountId:payload.account,
-                    date:parseDate(payload.date),
+                    transactionDate: payload.date,
                     amount:payload.amount
                 };
                 return transactions;
@@ -88,10 +88,10 @@ describe("createTransaction",() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {
                 const payload = args as {amount:string,date:string,account:string};
-                let transactions: Transaction = {
+                let transactions: RawTransaction = {
                     id:"1",
                     fromAccountId:payload.account,
-                    date: parseDate(payload.date),
+                    transactionDate: payload.date,
                     amount:payload.amount
                 };
                 return transactions;
@@ -102,7 +102,7 @@ describe("createTransaction",() => {
             accountId:"A1"
         });
 
-        expect(transaction.amount).toBe("0");
+        expect(transaction.amount).toBe("0.00");
     });
 });
 

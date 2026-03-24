@@ -14,7 +14,10 @@ export class TransactionStore {
      * Deletes a list of transactions.
      * @param ids The ids of the transactions to delete.
      */
-    deleteTransactions = async (ids: string[]) => await deleteTransactions(ids);
+    async deleteTransactions(ids: string[]){
+        await deleteTransactions(ids);
+        this.#transactions = this.#transactions.filter(t => !ids.includes(t.id));
+    }
 
     /**
      * Creates a new expense

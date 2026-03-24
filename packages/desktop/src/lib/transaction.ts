@@ -8,7 +8,7 @@ export type TransactionType = "Expense" | "Income" | "Transfer";
 /**
  * Raw transaction from the backend
  */
-interface RawTransaction {
+export interface RawTransaction {
     id: string;
     amount: string;
     fromAccountId?: string;
