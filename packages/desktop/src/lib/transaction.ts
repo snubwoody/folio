@@ -1,5 +1,9 @@
+// Copyright (C) 2025 Wakunguma Kalimukwa
+// SPDX-License-Identifier: GPL-3.0-or-later
 import { CalendarDate, getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 import { invoke } from "@tauri-apps/api/core";
+
+export type TransactionType = "Expense" | "Income" | "Transfer";
 
 /**
  * Raw transaction from the backend
@@ -26,7 +30,7 @@ export interface Transaction{
     note?: string,
 }
 
-interface CreateTransactionOpts{
+export interface CreateTransactionOpts{
     /** The account id. */
     accountId: string
     /** The amount exchanged, defaults to 0. */
@@ -151,3 +155,26 @@ export async function editTransaction(opts: EditTransactionOpts) {
 export async function deleteTransactions(ids: string[]) {
     await invoke("delete_transactions", { ids });
 }
+
+
+/**
+ * Returns the type of transaction
+ * @param transaction
+ */
+export const transactionType = (transaction: Transaction): TransactionType => {
+    if (
+        transaction.toAccountId === null ||
+        transaction.toAccountId === undefined
+    ) {
+        return "Expense";
+    }
+
+    if (
+        transaction.fromAccountId === null ||
+        transaction.fromAccountId === undefined
+    ) {
+        return "Income";
+    }
+
+    return "Transfer";
+};
