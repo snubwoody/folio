@@ -3,8 +3,8 @@
     import { Popover } from "bits-ui";
     import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
-    import { parseDate, type DateValue } from "@internationalized/date";
-    import { type Transaction } from "$lib/transaction";
+    import type { DateValue } from "@internationalized/date";
+    import type { Transaction } from "$lib/transaction";
 
     interface Props{
         transaction: Transaction

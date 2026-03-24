@@ -1,14 +1,14 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import {createTransaction, getTransactions, type Transaction} from "./transaction";
+import { createTransaction, getTransactions, type Transaction } from "./transaction";
 import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 
 afterEach(() => {
     clearMocks();
 });
 
-test("getTransactions",async()=>{
+test("getTransactions",async() => {
     mockIPC((cmd) => {
         if (cmd === "fetch_transactions" ) {
             let transactions: Transaction[] = [
@@ -17,10 +17,10 @@ test("getTransactions",async()=>{
                     fromAccountId:"A1",
                     toAccountId:"A2",
                     date: parseDate("2023-12-01"),
-                    amount:"24.24", 
+                    amount:"24.24",
                     note: "Note",
-                    categoryId: "C1",
-                },
+                    categoryId: "C1"
+                }
             ];
             return transactions;
         }
@@ -37,8 +37,8 @@ test("getTransactions",async()=>{
     expect(transaction.note).toBe("Note");
 });
 
-describe("createTransaction",()=>{
-    test("parse args",async()=>{
+describe("createTransaction",() => {
+    test("parse args",async() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {
                 const payload = args as {amount:string,date:string,account:string};
@@ -46,7 +46,7 @@ describe("createTransaction",()=>{
                     id:"1",
                     fromAccountId:payload.account,
                     date: parseDate("2023-12-01"),
-                    amount:payload.amount, 
+                    amount:payload.amount
                 };
                 return transactions;
             }
@@ -62,7 +62,7 @@ describe("createTransaction",()=>{
         expect(transaction.fromAccountId).toBe("A1");
         expect(transaction.amount).toBe("120");
     });
-    test("default date is today",async()=>{
+    test("default date is today",async() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {
                 const payload = args as {amount:string,date:string,account:string};
@@ -70,7 +70,7 @@ describe("createTransaction",()=>{
                     id:"1",
                     fromAccountId:payload.account,
                     date:parseDate(payload.date),
-                    amount:payload.amount, 
+                    amount:payload.amount
                 };
                 return transactions;
             }
@@ -79,12 +79,12 @@ describe("createTransaction",()=>{
         const today = toCalendarDate(now(getLocalTimeZone()));
         const transaction = await createTransaction({
             accountId:"A1",
-            amount:"120",
+            amount:"120"
         });
 
         expect(transaction.date).toStrictEqual(today);
     });
-    test("default amount is 0",async()=>{
+    test("default amount is 0",async() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {
                 const payload = args as {amount:string,date:string,account:string};
@@ -92,14 +92,14 @@ describe("createTransaction",()=>{
                     id:"1",
                     fromAccountId:payload.account,
                     date: parseDate(payload.date),
-                    amount:payload.amount, 
+                    amount:payload.amount
                 };
                 return transactions;
             }
         });
 
         const transaction = await createTransaction({
-            accountId:"A1",
+            accountId:"A1"
         });
 
         expect(transaction.amount).toBe("0");

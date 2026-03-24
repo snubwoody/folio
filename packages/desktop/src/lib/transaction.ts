@@ -49,7 +49,6 @@ export interface EditTransactionOpts {
     toAccountId?: string;
 }
 
-
 /**
  * Parses a raw transaction from the backend into the user facing.
  * {@link Transaction} type.
@@ -146,7 +145,6 @@ export async function editTransaction(opts: EditTransactionOpts) {
     return parseTransaction(transaction);
 }
 
-
 /**
  * Deletes a list of transactions.
  * @param ids The ids of the transactions to delete
@@ -154,7 +152,6 @@ export async function editTransaction(opts: EditTransactionOpts) {
 export async function deleteTransactions(ids: string[]) {
     await invoke("delete_transactions", { ids });
 }
-
 
 /**
  * Returns the type of transaction

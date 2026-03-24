@@ -7,7 +7,7 @@
 
     async function addTransaction() {
         const account = accountStore.accounts[0];
-        await transactionStore.createExpense({accountId: account.id});
+        await transactionStore.createExpense({ accountId: account.id });
     }
 </script>
 

@@ -5,7 +5,7 @@
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import {type Transaction, transactionType} from "$lib/transaction";
+    import { type Transaction, transactionType } from "$lib/transaction";
     import DateCell from "$components/home/transaction/DateCell.svelte";
     import AccountCell from "./AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";

@@ -125,7 +125,7 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: "A1",
             amount: "500.0",
-            date: parseDate("2024-12-12"),
+            date: parseDate("2024-12-12")
         };
 
         const tableStore = new TableStore();
@@ -145,7 +145,7 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: "A1",
             amount: "500.0",
-            date: parseDate("2024-12-12"),
+            date: parseDate("2024-12-12")
         };
 
         const tableStore = new TableStore();
@@ -167,7 +167,7 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: account.id,
             amount: "500.0",
-            date: parseDate("2024-12-12"),
+            date: parseDate("2024-12-12")
         };
 
         const tableStore = new TableStore();
@@ -186,7 +186,7 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: account.id,
             amount: "500.0",
-            date: parseDate("2024-12-12"),
+            date: parseDate("2024-12-12")
         };
 
         const tableStore = new TableStore();
@@ -208,7 +208,7 @@ describe("AccountCell", async () => {
             id: "1",
             toAccountId: account.id,
             amount: "500.0",
-            date: parseDate("2024-12-12"),
+            date: parseDate("2024-12-12")
         };
 
         const screen = render(AccountCell, {
@@ -226,7 +226,7 @@ describe("AccountCell", async () => {
             toAccountId: account.id,
             fromAccountId: account2.id,
             amount: "500.0",
-            date: parseDate("2024-12-12"),
+            date: parseDate("2024-12-12")
         };
 
         const screen = render(AccountCell, {

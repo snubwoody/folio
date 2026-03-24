@@ -17,9 +17,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { formatAmount } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
-    import { transactionStore, } from "$lib/stores/transaction.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import {getLocalTimeZone, isSameMonth, today} from "@internationalized/date";
+    import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
     import { transactionType } from "$lib/transaction";
 
     const currentDate = today(getLocalTimeZone());

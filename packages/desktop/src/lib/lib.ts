@@ -65,7 +65,6 @@ export type FeatureRequest = {
  */
 export type BugReport = FeatureRequest;
 
-
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
     const date = new Date(Number(year), Number(month) - 1, Number(day));
