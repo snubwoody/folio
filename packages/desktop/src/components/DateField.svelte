@@ -16,15 +16,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import { format } from "date-fns";
+    import { getLocalTimeZone, today } from "@internationalized/date";
+
 	type Props = {
 	    onChange?: (year: number,month: number,day: number) => void
 	};
 
     const { onChange }: Props = $props();
-    const today = format(new Date(),"yyyy-MM-dd");
+
+    const currentDate = today(getLocalTimeZone());
     // The date is always parsed as YYYY-MM-DD regardless of the locale.
-    let selectedDate = $state(today);
+    let selectedDate = $state(currentDate.toString());
 
     $effect(() => {
         const [year,month,day] = selectedDate.split("-").map(d => parseInt(d));
