@@ -31,7 +31,7 @@ See the [website](https://folio.wakunguma.com) for more details.
 You can find the installers on the latest [Github release](https://github.com/snubwoody/folio/releases/latest).
 
 
-- 🪟 Windows: Download the latest `-setup.exe` file.
+- 🪟 [Windows](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe): Download the latest `-setup.exe` file.
 - 🍎 MacOS: Download the latest `.dmg` file.
 - 🐧 Linux (.deb): Download the latest `.deb` file.
 - 🐧 Linux (.AppImage): Download the latest `.AppImage` file.
