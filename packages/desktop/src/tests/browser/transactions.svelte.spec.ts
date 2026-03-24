@@ -3,13 +3,14 @@ import TransactionComponent from "$components/home/transaction/Transaction.svelt
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
 import Actionbar from "$components/home/transaction/Actionbar.svelte";
 import AccountCell from "$components/home/transaction/AccountCell.svelte";
-import { transactionStore, type Transaction } from "$lib/stores/transaction.svelte";
+import { transactionStore } from "$lib/stores/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
-
 import { mockIPC, clearMocks } from "@tauri-apps/api/mocks";
 import { randomId } from "$lib/toast.svelte";
+import type { Transaction } from "$lib/transaction";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 
 beforeEach(() => {
     accountStore.clear();
@@ -32,7 +33,7 @@ describe("Transaction toolbar", () => {
             const transaction: Transaction = {
                 id: "t1",
                 amount: "",
-                transactionDate: ""
+                date: today(getLocalTimeZone())
             };
 
             if (cmd == "create_expense") {
@@ -66,14 +67,14 @@ describe("Transaction actionbar", () => {
     test("show all transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "create_expense") {
-                const t1: Transaction = { id: randomId(),transactionDate:"",amount:"" };
+                const t1: Transaction = { id: randomId(),date: today(getLocalTimeZone()),amount:"" };
                 return t1;
             }
         });
-        await transactionStore.createExpense({ amount: "", date: "", account: "" });
-        await transactionStore.createExpense({ amount: "", date: "", account: "" });
-        await transactionStore.createExpense({ amount: "", date: "", account: "" });
-        await transactionStore.createExpense({ amount: "", date: "", account: "" });
+        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
+        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
+        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
+        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
 
         const tableStore = new TableStore();
         tableStore.toggleSelectAll();
@@ -103,12 +104,12 @@ describe("Transaction actionbar", () => {
     test("delete button deletes transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "create_expense") {
-                const t1: Transaction = { id: "t1",transactionDate:"",amount:"" };
+                const t1: Transaction = { id: "t1",date: today(getLocalTimeZone()),amount:"" };
                 return t1;
             }
         });
 
-        await transactionStore.createExpense({ amount: "", date:"",account:"" });
+        await transactionStore.createExpense({ amount: "", date: today(getLocalTimeZone()),accountId:"" });
         expect(transactionStore.transactions).toHaveLength(1);
         const tableStore = new TableStore();
         tableStore.select("t1");
@@ -124,7 +125,7 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: "A1",
             amount: "500.0",
-            transactionDate: "2024-12-12"
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
@@ -144,7 +145,7 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: "A1",
             amount: "500.0",
-            transactionDate: "2024-12-12"
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
@@ -166,7 +167,7 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: account.id,
             amount: "500.0",
-            transactionDate: "2024-12-12"
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
@@ -185,7 +186,7 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: account.id,
             amount: "500.0",
-            transactionDate: "2024-12-12"
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
@@ -207,7 +208,7 @@ describe("AccountCell", async () => {
             id: "1",
             toAccountId: account.id,
             amount: "500.0",
-            transactionDate: "2024-12-12"
+            date: parseDate("2024-12-12"),
         };
 
         const screen = render(AccountCell, {
@@ -225,7 +226,7 @@ describe("AccountCell", async () => {
             toAccountId: account.id,
             fromAccountId: account2.id,
             amount: "500.0",
-            transactionDate: "2024-12-12"
+            date: parseDate("2024-12-12"),
         };
 
         const screen = render(AccountCell, {

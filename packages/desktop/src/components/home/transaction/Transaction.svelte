@@ -1,10 +1,11 @@
 <script lang="ts">
     import SelectCell  from "./SelectCell.svelte";
-    import { accountStore } from "$lib/stores/account.svelte.js";
-    import { categoryStore } from "$lib/stores/categories.svelte.js";
+    import { accountStore } from "$lib/stores/account.svelte";
+    import { categoryStore } from "$lib/stores/categories.svelte";
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
-    import { transactionStore, type Transaction,transactionType } from "$lib/stores/transaction.svelte.js";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
+    import {type Transaction, transactionType} from "$lib/transaction";
     import DateCell from "$components/home/transaction/DateCell.svelte";
     import AccountCell from "./AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
@@ -22,7 +23,6 @@
 
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
     // TODO: make the row a form
-    // FIXME: category not reactive
     let note = $state(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(settingsStore.settings.currencyCode));
@@ -55,12 +55,12 @@
             {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
             <SelectCell
                 value={account?.id}
-                onChange={(id) => transactionStore.setPayee({ id: transaction.id,accountId: id })}
+                onChange={(accountId) => transactionStore.setPayee(transaction.id,accountId)}
                 items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
             />
         {:else}
             <SelectCell
-                onChange={(id) => transactionStore.setPayee({ id: transaction.id,accountId: id })}
+                onChange={(accountId) => transactionStore.setPayee(transaction.id,accountId)}
                 items={payeeOptions.map(a => ({ value: a.id, label: a.name }))}
             />
         {/if}
@@ -92,13 +92,13 @@
                     type="text"
                     value={formatAmountWithoutSymbol(transaction.amount)}
                     class="outline-none"
-                    onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
+                    onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
                 >
             {:else}
                 <input
                     type="text"
                     class="outline-none"
-                    onblur={(e) => transactionStore.setOutflow({ id:transaction.id,amount:e.currentTarget.value })}
+                    onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
                 >
             {/if}
         </div>
@@ -113,13 +113,13 @@
                     type="text"
                     value={formatAmountWithoutSymbol(transaction.amount)}
                     class="outline-none"
-                    onblur={(e) => transactionStore.setInflow({ id:transaction.id,amount:e.currentTarget.value })}
+                    onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
                 >
             {:else}
                 <input
                     type="text"
                     class="outline-none"
-                    onblur={(e) => transactionStore.setInflow({ id:transaction.id,amount:e.currentTarget.value })}
+                    onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
                 >
             {/if}
         </div>

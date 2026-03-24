@@ -17,19 +17,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { formatAmount } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
-    import { isThisMonth } from "date-fns";
-    import { transactionStore, transactionType } from "$lib/stores/transaction.svelte";
+    import { transactionStore, } from "$lib/stores/transaction.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
+    import {getLocalTimeZone, isSameMonth, today} from "@internationalized/date";
+    import { transactionType } from "$lib/transaction";
 
+    const currentDate = today(getLocalTimeZone());
     const incomes = transactionStore.transactions.filter(transaction => {
         const transType = transactionType(transaction);
-        const date = new Date(transaction.transactionDate);
-        return isThisMonth(date) && transType === "Income";
+        return isSameMonth(transaction.date,currentDate) && transType === "Income";
     });
     const expenses = transactionStore.transactions.filter(transaction => {
         const transType = transactionType(transaction);
-        const date = new Date(transaction.transactionDate);
-        return isThisMonth(date) && transType === "Expense";
+        return isSameMonth(transaction.date,currentDate) && transType === "Expense";
     });
 
     const budgets = appStore.budgets;

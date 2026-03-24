@@ -42,6 +42,11 @@ export class TransactionStore {
         this.#transactions[index] = transaction;
     }
 
+    /**
+     * Sets the payee of a transaction.
+    * @param id The id of the transaction
+    * @param accountId The id of the payee account
+    */
     async setPayee(id:string, accountId:string) {
         const transaction = await setPayee(id,accountId);
         const index = this.#transactions.findIndex(

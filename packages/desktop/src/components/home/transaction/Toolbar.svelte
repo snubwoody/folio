@@ -4,16 +4,10 @@
     import { CirclePlus } from "@lucide/svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
-    import { today, getLocalTimeZone } from "@internationalized/date";
 
     async function addTransaction() {
         const account = accountStore.accounts[0];
-        const date = today(getLocalTimeZone());
-        await transactionStore.createExpense({
-            amount: "0.0",
-            date: date.toString(),
-            account: account.id
-        });
+        await transactionStore.createExpense({accountId: account.id});
     }
 </script>
 

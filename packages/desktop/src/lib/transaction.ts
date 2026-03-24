@@ -51,7 +51,7 @@ export interface EditTransactionOpts {
 
 
 /**
- * Parses a raw transaction from the backend into the user facing 
+ * Parses a raw transaction from the backend into the user facing.
  * {@link Transaction} type.
  * @param value The raw transaction
  * @returns The parsed transaction
@@ -80,8 +80,7 @@ export async function getTransactions(): Promise<Transaction[]>{
     return transactions;
 }
 
-
-/** 
+/**
  * Creates a new transaction.
  */
 export async function createTransaction({

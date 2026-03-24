@@ -1,8 +1,7 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import { type Transaction,TransactionStore } from "$lib/stores/transaction.svelte";
-import {createTransaction, getTransactions} from "./transaction";
+import {createTransaction, getTransactions, type Transaction} from "./transaction";
 import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 
 afterEach(() => {
@@ -17,7 +16,7 @@ test("getTransactions",async()=>{
                     id:"1",
                     fromAccountId:"A1",
                     toAccountId:"A2",
-                    transactionDate:"2023-12-01",
+                    date: parseDate("2023-12-01"),
                     amount:"24.24", 
                     note: "Note",
                     categoryId: "C1",
@@ -46,7 +45,7 @@ describe("createTransaction",()=>{
                 let transactions: Transaction = {
                     id:"1",
                     fromAccountId:payload.account,
-                    transactionDate:payload.date,
+                    date: parseDate("2023-12-01"),
                     amount:payload.amount, 
                 };
                 return transactions;
@@ -70,7 +69,7 @@ describe("createTransaction",()=>{
                 let transactions: Transaction = {
                     id:"1",
                     fromAccountId:payload.account,
-                    transactionDate:payload.date,
+                    date:parseDate(payload.date),
                     amount:payload.amount, 
                 };
                 return transactions;
@@ -92,7 +91,7 @@ describe("createTransaction",()=>{
                 let transactions: Transaction = {
                     id:"1",
                     fromAccountId:payload.account,
-                    transactionDate:payload.date,
+                    date: parseDate(payload.date),
                     amount:payload.amount, 
                 };
                 return transactions;
@@ -106,8 +105,4 @@ describe("createTransaction",()=>{
         expect(transaction.amount).toBe("0");
     });
 });
-
-// TODO: test default date
-
-
 

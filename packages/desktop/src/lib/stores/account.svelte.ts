@@ -15,8 +15,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { Account } from "../lib";
 import { SvelteMap } from "svelte/reactivity";
-import type { Transaction } from "./transaction.svelte";
 import { logger } from "../logger";
+import type { Transaction } from "$lib/transaction";
 
 interface EditAccount{
     name?: string
