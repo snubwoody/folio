@@ -1,15 +1,15 @@
 {
-  "version": "v1.4.1",
-  "notes": "## Changes\r\n\r\n- Fixed an issue with the budget bar width\r\n- Fixed an issue causing deleted budgets to still appear in the UI\r\n",
-  "pub_date": "2026-02-19T19:32:18Z",
+  "version": "v2.0.0",
+  "notes": "## What's new\r\n\r\n- Combined incomes and expenses into transactions table\r\n- Added transaction toolbar\r\n- Added action bar for manipulating transactions\r\n- Removed support section from settings\r\n",
+  "pub_date": "2026-03-23T23:12:40Z",
   "platforms": {
-    "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUkvSVJDdlV0a3pmMEpCTUZxWDU1SmFjcWRiMVJ0SFRNNlNiVU4zNy9lbHNGUTgwUXVNNEI0MnpnUEcwTkl1YkFIQU1JdGxHWk5mMzZYV3hCaTlmSWdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzcxNTI4OTE0CWZpbGU6Rm9saW9fMS40LjFfYW1kNjQuQXBwSW1hZ2UKL3dBaGQrTXpJNUd6RHNWVmZTbVJRcGNqbU9oMUdaS2hlZVo5SGlEMy9xeFJmUGZYZi9GRkNqM21KaEZLbThzSzZsWWlEYVIyckNueGZJcWFEM3krRFE9PQo=",
-      "url": "https://github.com/snubwoody/folio/releases/download/v1.4.1/Folio_1.4.1_amd64.AppImage"
-    },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTVBtcEpMTGgrODhVb0FpbjUwcWZZVEpZOWwxL2FEd253aHV5UFhWaWpTUTJ1RHhZVHJtOHoydFV3cWVuOTlaNzdDZ0o4R05wek5PWHhMbXZib3JBSVFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzcxNTI5MjU0CWZpbGU6Rm9saW9fMS40LjFfeDY0LXNldHVwLmV4ZQpsc1VNYTBzQmFDQS8zMTg1WWJNQ3hpWXdTWERiU3FkVjB2L0VjMnAzUGkwU0VhczBzSytHSWxwMjdLU1k4QWxXM0hmSFgrTVFLaUZYSS9ocmE5UG9Ddz09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v1.4.1/Folio_1.4.1_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTU5uc1NQZ1VoT2REcVd5UUZPaHM0RmFWcGlselFSai9UU282R25NOTVEazZBMWM0MERWeFNhS3g2bkVSTmVoWHBqQ2hScjZheE1ycDdXdDE3VmpIaXdJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc0MzA3MjUxCWZpbGU6Rm9saW9fMi4wLjBfeDY0LXNldHVwLmV4ZQp2SHdqWUQvbUZJeG5LU21KL0crK1UxYnlkelBUclVteVljYmJoVDVNR1YvREI1bE42SVc3bzltaUE4UEJhbU1jbTdmdkcrV1p1dDhRc0FwWWZiZnNDdz09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.0.0/Folio_2.0.0_x64-setup.exe"
+    },
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUErSEExMmdrMlcxbXo2clU1ZFdkdFZrazI5ckVxY0pxSSs5NzRTYk1yTWg0WjN3a2pDOEIwV2ljdzBzOCsrYXJzSVJySHBhSjJwd3RXV3dTRW5ZWHdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc0MzA3MDU1CWZpbGU6Rm9saW8uYXBwLnRhci5negpLcG5lK0VFV0dVaVpLL1RES3ZtZjcxRmNKZWxjWXlheHhJcnZhQ3FKcHhXK1BQaitTUDF4L1lwZ04wak1rTWprY2NRWGQxUkdtU1hHWHpKNkJkaHVCdz09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.0.0/Folio.app.tar.gz"
     }
   }
 }
