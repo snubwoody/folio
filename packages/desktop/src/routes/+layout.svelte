@@ -27,7 +27,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { check, type Update } from "@tauri-apps/plugin-updater";
-    import {relaunch} from "@tauri-apps/plugin-process";
+    import { relaunch } from "@tauri-apps/plugin-process";
     import { addToast } from "$lib/toast.svelte";
     import { logger } from "$lib/logger";
     import { BundleType, getBundleType } from "@tauri-apps/api/app";
