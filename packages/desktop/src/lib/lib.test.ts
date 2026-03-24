@@ -1,8 +1,9 @@
-import { getCurrencySymbol, parseMoney, parseDate, type Account } from "$lib/lib";
+import { getCurrencySymbol, parseMoney, type Account } from "$lib/lib";
 import { describe, expect, test } from "vitest";
 import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
-import type { Transaction } from "$lib/stores/transaction.svelte";
+import type { Transaction } from "./transaction";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 describe("AccountStore",() => {
     test("create a new account",async() => {
@@ -32,13 +33,13 @@ test("Account balance",() => {
         id:"",
         fromAccountId: "A1",
         amount: "5.00",
-        transactionDate:""
+        date: today(getLocalTimeZone())
     };
     const income: Transaction = {
         id:"",
         toAccountId: "A1",
         amount: "25.00",
-        transactionDate:""
+        date: today(getLocalTimeZone())
     };
 
     const balance = accountBalance("A1",[expense,income]);
@@ -87,11 +88,3 @@ describe("Format money", () => {
     });
 
 });
-
-describe("Parse date", () => {
-    test("dd/MM/YYYY",() => {
-        const date = parseDate("12/12/2025");
-        expect(date).toStrictEqual(new Date(2025,11,12));
-    });
-});
-

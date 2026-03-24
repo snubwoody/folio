@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { type Transaction, transactionStore } from "$lib/stores/transaction.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
     import { Popover } from "bits-ui";
     import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
-    import { parseDate, type DateValue } from "@internationalized/date";
+    import type { DateValue } from "@internationalized/date";
+    import type { Transaction } from "$lib/transaction";
 
     interface Props{
         transaction: Transaction
@@ -11,21 +12,22 @@
 
     const { transaction }: Props = $props();
 
-    let displayDate = $state(formatDate(transaction.transactionDate));
+    let displayDate = $state(formatDate(transaction.date.toString()));
 
+    // FIXME: make editTransaction take date
     const updateDate = async (date: DateValue) => {
         calendarOpen = false;
         await transactionStore.editTransaction({ id: transaction.id,transactionDate: `${date.year}-${date.month}-${date.day}` });
         displayDate = formatDate(`${date.year}-${date.month}-${date.day}`);
     };
-    let date = $state(parseDate(transaction.transactionDate));
+    let date = $state(transaction.date);
     let calendarOpen = $state(false);
 </script>
 
 <td data-col="date">
     <Popover.Root bind:open={calendarOpen}>
         <Popover.Trigger>
-            <time datetime={transaction.transactionDate}>
+            <time datetime={transaction.date.toString()}>
                 {displayDate}
             </time>
         </Popover.Trigger>
