@@ -1,7 +1,7 @@
 import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import { createTransaction, getTransactions, type RawTransaction, type Transaction } from "./transaction";
+import { createTransaction, getTransactions, type RawTransaction } from "./transaction";
 import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 
 afterEach(() => {

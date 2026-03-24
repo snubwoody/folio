@@ -20,7 +20,8 @@ export class TransactionStore {
     }
 
     /**
-     * Creates a new expense
+     * Creates a new expense.
+     *
      * @param amount The amount
      * @param date The date the expense occurred
      * @param note An optional note for additional context
