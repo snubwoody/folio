@@ -21,24 +21,10 @@ See the [website](https://folio.wakunguma.com) for more details.
 
 ## Downloads
 
-
-<div align="center">
-    <a href="https://apps.microsoft.com/detail/9P5X2HZSXCR1?referrer=appbadge&mode=direct">
-        <img src="https://get.microsoft.com/images/en-us%20dark.svg" width="200" alt=""/>
-    </a>
-</div>
-
-You can find the installers on the latest [Github release](https://github.com/snubwoody/folio/releases/latest).
-
 |Windows|MacOS|Linux|
 |---|---|---|
 |[Exe installer](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe)|[MacOS DMG](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_aarch64.dmg)|[Deb](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.deb)|
-|Microsoft store|||
-
-- 🪟 [Windows EXE installer](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe)
-- 🍎 [MacOS DMG](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_aarch64.dmg)
-- 🐧 Linux (.deb): Download the latest `.deb` file.
-- 🐧 Linux (.AppImage): Download the latest `.AppImage` file.
+|[Microsoft store](https://apps.microsoft.com/detail/9P5X2HZSXCR1?hl=en-gb&gl=CA&ocid=pdpshare)||[AppImage](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.AppImage)|
 
 ## Roadmap
 
