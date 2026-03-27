@@ -2,6 +2,7 @@
     import { Calendar } from "bits-ui";
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
     import type { DateValue } from "@internationalized/date";
+    import {TextButton} from "$components/button";
 
     type DateFn = (date: DateValue) => void;
 
@@ -19,6 +20,7 @@
         if (!date || !onDateChange) return;
         onDateChange(date);
     }
+    // FIXME: font-medium
 </script>
 
 <Calendar.Root
@@ -26,19 +28,24 @@
     fixedWeeks={true}
     type="single"
     onValueChange={updateDate}
+    class="calendar"
     bind:value
 >
     {#snippet children({ months, weekdays })}
-        <Calendar.Header >
-            <Calendar.PrevButton
-            >
-                <ChevronLeft />
-            </Calendar.PrevButton>
-            <Calendar.Heading />
-            <Calendar.NextButton
-            >
-                <ChevronRight />
-            </Calendar.NextButton>
+        <Calendar.Header class="flex items-center justify-between">
+            <Calendar.Heading  class="font-medium"/>
+            <div class="flex items-center gap-1">
+                <!--TODO: test this-->
+                <TextButton>Today</TextButton>
+                <div class="flex items-center gap-0.5">
+                    <Calendar.PrevButton class="icon-btn icon-btn-primaryIcon icon-btn-medium">
+                            <ChevronLeft />
+                    </Calendar.PrevButton>
+                    <Calendar.NextButton class="icon-btn icon-btn-primaryIcon icon-btn-medium">
+                            <ChevronRight />
+                    </Calendar.NextButton>
+                </div>
+            </div>
         </Calendar.Header>
         <div>
             {#each months as month, i (i)}
@@ -46,9 +53,9 @@
                     <Calendar.GridHead>
                         <Calendar.GridRow>
                             {#each weekdays as day, i (i)}
-                                <Calendar.HeadCell
+                                <Calendar.HeadCell class="calendar-weekday"
                                 >
-                                    <div>{day.slice(0, 2)}</div>
+                                    {day.slice(0, 2)}
                                 </Calendar.HeadCell>
                             {/each}
                         </Calendar.GridRow>
@@ -58,7 +65,7 @@
                             <Calendar.GridRow>
                                 {#each weekDates as date, i (i)}
                                     <Calendar.Cell {date} month={month.value}>
-                                        <Calendar.Day>
+                                        <Calendar.Day class="calendar-day">
                                             {date.day}
                                         </Calendar.Day>
                                     </Calendar.Cell>
@@ -74,7 +81,7 @@
 
 <style>
 
-    :global([data-calendar-root]) {
+    /* :global([data-calendar-root]) {
         padding: 12px;
         border-radius: var(--radius-md);
         box-shadow: var(--shadow-md);
@@ -114,5 +121,5 @@
             color: var(--color-text-muted);
             background: transparent;
         }
-    }
+    } */
 </style>

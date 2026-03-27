@@ -3,6 +3,7 @@
 @import "./colors.css";
 @import "./button.css";
 @import "./table.css";
+@import "./calendar.css";
 @import "./text-button.css";
 
 @theme {
