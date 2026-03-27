@@ -68,14 +68,15 @@
     --color-border-neutral-10: var(--color-neutral-50);
     --color-border-focus: var(--color-purple-500);
 
+    --color-surface-primary: var(--color-purple-500);
+	--color-surface-primary-hover: var(--color-purple-600);
+	--color-surface-primary-active: var(--color-purple-700);
+
     --color-text-heading: var(--color-neutral-950);
 	--color-text-body: var(--color-neutral-900);
 	--color-text-muted: var(--color-neutral-600);
 	--color-text-error: var(--color-red-400);
-
-    --color-surface-primary: var(--color-purple-500);
-	--color-surface-primary-hover: var(--color-purple-600);
-	--color-surface-primary-active: var(--color-purple-700);
+    --color-text-primary: var(--color-surface-primary);
 
     --color-surface-error: var(--color-red-500);
 	--color-surface-error-hover: var(--color-red-600);

@@ -1,5 +1,9 @@
 # @folio/desktop
 
+(unreleased)
+
+- Update calendar UI
+
 ## 2.0.0
 
 - Delete income_streams table ([#271](https://github.com/snubwoody/folio/pull/271))

@@ -35,13 +35,13 @@
                 }}
                 >
             </th>
-            <th>Date</th>
-            <th>Account</th>
-            <th>Payee</th>
-            <th>Note</th>
-            <th>Category</th>
-            <th>Outflow</th>
-            <th>Inflow</th>
+            <th class="font-medium text-text-muted">Date</th>
+            <th class="font-medium text-text-muted">Account</th>
+            <th class="font-medium text-text-muted">Payee</th>
+            <th class="font-medium text-text-muted">Note</th>
+            <th class="font-medium text-text-muted">Category</th>
+            <th class="font-medium text-text-muted">Outflow</th>
+            <th class="font-medium text-text-muted">Inflow</th>
         </tr>
     </thead>
     <tbody>
