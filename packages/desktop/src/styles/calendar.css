@@ -5,6 +5,7 @@
     padding: 20px;
     border: 1px solid var(--color-neutral-100);
     border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
 }
 
 .calendar-weekday{
@@ -12,9 +13,6 @@
 }
 
 .calendar-weekday, .calendar-day {
-    /* display: flex; */
-    /* justify-content: center; */
-    /* align-items: center; */
     width: 40px;
     height: 40px;
 }
@@ -52,10 +50,6 @@
         color: var(--color-white);
     }
 
-    /* &[data-focused=""]{
-        outline-color: var(--color-purple-500);
-    } */
-    
     &:focus{
         outline-color: var(--color-purple-500);
     }
