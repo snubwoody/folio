@@ -34,6 +34,7 @@
 
     &[data-today=""]{
         color: var(--color-surface-primary);
+
         &::after{
             content: "";
             width: 5px;

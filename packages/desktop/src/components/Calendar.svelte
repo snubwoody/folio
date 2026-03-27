@@ -40,10 +40,10 @@
             <div class="flex items-center gap-1">
                 <TextButton class="font-semibold" onclick={setToday}>Today</TextButton>
                 <div class="flex items-center gap-0.5">
-                    <Calendar.PrevButton class="icon-btn icon-btn-primaryIcon icon-btn-medium">
+                    <Calendar.PrevButton class="icon-btn icon-btn-primary-icon icon-btn-medium">
                         <ChevronLeft strokeWidth="3"/>
                     </Calendar.PrevButton>
-                    <Calendar.NextButton class="icon-btn icon-btn-primaryIcon icon-btn-medium">
+                    <Calendar.NextButton class="icon-btn icon-btn-primary-icon icon-btn-medium">
                         <ChevronRight strokeWidth="3"/>
                     </Calendar.NextButton>
                 </div>

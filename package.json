@@ -9,7 +9,8 @@
         "db:create": "cargo sqlx database create",
         "db:migrate": "cargo sqlx migrate run --source crates/folio-desktop/migrations",
         "db:setup": "cargo sqlx database drop -y && pnpm db:create && pnpm db:migrate",
-        "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix"
+        "lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix",
+        "lint:styles": "stylelint **/*.{css,svelte} --max-warnings 0"
     },
     "dependencies": {
         "@astrojs/node": "^9.5.0",

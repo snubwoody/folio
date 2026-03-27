@@ -20,7 +20,7 @@
     }
 }
 
-.icon-btn-primaryIcon{
+.icon-btn-primary-icon{
     color: var(--color-text-primary);
 
     &:hover{
