@@ -166,7 +166,6 @@ export function parseDate(value: string,reference: CalendarDate): CalendarDate{
     // - n,n
     // - n/n
     // - wrap in try catch
-    const currentDate = today(getLocalTimeZone());
     const singleDigit = /^\d+$/.test(value.trim());
     if (singleDigit){
         return reference.set({day: parseInt(value.trim())});
