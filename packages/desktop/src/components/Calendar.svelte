@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Calendar } from "bits-ui";
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
-    import type { DateValue } from "@internationalized/date";
+    import { getLocalTimeZone, today, type DateValue } from "@internationalized/date";
     import {TextButton} from "$components/button";
 
     type DateFn = (date: DateValue) => void;
@@ -20,7 +20,11 @@
         if (!date || !onDateChange) return;
         onDateChange(date);
     }
-    // FIXME: font-medium
+
+    function setToday(){
+        // value = today(getLocalTimeZone());
+        updateDate(today(getLocalTimeZone()));
+    }
 </script>
 
 <Calendar.Root
@@ -32,17 +36,17 @@
     bind:value
 >
     {#snippet children({ months, weekdays })}
-        <Calendar.Header class="flex items-center justify-between">
-            <Calendar.Heading  class="font-medium"/>
+        <Calendar.Header class="flex items-center justify-between px-0.5">
+            <Calendar.Heading  class="font-semibold"/>
             <div class="flex items-center gap-1">
                 <!--TODO: test this-->
-                <TextButton>Today</TextButton>
+                <TextButton class="font-semibold" onclick={setToday}>Today</TextButton>
                 <div class="flex items-center gap-0.5">
                     <Calendar.PrevButton class="icon-btn icon-btn-primaryIcon icon-btn-medium">
-                            <ChevronLeft />
+                        <ChevronLeft strokeWidth="3"/>
                     </Calendar.PrevButton>
                     <Calendar.NextButton class="icon-btn icon-btn-primaryIcon icon-btn-medium">
-                            <ChevronRight />
+                        <ChevronRight strokeWidth="3"/>
                     </Calendar.NextButton>
                 </div>
             </div>
@@ -53,7 +57,7 @@
                     <Calendar.GridHead>
                         <Calendar.GridRow>
                             {#each weekdays as day, i (i)}
-                                <Calendar.HeadCell class="calendar-weekday"
+                                <Calendar.HeadCell class="calendar-weekday font-normal"
                                 >
                                     {day.slice(0, 2)}
                                 </Calendar.HeadCell>

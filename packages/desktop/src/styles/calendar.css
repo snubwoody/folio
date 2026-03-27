@@ -52,7 +52,11 @@
         color: var(--color-white);
     }
 
-    &[data-focused=""]{
+    /* &[data-focused=""]{
+        outline-color: var(--color-purple-500);
+    } */
+    
+    &:focus{
         outline-color: var(--color-purple-500);
     }
 }
