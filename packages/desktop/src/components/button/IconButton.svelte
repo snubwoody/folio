@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import "$styles/icon-btn.css";
     import type { HTMLButtonAttributes } from "svelte/elements";
 
-    type Style = "primary" | "ghost" | "neutral";
+    type Style = "primary" | "ghost" | "neutral" | "primaryIcon";
     type Size = "small" | "medium";
 
     type Props = {

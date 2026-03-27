@@ -20,6 +20,18 @@
     }
 }
 
+.icon-btn-primaryIcon{
+    color: var(--color-text-primary);
+
+    &:hover{
+        background: var(--color-purple-100);
+    }
+
+    &:active{
+        background: var(--color-purple-200);
+    }
+}
+
 .icon-btn-ghost{
     &:hover{
         background: var(--color-neutral-50);
