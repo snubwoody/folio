@@ -1,12 +1,12 @@
 use crate::{Config, data_dir};
 use anyhow::{Context, bail};
+use glob::glob;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
-use glob::glob;
 use tracing::info;
 
-/// Uses the `makeappx.exe` tool to create an msix package.
+/// Uses the `makeappx.exe` tool to create an msix file.
 pub fn bundle_package(dir: impl AsRef<Path>, dest: impl AsRef<Path>) -> anyhow::Result<()> {
     let data_dir = data_dir();
     let exe_path = data_dir.join("windows-toolkit/makeappx.exe");
@@ -28,7 +28,7 @@ pub fn bundle_package(dir: impl AsRef<Path>, dest: impl AsRef<Path>) -> anyhow::
     Ok(())
 }
 
-/// Creates an msix package in the `dest` directory
+/// Creates an msix manifest and package in the `dest` directory
 pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
     info!("Copying assets into package directory");
     copy_executable(config, &dest)
@@ -41,10 +41,12 @@ pub fn create_package(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result
     Ok(())
 }
 
-
 fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
     let dest = dest.as_ref();
-    let exe_path = config.directory.join(&config.application.executable);
+    let exe_path = config
+        .package_info
+        .path
+        .join(&config.application.executable);
     let exe = config.application.executable.file_name().unwrap();
     // FIXME: put it in the root
     fs::copy(exe_path, dest.join(exe))?;
@@ -53,7 +55,7 @@ fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()
 
 /// Copy all the resources defined in the [`Config`] to the destination directory.
 fn copy_resources(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-    let dir = &config.directory;
+    let dir = &config.package_info.path;
     for pattern in &config.package.resources {
         let path = dir.join(pattern);
         for entry in glob(path.to_str().unwrap())? {
@@ -82,11 +84,10 @@ fn copy_resources(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()>
 #[cfg(all(test, windows))]
 mod test {
     use super::*;
-    use crate::{Application, Config, Package, validate_windows_toolkit};
+    use crate::{Application, Config, Package, PackageInfo, validate_windows_toolkit};
     use std::{fs::File, path::PathBuf};
     use tempfile::tempdir;
 
-    
     #[test]
     fn copy_resources() -> anyhow::Result<()> {
         let dir = tempdir()?;
@@ -97,9 +98,13 @@ mod test {
         File::create(&icon1)?;
         File::create(&icon2)?;
         let config = Config {
-            directory: dir.path().to_path_buf(),
+            // directory: dir.path().to_path_buf(),
             package: Package {
                 resources: vec!["icons/*.png".to_string()],
+                ..Default::default()
+            },
+            package_info: PackageInfo {
+                path: dir.path().to_path_buf(),
                 ..Default::default()
             },
             ..Default::default()
@@ -113,6 +118,8 @@ mod test {
 
     #[test]
     fn bundle_msix() -> anyhow::Result<()> {
+        let temp = tempdir()?;
+        let dir = temp.path();
         validate_windows_toolkit()?;
         let config = Config {
             package: Package {
@@ -130,11 +137,15 @@ mod test {
                 display_name: "Test".to_owned(),
                 description: String::from("A test app"),
             },
+            package_info: PackageInfo {
+                version: "1.0.0.0".to_string(),
+                name: "main".to_string(),
+                path: dir.to_path_buf(),
+                ..Default::default()
+            },
             ..Default::default()
         };
         let manifest = config.create_manifest();
-        let temp = tempdir()?;
-        let dir = temp.path();
         let dest = dir.join("out.msix");
         let xml = quick_xml::se::to_string(&manifest)?;
 
