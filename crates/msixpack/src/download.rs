@@ -16,7 +16,7 @@ pub fn download_windows_sdk(path: impl AsRef<Path>) -> anyhow::Result<()> {
     let mut archive = zip::ZipArchive::new(cursor)?;
     archive.extract(&path)?;
 
-    info!("Extracting toolkit to {:?}", path.as_ref());
+    info!("Extracting windows toolkit to {:?}", path.as_ref());
     // Extract only the required exe and header files
     extract_sdk(path)?;
     Ok(())

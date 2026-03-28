@@ -2926,6 +2926,7 @@ name = "msixpack"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "cargo_metadata 0.23.1",
  "clap",
  "dirs",
  "glob",

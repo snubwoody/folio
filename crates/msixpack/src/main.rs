@@ -5,7 +5,7 @@ mod manifest;
 use crate::bundle::{bundle_package, create_package};
 use crate::download::download_windows_sdk;
 use crate::manifest::{AppxManifest, VisualElements};
-use anyhow::Context;
+use anyhow::{Context, Ok};
 use clap::{Parser, Subcommand};
 use glob::glob;
 use serde::{Deserialize, Serialize};
@@ -38,6 +38,7 @@ fn main() -> anyhow::Result<()> {
         .without_time()
         .with_file(false)
         .init();
+
     let cli = Cli::parse();
 
     match cli.command {
@@ -53,10 +54,6 @@ fn main() -> anyhow::Result<()> {
 
 fn bundle(config: impl AsRef<Path>, output: impl AsRef<Path>) -> anyhow::Result<()> {
     info!("Bundling package");
-    // TODO:
-    // Copy executable and resources
-    // Create appxmanifest
-    // Create msix package
     let config_path = config.as_ref();
     let output_path = output.as_ref();
     let config = Config::from_path(config_path)?;
@@ -74,7 +71,7 @@ fn bundle(config: impl AsRef<Path>, output: impl AsRef<Path>) -> anyhow::Result<
     Ok(())
 }
 
-/// Installs the windows toolkit if it is not found.
+/// Installs the windows toolkit if it is not found on the system.
 fn validate_windows_toolkit() -> anyhow::Result<()> {
     if !toolkit_exists()? {
         let data_dir = data_dir();
@@ -182,42 +179,6 @@ struct Application {
     executable: PathBuf,
 }
 
-fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-    let dest = dest.as_ref();
-    let exe_path = config.directory.join(&config.application.executable);
-    let exe = config.application.executable.file_name().unwrap();
-    // FIXME: put it in the root
-    fs::copy(exe_path, dest.join(exe))?;
-    Ok(())
-}
-
-/// Copy all the resources defined in the [`Config`] to the destination directory.
-fn copy_resources(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-    let dir = &config.directory;
-    for pattern in &config.package.resources {
-        let path = dir.join(pattern);
-        for entry in glob(path.to_str().unwrap())? {
-            let entry = entry?;
-            let base_path = entry.strip_prefix(dir)?;
-
-            if entry.is_dir() {
-                continue;
-            }
-            let output = dest.as_ref().join(base_path);
-
-            fs::create_dir_all(output.parent().unwrap())
-                .with_context(|| "Failed to create directory")?;
-            fs::copy(&entry, &output).with_context(|| {
-                format!(
-                    "Failed to copy file {:?} to {:?}",
-                    entry.to_str().unwrap(),
-                    output.to_str().unwrap()
-                )
-            })?;
-        }
-    }
-    Ok(())
-}
 
 fn data_dir() -> PathBuf {
     dirs::data_dir()
@@ -225,11 +186,30 @@ fn data_dir() -> PathBuf {
         .join("msixpack")
 }
 
+fn read_metadata() -> anyhow::Result<(String,String)>{
+    let metadata = cargo_metadata::MetadataCommand::new()
+        .exec()
+        .with_context(||"Failed to read metadata")?;
+    let local_projects: Vec<cargo_metadata::Package> = metadata.packages
+        .into_iter()
+        .filter(|p|p.source.is_none())
+        .collect();
+
+    // TODO: get first package or specify with -p,--package
+    let project = &local_projects[0];
+    let mut version = project.version.to_string();
+    let exe_path = metadata.target_directory.join("release/folio.exe").to_string();
+    version.push_str(".0");
+    dbg!(project.version.to_string());
+    dbg!(&local_projects[0].name);
+    dbg!(&metadata.target_directory.join("release/folio.exe"));
+
+    Ok((version,exe_path))
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::fs::File;
-    use tempfile::tempdir;
 
     #[test]
     fn get_data_dir() {
@@ -239,26 +219,22 @@ mod test {
     }
 
     #[test]
-    fn copy_resources() -> anyhow::Result<()> {
-        let dir = tempdir()?;
-        let icons_dir = dir.path().join("icons");
-        fs::create_dir(&icons_dir)?;
-        let icon1 = dir.path().join("icons").join("icon1.png");
-        let icon2 = dir.path().join("icons").join("icon2.png");
-        File::create(&icon1)?;
-        File::create(&icon2)?;
-        let config = Config {
-            directory: dir.path().to_path_buf(),
-            package: Package {
-                resources: vec!["icons/*.png".to_string()],
-                ..Default::default()
-            },
-            ..Default::default()
-        };
-        let out = tempdir()?;
-        super::copy_resources(&config, out.path())?;
-        assert!(fs::exists(out.path().join("icons/icon1.png"))?);
-        assert!(fs::exists(out.path().join("icons/icon2.png"))?);
-        Ok(())
+    fn metadata(){
+        let metadata = cargo_metadata::MetadataCommand::new().exec().unwrap();
+        let local_projects: Vec<cargo_metadata::Package> = metadata.packages
+            .into_iter()
+            .filter(|p|p.source.is_none())
+            .collect();
+        // TODO: get first package or specify with -p,--package
+        let project = &local_projects[0];
+        let mut version = project.version.to_string();
+        version.push_str(".0");
+        dbg!(project.version.to_string());
+        dbg!(&local_projects[0].name);
+        dbg!(&metadata.target_directory.join("release/folio.exe"));
+        // TODO: kind includes Bin
+        // dbg!(&local_projects[0].targets);
+        // dbg!(&local_projects.len());
+        // dbg!(&metadata.packages[0].name);
     }
 }
