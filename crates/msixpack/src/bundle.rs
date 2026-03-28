@@ -47,8 +47,8 @@ fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()
         .package_info
         .path
         .join(&config.application.executable);
+    dbg!(&exe_path);
     let exe = config.application.executable.file_name().unwrap();
-    // FIXME: put it in the root
     fs::copy(exe_path, dest.join(exe))?;
     Ok(())
 }
@@ -143,7 +143,6 @@ mod test {
                 path: dir.to_path_buf(),
                 ..Default::default()
             },
-            ..Default::default()
         };
         let manifest = config.create_manifest();
         let dest = dir.join("out.msix");

@@ -7,6 +7,8 @@ on:
   # Run test workflow on push for caching and to make sure it still works
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 concurrency:
   group: release-desktop
   cancel-in-progress: true
