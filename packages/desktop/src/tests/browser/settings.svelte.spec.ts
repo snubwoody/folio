@@ -55,8 +55,8 @@ test("Show categories", async () => {
             return category;
         }
     });
-    categoryStore.createCategory("Category");
-    categoryStore.createCategory("Category");
+    await categoryStore.createCategory("Category");
+    await categoryStore.createCategory("Category");
     const page = render(Sidebar);
     await page.getByLabelText("Open settings").click();
     await page.getByText("Categories").click();

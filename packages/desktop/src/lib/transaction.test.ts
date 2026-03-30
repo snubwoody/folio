@@ -8,7 +8,7 @@ afterEach(() => {
     clearMocks();
 });
 
-test("getTransactions",async() => {
+ test("getTransactions",async() => {
     mockIPC((cmd) => {
         if (cmd === "fetch_transactions" ) {
             let transactions: RawTransaction[] = [
@@ -37,7 +37,7 @@ test("getTransactions",async() => {
     expect(transaction.note).toBe("Note");
 });
 
-describe("createTransaction",() => {
+void describe("createTransaction",() => {
     test("parse args",async() => {
         mockIPC((cmd,args) => {
             if (cmd === "create_expense" ) {

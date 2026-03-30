@@ -7,7 +7,7 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("CategoryStore",() => {
+void describe("CategoryStore",() => {
     test("delete category", async () => {
         mockIPC((cmd,args) => {
             if (cmd === "delete_category") {

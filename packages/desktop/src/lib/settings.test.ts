@@ -7,7 +7,7 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("SettingsStore",() => {
+void describe("SettingsStore",() => {
     test("set currency code",async () => {
         mockIPC((cmd) => {
             if (cmd !== "set_currency_code") {

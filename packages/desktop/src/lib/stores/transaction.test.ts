@@ -9,7 +9,7 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("TransactionStore",() => {
+void describe("TransactionStore",async() => {
     test("loads transactions from IPC",async () => {
         mockIPC((cmd) => {
             if (cmd === "fetch_transactions" ) {
