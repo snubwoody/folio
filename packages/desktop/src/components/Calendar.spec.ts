@@ -4,6 +4,7 @@ import Calendar from "./Calendar.svelte";
 import { CalendarDate, getLocalTimeZone, today, type DateValue } from "@internationalized/date";
 
 describe("Calendar",() => {
+    const unused = 0;
     test("today button sets current date",async() => {
         let date: DateValue | undefined;
         const screen = render(Calendar,{ onDateChange: value => date = value, value: new CalendarDate(1,1,1) });
