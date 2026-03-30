@@ -32,8 +32,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 	    value = $bindable()
 	}: Props = $props();
 
-    const inputName = name ?? label;
-    const inputId = id ?? inputName;
+    const inputName = $derived(name ?? label);
+    const inputId = $derived(id ?? inputName);
 </script>
 
 <label for={inputId} class="flex flex-col gap-1">

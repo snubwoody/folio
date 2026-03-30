@@ -30,7 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { items,value,onChange }: Props = $props();
 
-    let selectedItem = $state(items.find(item => item.value === value));
+    let selectedItem = $derived(items.find(item => item.value === value));
     // TODO: add selected style
 
     const onValueChange = (value: string) => {

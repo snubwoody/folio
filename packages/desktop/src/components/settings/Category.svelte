@@ -25,7 +25,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { category }: Props = $props();
 
-    const title: string = $state(category.title);
+    const title: string = $derived(category.title);
 </script>
 
 <li class="flex items-center justify-between">

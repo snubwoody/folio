@@ -12,7 +12,7 @@
 
     const { transaction }: Props = $props();
 
-    let displayDate = $state(formatDate(transaction.date.toString()));
+    let displayDate = $derived(formatDate(transaction.date.toString()));
 
     // FIXME: make editTransaction take date
     const updateDate = async (date: DateValue) => {
@@ -20,7 +20,7 @@
         await transactionStore.editTransaction({ id: transaction.id,transactionDate: `${date.year}-${date.month}-${date.day}` });
         displayDate = formatDate(`${date.year}-${date.month}-${date.day}`);
     };
-    let date = $state(transaction.date);
+    let date = $derived(transaction.date);
     let calendarOpen = $state(false);
 </script>
 
