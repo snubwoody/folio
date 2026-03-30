@@ -75,5 +75,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         box-shadow: var(--shadow-md);
         border-radius: var(--radius-md);
         border: 1px solid var(--color-border-neutral-10);
+        background-color: white;
     }
 </style>
