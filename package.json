@@ -13,16 +13,9 @@
         "lint:styles": "stylelint **/*.{css,svelte} --max-warnings 0"
     },
     "dependencies": {
-        "@astrojs/node": "^9.5.5",
-        "@astrojs/sitemap": "^3.7.2",
-        "@astrojs/vercel": "^8.2.11",
-        "@lucide/astro": "^0.553.0",
         "@lucide/svelte": "^1.0.0",
         "@tauri-apps/plugin-process": "^2.3.1",
         "@tauri-apps/plugin-updater": "^2.10.0",
-        "astro": "^5.18.1",
-        "phosphor-astro": "^2.1.0",
-        "sharp": "^0.34.5",
         "zod": "^4.3.6"
     },
     "devDependencies": {
@@ -31,7 +24,7 @@
         "@stylistic/eslint-plugin": "^5.10.0",
         "@sveltejs/adapter-static": "^3.0.10",
         "@sveltejs/kit": "^2.55.0",
-        "@sveltejs/vite-plugin-svelte": "^5.1.1",
+        "@sveltejs/vite-plugin-svelte": "^6.0.0",
         "@tailwindcss/vite": "^4.2.2",
         "@types/node": "^24.12.0",
         "@vitest/browser": "^3.2.4",

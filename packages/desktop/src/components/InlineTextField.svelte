@@ -23,7 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { onChange, value, class: userClass }: Props = $props();
 
-    let inner = $state(value ?? "");
+    let inner = $derived(value ?? "");
 
     const update = () => {
         onChange?.(inner);
