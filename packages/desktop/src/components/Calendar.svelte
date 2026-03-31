@@ -1,3 +1,7 @@
+<!--
+@component
+A calendar component that displays dates for selection.
+-->
 <script lang="ts">
     import { Calendar } from "bits-ui";
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
@@ -7,7 +11,9 @@
     type DateFn = (date: DateValue) => void;
 
     type Props = {
+        /** Callback that runs when the user selects a date. */
         onDateChange?: DateFn;
+        /** The current date value. */
         value?: DateValue
     };
 

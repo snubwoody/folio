@@ -21,16 +21,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Account from "./general/Account.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
 
-    let currencies: string[] = $state([]);
+    let currencies = $state<{value:string, label: string}[]>([]);
     $effect(() => {
         getCurrencies()
             .then((c) => {
                 if (c){
-                    currencies = c;
+                    currencies = c.map(item => {
+                        return {label: item, value: item};
+                    });
                 }
             });
     });
 
+    const defaultValue = {
+        value: settingsStore.settings.currencyCode,
+        label: settingsStore.settings.currencyCode,
+    };
 </script>
 
 <div class="space-y-2">
@@ -40,13 +46,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <p class="text-text-muted text-sm">The ISO currency code</p>
         </div>
         <SelectMenu
-            class="w-full max-w-12"
-            defaultValue={settingsStore.settings.currencyCode}
+            {defaultValue}
             items={currencies}
             onChange={(c) => settingsStore.setCurrencyCode(c)}
-            toOption={(item) => {
-                return { label: item,value: item };
-            }}
         />
     </div>
     <div class="w-full h-[1px] bg-neutral-50"></div>

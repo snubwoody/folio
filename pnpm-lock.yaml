@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@lucide/svelte':
-        specifier: ^1.0.0
+        specifier: ^1.7.0
         version: 1.7.0(svelte@5.55.1)
       '@tauri-apps/plugin-process':
         specifier: ^2.3.1

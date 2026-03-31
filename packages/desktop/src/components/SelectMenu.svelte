@@ -24,69 +24,76 @@ from.
 />
 ```
 -->
-<!--
-Copyright (C) 2025 Wakunguma Kalimukwa
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
--->
-
-<script lang="ts" generics="T">
+<script lang="ts">
     import { Select } from "melt/builders";
     import type { SelectOption } from "$lib/select.svelte";
-    import { ChevronDown } from "@lucide/svelte";
+    import { ChevronDown, StickyNote } from "@lucide/svelte";
+    import {Select as SelectMenu} from "bits-ui";
 
+    interface SelectItem {
+        value: string,
+        label: string
+    }
+    // TODO: replace toOption and just pass in a list of items
     type Props = {
         label?: string;
-        items: T[];
-        toOption: (item: T) => SelectOption;
-        defaultValue?: T;
-        onChange?: (item: T) => void;
+        items: SelectItem[];
+        defaultValue?: SelectItem;
+        onChange?: (value: string) => void;
         class?: string
     };
 
     const {
         label,
         items,
-        toOption,
         onChange,
-        class: className,
+        class: userClass,
         defaultValue
     }: Props = $props();
 
     let selectedOption: SelectOption | undefined = $derived(
-        defaultValue ? toOption(defaultValue) : undefined
+        defaultValue ?? undefined
     );
 
-    const options = $derived(items.map((i) => toOption(i)));
+    // const options = $derived(items.map((i) => toOption(i)));
 
-    const onValueChange = (value?: SelectOption) => {
-        const item = items.find((i) => toOption(i).value === value?.value);
-        if (!item) {
-            return;
-        }
+    // const onValueChange = (value?: SelectOption) => {
+    //     const item = items.find((i) => toOption(i).value === value?.value);
+    //     if (!item) {
+    //         return;
+    //     }
 
-        selectedOption = toOption(item);
-        onChange?.(item);
-    };
+    //     selectedOption = toOption(item);
+    //     onChange?.(item);
+    // };
 
-    const select = $derived(new Select<SelectOption>({
-        value: defaultValue ? toOption(defaultValue) : undefined,
-        onValueChange: onValueChange
-    }));
+    // const select = $derived(new Select<SelectOption>({
+    //     value: defaultValue ? toOption(defaultValue) : undefined,
+    //     onValueChange: onValueChange
+    // }));
 </script>
 
-<div class={`space-y-1 ${className} select-none`}>
+<!---TODO: rename-->
+<SelectMenu.Root type="single" onValueChange={onChange}>
+    <SelectMenu.Trigger class={`select-trigger ${userClass}`}>
+        {#if label}
+            <p class="text-sm text-text-muted">{label}</p>
+        {/if}
+        {selectedOption?.label ?? "Select an option"}
+        <ChevronDown class="select-btn-icon" size="20"/>
+    </SelectMenu.Trigger>
+    <SelectMenu.Portal>
+        <SelectMenu.Content class="w-(--bits-select-anchor-width) popup-overlay space-y-1">
+            {#each items as item (item.value)}
+                <SelectMenu.Item value={item.value} label={item.label} class="select-item">
+                    {item.label}
+                </SelectMenu.Item>
+            {/each}
+        </SelectMenu.Content>
+    </SelectMenu.Portal>
+</SelectMenu.Root>
+
+<!-- <div class={`space-y-1 ${className} select-none`}>
     {#if label}
         <p class="text-sm text-text-muted">{label}</p>
     {/if}
@@ -97,15 +104,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         {selectedOption?.label ?? "Select an option"}
         <ChevronDown class="select-btn-icon" size="20"/>
     </button>
-</div>
-<ul {...select.content} class="popup-overlay space-y-1">
+</div> -->
+
+<!-- <ul {...select.content} class="popup-overlay space-y-1">
     {#each options as option (option.value)}
         {@const selected = select.isSelected(option)}
         <li {...select.getOption(option)} data-selected={selected}>
             {option.label}
         </li>
     {/each}
-</ul>
+</ul> -->
 
 <style>
     :global(.select-btn-icon) {
@@ -113,11 +121,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         color: var(--color-text-body);
     }
 
-    button[aria-expanded='true'] {
-        :global(.select-btn-icon){
-            rotate: 90deg;
+    :global(.select-trigger){
+        display: flex;
+        align-items: center;
+        padding: 8px 12px; 
+        gap: 4px;
+        border: 1px solid var(--color-neutral-50);
+        border-radius: var(--radius-md);
+
+        &[aria-expanded="true"]{
+            :global(svg){
+                rotate: 90deg;
+            }
         }
     }
+
 
     li {
         border-radius: var(--radius-sm);
