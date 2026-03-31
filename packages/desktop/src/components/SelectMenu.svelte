@@ -16,7 +16,7 @@ from.
     ]
 </script>
 
-<SelectMenu
+<Select
     label = "Payment method"
     items={paymentMethods}
     toOption = {(item) => {value: item.id, label: item.title}}
@@ -25,10 +25,9 @@ from.
 ```
 -->
 <script lang="ts">
-    import { Select } from "melt/builders";
     import type { SelectOption } from "$lib/select.svelte";
-    import { ChevronDown, StickyNote } from "@lucide/svelte";
-    import {Select as SelectMenu} from "bits-ui";
+    import { ChevronDown } from "@lucide/svelte";
+    import {Select} from "bits-ui";
 
     interface SelectItem {
         value: string,
@@ -51,9 +50,7 @@ from.
         defaultValue
     }: Props = $props();
 
-    let selectedOption: SelectOption | undefined = $derived(
-        defaultValue ?? undefined
-    );
+    let selectedOption: SelectOption | undefined = $derived(defaultValue);
 
     // const options = $derived(items.map((i) => toOption(i)));
 
@@ -74,24 +71,24 @@ from.
 </script>
 
 <!---TODO: rename-->
-<SelectMenu.Root type="single" onValueChange={onChange}>
-    <SelectMenu.Trigger class={`select-trigger ${userClass}`}>
+<Select.Root type="single" onValueChange={onChange}>
+    <Select.Trigger class={`select-trigger ${userClass}`}>
         {#if label}
             <p class="text-sm text-text-muted">{label}</p>
         {/if}
         {selectedOption?.label ?? "Select an option"}
         <ChevronDown class="select-btn-icon" size="20"/>
-    </SelectMenu.Trigger>
-    <SelectMenu.Portal>
-        <SelectMenu.Content class="w-(--bits-select-anchor-width) popup-overlay space-y-1">
+    </Select.Trigger>
+    <Select.Portal>
+        <Select.Content class="w-(--bits-select-anchor-width) h-100 popup-overlay space-y-1 z-100 bg-black">
             {#each items as item (item.value)}
-                <SelectMenu.Item value={item.value} label={item.label} class="select-item">
+                <Select.Item value={item.value} label={item.label} class="select-item">
                     {item.label}
-                </SelectMenu.Item>
+                </Select.Item>
             {/each}
-        </SelectMenu.Content>
-    </SelectMenu.Portal>
-</SelectMenu.Root>
+        </Select.Content>
+    </Select.Portal>
+</Select.Root>
 
 <!-- <div class={`space-y-1 ${className} select-none`}>
     {#if label}
