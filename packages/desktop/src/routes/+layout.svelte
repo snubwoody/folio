@@ -31,6 +31,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { addToast } from "$lib/toast.svelte";
     import { logger } from "$lib/logger";
     import { BundleType, getBundleType } from "@tauri-apps/api/app";
+    import EmojiPicker from "$components/EmojiPicker.svelte";
 
     const { children } = $props();
 
@@ -85,6 +86,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </svelte:head>
 
 <Titlebar />
+<EmojiPicker/>
 <main class="flex">
     <Sidebar />
     {@render children()}
