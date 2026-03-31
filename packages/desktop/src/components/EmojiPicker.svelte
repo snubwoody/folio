@@ -4,7 +4,7 @@ import { Picker } from "emoji-mart";
 
 
 const pickerOptions = { onEmojiSelect: console.log,data };
-const picker = new Picker({data});
+const picker = new Picker({data,onEmojiSelect: console.log});
 // document.body.append(picker);
 
 let div: HTMLDivElement;
