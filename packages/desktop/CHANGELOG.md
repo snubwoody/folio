@@ -1,8 +1,11 @@
 # @folio/desktop
 
-(unreleased)
+## 2.1.0
 
-- Update calendar UI
+- feat: add update prompt at startup ([#287](https://github.com/snubwoody/folio/pull/287))
+- Read msix version from manifest ([#285](https://github.com/snubwoody/folio/pull/285))
+- Improve calendar UI ([#283](https://github.com/snubwoody/folio/pull/283))
+- Use `@internationalized/date` package for all dates for ([#280](https://github.com/snubwoody/folio/pull/280))
 
 ## 2.0.0
 

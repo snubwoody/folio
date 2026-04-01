@@ -1,8 +1,11 @@
 # Folio Changelog
 
-(unreleased)
+
+## 2.1.0 - 04-04-2026
 
 - Improved calendar UI
+- Added auto updater
+- Disabled default platform context menu
 
 ## 2.0.0 - 23-03-2026
 
