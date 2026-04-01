@@ -159,13 +159,6 @@ export async function getCurrencies(){
 
 // The goal of this function to parse the input and always return a valid date.
 export function parseDate(value: string,reference: CalendarDate): CalendarDate{
-    let newDate = reference;
-    // TODO:
-    // - n
-    // - n-n
-    // - n,n
-    // - n/n
-    // - wrap in try catch
     const singleDigit = /^\d+$/.test(value.trim());
     if (singleDigit){
         return reference.set({ day: parseInt(value.trim()) });

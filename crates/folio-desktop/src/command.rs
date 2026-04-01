@@ -83,7 +83,7 @@ pub fn log_error(message: String) {
 }
 
 #[tauri::command]
-pub fn parse_date(value: String) -> NaiveDate{
+pub fn parse_date(value: String) -> NaiveDate {
     super::date::parse_date(&value)
 }
 
