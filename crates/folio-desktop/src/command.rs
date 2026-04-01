@@ -34,6 +34,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         create_account,
         delete_category,
         edit_category,
+        parse_date,
         delete_transactions,
         create_category,
         fetch_accounts,
@@ -79,6 +80,11 @@ pub fn log_debug(message: String) {
 #[tauri::command]
 pub fn log_error(message: String) {
     error!("[frontend] {message}")
+}
+
+#[tauri::command]
+pub fn parse_date(value: String) -> NaiveDate{
+    super::date::parse_date(&value)
 }
 
 #[tauri::command]
