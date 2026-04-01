@@ -14,13 +14,12 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
+mod date;
 pub mod db;
 mod error;
 mod money;
 pub mod service;
 mod settings;
-mod date;
-
 
 use crate::settings::Settings;
 pub use error::{Error, Result};
