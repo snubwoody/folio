@@ -5,8 +5,8 @@ import { mockIPC } from "@tauri-apps/api/mocks";
 import type { Transaction } from "./transaction";
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 
-describe("parseDate",()=>{
-    test("parses single number as day of month",()=>{
+describe("parseDate",() => {
+    test("parses single number as day of month",() => {
         expect(parseDate("10",new CalendarDate(2024,1,2))).toStrictEqual(new CalendarDate(2024,1,10));
         expect(parseDate("30",new CalendarDate(2024,2,1))).toStrictEqual(new CalendarDate(2024,2,29));
     });
