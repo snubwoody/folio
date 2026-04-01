@@ -24,7 +24,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { stream }: Props = $props();
 
-    let title: string = $state(stream.title);
+    let title: string = $derived(stream.title);
 </script>
 
 <li class="flex items-center justify-between">

@@ -41,10 +41,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         onChange?.(item);
     };
 
-    const select = new Select<SelectOption>({
+    const select = $derived(new Select<SelectOption>({
         value: defaultValue ? toOption(defaultValue) : undefined,
         onValueChange: onValueChange
-    });
+    }));
 </script>
 
 <div {...select.trigger} class="space-y-1">

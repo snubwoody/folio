@@ -64,7 +64,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         defaultValue
     }: Props = $props();
 
-    let selectedOption: SelectOption | undefined = $state(
+    let selectedOption: SelectOption | undefined = $derived(
         defaultValue ? toOption(defaultValue) : undefined
     );
 
@@ -80,10 +80,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         onChange?.(item);
     };
 
-    const select = new Select<SelectOption>({
+    const select = $derived(new Select<SelectOption>({
         value: defaultValue ? toOption(defaultValue) : undefined,
         onValueChange: onValueChange
-    });
+    }));
 </script>
 
 <div class={`space-y-1 ${className} select-none`}>

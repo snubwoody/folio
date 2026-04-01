@@ -42,6 +42,7 @@ iso_currency.workspace = true
 sqlx.workspace = true
 tauri-plugin-updater.workspace = true
 tauri-plugin-prevent-default.workspace = true
+tauri-plugin-process = "2"
 
 [package.metadata.packager]
 product-name = "Folio"

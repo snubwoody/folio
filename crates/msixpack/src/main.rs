@@ -5,12 +5,11 @@ mod manifest;
 use crate::bundle::{bundle_package, create_package};
 use crate::download::download_windows_sdk;
 use crate::manifest::{AppxManifest, VisualElements};
-use anyhow::Context;
+use anyhow::{Context, Ok};
 use clap::{Parser, Subcommand};
-use glob::glob;
 use serde::{Deserialize, Serialize};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use tempfile::tempdir;
 use tracing::info;
 
@@ -23,14 +22,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Command {
     /// Bundle an msix package
-    Bundle {
-        /// The path to the config file
-        #[arg(short = 'c', long)]
-        config: Option<PathBuf>,
-        /// The path of the final msix package
-        #[arg(short = 'o', long)]
-        output: Option<PathBuf>,
-    },
+    Bundle,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -38,43 +30,43 @@ fn main() -> anyhow::Result<()> {
         .without_time()
         .with_file(false)
         .init();
+
     let cli = Cli::parse();
 
     match cli.command {
-        Command::Bundle { config, output } => {
-            let config = config.unwrap_or(PathBuf::from("msixpack.toml"));
-            let output = output.unwrap_or(PathBuf::from("package.msix"));
-            bundle(config, output)?;
+        Command::Bundle => {
+            bundle()?;
         }
     }
 
     Ok(())
 }
 
-fn bundle(config: impl AsRef<Path>, output: impl AsRef<Path>) -> anyhow::Result<()> {
+fn bundle() -> anyhow::Result<()> {
     info!("Bundling package");
-    // TODO:
-    // Copy executable and resources
-    // Create appxmanifest
-    // Create msix package
-    let config_path = config.as_ref();
-    let output_path = output.as_ref();
-    let config = Config::from_path(config_path)?;
+    let config = Config::from_path()?;
     let temp = tempdir().with_context(|| "Failed to create temporary output directory")?;
     let temp_dir = temp.path();
     let dest = temp_dir.join(".msixpack");
 
+    let mut file_name = config.file_name();
+    file_name.push_str(".msix");
+    let output = config
+        .package_info
+        .target_dir
+        .join("release/bundle/msix")
+        .join(file_name);
     validate_windows_toolkit()?;
 
     fs::create_dir_all(&dest).with_context(|| "Failed to create temporary directory")?;
     create_package(&config, &dest).with_context(|| "Failed to create package")?;
     bundle_package(dest, &output).with_context(|| "Failed to bundle package")?;
 
-    info!("Created package: {output_path:?}");
+    info!("Created package: {output:?}");
     Ok(())
 }
 
-/// Installs the windows toolkit if it is not found.
+/// Installs the windows toolkit if it is not found on the system.
 fn validate_windows_toolkit() -> anyhow::Result<()> {
     if !toolkit_exists()? {
         let data_dir = data_dir();
@@ -90,34 +82,57 @@ fn toolkit_exists() -> anyhow::Result<bool> {
     Ok(exe_path.exists())
 }
 
+/// Capitalize the first letter of a string.
+fn capitalize(s: &str) -> String {
+    let mut c = s.chars();
+    match c.next() {
+        Some(f) => f.to_uppercase().collect::<String>() + c.as_str(),
+        None => String::new(),
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
-pub struct Config {
-    /// The path of the configuration file.
-    #[serde(skip, default)]
-    directory: PathBuf,
+struct ConfigFile {
     package: Package,
     application: Application,
 }
 
+#[derive(Default)]
+pub struct Config {
+    /// The path of the configuration file.
+    package: Package,
+    application: Application,
+    package_info: PackageInfo,
+}
+
 impl Config {
-    pub fn from_path(path: impl AsRef<Path>) -> anyhow::Result<Config> {
-        let path = path.as_ref();
-        let bytes = fs::read(path)
-            .with_context(|| format!("Failed to read configuration file from {path:?}"))?;
-        let mut config: Config =
+    pub fn from_path() -> anyhow::Result<Config> {
+        let package_info = read_metadata()?;
+        let manifest_path = package_info.path.join("msixpack.toml");
+        let bytes = fs::read(&manifest_path)
+            .with_context(|| format!("Failed to read configuration file from {manifest_path:?}"))?;
+        let config_file: ConfigFile =
             toml::from_slice(&bytes).with_context(|| "Failed to parse config".to_string())?;
-        config.directory = path
-            .parent()
-            .unwrap() // FIXME
-            .to_path_buf();
+
+        let config = Config {
+            package: config_file.package,
+            application: config_file.application,
+            package_info,
+        };
 
         Ok(config)
+    }
+
+    pub fn file_name(&self) -> String {
+        let name = capitalize(&self.package_info.name);
+        format!("{name}_{}_x86", self.package_info.version)
     }
 
     pub fn create_manifest(&self) -> AppxManifest {
         let mut manifest = AppxManifest::new();
 
-        manifest.identity.version = self.package.version.clone();
+        // TODO: read from package.version then package_info
+        manifest.identity.version = self.package_info.version.clone();
         manifest.identity.name = self.package.name.clone();
         manifest.identity.processor_architecture = "x64".to_owned();
         manifest.identity.publisher = self.package.publisher.to_owned();
@@ -134,13 +149,9 @@ impl Config {
     }
 
     fn exe_path(&self) -> String {
-        self.application
-            .executable
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .to_owned()
+        let mut executable = self.package_info.name.clone();
+        executable.push_str(".exe");
+        executable
     }
 
     fn create_application(&self) -> manifest::Application {
@@ -182,54 +193,52 @@ struct Application {
     executable: PathBuf,
 }
 
-fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-    let dest = dest.as_ref();
-    let exe_path = config.directory.join(&config.application.executable);
-    let exe = config.application.executable.file_name().unwrap();
-    // FIXME: put it in the root
-    fs::copy(exe_path, dest.join(exe))?;
-    Ok(())
-}
-
-/// Copy all the resources defined in the [`Config`] to the destination directory.
-fn copy_resources(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()> {
-    let dir = &config.directory;
-    for pattern in &config.package.resources {
-        let path = dir.join(pattern);
-        for entry in glob(path.to_str().unwrap())? {
-            let entry = entry?;
-            let base_path = entry.strip_prefix(dir)?;
-
-            if entry.is_dir() {
-                continue;
-            }
-            let output = dest.as_ref().join(base_path);
-
-            fs::create_dir_all(output.parent().unwrap())
-                .with_context(|| "Failed to create directory")?;
-            fs::copy(&entry, &output).with_context(|| {
-                format!(
-                    "Failed to copy file {:?} to {:?}",
-                    entry.to_str().unwrap(),
-                    output.to_str().unwrap()
-                )
-            })?;
-        }
-    }
-    Ok(())
-}
-
 fn data_dir() -> PathBuf {
     dirs::data_dir()
         .unwrap_or(PathBuf::from("."))
         .join("msixpack")
 }
 
+#[derive(Default)]
+struct PackageInfo {
+    name: String,
+    version: String,
+    target_dir: PathBuf,
+    path: PathBuf,
+}
+
+fn read_metadata() -> anyhow::Result<PackageInfo> {
+    // TODO: bundle into release/bundle/msix or release/msix/pack
+    // TODO: include package version in name when bundling
+    let metadata = cargo_metadata::MetadataCommand::new()
+        .exec()
+        .with_context(|| "Failed to read metadata")?;
+
+    let local_projects: Vec<cargo_metadata::Package> = metadata
+        .packages
+        .into_iter()
+        .filter(|p| p.source.is_none())
+        .collect();
+
+    // TODO: get first package or specify with -p,--package
+    let project = &local_projects[0];
+    let mut version = project.version.to_string();
+    let path = project.manifest_path.parent().unwrap();
+    version.push_str(".0");
+
+    let info = PackageInfo {
+        path: path.to_path_buf().into_std_path_buf(),
+        name: project.name.to_string(),
+        version,
+        target_dir: metadata.target_directory.into_std_path_buf(),
+    };
+
+    Ok(info)
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use std::fs::File;
-    use tempfile::tempdir;
 
     #[test]
     fn get_data_dir() {
@@ -239,26 +248,23 @@ mod test {
     }
 
     #[test]
-    fn copy_resources() -> anyhow::Result<()> {
-        let dir = tempdir()?;
-        let icons_dir = dir.path().join("icons");
-        fs::create_dir(&icons_dir)?;
-        let icon1 = dir.path().join("icons").join("icon1.png");
-        let icon2 = dir.path().join("icons").join("icon2.png");
-        File::create(&icon1)?;
-        File::create(&icon2)?;
-        let config = Config {
-            directory: dir.path().to_path_buf(),
-            package: Package {
-                resources: vec!["icons/*.png".to_string()],
-                ..Default::default()
-            },
-            ..Default::default()
-        };
-        let out = tempdir()?;
-        super::copy_resources(&config, out.path())?;
-        assert!(fs::exists(out.path().join("icons/icon1.png"))?);
-        assert!(fs::exists(out.path().join("icons/icon2.png"))?);
-        Ok(())
+    fn metadata() {
+        let metadata = cargo_metadata::MetadataCommand::new().exec().unwrap();
+        let local_projects: Vec<cargo_metadata::Package> = metadata
+            .packages
+            .into_iter()
+            .filter(|p| p.source.is_none())
+            .collect();
+        // TODO: get first package or specify with -p,--package
+        let project = &local_projects[0];
+        let mut version = project.version.to_string();
+        version.push_str(".0");
+        dbg!(project.version.to_string());
+        dbg!(&local_projects[0].name);
+        dbg!(&metadata.target_directory.join("release/folio.exe"));
+        // TODO: kind includes Bin
+        // dbg!(&local_projects[0].targets);
+        // dbg!(&local_projects.len());
+        // dbg!(&metadata.packages[0].name);
     }
 }

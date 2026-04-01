@@ -18,11 +18,11 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // TODO: create a budget for every category
     // FIXME: overspent error
     // FIXME: add a budget_amount field to categories
-    const totalSpent = parseFloat(budget.totalSpent);
-    const amount = parseFloat(budget.amount);
+    const totalSpent = $derived(parseFloat(budget.totalSpent));
+    const amount = $derived(parseFloat(budget.amount));
 
     /// Max 1 to prevent NaN and mess up the bar width
-    let percentage = Math.min(Math.round((totalSpent / Math.max(amount,1)) * 100),100);
+    let percentage = $derived(Math.min(Math.round((totalSpent / Math.max(amount,1)) * 100),100));
 
     const formattedAmount = $derived.by(() =>
         formatAmountWithoutSymbol(budget.amount)

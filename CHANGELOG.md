@@ -1,5 +1,9 @@
 # Folio Changelog
 
+(unreleased)
+
+- Improved calendar UI
+
 ## 2.0.0 - 23-03-2026
 
 - Combined incomes and expenses into transactions table

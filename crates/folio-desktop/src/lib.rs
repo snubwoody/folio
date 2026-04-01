@@ -88,6 +88,7 @@ pub async fn run() {
     let state = State::new().await.expect("Failed to initialise state");
 
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_prevent_default::init())
