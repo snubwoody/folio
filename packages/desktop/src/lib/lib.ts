@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
 import type { Category } from "./stores/categories.svelte";
+import { CalendarDate } from "@internationalized/date";
 
 export type Account = {
     id: string;
@@ -154,4 +155,18 @@ export function parseMoney(value: string): string | undefined {
  */
 export async function getCurrencies(){
     return await invoke("currencies") as string[];
+}
+
+// The goal of this function to parse the input and always return a valid date.
+export function parseDate(value: string,reference: CalendarDate): CalendarDate{
+    const singleDigit = /^\d+$/.test(value.trim());
+    if (singleDigit){
+        return reference.set({ day: parseInt(value.trim()) });
+    }
+    // Test constraints
+    console.log(singleDigit);
+
+    // return previous date if all else failes
+    return reference;
+
 }
