@@ -32,7 +32,7 @@ export default defineConfig({
         coverage: {
             enabled: true,
             provider: "v8",
-            include: ["src/lib/**","src/components/**"],
+            include: ["src/**"],
             exclude: ["src/**/*.spec.ts","src/**/*.test.ts"]
         },
         // eslint-disable-next-line no-undef
