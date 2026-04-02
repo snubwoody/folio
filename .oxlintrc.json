@@ -22,7 +22,9 @@
     },
     "rules": {
         "typescript/no-unused-vars": "warn",
-        "typescript/no-import-type-side-effects":"warn"
+        "typescript/no-import-type-side-effects":"warn",
+        "no-empty":"warn",
+        "no-trailing-spaces": "warn"
     },
     "options":{
         "typeAware": true,

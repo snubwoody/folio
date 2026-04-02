@@ -3,7 +3,7 @@ import { type DataCellParams, type DataColumn, type DataRow, DataTable } from "$
 import { describe } from "node:test";
 import { TableStore } from "$lib/stores/table.svelte";
 
-describe("TableStore",() => {
+void describe("TableStore",() => {
     test(".toggleSelectAll selects all rows",() => {
         const store = new TableStore();
         store.toggleSelectAll();

@@ -21,4 +21,8 @@ const config = {
     }
 };
 
+if (true){
+
+}
+
 export default config;
