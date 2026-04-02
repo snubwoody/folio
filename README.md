@@ -16,9 +16,7 @@ Budgeting made simple
 
 ## Overview
 
-Folio is a free and open source, personal finance app. It is designed to be simple to use and get out of your way. Folio is local-first, meaning all you sensitive finance data is stored locally on your device. No accounts, no signups, just simple budgeting.
-
-Folio is written as Tauri application, it's UI uses Svelte and it's backend is written in Rust.
+Folio is a free and open source, personal finance app. It is designed to be simple to use and get out of your way. Folio is local-first, meaning all your sensitive financial data is stored locally on your device. It is a Tauri application, with the frontend written in Svelte and the backend in Rust.  
 
 ## Links
 - [Website](https://folio.wakunguma.com)
@@ -35,7 +33,7 @@ Folio is supported on all major desktop platforms, i.e. Windows, MacOS and Linux
 
 ### Compiling from source
 
-To compile Folio from source you will need NodeJS, Rust and Tauri CLI installed on your machine.
+To compile Folio from source you will need NodeJS, PNPM, Rust and Tauri CLI installed on your machine.
 
 ```bash
 # Instal tauri-cli
