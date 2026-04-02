@@ -32,10 +32,19 @@ See the [website](https://folio.wakunguma.com) for more details.
 
 Folio is supported on all major desktop platforms, i.e. Windows, MacOS and Linux.
 
-|Windows|MacOS|Linux|
-|---|---|---|
-|[Exe installer](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe)|[MacOS DMG](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_aarch64.dmg)|[Deb](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.deb)|
-|[Microsoft store](https://apps.microsoft.com/detail/9P5X2HZSXCR1?hl=en-gb&gl=CA&ocid=pdpshare)||[AppImage](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.AppImage)|
+- Windows
+	- [Exe installer](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe)
+	- [Microsoft store](https://apps.microsoft.com/detail/9P5X2HZSXCR1?hl=en-gb&gl=CA&ocid=pdpshare)
+- MacOS
+	- [Dmg](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_aarch64.dmg)
+- Linux
+	- [Deb](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.deb)
+	- [AppImage](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.AppImage)
+
+| Windows                                                                                                | MacOS                                                                                            | Linux                                                                                              |     |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- | --- |
+| [Exe installer](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe) | [MacOS DMG](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_aarch64.dmg) | [Deb](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.deb)           |     |
+| [Microsoft store](https://apps.microsoft.com/detail/9P5X2HZSXCR1?hl=en-gb&gl=CA&ocid=pdpshare)         |                                                                                                  | [AppImage](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.AppImage) |     |
 
 ## Roadmap
 
