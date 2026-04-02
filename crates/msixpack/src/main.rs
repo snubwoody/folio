@@ -246,25 +246,4 @@ mod test {
         let data_dir = dirs::data_dir().unwrap();
         assert_eq!(dir, data_dir.join("msixpack"));
     }
-
-    #[test]
-    fn metadata() {
-        let metadata = cargo_metadata::MetadataCommand::new().exec().unwrap();
-        let local_projects: Vec<cargo_metadata::Package> = metadata
-            .packages
-            .into_iter()
-            .filter(|p| p.source.is_none())
-            .collect();
-        // TODO: get first package or specify with -p,--package
-        let project = &local_projects[0];
-        let mut version = project.version.to_string();
-        version.push_str(".0");
-        dbg!(project.version.to_string());
-        dbg!(&local_projects[0].name);
-        dbg!(&metadata.target_directory.join("release/folio.exe"));
-        // TODO: kind includes Bin
-        // dbg!(&local_projects[0].targets);
-        // dbg!(&local_projects.len());
-        // dbg!(&metadata.packages[0].name);
-    }
 }

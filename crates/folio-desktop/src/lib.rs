@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
+mod date;
 pub mod db;
 mod error;
 mod money;
@@ -39,7 +40,7 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
         .resizable(true)
         .maximized(true);
 
-    // Use a custom title bar, only on windows
+    // Use a custom title bar on Windows
     #[cfg(windows)]
     let builder = builder.decorations(false);
 
@@ -83,7 +84,8 @@ pub async fn run() {
         .with(file_layer)
         .try_init()
         .unwrap();
-    let state = State::new().await.unwrap();
+
+    let state = State::new().await.expect("Failed to initialise state");
 
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
@@ -99,7 +101,7 @@ pub async fn run() {
 
     app.run(tauri::generate_context!())
         .inspect_err(|err| tracing::error!("{err}"))
-        .expect("error while running tauri application");
+        .expect("error while running application");
 }
 
 #[derive(Clone)]

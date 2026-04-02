@@ -7,7 +7,7 @@ edition = "2024"
 publish = false
 
 [lib]
-# The `_lib` suffix may seem redundant but it is necessary
+# The `_lib` suffix may seem redundant, but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "folio_lib"
@@ -26,6 +26,7 @@ tauri-plugin-opener.workspace = true
 serde.workspace = true
 anyhow.workspace = true
 serde_json.workspace = true
+regex.workspace = true
 rust_decimal.workspace = true
 tokio.workspace = true
 dotenvy.workspace = true

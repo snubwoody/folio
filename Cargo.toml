@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/*"]
 
 [workspace.package]
-version = "2.0.0"
+version = "2.1.0"
 edition = "2024"
 
 [workspace.dependencies]
@@ -25,6 +25,7 @@ thiserror = "2.0.17"
 tracing-subscriber = {version = "0.3.20",features = ["env-filter"]}
 tracing-appender = "0.2.4"
 cargo_metadata = "0.23.1"
+regex = "1.12.3"
 tracing = "0.1.41"
 directories = "6.0.0"
 iso_currency = { version = "0.5.3", features = ["with-serde", "iterator"] }
