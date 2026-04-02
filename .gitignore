@@ -3,6 +3,7 @@
 *-shm
 *-wal
 logs/
+.obsidian/
 
 # Build output
 .svelte-kit
