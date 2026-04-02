@@ -1,7 +1,7 @@
 
-<div align="center">
-    <img style="border-radius: 12px;" align="center" src="art/Brand.png" alt=""/>
-    <img style="border-radius: 12px;" align="center" src="assets/transactions.png" alt=""/>
+<div align="center" style="display: flex">
+    <img align="center" src="assets/analytics.png" alt=""/>
+    <img align="center" src="assets/transactions.png" alt=""/>
 </div>
 <div align="center">
     <h1>Folio</h1>
@@ -15,7 +15,9 @@
 
 ![transactions](./assets/transactions.png)
 
-![[Analytics.png]]
+![[art/Analytics.png]]
+
+![[assets/analytics.png]]
 ## Overview
 
 Folio is a free and open source, personal finance app. It is designed to be simple to use and get out of your way. Folio is local-first, meaning all your sensitive financial data is stored locally on your device. It is a Tauri application, with the frontend written in Svelte and the backend in Rust.  
