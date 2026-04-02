@@ -12,8 +12,9 @@
     </a>
 </div>
 
-Budgeting made simple
+![transactions](./assets/transactions.png)
 
+![[Analytics.png]]
 ## Overview
 
 Folio is a free and open source, personal finance app. It is designed to be simple to use and get out of your way. Folio is local-first, meaning all your sensitive financial data is stored locally on your device. It is a Tauri application, with the frontend written in Svelte and the backend in Rust.  
@@ -31,29 +32,13 @@ Folio is supported on all major desktop platforms, i.e. Windows, MacOS and Linux
 | [Exe installer](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_x64-setup.exe) | [MacOS DMG](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_aarch64.dmg) | [Deb](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.deb)           |
 | [Microsoft store](https://apps.microsoft.com/detail/9P5X2HZSXCR1?hl=en-gb&gl=CA&ocid=pdpshare)         |                                                                                                  | [AppImage](https://github.com/snubwoody/folio/releases/latest/download/Folio_2.0.0_amd64.AppImage) |
 
-### Compiling from source
-
-To compile Folio from source you will need NodeJS, PNPM, Rust and Tauri CLI installed on your machine.
-
-```bash
-# Instal tauri-cli
-cargo install tauri-cli
-
-# Install dependencies
-pnpm install
-
-# Build app
-cargo tauri bundle
-```
-
-After building, the app bundle can be found in the `target/release/bundle` directory.
-
 ## Feedback
 
 - Request a new [feature](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Afeature)
 - Report a [bug](https://github.com/snubwoody/folio/issues?q=is%3Aissue%20state%3Aopen%20label%3Abug)
 - Start a [discussion](https://github.com/snubwoody/folio/discussions).
 - Open an [issue](https://github.com/snubwoody/folio/issues).
+
 ## License
 
 All source code is licensed under the GNU General Public License v3.0 or later. See the [LICENSE](LICENSE) file for details.
