@@ -22,6 +22,10 @@ export class CategoryStore {
         return this.#categories.filter(c => !c.isIncomeStream);
     }
 
+    get allCategories(): Category[]{
+        return this.#categories;
+    }
+
     /**
      * Returns a list of all the income streams
      */

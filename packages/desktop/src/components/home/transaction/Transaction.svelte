@@ -78,7 +78,7 @@
             <SelectCell
                 value={category?.id}
                 onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
-                items={categoryStore.categories.map(a => ({ value: a.id, label: a.title }))}
+                items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
             />
         {/if}
     </td>
