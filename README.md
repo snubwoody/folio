@@ -1,6 +1,7 @@
 
 <div align="center">
     <img style="border-radius: 12px;" align="center" src="art/Brand.png" alt=""/>
+    <img style="border-radius: 12px;" align="center" src="assets/transactions.png" alt=""/>
 </div>
 <div align="center">
     <h1>Folio</h1>
