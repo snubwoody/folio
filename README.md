@@ -1,6 +1,5 @@
 
-<img align="center" src="assets/analytics.png" alt="Analytics screenshot" width="300px"/>
-<img align="center" src="assets/transactions.png" alt="" width="300px"/>
+![Analytics screenshot](./assets/analytics.png)
 <div align="center">
     <h1>Folio</h1>
     <a href="https://github.com/snubwoody/folio/actions/workflows/ci.yml">
