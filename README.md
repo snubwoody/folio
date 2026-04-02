@@ -20,9 +20,17 @@ Folio is a free and open source, personal budgeting app. It is designed to be si
 
 Folio is a free, privacy focused, budgeting app. All your data is stored locally on device, no network, no accounts.
 
+Folio is written as Tauri application, it's UI uses Svelte and it's backend is written in Rust.
+
 See the [website](https://folio.wakunguma.com) for more details.
 
+## Links
+- [Website](https://folio.wakunguma.com)
+- [Downloads](https://github.com/snubwoody/folio/releases/latest)
+
 ## Downloads
+
+Folio is supported on all major desktop platforms, i.e. Windows, MacOS and Linux.
 
 |Windows|MacOS|Linux|
 |---|---|---|
@@ -44,5 +52,4 @@ There are a couple way to reach out:
 
 ## License
 
-Folio is free software licensed under the GNU General Public License v3.0 or later.
-See the [LICENSE](LICENSE) file for details.
+Folio is free software licensed under the GNU General Public License v3.0 or later. See the [LICENSE](LICENSE) file for details.
