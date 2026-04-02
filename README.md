@@ -12,8 +12,11 @@
     </a>
 </div>
 
+Budgeting made simple
 
 ## Overview
+
+Folio is a free and open source, personal budgeting app. It is designed to be simple to use and get out of your way.
 
 Folio is a free, privacy focused, budgeting app. All your data is stored locally on device, no network, no accounts.
 
