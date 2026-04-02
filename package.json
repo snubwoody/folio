@@ -24,7 +24,7 @@
         "@stylistic/eslint-plugin": "^5.10.0",
         "@sveltejs/adapter-static": "^3.0.10",
         "@sveltejs/kit": "^2.55.0",
-        "@sveltejs/vite-plugin-svelte": "^6.0.0",
+        "@sveltejs/vite-plugin-svelte": "^7.0.0",
         "@tailwindcss/vite": "^4.2.2",
         "@types/node": "^24.12.0",
         "@vitest/browser": "^3.2.4",
@@ -48,7 +48,7 @@
         "tailwindcss": "^4.2.2",
         "typescript": "~5.6.3",
         "typescript-eslint": "^8.57.2",
-        "vite": "^7.1.11",
+        "vite": "^8.0.3",
         "vitest": "^3.2.4",
         "vitest-browser-svelte": "^1.1.0"
     }
