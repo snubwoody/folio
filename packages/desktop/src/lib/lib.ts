@@ -15,6 +15,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { Category } from "./stores/categories.svelte";
 import { CalendarDate } from "@internationalized/date";
+import { settingsStore } from "./stores/settings.svelte";
 
 export type Account = {
     id: string;
@@ -72,14 +73,14 @@ export function formatDate(dateStr: string): string {
     return Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date);
 }
 
-export type NumberFormatOpts = {
+export interface MoneyFormatOpts {
     /** Truncate large values */
     compact?: true;
     currency?: string;
 };
-export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
-    // TODO: use appStore currency
-    const currency = opts?.currency ?? "USD";
+
+export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
+    const currency = opts?.currency ?? settingsStore.settings.currencyCode;
     let notation:
         | "compact"
         | "standard"
@@ -101,7 +102,7 @@ export function formatAmount(amount: string, opts?: NumberFormatOpts): string {
 // FIXME: join with above
 export function formatAmountWithoutSymbol(
     amount: string,
-    opts?: NumberFormatOpts
+    opts?: MoneyFormatOpts
 ): string {
     const currency = opts?.currency ?? "USD";
     let notation:

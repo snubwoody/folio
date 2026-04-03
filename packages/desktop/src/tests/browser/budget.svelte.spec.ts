@@ -4,7 +4,7 @@ import { appStore } from "$lib/state.svelte";
 // import BudgetComponent from "../../components/analytics/Budget.svelte";
 import { test, beforeEach } from "vitest";
 // import { render } from "vitest-browser-svelte";
-// import { formatAmount, type Budget, type Expense, type Income, type Category } from "$lib/lib";
+// import { formatMoney, type Budget, type Expense, type Income, type Category } from "$lib/lib";
 // import {type Transaction, transactionStore} from "$lib/transaction.svelte";
 //
 beforeEach(() => {
@@ -39,7 +39,7 @@ test("Dummy",() => {});
 //     ];
 //     appStore.budgets = budgets;
 //
-//     const text = formatAmount("90", { compact: true });
+//     const text = formatMoney("90", { compact: true });
 //     const page = render(BudgetOverview);
 //     await expect.element(page.getByText(text)).toBeInTheDocument();
 // });
@@ -54,7 +54,7 @@ test("Dummy",() => {});
 //     ];
 //     appStore.expenses = expenses;
 //
-//     const text = formatAmount("170", { compact: true });
+//     const text = formatMoney("170", { compact: true });
 //     const page = render(BudgetOverview);
 //     await expect.element(page.getByText(text)).toBeInTheDocument();
 // });
@@ -85,7 +85,7 @@ test("Dummy",() => {});
 //     // ];
 //     // transactionStore.createExpense({}) = incomes;
 //     //
-//     // const text = formatAmount("170", { compact: true });
+//     // const text = formatMoney("170", { compact: true });
 //     // const page = render(BudgetOverview);
 //     // await expect.element(page.getByText(text)).toBeInTheDocument();
 // });
@@ -105,7 +105,7 @@ test("Dummy",() => {});
 //     // ];
 //     // appStore.expenses = expenses;
 //     //
-//     // const text = formatAmount("70", { compact: true });
+//     // const text = formatMoney("70", { compact: true });
 //     // const page = render(BudgetOverview);
 //     // await expect.element(page.getByText(text)).toBeInTheDocument();
 // });
@@ -125,7 +125,7 @@ test("Dummy",() => {});
 //     // ];
 //     // appStore.incomes = incomes;
 //     //
-//     // const text = formatAmount("70", { compact: true });
+//     // const text = formatMoney("70", { compact: true });
 //     // const page = render(BudgetOverview);
 //     // await expect.element(page.getByText(text)).toBeInTheDocument();
 // });

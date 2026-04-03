@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { formatAmount } from "$lib/lib";
+    import { formatMoney } from "$lib/lib";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import type { Account } from "$lib/lib";
     import { transactionStore } from "$lib/stores/transaction.svelte";
@@ -15,5 +15,5 @@
 
 <li class="shadow-purple-sm p-2 rounded-md">
 	<p>{account.name}</p>
-	<h6>{formatAmount(balance.toString(),{ currency: settingsStore.settings.currencyCode })}</h6>
+	<h6>{formatMoney(balance.toString(),{ currency: settingsStore.settings.currencyCode })}</h6>
 </li>
