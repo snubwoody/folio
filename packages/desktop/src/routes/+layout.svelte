@@ -15,8 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import Sidebar from "../components/Sidebar.svelte";
-    import NavigationPanel from "../components/NavigationPanel.svelte";
+    import NavigationPanel from "$components/NavigationPanel.svelte";
     import Titlebar from "$components/Titlebar.svelte";
     import ToastGroup from "$components/popups/ToastGroup.svelte";
     import "$styles/global.css";
@@ -87,7 +86,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <Titlebar />
 <main>
-    <Sidebar />
     <NavigationPanel/>
     {@render children()}
     <ToastGroup/>
@@ -101,8 +99,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 
     main {
-        display: grid;
-        grid-template-columns: auto 300px 1fr;
+        display: flex;
+        grid-template-columns: 300px 1fr;
         overflow-y: hidden;
         height: 100%;
     }
