@@ -60,12 +60,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 
     onMount(async () => {
-        await invoke("create_missing_budgets");
-        await settingsStore.load();
-        await appStore.load();
-        await transactionStore.load();
-        await accountStore.load();
-        await categoryStore.load();
+        await Promise.all([
+            invoke("create_missing_budgets"),
+            appStore.load(),
+            transactionStore.load(),
+            accountStore.load(),
+            categoryStore.load(),
+            settingsStore.load()
+        ]);
         checkForUpdate();
     });
 </script>
@@ -85,11 +87,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </svelte:head>
 
 <Titlebar />
-<main>
+<div>
     <NavigationPanel/>
     {@render children()}
     <ToastGroup/>
-</main>
+</div>
 
 <style>
     :global(body) {
@@ -98,9 +100,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         overflow: hidden;
     }
 
-    main {
+    div {
         display: flex;
-        grid-template-columns: 300px 1fr;
         overflow-y: hidden;
         height: 100%;
     }

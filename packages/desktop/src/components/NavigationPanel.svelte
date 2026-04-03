@@ -1,14 +1,12 @@
 
 <script>
     import IconButton from "$components/button/IconButton.svelte";
-    import Home from "@lucide/svelte/icons/house";
-    import Chart from "@lucide/svelte/icons/chart-no-axes-combined";
     import SettingsButton from "$components/settings/SettingsButton.svelte";
     import {Plus,Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose} from "@lucide/svelte";
     import {Button} from "$components/button";
     import {accountStore} from "$lib/stores/account.svelte";
     import {formatMoney} from "$lib/lib";
-    // TODO: add aria-expanded
+    import {page} from "$app/state";
 
     const total = $derived.by(()=>{
         // TODO: test 0 accounts
@@ -17,16 +15,18 @@
     });
 
     // TODO: max-height for accounts
+    // FIXME: weird width behaviour, only with main page
     let expanded = $state(true);
+    $inspect(page);
 </script>
 
 <aside id="nav-panel" data-expanded={expanded}>
     <div class="flex flex-col">
-        <a href="/" class="page-link">
+        <a href="/" class="page-link" data-selected={page.route.id == "/"}>
             <Landmark/>
             <p>Transactions</p>
         </a>
-        <a href="/analytics" class="page-link">
+        <a href="/analytics" class="page-link" data-selected={page.route.id == "/analytics"}>
             <ChartNoAxesCombined/>
             <p>Spending</p>
         </a>
@@ -78,6 +78,7 @@
         padding-top: 12px;
 		background-color: var(--color-neutral-25);
         border-right: 1px solid var(--color-neutral-100);
+        transition: all 250ms;
 
         &:global([data-expanded="false"]){
             width: fit-content;
@@ -105,6 +106,8 @@
         align-items: center;
         gap: 12px;
         padding: 8px 16px;
+        transition: all 250ms;
+        box-sizing: content-box;
 
         :global(svg){
             width: 16px;
@@ -117,6 +120,14 @@
             }
         }
 
+        &:hover{
+            background-color: var(--color-purple-50);
+        }
+
+        &:global([data-selected="true"]){
+            color: var(--color-text-primary);
+            box-shadow: inset 4px 0 0 0 var(--color-surface-primary);
+        }
     }
 
     .nav-panel-actions{
