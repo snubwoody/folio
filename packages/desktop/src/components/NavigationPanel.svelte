@@ -16,9 +16,9 @@
 
     // TODO: max-height for accounts
     // TODO: add dropdown
+    // TODO: change icon based on open state
     // FIXME: weird width behaviour, only with main page
     let expanded = $state(true);
-    $inspect(page);
 </script>
 
 <aside id="nav-panel" data-testid="nav-panel" data-expanded={expanded}>
@@ -35,7 +35,7 @@
     <div class="h-[3px] w-full bg-neutral-100"></div>
     <ul class="account-list">
         <li class="font-medium">
-            <p>Accounts</p>
+            <h6 class="text-body">Accounts</h6>
             <p>{formatMoney(total)}</p>
         </li>
 

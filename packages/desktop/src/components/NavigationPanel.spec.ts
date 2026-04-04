@@ -1,9 +1,15 @@
-import { expect, test,describe } from "vitest";
+import {expect, test, describe, beforeAll, beforeEach} from "vitest";
 import { render } from "vitest-browser-svelte";
+import {accountStore, mockCreateAccount} from "$lib/stores/account.svelte";
 import NavigationPanel from "./NavigationPanel.svelte";
+import {clearMocks, mockIPC} from "@tauri-apps/api/mocks";
+
+beforeEach(()=>{
+    accountStore.clear();
+    clearMocks();
+});
 
 describe("Navigation Panel",() => {
-    // TODO: collapse navbar
     test("has navigation links",async() => {
         const screen = render(NavigationPanel);
         const transactionsLink = screen.getByRole("link",{name:"Transactions"});
@@ -24,7 +30,11 @@ describe("Navigation Panel",() => {
             .toBeVisible();
     });
 
-    // TODO: test default state
+    test("defaults to expanded", async () => {
+        const screen = render(NavigationPanel);
+        await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","true");
+    });
+
     test("expand and collapse sidebar", async () => {
         const screen = render(NavigationPanel);
         await screen.getByRole("button",{name: "Collapse sidebar"}).click();
@@ -41,5 +51,27 @@ describe("Navigation Panel",() => {
 
         await expect.element(transactionsLink).not.toBeInTheDocument();
         await expect.element(spendingLink).not.toBeInTheDocument();
+    });
+
+    // TODO: maybe test reactivity
+    test("account list", async () => {
+        mockCreateAccount();
+        await accountStore.createAccount({name: "Account 1",startingBalance: "20.00"});
+        await accountStore.createAccount({name: "Account 2",startingBalance: "500.00"});
+        const screen = render(NavigationPanel);
+
+        await expect.element(screen.getByText("Account 1")).toBeVisible();
+        await expect.element(screen.getByText("$20.00")).toBeVisible();
+        expect(screen.getByRole("listitem").all()).toHaveLength(3);
+    });
+
+    test("show account total", async () => {
+        mockCreateAccount();
+        await accountStore.createAccount({name: "Account 1",startingBalance: "20.00"});
+        await accountStore.createAccount({name: "Account 2",startingBalance: "500.00"});
+        const screen = render(NavigationPanel);
+
+        await expect.element(screen.getByText("Accounts")).toBeVisible();
+        await expect.element(screen.getByText("$520.00")).toBeVisible();
     });
 });
