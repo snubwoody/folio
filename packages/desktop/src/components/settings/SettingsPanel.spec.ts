@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import Sidebar from "$components/Sidebar.svelte";
+import SettingsPanel from "./SettingsPanel.svelte";
 import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { accountStore } from "$lib/stores/account.svelte";
@@ -14,18 +14,9 @@ mockIPC((cmd) => {
     }
 });
 
-test("Open settings panel", async () => {
-    const page = render(Sidebar);
-    await page.getByLabelText("Open settings").click();
-    await expect
-        .element(page.getByLabelText("Settings panel"))
-        .toBeInTheDocument();
-});
-
 test("Default to general section", async () => {
-    const page = render(Sidebar);
-    await page.getByLabelText("Open settings").click();
-    const selected = page
+    const screen = render(SettingsPanel);
+    const selected = screen
         .getByRole("button", { name: "General" })
         .query()
         ?.getAttribute("data-selected");
@@ -35,11 +26,10 @@ test("Default to general section", async () => {
 test("Show accounts", async () => {
     await accountStore.createTestAccount({ name: "Account 1" });
     await accountStore.createTestAccount({ name: "Account 2" });
-    const page = render(Sidebar);
-    await page.getByLabelText("Open settings").click();
-    expect(page.getByRole("heading", { name: "Accounts" })).toBeInTheDocument();
-    expect(page.getByRole("textbox").first()).toHaveValue("Account 1");
-    expect(page.getByRole("textbox").nth(2)).toHaveValue("Account 2");
+    const screen = render(SettingsPanel);
+    expect(screen.getByRole("heading", { name: "Accounts" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox").first()).toHaveValue("Account 1");
+    expect(screen.getByRole("textbox").nth(2)).toHaveValue("Account 2");
 });
 
 test("Show categories", async () => {
@@ -55,13 +45,12 @@ test("Show categories", async () => {
             return category;
         }
     });
-    categoryStore.createCategory("Category");
-    categoryStore.createCategory("Category");
-    const page = render(Sidebar);
-    await page.getByLabelText("Open settings").click();
-    await page.getByText("Categories").click();
+    await categoryStore.createCategory("Category");
+    await categoryStore.createCategory("Category");
+    const screen = render(SettingsPanel);
+    await screen.getByText("Categories").click();
 
-    const items = page.getByRole("listitem").all();
+    const items = screen.getByRole("listitem").all();
     expect(items).toHaveLength(2);
 });
 
@@ -80,11 +69,10 @@ test("Show income streams", async () => {
     });
     await categoryStore.createIncomeStream();
     await categoryStore.createIncomeStream();
-    const page = render(Sidebar);
-    await page.getByLabelText("Open settings").click();
-    await page.getByText("Income streams").click();
+    const screen = render(SettingsPanel);
+    await screen.getByText("Income streams").click();
 
-    const items = page.getByRole("listitem").all();
+    const items = screen.getByRole("listitem").all();
 
     expect(items).toHaveLength(2);
 });
