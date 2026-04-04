@@ -15,18 +15,19 @@
     });
 
     // TODO: max-height for accounts
+    // TODO: add dropdown
     // FIXME: weird width behaviour, only with main page
     let expanded = $state(true);
     $inspect(page);
 </script>
 
-<aside id="nav-panel" data-expanded={expanded}>
+<aside id="nav-panel" data-testid="nav-panel" data-expanded={expanded}>
     <div class="flex flex-col">
-        <a href="/" class="page-link" data-selected={page.route.id == "/"}>
+        <a href="/" class="page-link" data-selected={page.route.id === "/"}>
             <Landmark/>
             <p>Transactions</p>
         </a>
-        <a href="/analytics" class="page-link" data-selected={page.route.id == "/analytics"}>
+        <a href="/analytics" class="page-link" data-selected={page.route.id === "/analytics"}>
             <ChartNoAxesCombined/>
             <p>Spending</p>
         </a>
@@ -59,6 +60,7 @@
         <SettingsButton/>
         <IconButton
             variant="ghost"
+            aria-label="Collapse sidebar"
             aria-expanded={expanded}
             aria-controls="nav-panel"
             onclick={() => expanded = !expanded}

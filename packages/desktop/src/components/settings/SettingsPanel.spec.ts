@@ -76,3 +76,29 @@ test("Show income streams", async () => {
 
     expect(items).toHaveLength(2);
 });
+
+test("Create income stream", async () => {
+    mockIPC((cmd,args) => {
+        if (cmd === "create_income_stream") {
+            const payload = args as {title:string};
+            const category: Category = {
+                id: Math.random().toString(),
+                title: payload.title,
+                createdAt: new Date().toUTCString(),
+                isIncomeStream: true
+            };
+            return category;
+        }
+    });
+    await categoryStore.createIncomeStream();
+    await categoryStore.createIncomeStream();
+
+    const screen = render(SettingsPanel);
+    await screen.getByText("Income streams").click();
+
+    let items = screen.getByRole("listitem").all();
+    expect(items).toHaveLength(2);
+    await screen.getByRole("button",{name: "Create income stream"}).click();
+    items = screen.getByRole("listitem").all();
+    expect(items).toHaveLength(3);
+});
