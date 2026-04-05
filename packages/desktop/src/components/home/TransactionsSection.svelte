@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <Toolbar/>
     <Table {tableStore}>
         {#each transactionStore.transactions as transaction (transaction.id)}
-            <TransactionNew {transaction}/>
+            <TransactionNew {transaction} {tableStore}/>
         {/each}
     </Table>
     <TransactionTable {tableStore}/>

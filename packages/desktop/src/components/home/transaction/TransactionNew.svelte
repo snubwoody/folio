@@ -13,9 +13,10 @@
 
     interface Props{
         transaction: Transaction
+        tableStore: TableStore
     }
 
-    const {transaction}: Props = $props();
+    const {transaction,tableStore}: Props = $props();
     const transType = $derived.by(() => {
         return transactionType(transaction);
     });
@@ -29,7 +30,7 @@
     // TODO: clear money fields if there was an error parsing or reset
     // TODO: add set_account command instead
     // FIXME: inflow causing overflow
-    // TODO: switch to divs or ul
+    // TODO: input border color
 </script>
 
 <TableRow>
@@ -50,8 +51,61 @@
             />
         {/if}
     </div>
-    <div class="t-cell">Note</div>
-    <div class="t-cell">Category</div>
-    <div class="t-cell">Outflow</div>
-    <div class="t-cell">Inflow</div>
+    <input
+        class="note-input t-cell"
+        type="text"
+        bind:value={note}
+        onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
+    >
+    <div data-testid="category" class="t-cell">
+        {#if transaction.categoryId !== undefined}
+            <SelectCell
+                value={category?.id}
+                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
+                items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
+            />
+        {/if}
+    </div>
+    <div data-testid="outflow" class="t-cell">
+        <div class="flex gap-1">
+            {#if transType !== "Income"}
+                <p>
+                    {currencySymbol}
+                </p>
+                <input
+                    type="text"
+                    value={formatAmountWithoutSymbol(transaction.amount)}
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
+                >
+            {:else}
+                <input
+                    type="text"
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
+                >
+            {/if}
+        </div>
+    </div>
+    <div data-testid="inflow" class="t-cell">
+        <div class="flex gap-1">
+            {#if transType === "Income" }
+                <p>
+                    {currencySymbol}
+                </p>
+                <input
+                    type="text"
+                    value={formatAmountWithoutSymbol(transaction.amount)}
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
+                >
+            {:else}
+                <input
+                    type="text"
+                    class="outline-none"
+                    onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
+                >
+            {/if}
+        </div>
+    </div>
 </TableRow>
