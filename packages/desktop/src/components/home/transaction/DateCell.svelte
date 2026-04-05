@@ -24,36 +24,34 @@
     let calendarOpen = $state(false);
 </script>
 
-<td data-col="date">
-    <Popover.Root bind:open={calendarOpen}>
-        <Popover.Trigger>
-            <time datetime={transaction.date.toString()}>
-                {displayDate}
-            </time>
-        </Popover.Trigger>
-        <Popover.Portal>
-            <Popover.Content>
-                <Calendar bind:value={date} onDateChange={updateDate}/>
-            </Popover.Content>
-        </Popover.Portal>
-    </Popover.Root>
-</td>
+<Popover.Root bind:open={calendarOpen}>
+    <Popover.Trigger class="t-cell text-left">
+        <time datetime={transaction.date.toString()}>
+            {displayDate}
+        </time>
+    </Popover.Trigger>
+    <Popover.Portal>
+        <Popover.Content>
+            <Calendar bind:value={date} onDateChange={updateDate}/>
+        </Popover.Content>
+    </Popover.Portal>
+</Popover.Root>
 
 <style>
-    td{
-        text-align: left;
+    /*td{*/
+    /*    text-align: left;*/
 
-        &:last-child{
-            text-align: right;
-        }
+    /*    &:last-child{*/
+    /*        text-align: right;*/
+    /*    }*/
 
-        padding: 8px 16px;
-        border: 1px solid var(--color-neutral-50);
+    /*    padding: 8px 16px;*/
+    /*    border: 1px solid var(--color-neutral-50);*/
 
-        &:focus-within{
-            background: var(--color-purple-50);
-            border-color: var(--color-purple-500);
-        }
-    }
+    /*    &:focus-within{*/
+    /*        background: var(--color-purple-50);*/
+    /*        border-color: var(--color-purple-500);*/
+    /*    }*/
+    /*}*/
 
 </style>
