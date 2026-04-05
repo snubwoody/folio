@@ -22,23 +22,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import {Table, TableRow} from "$components/table";
     const tableStore = new TableStore();
     import {transactionStore} from "$lib/stores/transaction.svelte";
-    import DateCell from "$components/table/DateCell.svelte";
-    import AccountCell from "$components/table/AccountCell.svelte";
+    import TransactionNew from "$components/home/transaction/TransactionNew.svelte";
 </script>
 
 <section>
     <Toolbar/>
     <Table {tableStore}>
         {#each transactionStore.transactions as transaction (transaction.id)}
-            <TableRow>
-                <DateCell {transaction}/>
-                <AccountCell {transaction}/>
-                <div class="t-cell">Payee</div>
-                <div class="t-cell">Note</div>
-                <div class="t-cell">Category</div>
-                <div class="t-cell">Outflow</div>
-                <div class="t-cell">Inflow</div>
-            </TableRow>
+            <TransactionNew {transaction}/>
         {/each}
     </Table>
     <TransactionTable {tableStore}/>
