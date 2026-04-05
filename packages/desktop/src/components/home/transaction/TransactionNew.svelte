@@ -7,6 +7,7 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { type Transaction, transactionType } from "$lib/transaction";
     import DateCell from "$components/table/DateCell.svelte";
+    import {TableCell} from "$components/table";
     import AccountCell from "$components/table/AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import {TableRow} from "$components/table";
@@ -29,11 +30,27 @@
     const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
     // TODO: clear money fields if there was an error parsing or reset
     // TODO: add set_account command instead
-    // FIXME: inflow causing overflow
     // TODO: input border color
+    // TODO: rename t-cell to table-cell
+    // TODO: test this
+    // TODO: maybe add fill param
 </script>
 
 <TableRow>
+    <TableCell class="w-fit shrink">
+        <input
+            checked={tableStore.isSelected(transaction.id)}
+            type="checkbox" name="" id=""
+            onclick={(e) => {
+                if (!e.isTrusted) return;
+                if(e.currentTarget.checked){
+                    tableStore.select(transaction.id);
+                    return;
+                }
+                tableStore.deselect(transaction.id);
+            }}
+        >
+    </TableCell>
     <DateCell {transaction}/>
     <AccountCell {transaction}/>
     <div data-testid="payee" class="t-cell">
@@ -51,13 +68,15 @@
             />
         {/if}
     </div>
-    <input
-        class="note-input t-cell"
-        type="text"
-        bind:value={note}
-        onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
-    >
-    <div data-testid="category" class="t-cell">
+    <TableCell>
+        <input
+            class="note-input t-cell"
+            type="text"
+            bind:value={note}
+            onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
+        >
+    </TableCell>
+    <TableCell data-testid="category">
         {#if transaction.categoryId !== undefined}
             <SelectCell
                 value={category?.id}
@@ -65,47 +84,44 @@
                 items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
             />
         {/if}
-    </div>
-    <div data-testid="outflow" class="t-cell">
-        <div class="flex gap-1">
-            {#if transType !== "Income"}
-                <p>
-                    {currencySymbol}
-                </p>
-                <input
-                    type="text"
-                    value={formatAmountWithoutSymbol(transaction.amount)}
-                    class="outline-none"
-                    onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
-                >
-            {:else}
-                <input
-                    type="text"
-                    class="outline-none"
-                    onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
-                >
-            {/if}
-        </div>
-    </div>
-    <div data-testid="inflow" class="t-cell">
-        <div class="flex gap-1">
-            {#if transType === "Income" }
-                <p>
-                    {currencySymbol}
-                </p>
-                <input
-                    type="text"
-                    value={formatAmountWithoutSymbol(transaction.amount)}
-                    class="outline-none"
-                    onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
-                >
-            {:else}
-                <input
-                    type="text"
-                    class="outline-none"
-                    onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
-                >
-            {/if}
-        </div>
-    </div>
+    </TableCell>
+    <TableCell data-testid="outflow" class="flex gap-1 items-center">
+        <!--TODO: kind of unnecessary-->
+        {#if transType !== "Income"}
+            <p>
+                {currencySymbol}
+            </p>
+            <input
+                type="text"
+                value={formatAmountWithoutSymbol(transaction.amount)}
+                class="outline-none"
+                onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
+            >
+        {:else}
+            <input
+                type="text"
+                class="outline-none"
+                onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
+            >
+        {/if}
+    </TableCell>
+    <TableCell data-testid="inflow" class="flex gap-1 items-center">
+        {#if transType === "Income" }
+            <p>
+                {currencySymbol}
+            </p>
+            <input
+                type="text"
+                value={formatAmountWithoutSymbol(transaction.amount)}
+                class="outline-none"
+                onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
+            >
+        {:else}
+            <input
+                type="text"
+                class="outline-none"
+                onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
+            >
+        {/if}
+    </TableCell>
 </TableRow>

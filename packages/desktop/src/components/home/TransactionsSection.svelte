@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Toolbar from "./transaction/Toolbar.svelte";
     import Actionbar from "./transaction/Actionbar.svelte";
     import { TableStore } from "$lib/stores/table.svelte";
-    import {Table, TableRow} from "$components/table";
+    import {Table, TableCell, TableHeader, TableRow} from "$components/table";
     const tableStore = new TableStore();
     import {transactionStore} from "$lib/stores/transaction.svelte";
     import TransactionNew from "$components/home/transaction/TransactionNew.svelte";
@@ -28,6 +28,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <section>
     <Toolbar/>
     <Table {tableStore}>
+        <TableHeader>
+            <TableCell>Date</TableCell>
+            <TableCell>Account</TableCell>
+            <TableCell>Payee</TableCell>
+            <TableCell>Category</TableCell>
+            <TableCell>Outflow</TableCell>
+            <TableCell>Inflow</TableCell>
+        </TableHeader>
         {#each transactionStore.transactions as transaction (transaction.id)}
             <TransactionNew {transaction} {tableStore}/>
         {/each}
