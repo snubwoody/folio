@@ -13,17 +13,17 @@
 </script>
 <Table>
     <TableHeader>
-<!--        <TableCell class="w-fit shrink">-->
-<!--            <input type="checkbox" checked={selected} name="selected" id="row-checkbox"-->
-<!--                   onclick={(e) => {-->
-<!--                    if(e.currentTarget.checked){-->
-<!--                        tableStore.toggleSelectAll();-->
-<!--                        return;-->
-<!--                    }-->
-<!--                    tableStore.toggleSelectAll();-->
-<!--                }}-->
-<!--            >-->
-<!--        </TableCell>-->
+        <TableCell class="checkbox-cell">
+            <input type="checkbox" checked={selected} name="selected" id="row-checkbox"
+                   onclick={(e) => {
+                    if(e.currentTarget.checked){
+                        tableStore.toggleSelectAll();
+                        return;
+                    }
+                    tableStore.toggleSelectAll();
+                }}
+            >
+        </TableCell>
         <TableCell>Date</TableCell>
         <TableCell>Account</TableCell>
         <TableCell>Payee</TableCell>

@@ -34,41 +34,42 @@
     // TODO: rename t-cell to table-cell
     // TODO: test this
     // TODO: maybe add fill param
+    // FIXME: popup width for select without a selected option
     // TODO: maybe make border thicker
 </script>
 
 <TableRow data-selected={selected}>
-<!--    <TableCell>-->
-<!--        <input-->
-<!--            checked={tableStore.isSelected(transaction.id)}-->
-<!--            type="checkbox" name="" id=""-->
-<!--            onclick={(e) => {-->
-<!--                if (!e.isTrusted) return;-->
-<!--                if(e.currentTarget.checked){-->
-<!--                    tableStore.select(transaction.id);-->
-<!--                    return;-->
-<!--                }-->
-<!--                tableStore.deselect(transaction.id);-->
-<!--            }}-->
-<!--        >-->
-<!--    </TableCell>-->
+    <TableCell class="checkbox-cell">
+        <input
+            checked={tableStore.isSelected(transaction.id)}
+            type="checkbox" name="" id=""
+            onclick={(e) => {
+                if (!e.isTrusted) return;
+                if(e.currentTarget.checked){
+                    tableStore.select(transaction.id);
+                    return;
+                }
+                tableStore.deselect(transaction.id);
+            }}
+        >
+    </TableCell>
     <DateCell {transaction}/>
     <AccountCell {transaction}/>
-    <TableCell data-testid="payee">
-        {#if transType === "Transfer"}
-            {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
-            <SelectCell
-                value={account?.id}
-                onChange={(accountId) => transactionStore.setPayee(transaction.id,accountId)}
-                items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
-            />
-        {:else}
-            <SelectCell
-                onChange={(accountId) => transactionStore.setPayee(transaction.id,accountId)}
-                items={payeeOptions.map(a => ({ value: a.id, label: a.name }))}
-            />
-        {/if}
-    </TableCell>
+    {#if transType === "Transfer"}
+        {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
+        <SelectCell
+            data-testid="payee"
+            value={account?.id}
+            onChange={(accountId) => transactionStore.setPayee(transaction.id,accountId)}
+            items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
+        />
+    {:else}
+        <SelectCell
+            data-testid="payee"
+            onChange={(accountId) => transactionStore.setPayee(transaction.id,accountId)}
+            items={payeeOptions.map(a => ({ value: a.id, label: a.name }))}
+        />
+    {/if}
     <TableCell>
         <input
             class="note-input"
