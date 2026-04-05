@@ -1,13 +1,14 @@
 <script lang="ts">
     import type {Snippet} from "svelte";
+    import type {HTMLAttributes} from "svelte/elements";
 
-    interface Props{
+    interface Props extends HTMLAttributes<HTMLDivElement>{
         children?: Snippet
     }
 
-    const { children }:Props = $props();
+    const { children,...rest }:Props = $props();
 </script>
 
-<div class="table-row">
+<div class="table-row" {...rest}>
     {@render children?.()}
 </div>

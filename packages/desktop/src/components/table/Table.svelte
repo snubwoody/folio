@@ -38,15 +38,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <div>
-    <div class="table-header">
-        <div class="t-cell">Date</div>
-        <div class="t-cell">Account</div>
-        <div class="t-cell">Payee</div>
-        <div class="t-cell">Note</div>
-        <div class="t-cell">Category</div>
-        <div class="t-cell">Outflow</div>
-        <div class="t-cell">Inflow</div>
-    </div>
     {@render children?.()}
 </div>
 

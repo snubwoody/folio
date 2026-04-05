@@ -36,7 +36,7 @@
     // TODO: maybe add fill param
 </script>
 
-<TableRow>
+<TableRow data-selected={selected}>
     <TableCell class="w-fit shrink">
         <input
             checked={tableStore.isSelected(transaction.id)}

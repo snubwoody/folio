@@ -28,6 +28,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     // TODO: exit on enter or esc
 </script>
 
-<div class={`t-cell ${userClass}`} {...rest}>
+<div class={`t-cell ${userClass ?? ""}`} {...rest}>
     {@render children()}
 </div>
