@@ -19,13 +19,28 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Toolbar from "./transaction/Toolbar.svelte";
     import Actionbar from "./transaction/Actionbar.svelte";
     import { TableStore } from "$lib/stores/table.svelte";
-    import {Table} from "$components/table";
+    import {Table, TableRow} from "$components/table";
     const tableStore = new TableStore();
+    import {transactionStore} from "$lib/stores/transaction.svelte";
+    import DateCell from "$components/table/DateCell.svelte";
+    import AccountCell from "$components/table/AccountCell.svelte";
 </script>
 
 <section>
     <Toolbar/>
-    <Table {tableStore}/>
+    <Table {tableStore}>
+        {#each transactionStore.transactions as transaction (transaction.id)}
+            <TableRow>
+                <DateCell {transaction}/>
+                <AccountCell {transaction}/>
+                <div class="t-cell">Payee</div>
+                <div class="t-cell">Note</div>
+                <div class="t-cell">Category</div>
+                <div class="t-cell">Outflow</div>
+                <div class="t-cell">Inflow</div>
+            </TableRow>
+        {/each}
+    </Table>
     <TransactionTable {tableStore}/>
     <Actionbar {tableStore}/>
 </section>

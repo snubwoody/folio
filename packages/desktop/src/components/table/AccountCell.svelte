@@ -18,7 +18,7 @@
     const toAccount = $derived(accountStore.accountMap.get(transaction.toAccountId??""));
 </script>
 
-<td data-col="account" data-testid="account" class="table-cell">
+<div data-testid="account" class="t-cell">
     {#if transType === "Income"}
         <SelectCell
             value={toAccount?.id}
@@ -32,4 +32,4 @@
             items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
         />
     {/if}
-</td>
+</div>

@@ -19,15 +19,22 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { TableStore } from "$lib/stores/table.svelte";
     import {transactionStore} from "$lib/stores/transaction.svelte";
     import DateCell from "./DateCell.svelte";
+    import AccountCell from "./AccountCell.svelte";
+    import {accountStore} from "$lib/stores/account.svelte";
+    import SelectCell from "$components/home/transaction/SelectCell.svelte";
+    import type {Snippet} from "svelte";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
         tableStore: TableStore
+        children?: Snippet
     }
 
 
-    const { tableStore }:Props = $props();
+    const { tableStore,children }:Props = $props();
     // TODO: add checkbox
     // TODO: background color when focused
+    // TODO: background color on hover?
+    // TODO: move account cell after completing
 </script>
 
 <div>
@@ -40,17 +47,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="t-cell">Outflow</div>
         <div class="t-cell">Inflow</div>
     </div>
-    {#each transactionStore.transactions as transaction (transaction.id)}
-        <div class="table-row">
-            <DateCell {transaction}/>
-            <div class="t-cell">Chequing account</div>
-            <div class="t-cell">Payee</div>
-            <div class="t-cell">Note</div>
-            <div class="t-cell">Category</div>
-            <div class="t-cell">Outflow</div>
-            <div class="t-cell">Inflow</div>
-        </div>
-    {/each}
+    {@render children?.()}
 </div>
 
 <style>
