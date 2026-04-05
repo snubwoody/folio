@@ -19,7 +19,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     interface Props{
         items: {value: string, label: string}[],
-        // TODO: make bindable?
         value?: string,
         /**
          * Callback that runs when the selected value changes.
@@ -31,7 +30,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const { items,value,onChange }: Props = $props();
 
     let selectedItem = $derived(items.find(item => item.value === value));
-    // TODO: add selected style
+    // TODO: add style for selected items
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
@@ -41,17 +40,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <Select.Root {onValueChange} type="single" name="Combobox">
     <Select.Trigger class="w-full h-full flex justify-start outline-none">
-        {selectedItem?.label ?? ""}
+        {#if selectedItem}
+            <p>{selectedItem.label}</p>
+        {:else}
+            <p class="invisible">Select a item</p>
+        {/if}
     </Select.Trigger>
     <Select.Portal>
         <!-- FIXME: make it fit the children -->
         <Select.Content class="w-(--bits-select-anchor-width) popup-overlay space-y-1">
             {#each items as item (item.value)}
                 <Select.Item value={item.value} label={item.label} class="select-item">
-                    <!--eslint-disable-next-line svelte/no-useless-children-snippet-->
-                    {#snippet children()}
-                        {item.label}
-                    {/snippet}
+                    {item.label}
                 </Select.Item>
             {/each}
         </Select.Content>

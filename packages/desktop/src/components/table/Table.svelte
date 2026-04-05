@@ -15,38 +15,58 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import type { Snippet } from "svelte";
-    import { type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable } from "$lib/table";
     import type { HTMLAttributes } from "svelte/elements";
+    import { TableStore } from "$lib/stores/table.svelte";
+    import {transactionStore} from "$lib/stores/transaction.svelte";
+    import DateCell from "./DateCell.svelte";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
-        header: Snippet<[string]>,
-        cell: Snippet<[DataCell]>,
-        columns: DataColumn[],
-        rows: DataRow[],
-        cells: DataCellParams[],
+        tableStore: TableStore
     }
 
-    const { header,cell,columns,rows,cells,...rest }: Props = $props();
-    const table = $derived(new DataTable(columns,rows,cells));
+
+    const { tableStore }:Props = $props();
+    // TODO: add checkbox
+    // TODO: background color when focused
 </script>
 
-<table class="transaction-table" {...rest}>
-    <thead class="table-header">
-        <tr>
-            {#each columns as column (column.id)}
-                {@render header(column.id)}
-            {/each}
-        </tr>
-    </thead>
-    <tbody>
-        {#each table.rows as row (row.id)}
-            <tr>
-                {#each table.rowCells(row.id) as dataCell,index (index)}
-                    {@render cell(dataCell)}
-                {/each}
-            </tr>
-        {/each}
-    </tbody>
-</table>
+<div>
+    <div class="table-header">
+        <div class="t-cell">Date</div>
+        <div class="t-cell">Account</div>
+        <div class="t-cell">Payee</div>
+        <div class="t-cell">Note</div>
+        <div class="t-cell">Category</div>
+        <div class="t-cell">Outflow</div>
+        <div class="t-cell">Inflow</div>
+    </div>
+    {#each transactionStore.transactions as transaction (transaction.id)}
+        <div class="table-row">
+            <DateCell {transaction}/>
+            <div class="t-cell">Chequing account</div>
+            <div class="t-cell">Payee</div>
+            <div class="t-cell">Note</div>
+            <div class="t-cell">Category</div>
+            <div class="t-cell">Outflow</div>
+            <div class="t-cell">Inflow</div>
+        </div>
+    {/each}
+</div>
 
+<style>
+    .table-row{
+        display: flex;
+        border-bottom: 1px solid var(--color-neutral-50);
+    }
+
+    .table-header{
+        display: flex;
+        border-bottom: 1px solid var(--color-neutral-50);
+    }
+
+    /**TODO: Rename to table-cell **/
+    :global(.t-cell){
+        padding: 8px 16px;
+        flex: 1;
+    }
+</style>
