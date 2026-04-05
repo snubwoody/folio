@@ -25,9 +25,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     type Props = {
         children: Snippet
+        /**
+         * Sets the button style.
+         */
         variant?: Style
-        size?: Size,
-        href?: string,
+        size?: Size
+        href?: string
         class?: string
     } & HTMLButtonAttributes;
 

@@ -16,6 +16,7 @@
 
     // TODO: max-height for accounts
     // TODO: add dropdown
+    // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
     // FIXME: weird width behaviour, only with main page
     let expanded = $state(true);
@@ -38,13 +39,11 @@
             <h6 class="text-body">Accounts</h6>
             <p>{formatMoney(total)}</p>
         </li>
-
-        <!--TODO: test these and test total-->
         {#each accountStore.accounts as account (account.id)}
             <!--TODO: add title-->
             <!--FIXME: use accountBalance method-->
             <li>
-                <p class="text-truncate max-w-[50%]">{account.name}</p>
+                <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
                 <p>{formatMoney(account.balance)}</p>
             </li>
         {/each}
