@@ -9,6 +9,6 @@
     const { children,...rest }:Props = $props();
 </script>
 
-<div class="table-row" {...rest}>
+<div class="data-row" {...rest}>
     {@render children?.()}
 </div>

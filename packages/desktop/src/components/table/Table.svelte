@@ -16,28 +16,21 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import type { HTMLAttributes } from "svelte/elements";
-    import { TableStore } from "$lib/stores/table.svelte";
-    import {transactionStore} from "$lib/stores/transaction.svelte";
-    import DateCell from "./DateCell.svelte";
-    import AccountCell from "./AccountCell.svelte";
-    import {accountStore} from "$lib/stores/account.svelte";
-    import SelectCell from "$components/home/transaction/SelectCell.svelte";
     import type {Snippet} from "svelte";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
-        tableStore: TableStore
         children?: Snippet
     }
 
 
-    const { tableStore,children }:Props = $props();
+    const { children }:Props = $props();
     // TODO: add checkbox
     // TODO: background color when focused
     // TODO: background color on hover?
     // TODO: move account cell after completing
 </script>
 
-<div>
+<div class="data-table">
     {@render children?.()}
 </div>
 

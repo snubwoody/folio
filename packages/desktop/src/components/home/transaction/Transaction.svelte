@@ -38,20 +38,20 @@
 </script>
 
 <TableRow data-selected={selected}>
-    <TableCell class="w-fit shrink">
-        <input
-            checked={tableStore.isSelected(transaction.id)}
-            type="checkbox" name="" id=""
-            onclick={(e) => {
-                if (!e.isTrusted) return;
-                if(e.currentTarget.checked){
-                    tableStore.select(transaction.id);
-                    return;
-                }
-                tableStore.deselect(transaction.id);
-            }}
-        >
-    </TableCell>
+<!--    <TableCell>-->
+<!--        <input-->
+<!--            checked={tableStore.isSelected(transaction.id)}-->
+<!--            type="checkbox" name="" id=""-->
+<!--            onclick={(e) => {-->
+<!--                if (!e.isTrusted) return;-->
+<!--                if(e.currentTarget.checked){-->
+<!--                    tableStore.select(transaction.id);-->
+<!--                    return;-->
+<!--                }-->
+<!--                tableStore.deselect(transaction.id);-->
+<!--            }}-->
+<!--        >-->
+<!--    </TableCell>-->
     <DateCell {transaction}/>
     <AccountCell {transaction}/>
     <TableCell data-testid="payee">
@@ -77,15 +77,12 @@
             onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}
         >
     </TableCell>
-    <TableCell data-testid="category">
-        {#if transaction.categoryId !== undefined}
-            <SelectCell
-                value={category?.id}
-                onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
-                items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
-            />
-        {/if}
-    </TableCell>
+    <SelectCell
+        data-testid="category"
+        value={category?.id}
+        onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
+        items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
+    />
     <TableCell data-testid="outflow" class="flex gap-1 items-center">
         <!--TODO: kind of unnecessary-->
         {#if transType !== "Income"}

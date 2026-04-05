@@ -1,29 +1,33 @@
 
 @layer utilities {
-    .table-row, .table-header{
+
+    .data-table{
+
+    }
+
+    .data-row, .data-header{
         display: flex;
         border-bottom: 1px solid var(--color-neutral-50);
     }
 
-    .table-header{
+    .data-header{
         font-weight: var(--font-weight-medium);
         border-top: 1px solid var(--color-neutral-50);
         color: var(--color-text-muted);
     }
 
-    .table-row[data-selected="true"] {
+    .data-row[data-selected="true"] {
         background: var(--color-purple-50);
     }
 
-    .table-cell{
-        text-align: left;
-
-        &:last-child{
-            text-align: right;
-        }
-
+    .data-cell{
+        /*display: flex;*/
+        display: table-cell;
+        align-items: center;
+        width: 100%;
+        flex: 1;
         padding: 8px 16px;
-        border: 1px solid var(--color-neutral-50);
+
 
         &:focus-within{
             background: var(--color-purple-50);

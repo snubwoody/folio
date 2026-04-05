@@ -5,6 +5,7 @@
     import Calendar from "$components/Calendar.svelte";
     import type { DateValue } from "@internationalized/date";
     import type { Transaction } from "$lib/transaction";
+    import {TableCell} from "$components/table";
 
     interface Props{
         transaction: Transaction
@@ -24,18 +25,20 @@
     let calendarOpen = $state(false);
 </script>
 
-<Popover.Root bind:open={calendarOpen}>
-    <Popover.Trigger class="t-cell text-left">
-        <time datetime={transaction.date.toString()}>
-            {displayDate}
-        </time>
-    </Popover.Trigger>
-    <Popover.Portal>
-        <Popover.Content>
-            <Calendar bind:value={date} onDateChange={updateDate}/>
-        </Popover.Content>
-    </Popover.Portal>
-</Popover.Root>
+<TableCell>
+    <Popover.Root bind:open={calendarOpen}>
+        <Popover.Trigger class="text-left">
+            <time datetime={transaction.date.toString()}>
+                {displayDate}
+            </time>
+        </Popover.Trigger>
+        <Popover.Portal>
+            <Popover.Content>
+                <Calendar bind:value={date} onDateChange={updateDate}/>
+            </Popover.Content>
+        </Popover.Portal>
+    </Popover.Root>
+</TableCell>
 
 <style>
     /*td{*/
