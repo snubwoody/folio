@@ -23,12 +23,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const tableStore = new TableStore();
     import {transactionStore} from "$lib/stores/transaction.svelte";
     import TransactionNew from "$components/home/transaction/TransactionNew.svelte";
+    let selected = $derived(tableStore.allRowsSelected);
 </script>
 
 <section>
     <Toolbar/>
     <Table {tableStore}>
         <TableHeader>
+            <TableCell class="w-fit shrink">
+                <input type="checkbox" checked={selected} name="selected" id="row-checkbox"
+                       onclick={(e) => {
+                    if(e.currentTarget.checked){
+                        tableStore.toggleSelectAll();
+                        return;
+                    }
+                    tableStore.toggleSelectAll();
+                }}
+                >
+            </TableCell>
             <TableCell>Date</TableCell>
             <TableCell>Account</TableCell>
             <TableCell>Payee</TableCell>

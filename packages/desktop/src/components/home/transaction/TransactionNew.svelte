@@ -34,6 +34,7 @@
     // TODO: rename t-cell to table-cell
     // TODO: test this
     // TODO: maybe add fill param
+    // TODO: maybe make border thicker
 </script>
 
 <TableRow data-selected={selected}>
