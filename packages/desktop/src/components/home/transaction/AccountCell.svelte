@@ -21,12 +21,14 @@
 
 {#if transType === "Income"}
     <SelectCell
+        data-testid="account"
         value={toAccount?.id}
         onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
         items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
     />
 {:else}
     <SelectCell
+        data-testid="account"
         value={fromAccount?.id}
         onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
         items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
