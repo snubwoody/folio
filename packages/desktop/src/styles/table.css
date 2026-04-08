@@ -22,7 +22,7 @@
     }
 
     .data-cell{
-        /*display: flex;*/
+        /* display: flex; */
         vertical-align: middle;
         white-space: nowrap;
         padding-block: 8px;

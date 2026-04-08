@@ -41,20 +41,28 @@
 </TableCell>
 
 <style>
-    /*td{*/
-    /*    text-align: left;*/
+    /* td{ */
 
-    /*    &:last-child{*/
-    /*        text-align: right;*/
-    /*    }*/
+    /*    text-align: left; */
 
-    /*    padding: 8px 16px;*/
-    /*    border: 1px solid var(--color-neutral-50);*/
+    /*    &:last-child{ */
 
-    /*    &:focus-within{*/
-    /*        background: var(--color-purple-50);*/
-    /*        border-color: var(--color-purple-500);*/
-    /*    }*/
-    /*}*/
+    /*        text-align: right; */
+
+    /*    } */
+
+    /*    padding: 8px 16px; */
+
+    /*    border: 1px solid var(--color-neutral-50); */
+
+    /*    &:focus-within{ */
+
+    /*        background: var(--color-purple-50); */
+
+    /*        border-color: var(--color-purple-500); */
+
+    /*    } */
+
+    /* } */
 
 </style>
