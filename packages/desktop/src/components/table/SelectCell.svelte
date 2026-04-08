@@ -1,6 +1,3 @@
-<!--@component
-Displays a list of options to pick from.
---->
 <script lang="ts">
     import { Select } from "bits-ui";
     import { TableCell } from "$components/table";
