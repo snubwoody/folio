@@ -9,7 +9,6 @@ beforeEach(() => {
     accountStore.clear();
 });
 
-
 test("Handle missing account",async()=>{
     const transaction: Transaction = {
         id: "1",
@@ -22,7 +21,7 @@ test("Handle missing account",async()=>{
     await expect.element(screen.getByRole("button",{name: "Select an item"})).toBeInTheDocument();
 });
 
-test("Disable payee select items",async()=>{
+test("Disable payee select items for expense",async()=>{
     const a1 = await accountStore.createTestAccount({name:"Account 1"});
     const a2 = await accountStore.createTestAccount({name:"Payee"});
     await accountStore.createTestAccount({name:"Account 2"});

@@ -1,0 +1,63 @@
+import {test,beforeEach,expect, vi,} from "vitest";
+import { render } from "vitest-browser-svelte";
+import type { Transaction } from "$lib/transaction";
+import { CalendarDate, parseDate } from "@internationalized/date";
+import { accountStore } from "$lib/stores/account.svelte";
+import DateCell from "./DateCell.svelte";
+import { formatDate } from "$lib/lib";
+import { transactionStore } from "$lib/stores/transaction.svelte";
+
+beforeEach(() => {
+    accountStore.clear();
+});
+
+test("Format date",async()=>{
+    const transaction: Transaction = {
+        id: "1",
+        amount: "10.00",
+        fromAccountId: "",
+        toAccountId: "",
+        date: new CalendarDate(2020,1,1)
+    };
+    const screen = await render(DateCell,{transaction});
+    await expect.element(screen.getByRole("button",{name: formatDate(transaction.date.toString())})).toBeInTheDocument();
+});
+
+test("Open calendar",async()=>{
+    const transaction: Transaction = {
+        id: "1",
+        amount: "10.00",
+        fromAccountId: "",
+        toAccountId: "",
+        date: new CalendarDate(2020,1,1)
+    };
+    const screen = await render(DateCell,{transaction});
+    await screen.getByRole("button",{name: formatDate(transaction.date.toString())}).click();
+    const calendar = screen.getByTestId("calendar");
+    await expect.element(calendar).toBeInTheDocument();
+});
+
+test("Change date",async()=>{
+    const spy = vi.spyOn(transactionStore,"editTransaction");
+    const transaction: Transaction = {
+        id: "1",
+        amount: "10.00",
+        fromAccountId: "",
+        toAccountId: "",
+        date: new CalendarDate(2020,1,1)
+    };
+    const screen = await render(DateCell,{transaction});
+    await screen.getByRole("button",{name: formatDate(transaction.date.toString())}).click();
+    const calendar = screen.getByTestId("calendar");
+    await expect.element(calendar).toBeInTheDocument();
+    const days = calendar.getByRole("gridcell").all();
+    const day = days[Math.round(days.length/2)];
+    const date = day.element().getAttribute("data-value");
+    await day.click();
+    console.log(date);
+    expect(spy).toHaveBeenCalledWith({
+        id:"1",
+        transactionDate: date
+    });
+});
+

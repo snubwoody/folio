@@ -15,11 +15,12 @@
 
     let displayDate = $derived(formatDate(transaction.date.toString()));
 
-    // FIXME: make editTransaction take date
+    // TODO: make editTransaction take date
     const updateDate = async (date: DateValue) => {
         calendarOpen = false;
-        await transactionStore.editTransaction({ id: transaction.id,transactionDate: `${date.year}-${date.month}-${date.day}` });
-        displayDate = formatDate(`${date.year}-${date.month}-${date.day}`);
+        
+        await transactionStore.editTransaction({ id: transaction.id,transactionDate: date.toString() });
+        displayDate = formatDate(date.toString());
     };
     let date = $derived(transaction.date);
     let calendarOpen = $state(false);
@@ -39,30 +40,3 @@
         </Popover.Portal>
     </Popover.Root>
 </TableCell>
-
-<style>
-    /* td{ */
-
-    /*    text-align: left; */
-
-    /*    &:last-child{ */
-
-    /*        text-align: right; */
-
-    /*    } */
-
-    /*    padding: 8px 16px; */
-
-    /*    border: 1px solid var(--color-neutral-50); */
-
-    /*    &:focus-within{ */
-
-    /*        background: var(--color-purple-50); */
-
-    /*        border-color: var(--color-purple-500); */
-
-    /*    } */
-
-    /* } */
-
-</style>

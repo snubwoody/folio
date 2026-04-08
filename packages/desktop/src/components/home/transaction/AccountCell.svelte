@@ -16,7 +16,7 @@
 
     const fromAccount = $derived(accountStore.accountMap.get(transaction.fromAccountId??""));
     const toAccount = $derived(accountStore.accountMap.get(transaction.toAccountId??""));
-    // TODO: maybe include payee but set to disabled, and add custom UI
+    // TODO: add custom UI for disabled payee items
 </script>
 
 {#if transType === "Income"}
