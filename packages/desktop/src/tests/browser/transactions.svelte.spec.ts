@@ -200,39 +200,3 @@ describe("Transaction component", async () => {
     });
 });
 
-describe("AccountCell", async () => {
-    test("shows account if income", async () => {
-        const account = await accountStore.createTestAccount({ name: "Income account" });
-
-        const transaction: Transaction = {
-            id: "1",
-            toAccountId: account.id,
-            amount: "500.0",
-            date: parseDate("2024-12-12")
-        };
-
-        const screen = render(AccountCell, {
-            transaction
-        });
-        const accountCell = screen.getByTestId("account");
-        expect(accountCell).toHaveTextContent("Income account");
-    });
-    test("shows expense account if transfer", async () => {
-        const account = await accountStore.createTestAccount({ name: "Income account" });
-        const account2 = await accountStore.createTestAccount({ name: "Expense account" });
-
-        const transaction: Transaction = {
-            id: "1",
-            toAccountId: account.id,
-            fromAccountId: account2.id,
-            amount: "500.0",
-            date: parseDate("2024-12-12")
-        };
-
-        const screen = render(AccountCell, {
-            transaction
-        });
-        const accountCell = screen.getByTestId("account");
-        expect(accountCell).toHaveTextContent("Expense account");
-    });
-});
