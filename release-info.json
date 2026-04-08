@@ -1,19 +1,19 @@
 {
-  "version": "v2.1.0",
-  "notes": "## What's changed\r\n\r\n- Improved calendar UI\r\n- Added auto updater\r\n- Disabled default platform context menu\r\n\r\n",
-  "pub_date": "2026-04-02T00:25:28Z",
+  "version": "v2.1.1",
+  "notes": "## What's changed\r\n\r\n- Fixed janky UI when editing transactions",
+  "pub_date": "2026-04-08T21:10:59Z",
   "platforms": {
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTVAxOFNFWjB6OVFHVjQ1TmhJRzB4MldldnV3U0dNUkUyaEZTOTh0Z2pLdmxtZjlFYU9NRHh3Mk9ocE5MaUFIVXJsN1U1M2JHdWs5VE5RRXNrK2Jwb0EwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1MDg4NTI0CWZpbGU6Rm9saW9fMi4xLjBfYW1kNjQuQXBwSW1hZ2UKOFFGTmxhT09xZVZ1RTlscjhscXZIc3BFRDIyK2Fsa0Myd1R1UDB0NExYZFc3UCswcEpiaVZua3o2VlozSlVGcnMrSlh0ZTRoL2FJcFE2STFsaWJTQlE9PQo=",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.0/Folio_2.1.0_amd64.AppImage"
-    },
-    "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTURnaVFVREErTTZabFJWQ2l4VEczV3MvNTd0ZjBmbW5VM0FUcEtrZitQUkQ0MFZFK3NBS3lGZFZobXVoaXdabmFTMkhYOGx1aTNBdno2cTQ5dnZZRndRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1MDg5MTEwCWZpbGU6Rm9saW8uYXBwLnRhci5negpFSTdYWTVPN2ZTUEZBL0VNKytmRDlFQi95dWdYdWlBbGZuS2dGb0tlblNrU3FXWFVwVGxPU3dDYk1kNFdaNEVkVENxOVh6a28rcHU4dEF2Y0p2ZUFCUT09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.0/Folio.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTVBtOHRqZVJSa01VZGxBRVpQamZqUWlMZUVVdjA4dE9WQ0RpTkN3OUtybHV2ZUNmVmNuZFkvSkQ4eStKUWhlVDZBdlAwenFRK05zMkZub0tDc2dHN3dRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgxODIxCWZpbGU6Rm9saW9fMi4xLjFfYW1kNjQuQXBwSW1hZ2UKbW9ZTlZ5QVFLMkFPcnNDQ3Q4RVlialdmbzJwQ21XaUZWL1lnc25DRDEvUndVbXdidHlHbGV2dzJRZGFSVnBuNHh1MFlkV3EwMmE5OCs5VDRVK3MwQmc9PQo=",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio_2.1.1_amd64.AppImage"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUhqLzRoM3kzam5icFpxdk1PMjVTeFRBa2pXOHFkNVBBN0JrYStYWml3UVFPQzdMZEpJMHpGbGZlOXE4ZWNKLzBZbWltV0kwZzdaVmU5T284Z2tFakFRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1MDg4NzMyCWZpbGU6Rm9saW9fMi4xLjBfeDY0LXNldHVwLmV4ZQowaVBWTXgyOHgraWVuMzdjTEFUNzFpN2o0bStKOERXMmNOcW0xbTh4V3E4d3Y1RFBLRmp4RHIzMXNqbi9OVzZ2Q28vd1R4aU15VURoZW5jOFBlUGJCdz09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.0/Folio_2.1.0_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUk1dmZhS0tXRXYwbzVVa28vMHU4UFlObmptSHVha3dSK3hrOWQ0TDB1MExqVlZTZVM2b2liMmVYVHBlNHhJcmJYaUFMMEMybXBtVkNsSkpEaWxTNkFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgyMTM3CWZpbGU6Rm9saW9fMi4xLjFfeDY0LXNldHVwLmV4ZQpuRUZ3dmtXbGVndlBYOFM4NGRGREpsdmxpL2tMbEN3VU5malJ0TjhxMlQzS2xYWU9kUnM0bmxMcGtqS2lLYmVwWG0vSG5oVG53VjZnOWpEcWVkUkFCUT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio_2.1.1_x64-setup.exe"
+    },
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUZUR0NpSTFhM1UyUVIwTXEydTFnbW90RnhaUTl6UjRYcHdIbEE4VmJQcXRxS05jbkFoV0xhaTNJMVY1M0dpRnZXVlJKajVqblgyQ0xmdTZ1eXFQL0FRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgyNDQ0CWZpbGU6Rm9saW8uYXBwLnRhci5negowQkRWRnhxVlJweXdhS2R5eTdML0J0dVNIRVk1MlArcGgzTGNHUFZzYlMzdmhoaEZ0TmQweWlGTkpmSWFGNXREdnJud3NnZG1sODJBKzEvV3owVm9CUT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio.app.tar.gz"
     }
   }
 }
