@@ -1,5 +1,9 @@
 # @folio/desktop
 
+## 2.1.1
+
+- fix: sort transactions on page load ([#316](https://github.com/snubwoody/folio/pull/316))
+
 ## 2.1.0
 
 - feat: add update prompt at startup ([#287](https://github.com/snubwoody/folio/pull/287))

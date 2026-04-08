@@ -1,6 +1,9 @@
 # Folio Changelog
 
+## 2.1.1 - 08-04-2026
 
+- Fixed janky UI when editing transactions
+  
 ## 2.1.0 - 04-04-2026
 
 - Improved calendar UI
