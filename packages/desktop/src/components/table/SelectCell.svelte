@@ -19,7 +19,7 @@ Displays a list of options to pick from.
     const { items,value,onChange,...rest }: Props = $props();
 
     let selectedItem = $derived(items.find(item => item.value === value));
-    // TODO: add style for selected items
+    
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
@@ -38,7 +38,7 @@ Displays a list of options to pick from.
         </Select.Trigger>
         <Select.Portal>
             <!-- FIXME: make it fit the children -->
-            <Select.Content class="w-(--bits-select-anchor-width) popup-overlay space-y-1">
+            <Select.Content class="popup-overlay space-y-1 select-content">
                 {#each items as item (item.value)}
                     <Select.Item value={item.value} label={item.label} class="select-item">
                         {item.label}
@@ -52,6 +52,11 @@ Displays a list of options to pick from.
 <style>
     :global([data-select-content]){
         background: white;
+    }
+
+    :global(.select-content){
+        width: var(--bits-select-anchor-width);
+        min-width: var(--bits-select-anchor-width);
     }
 
     :global(.select-item) {

@@ -7,10 +7,10 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { type Transaction, transactionType } from "$lib/transaction";
     import DateCell from "./DateCell.svelte";
-    import {TableCell} from "$components/table";
+    import { TableCell } from "$components/table";
     import AccountCell from "./AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import {TableRow} from "$components/table";
+    import { TableRow } from "$components/table";
 
     interface Props{
         transaction: Transaction
@@ -28,14 +28,12 @@
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(getCurrencySymbol(settingsStore.settings.currencyCode));
     const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
-    // TODO: clear money fields if there was an error parsing or reset
-    // TODO: add set_account command instead
-    // TODO: input border color
-    // TODO: rename t-cell to table-cell
     // TODO: test this
-    // TODO: maybe add fill param
     // FIXME: popup width for select without a selected option
-    // TODO: maybe make border thicker
+    // TODO: set popup width
+    // FIXME: exclude payee accounts from the accounts list, also only update if the function succeeds
+    // TODO: add style for selected items
+    // FIXME: make calendar and popup fit cells
 </script>
 
 <TableRow data-selected={selected}>
@@ -72,7 +70,7 @@
     {/if}
     <TableCell>
         <input
-            class="note-input"
+            class="note-input outline-none"
             type="text"
             bind:value={note}
             onblur={() => transactionStore.editTransaction({ id: transaction.id,note: note })}

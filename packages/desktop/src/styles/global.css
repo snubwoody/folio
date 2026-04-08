@@ -59,15 +59,6 @@ body {
     }
 }
 
-/* TODO: move to components layer */
-@utility popup-overlay {
-    background: white;
-    max-height: 250px;
-    overflow-y: auto;
-    box-shadow: var(--shadow-md);
-    padding: 16px;
-    border-radius: var(--radius-md);
-}
 
 @layer components {
     .menu-item {
@@ -83,5 +74,14 @@ body {
         &[data-selected="true"] {
             background-color: var(--color-neutral-50);
         }
+    }
+
+    .popup-overlay {
+        background: white;
+        max-height: 250px;
+        overflow-y: auto;
+        box-shadow: var(--shadow-md);
+        padding: 8px;
+        border-radius: var(--radius-md);
     }
 }

@@ -25,7 +25,7 @@
         /*display: flex;*/
         vertical-align: middle;
         white-space: nowrap;
-        padding: 8px 16px;
+        padding-block: 8px;
         width: 100%;
         grid-template-columns: subgrid;
 
