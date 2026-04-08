@@ -16,38 +16,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import type { HTMLAttributes } from "svelte/elements";
-    import type {Snippet} from "svelte";
+    import type { Snippet } from "svelte";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
         children?: Snippet
     }
 
-
     const { children }:Props = $props();
-    // TODO: add checkbox
-    // TODO: background color when focused
     // TODO: background color on hover?
-    // TODO: move account cell after completing
 </script>
 
 <div class="data-table">
     {@render children?.()}
 </div>
-
-<style>
-    .table-row{
-        display: flex;
-        border-bottom: 1px solid var(--color-neutral-50);
-    }
-
-    .table-header{
-        display: flex;
-        border-bottom: 1px solid var(--color-neutral-50);
-    }
-
-    /**TODO: Rename to table-cell **/
-    :global(.t-cell){
-        padding: 8px 16px;
-        flex: 1;
-    }
-</style>

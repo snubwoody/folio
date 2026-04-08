@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {SelectCell}  from "$components/table";
+    import { SelectCell }  from "$components/table";
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
@@ -17,7 +17,7 @@
         tableStore: TableStore
     }
 
-    const {transaction,tableStore}: Props = $props();
+    const { transaction,tableStore }: Props = $props();
     const transType = $derived.by(() => {
         return transactionType(transaction);
     });

@@ -5,7 +5,7 @@
     import Calendar from "$components/Calendar.svelte";
     import type { DateValue } from "@internationalized/date";
     import type { Transaction } from "$lib/transaction";
-    import {TableCell} from "$components/table";
+    import { TableCell } from "$components/table";
 
     interface Props{
         transaction: Transaction

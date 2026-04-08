@@ -2,7 +2,7 @@
     import { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import Transaction from "./Transaction.svelte";
-    import {Table, TableCell, TableHeader} from "$components/table";
+    import { Table, TableCell, TableHeader } from "$components/table";
 
     interface Props {
         tableStore: TableStore
@@ -16,12 +16,12 @@
         <TableCell class="checkbox-cell focus-within:bg-white">
             <input type="checkbox" checked={selected} name="selected" id="row-checkbox"
                    onclick={(e) => {
-                    if(e.currentTarget.checked){
-                        tableStore.toggleSelectAll();
-                        return;
-                    }
-                    tableStore.toggleSelectAll();
-                }}
+                       if(e.currentTarget.checked){
+                           tableStore.toggleSelectAll();
+                           return;
+                       }
+                       tableStore.toggleSelectAll();
+                   }}
             >
         </TableCell>
         <TableCell>Date</TableCell>

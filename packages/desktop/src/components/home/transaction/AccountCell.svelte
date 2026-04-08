@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {SelectCell} from "$components/table"
+    import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/stores/account.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { transactionType, type Transaction } from "$lib/transaction";
@@ -17,7 +17,6 @@
     const fromAccount = $derived(accountStore.accountMap.get(transaction.fromAccountId??""));
     const toAccount = $derived(accountStore.accountMap.get(transaction.toAccountId??""));
 </script>
-
 
 {#if transType === "Income"}
     <SelectCell

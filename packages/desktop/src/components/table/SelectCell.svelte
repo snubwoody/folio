@@ -3,7 +3,7 @@ Displays a list of options to pick from.
 --->
 <script lang="ts">
     import { Select } from "bits-ui";
-    import {TableCell} from "$components/table";
+    import { TableCell } from "$components/table";
     import type { HTMLAttributes } from "svelte/elements";
 
     interface Props extends HTMLAttributes<HTMLDivElement>{
@@ -19,7 +19,6 @@ Displays a list of options to pick from.
     const { items,value,onChange,...rest }: Props = $props();
 
     let selectedItem = $derived(items.find(item => item.value === value));
-    
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
