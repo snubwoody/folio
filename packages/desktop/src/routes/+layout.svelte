@@ -67,9 +67,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         await accountStore.load();
         await categoryStore.load();
         checkForUpdate();
-    });
-
-    $effect(() => {
         transactionStore.sort();
     });
 </script>
