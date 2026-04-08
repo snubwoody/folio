@@ -68,6 +68,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         await categoryStore.load();
         checkForUpdate();
     });
+
+    $effect(() => {
+        transactionStore.sort();
+    });
 </script>
 
 <!---FIXME: remove icon url-->
