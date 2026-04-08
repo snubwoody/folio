@@ -1,5 +1,6 @@
 set windows-shell := ["nu","-c"]
 
+# Create a new sql migration
 [working-directory: "crates/folio-desktop"]
 add-migration name:
     cargo sqlx migrate add {{name}}
