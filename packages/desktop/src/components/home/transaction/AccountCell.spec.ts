@@ -1,4 +1,4 @@
-import {test,beforeEach,expect,} from "vitest";
+import { test,beforeEach,expect } from "vitest";
 import AccountCell from "./AccountCell.svelte";
 import { render } from "vitest-browser-svelte";
 import type { Transaction } from "$lib/transaction";
@@ -9,7 +9,7 @@ beforeEach(() => {
     accountStore.clear();
 });
 
-test("Handle missing account",async()=>{
+test("Handle missing account",async() => {
     const transaction: Transaction = {
         id: "1",
         amount: "10.00",
@@ -17,14 +17,14 @@ test("Handle missing account",async()=>{
         toAccountId: "",
         date: new CalendarDate(2020,1,1)
     };
-    const screen = await render(AccountCell,{transaction});
-    await expect.element(screen.getByRole("button",{name: "Select an item"})).toBeInTheDocument();
+    const screen = await render(AccountCell,{ transaction });
+    await expect.element(screen.getByRole("button",{ name: "Select an item" })).toBeInTheDocument();
 });
 
-test("Disable payee select items for expense",async()=>{
-    const a1 = await accountStore.createTestAccount({name:"Account 1"});
-    const a2 = await accountStore.createTestAccount({name:"Payee"});
-    await accountStore.createTestAccount({name:"Account 2"});
+test("Disable payee select items for expense",async() => {
+    const a1 = await accountStore.createTestAccount({ name:"Account 1" });
+    const a2 = await accountStore.createTestAccount({ name:"Payee" });
+    await accountStore.createTestAccount({ name:"Account 2" });
     const transaction: Transaction = {
         id: "1",
         amount: "10.00",
@@ -32,21 +32,21 @@ test("Disable payee select items for expense",async()=>{
         toAccountId: a2.id,
         date: new CalendarDate(2020,1,1)
     };
-    const screen = await render(AccountCell,{transaction});
+    const screen = await render(AccountCell,{ transaction });
     await screen.getByRole("button").click();
-    await expect.element(screen.getByRole("option",{name:"Payee"})).toHaveAttribute("data-disabled","");
-    await expect.element(screen.getByRole("option",{name:"Account 2"})).not.toHaveAttribute("data-disabled","");
+    await expect.element(screen.getByRole("option",{ name:"Payee" })).toHaveAttribute("data-disabled","");
+    await expect.element(screen.getByRole("option",{ name:"Account 2" })).not.toHaveAttribute("data-disabled","");
 });
 
-test("Display expense account",async()=>{
-    const account = await accountStore.createTestAccount({name:"Savings"});
+test("Display expense account",async() => {
+    const account = await accountStore.createTestAccount({ name:"Savings" });
     const transaction: Transaction = {
         id: "1",
         amount: "10.00",
         fromAccountId: account.id,
         date: new CalendarDate(2020,1,1)
     };
-    const screen = await render(AccountCell,{transaction});
+    const screen = await render(AccountCell,{ transaction });
     await expect.element(screen.getByText("Savings")).toBeInTheDocument();
 });
 

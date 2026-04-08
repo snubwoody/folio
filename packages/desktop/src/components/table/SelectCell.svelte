@@ -41,7 +41,7 @@
         </Select.Trigger>
         <Select.Portal>
             <Select.Content class="popup-overlay space-y-1 select-content">
-                {#each items as {value,label,disabled} (value)}
+                {#each items as { value,label,disabled } (value)}
                     <Select.Item value={value} label={label} {disabled} class="select-item">
                         {label}
                     </Select.Item>
@@ -73,7 +73,7 @@
         &[data-selected="true"] {
             background-color: var(--color-neutral-50);
         }
-  
+
         &[data-disabled=""] {
             color: var(--color-text-muted);
         }

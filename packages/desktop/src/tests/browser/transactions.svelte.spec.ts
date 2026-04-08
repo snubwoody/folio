@@ -2,7 +2,6 @@ import { test, beforeEach, describe, expect, afterEach } from "vitest";
 import TransactionComponent from "$components/home/transaction/Transaction.svelte";
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
 import Actionbar from "$components/home/transaction/Actionbar.svelte";
-import AccountCell from "$components/home/transaction/AccountCell.svelte";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";

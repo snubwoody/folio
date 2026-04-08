@@ -18,7 +18,7 @@
     // TODO: make editTransaction take date
     const updateDate = async (date: DateValue) => {
         calendarOpen = false;
-        
+
         await transactionStore.editTransaction({ id: transaction.id,transactionDate: date.toString() });
         displayDate = formatDate(date.toString());
     };
