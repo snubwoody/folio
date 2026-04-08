@@ -5,7 +5,7 @@ env:
   JUST_VERSION: '1.46.0'
 on:
   pull_request:
-    branches: ["main"]
+    branches: ["main","v**"]
   push:
     branches: ["main"]
 concurrency:
