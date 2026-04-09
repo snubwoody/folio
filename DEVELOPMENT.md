@@ -1,4 +1,5 @@
 
+[DATABASE_URL]
 ## Prerequisites
 You will 
 ## Setup
@@ -20,17 +21,17 @@ cargo build
 ```
 This repo uses `just` to make commands simpler
 
-Run the app in dev mode
+## Run the app
+
+Run the app in dev mode:
 
 ```bash
 just dev
-
 # or
-
 cargo tauri dev
 ```
 
-
+In debug mode logs will be saved to the `crates/folio-desktop/logs` folder, which is excluded from version control.
 ## Lint & format
 
 In order to have a PR accepted, you need to make sure everything passes our Linters, so make sure to run these before submitting.
@@ -50,4 +51,33 @@ cargo fmt --check # Check format errors
 - Format and lint code
 ```bash
 just lint
+```
+
+## Testing
+
+### Frontend
+
+On the frontend there are unit tests, ending in `.test.ts`, and browser tests `.spec.ts`.
+
+Running tests in browser mode will open a chromium browser, you may need to install playwright browsers.
+
+```bash
+# Install playwright browsers
+pnpm playwright install --with-deps
+
+# Run tests in browser mode
+just test-browser:
+# or
+pnpm -F @folio/desktop test:browser
+```
+
+### Backend
+
+The backend tests are rust tests as usual, please make sure to add tests for new functionality. Some tests may need to interact with a database, for this, use the `#[sqlx::test]` attribute which creates a new database for each test. For example:
+
+```rust
+#[sqlx::test]
+async fn create_category(pool: SqlitePool) -> crate::Result<()>{
+	Ok(())
+}
 ```
