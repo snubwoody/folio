@@ -1,14 +1,16 @@
 import { test,beforeEach,expect, vi } from "vitest";
 import { render } from "vitest-browser-svelte";
-import type { Transaction } from "$lib/transaction";
+import { mockTransactions, type Transaction } from "$lib/transaction";
 import { CalendarDate } from "@internationalized/date";
 import { accountStore } from "$lib/stores/account.svelte";
 import DateCell from "./DateCell.svelte";
 import { formatDate } from "$lib/lib";
 import { transactionStore } from "$lib/stores/transaction.svelte";
+import { clearMocks } from "@tauri-apps/api/mocks";
 
 beforeEach(() => {
     accountStore.clear();
+    clearMocks();
 });
 
 test("Format date",async() => {
@@ -38,6 +40,7 @@ test("Open calendar",async() => {
 });
 
 test("Change date",async() => {
+    mockTransactions();
     const spy = vi.spyOn(transactionStore,"editTransaction");
     const transaction: Transaction = {
         id: "1",
@@ -60,6 +63,7 @@ test("Change date",async() => {
 });
 
 test("Close calendar after selecting date",async() => {
+    mockTransactions();
     const transaction: Transaction = {
         id: "1",
         amount: "10.00",
