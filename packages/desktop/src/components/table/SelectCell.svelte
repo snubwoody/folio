@@ -1,13 +1,16 @@
-<!--@component
-Displays a list of options to pick from.
---->
 <script lang="ts">
     import { Select } from "bits-ui";
     import { TableCell } from "$components/table";
     import type { HTMLAttributes } from "svelte/elements";
 
+    type SelectItem = {
+        value: string,
+        label: string,
+        disabled?:boolean
+    };
+
     interface Props extends HTMLAttributes<HTMLDivElement>{
-        items: {value: string, label: string}[],
+        items: SelectItem[],
         value?: string,
         /**
          * Callback that runs when the selected value changes.
@@ -24,6 +27,7 @@ Displays a list of options to pick from.
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
         onChange?.(value);
     };
+    // TODO: add UI for selected and disabled select menu items
 </script>
 
 <TableCell {...rest}>
@@ -32,15 +36,14 @@ Displays a list of options to pick from.
             {#if selectedItem}
                 <p>{selectedItem.label}</p>
             {:else}
-                <p class="invisible">Select a item</p>
+                <p class="invisible">Select an item</p>
             {/if}
         </Select.Trigger>
         <Select.Portal>
-            <!-- FIXME: make it fit the children -->
             <Select.Content class="popup-overlay space-y-1 select-content">
-                {#each items as item (item.value)}
-                    <Select.Item value={item.value} label={item.label} class="select-item">
-                        {item.label}
+                {#each items as { value,label,disabled } (value)}
+                    <Select.Item value={value} label={label} {disabled} class="select-item">
+                        {label}
                     </Select.Item>
                 {/each}
             </Select.Content>
@@ -69,6 +72,14 @@ Displays a list of options to pick from.
 
         &[data-selected="true"] {
             background-color: var(--color-neutral-50);
+        }
+
+        &[data-disabled=""] {
+            color: var(--color-text-muted);
+        }
+
+        &[data-disabled=""]:hover {
+            background-color: initial;
         }
     }
 </style>

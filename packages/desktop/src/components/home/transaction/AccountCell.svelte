@@ -16,6 +16,7 @@
 
     const fromAccount = $derived(accountStore.accountMap.get(transaction.fromAccountId??""));
     const toAccount = $derived(accountStore.accountMap.get(transaction.toAccountId??""));
+    // TODO: add custom UI for disabled payee items
 </script>
 
 {#if transType === "Income"}
@@ -30,6 +31,6 @@
         data-testid="account"
         value={fromAccount?.id}
         onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
-        items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
+        items={accountStore.accounts.map(a => ({ value: a.id, label: a.name,disabled: a.id === transaction.toAccountId }))}
     />
 {/if}

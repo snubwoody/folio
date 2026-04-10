@@ -30,8 +30,7 @@
     const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
     // TODO: test this
     // FIXME: popup width for select without a selected option
-    // TODO: set popup width
-    // FIXME: exclude payee accounts from the accounts list, also only update if the function succeeds
+    // FIXME: only update payee if the function succeeds
     // TODO: add style for selected items
     // FIXME: make calendar and popup fit cells
 </script>

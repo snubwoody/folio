@@ -32,6 +32,7 @@
     type="single"
     onValueChange={updateDate}
     class="calendar"
+    data-testid="calendar"
     bind:value
 >
     {#snippet children({ months, weekdays })}
