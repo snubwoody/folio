@@ -1,42 +1,33 @@
-
-@layer components {
-    /* .transaction-table{
-        table-layout: fixed;
-        width: 100%;
+@layer components{
+    .data-table{
+        display: grid;
+        grid-template-columns: auto 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     }
 
-    .table-data,.table-head{
-        text-align: left;
-
-        &:last-child{
-            text-align: right;
-        }
-
-        padding: 8px 16px;
-        border: 1px solid var(--color-neutral-50);
-    }
-
-    .table-header{
-        background: var(--color-neutral-25);
-    }
-
-    .table-row{
+    .data-row, .data-header{
+        display: grid;
+        grid-column: 1/-1;
+        grid-template-columns: subgrid;
         border-bottom: 1px solid var(--color-neutral-50);
+    }
 
-        &:first-child{
-            border-top: 1px solid var(--color-neutral-50);
-        }
-    } */
+    .data-header{
+        font-weight: var(--font-weight-medium);
+        border-top: 1px solid var(--color-neutral-50);
+        color: var(--color-text-muted);
+    }
 
-    .table-cell{
-        text-align: left;
+    .data-row[data-selected="true"] {
+        background: var(--color-purple-50);
+    }
 
-        &:last-child{
-            text-align: right;
-        }
-
-        padding: 8px 16px;
-        border: 1px solid var(--color-neutral-50);
+    .data-cell{
+        /* display: flex; */
+        vertical-align: middle;
+        white-space: nowrap;
+        padding-block: 8px;
+        width: 100%;
+        grid-template-columns: subgrid;
 
         &:focus-within{
             background: var(--color-purple-50);
@@ -44,4 +35,7 @@
         }
     }
 
+    .checkbox-cell{
+        width: fit-content;
+    }
 }

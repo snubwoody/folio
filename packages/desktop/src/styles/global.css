@@ -59,15 +59,6 @@ body {
     }
 }
 
-/* TODO: move to components layer */
-@utility popup-overlay {
-    background: white;
-    max-height: 250px;
-    overflow-y: auto;
-    box-shadow: var(--shadow-md);
-    padding: 16px;
-    border-radius: var(--radius-md);
-}
 
 @layer components {
     .menu-item {
@@ -85,10 +76,12 @@ body {
         }
     }
 
-    .data-cell {
-        padding: 12px;
-        border-right: 1px solid var(--color-neutral-50);
-        border-bottom: 1px solid var(--color-neutral-50);
-        border-top: 1px solid var(--color-neutral-50);
+    .popup-overlay {
+        background: white;
+        max-height: 250px;
+        overflow-y: auto;
+        box-shadow: var(--shadow-md);
+        padding: 8px;
+        border-radius: var(--radius-md);
     }
 }

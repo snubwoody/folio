@@ -15,38 +15,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import type { Snippet } from "svelte";
-    import { type DataCell, type DataCellParams, type DataColumn, type DataRow, DataTable } from "$lib/table";
     import type { HTMLAttributes } from "svelte/elements";
+    import type { Snippet } from "svelte";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
-        header: Snippet<[string]>,
-        cell: Snippet<[DataCell]>,
-        columns: DataColumn[],
-        rows: DataRow[],
-        cells: DataCellParams[],
+        children?: Snippet
     }
 
-    const { header,cell,columns,rows,cells,...rest }: Props = $props();
-    const table = $derived(new DataTable(columns,rows,cells));
+    const { children }:Props = $props();
+    // TODO: background color on hover?
 </script>
 
-<table class="transaction-table" {...rest}>
-    <thead class="table-header">
-        <tr>
-            {#each columns as column (column.id)}
-                {@render header(column.id)}
-            {/each}
-        </tr>
-    </thead>
-    <tbody>
-        {#each table.rows as row (row.id)}
-            <tr>
-                {#each table.rowCells(row.id) as dataCell,index (index)}
-                    {@render cell(dataCell)}
-                {/each}
-            </tr>
-        {/each}
-    </tbody>
-</table>
-
+<div class="data-table">
+    {@render children?.()}
+</div>

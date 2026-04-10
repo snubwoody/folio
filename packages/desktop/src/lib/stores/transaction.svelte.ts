@@ -10,6 +10,10 @@ export class TransactionStore {
         return this.#transactions;
     }
 
+    addTestTransaction(transaction: Transaction){
+        this.#transactions.push(transaction);
+    }
+
     /**
      * Deletes a list of transactions.
      * @param ids The ids of the transactions to delete.

@@ -2,6 +2,7 @@ use iso_currency::Currency;
 use serde::{Deserialize, Serialize};
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
+use tracing::info;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,12 +38,14 @@ impl Settings {
 
         let file = File::create(&path)?;
         serde_json::to_writer_pretty(file, &settings)?;
+        info!(path=?path.as_ref(),"Created settings file");
         Ok(settings)
     }
 
     pub fn set_currency_code(&mut self, currency: Currency) -> crate::Result<()> {
         self.currency_code = currency;
         self.write()?;
+        info!(currency=?currency,"Updated currency code");
         Ok(())
     }
 

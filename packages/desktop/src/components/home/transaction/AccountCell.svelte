@@ -1,5 +1,5 @@
 <script lang="ts">
-    import SelectCell  from "./SelectCell.svelte";
+    import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/stores/account.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { transactionType, type Transaction } from "$lib/transaction";
@@ -16,20 +16,21 @@
 
     const fromAccount = $derived(accountStore.accountMap.get(transaction.fromAccountId??""));
     const toAccount = $derived(accountStore.accountMap.get(transaction.toAccountId??""));
+    // TODO: add custom UI for disabled payee items
 </script>
 
-<td data-col="account" data-testid="account" class="table-cell">
-    {#if transType === "Income"}
-        <SelectCell
-            value={toAccount?.id}
-            onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
-            items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
-        />
-    {:else}
-        <SelectCell
-            value={fromAccount?.id}
-            onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
-            items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
-        />
-    {/if}
-</td>
+{#if transType === "Income"}
+    <SelectCell
+        data-testid="account"
+        value={toAccount?.id}
+        onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
+        items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
+    />
+{:else}
+    <SelectCell
+        data-testid="account"
+        value={fromAccount?.id}
+        onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
+        items={accountStore.accounts.map(a => ({ value: a.id, label: a.name,disabled: a.id === transaction.toAccountId }))}
+    />
+{/if}
