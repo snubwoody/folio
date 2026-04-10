@@ -3,6 +3,7 @@
 ## Prerequisites
 You will 
 ## Setup
+[Or maybe they'll just fork it?]
 
 ```bash
 git clone https://www.github.com/snubwoody/folio
