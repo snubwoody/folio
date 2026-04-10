@@ -177,7 +177,7 @@ export const transactionType = (transaction: Transaction): TransactionType => {
 };
 
 export const mockTransactions = () => {
-    mockIPC((cmd)=>{
+    mockIPC((cmd) => {
         if(cmd == "edit_transaction"){
             const transaction: RawTransaction = {
                 id: "1",

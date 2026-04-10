@@ -1,8 +1,8 @@
 use iso_currency::Currency;
 use serde::{Deserialize, Serialize};
-use tracing::info;
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
+use tracing::info;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -41,7 +41,7 @@ impl Settings {
         info!(path=?path.as_ref(),"Created settings file");
         Ok(settings)
     }
-    
+
     pub fn set_currency_code(&mut self, currency: Currency) -> crate::Result<()> {
         self.currency_code = currency;
         self.write()?;

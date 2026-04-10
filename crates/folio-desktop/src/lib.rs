@@ -139,14 +139,13 @@ pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(debug_assertions)]
     let path = PathBuf::from("./data.db");
 
-    
     let opts = SqliteConnectOptions::new()
         .filename(&path)
         .create_if_missing(true);
 
     let pool = SqlitePool::connect_with(opts).await?;
     info!(path=?path,"Connected to sqlite database");
-    
+
     sqlx::migrate!()
         .run(&pool)
         .await
