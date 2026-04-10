@@ -30,7 +30,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
-use tracing::error;
+use tracing::{error, info};
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -48,11 +48,8 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
     Ok(())
 }
 
-// TODO: log migrations
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub async fn run() {
-    // TODO: add database backup before migrating
-
     #[cfg(debug_assertions)]
     let log_dir = "logs";
     #[cfg(not(debug_assertions))]
@@ -132,23 +129,24 @@ impl State {
 }
 
 pub async fn init_database() -> Result<SqlitePool> {
-    #[cfg(debug_assertions)]
-    let opts = SqliteConnectOptions::new()
-        .filename("./data.db")
-        .create_if_missing(true);
-
     #[cfg(not(debug_assertions))]
-    let opts = {
+    let path = {
         let data_dir = get_data_dir().unwrap();
         std::fs::create_dir_all(&data_dir)?;
-        let data_dir = data_dir.join("data.db");
-
-        SqliteConnectOptions::new()
-            .filename(data_dir)
-            .create_if_missing(true)
+        data_dir.join("data.db")
     };
 
+    #[cfg(debug_assertions)]
+    let path = PathBuf::from("./data.db");
+
+    
+    let opts = SqliteConnectOptions::new()
+        .filename(&path)
+        .create_if_missing(true);
+
     let pool = SqlitePool::connect_with(opts).await?;
+    info!(path=?path,"Connected to sqlite database");
+    
     sqlx::migrate!()
         .run(&pool)
         .await
@@ -171,16 +169,4 @@ pub fn get_data_dir() -> Option<PathBuf> {
     let app_name = "folio";
 
     Some(data_dir.join(app_name))
-}
-
-#[cfg(test)]
-mod test {
-    use crate::get_data_dir;
-
-    #[test]
-    fn data_dir() -> crate::Result<()> {
-        let data_dir = get_data_dir();
-        dbg!(data_dir);
-        Ok(())
-    }
 }
