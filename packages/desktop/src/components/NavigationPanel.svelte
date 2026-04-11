@@ -73,6 +73,7 @@
 	aside{
 		width: 100%;
 		height: 100%;
+        max-width: 350px;
 		display: flex;
 		flex-direction: column;
         gap: 24px;
