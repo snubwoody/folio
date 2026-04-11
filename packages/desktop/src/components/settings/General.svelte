@@ -49,7 +49,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             }}
         />
     </div>
-    <div class="w-full h-[1px] bg-neutral-50"></div>
+    <div class="w-full h-px bg-neutral-50"></div>
     <section class="space-y-1">
         <h6>Accounts</h6>
         <ul class="space-y-2">
