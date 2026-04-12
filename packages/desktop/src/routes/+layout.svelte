@@ -15,10 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import Sidebar from "../components/Sidebar.svelte";
+    import Sidebar from "$components/sidebar/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
     import ToastGroup from "$components/popups/ToastGroup.svelte";
-    import "../styles/global.css";
+    import "$styles/global.css";
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
@@ -60,22 +60,24 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 
     onMount(async () => {
-        await invoke("create_missing_budgets");
-        await settingsStore.load();
-        await appStore.load();
-        await transactionStore.load();
-        await accountStore.load();
-        await categoryStore.load();
+        await Promise.all([
+            invoke("create_missing_budgets"),
+            appStore.load(),
+            transactionStore.load(),
+            accountStore.load(),
+            categoryStore.load(),
+            settingsStore.load()
+        ]);
         checkForUpdate();
     });
 </script>
 
 <Titlebar />
-<main class="flex">
-    <Sidebar />
+<div>
+    <Sidebar/>
     {@render children()}
     <ToastGroup/>
-</main>
+</div>
 
 <style>
     :global(body) {
@@ -84,9 +86,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         overflow: hidden;
     }
 
-    main {
-        display: grid;
-        grid-template-columns: auto 1fr;
+    div {
+        display: flex;
         overflow-y: hidden;
         height: 100%;
     }

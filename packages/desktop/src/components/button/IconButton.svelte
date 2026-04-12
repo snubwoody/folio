@@ -25,9 +25,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     type Props = {
         children: Snippet
+        /**
+         * Sets the button style.
+         */
         variant?: Style
-        size?: Size,
-        href?: string,
+        size?: Size
+        href?: string
         class?: string
     } & HTMLButtonAttributes;
 
@@ -42,11 +45,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 {#if href}
-    <a {href} class={`icon-btn icon-btn-${variant} icon-btn-${size} ${userClass}`}>
+    <a {href} class={`icon-btn icon-btn-${variant} icon-btn-${size} ${userClass ?? ""}`}>
         {@render children()}
     </a>
 {:else}
-    <button class={`icon-btn icon-btn-${variant} icon-btn-${size} ${userClass}`} {...rest}>
+    <button class={`icon-btn icon-btn-${variant} icon-btn-${size} ${userClass ?? ""}`} {...rest}>
         {@render children()}
     </button>
 {/if}

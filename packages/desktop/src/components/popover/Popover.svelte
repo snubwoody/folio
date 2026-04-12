@@ -21,7 +21,7 @@ Displays content in a portal, triggered by a button.
 
     let {
         children,
-        open = $bindable(),
+        open = $bindable(false),
         ...rest
     }: Popover.RootProps = $props();
 </script>

@@ -92,6 +92,10 @@ export class CategoryStore {
         this.#categories = await invoke<Category[]>("fetch_categories");
         logger.debug("Loaded categories from backend");
     }
+
+    clear() {
+        this.#categories = [];
+    }
 }
 
 export const categoryStore = new CategoryStore();

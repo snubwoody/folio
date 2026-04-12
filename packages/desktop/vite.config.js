@@ -33,7 +33,7 @@ export default defineConfig({
         coverage: {
             enabled: true,
             provider: "v8",
-            include: ["src/**/*.svelte","src/**/*.tsu"],
+            include: ["src/**/*.svelte","src/**/*.ts"],
             exclude: ["src/**/*.spec.ts","src/**/*.test.ts"]
         },
         // eslint-disable-next-line no-undef

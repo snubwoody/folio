@@ -26,6 +26,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <style>
 	main{
+        width: 100%;
 		display: flex;
 		flex-direction: column;
 		gap: 32px;

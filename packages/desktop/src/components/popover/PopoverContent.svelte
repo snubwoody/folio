@@ -1,17 +1,11 @@
 <script lang="ts">
     import { Popover } from "bits-ui";
-    import type { Snippet } from "svelte";
 
-    interface Props{
-        children: Snippet,
-        class?: string,
-    }
-
-    const { children,class:userClass }: Props = $props();
+    const { children,class:userClass }: Popover.ContentProps = $props();
 </script>
 
 <Popover.Portal>
     <Popover.Content class={`popup-overlay ${userClass??""}`}>
-        {@render children()}
+        {@render children?.()}
     </Popover.Content>
 </Popover.Portal>

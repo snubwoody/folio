@@ -17,16 +17,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
     import Settings from "@lucide/svelte/icons/settings";
-    import IconButton from "$components/button/IconButton.svelte";
     import { Dialog } from "bits-ui";
     import SettingsPanel from "$components/settings/SettingsPanel.svelte";
 </script>
 
 <Dialog.Root>
-    <Dialog.Trigger class="mt-auto" aria-label="Open settings">
-        <IconButton variant="ghost" class="mt-auto">
+    <Dialog.Trigger class="icon-btn icon-btn-ghost icon-btn-small" aria-label="Open settings">
             <Settings size="20" class="w-3"/>
-        </IconButton>
     </Dialog.Trigger>
     <Dialog.Portal>
         <Dialog.Content class="settings-portal">
