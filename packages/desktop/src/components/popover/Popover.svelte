@@ -1,7 +1,23 @@
-<script lang="ts">
-    import {Popover} from "bits-ui";
-    import type { Snippet } from "svelte";
+<!--
+@component
+Displays content in a portal, triggered by a button.
 
+# Example
+```svelte
+<script>
+    import {Popover,PopoverTrigger,PopoverContent} from "$components/popover";
+</script>
+
+<Popover>
+    <PopoverTrigger>Open popover</PopoverTrigger>
+    <PopoverContent>
+        Popover content...
+    </PopoverContent/>
+</Popover>
+```
+-->
+<script lang="ts">
+    import { Popover } from "bits-ui";
 
     let {
         children,

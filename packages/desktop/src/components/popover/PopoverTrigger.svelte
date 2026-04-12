@@ -1,12 +1,12 @@
 <script lang="ts">
-    import {Popover} from "bits-ui";
+    import { Popover } from "bits-ui";
     import type { Snippet } from "svelte";
 
     interface Props extends Popover.TriggerProps{
         children: Snippet
     }
 
-    const {children,...rest}: Props = $props();
+    const { children,...rest }: Props = $props();
 </script>
 
 <Popover.Trigger {...rest}>

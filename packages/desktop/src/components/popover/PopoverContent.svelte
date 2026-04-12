@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Popover} from "bits-ui";
+    import { Popover } from "bits-ui";
     import type { Snippet } from "svelte";
 
     interface Props{
@@ -7,7 +7,7 @@
         class?: string,
     }
 
-    const {children,class:userClass}: Props = $props();
+    const { children,class:userClass }: Props = $props();
 </script>
 
 <Popover.Portal>
