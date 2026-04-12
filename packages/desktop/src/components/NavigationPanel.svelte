@@ -7,6 +7,8 @@
     import {accountStore} from "$lib/stores/account.svelte";
     import {formatMoney} from "$lib/lib";
     import {page} from "$app/state";
+    import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
+    import TextField from "./TextField.svelte";
 
     const total = $derived.by(()=>{
         // TODO: test 0 accounts
@@ -15,11 +17,17 @@
     });
 
     // TODO: max-height for accounts
-    // TODO: add dropdown
     // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
-    // FIXME: weird width behaviour, only with main page
     let expanded = $state(true);
+    let name = $state("My account");
+    let popoverOpen = $state(false);
+	let startingBalance = $state("0.00");
+
+	async function createAccount() {
+	    popoverOpen = false;
+	    await accountStore.createAccount({ name,startingBalance });
+	}
 </script>
 
 <aside id="nav-panel" data-testid="nav-panel" data-expanded={expanded}>
@@ -47,11 +55,18 @@
                 <p>{formatMoney(account.balance)}</p>
             </li>
         {/each}
-        <Button variant="neutral" size="small">
-            <!--TODO: change stoke width-->
-            <Plus size="12"/>
-            Add account
-        </Button>
+        <Popover bind:open={popoverOpen}>
+            <PopoverTrigger class="btn btn-small btn-neutral">
+                <!--TODO: change stoke width-->
+                <Plus size="12"/>
+                Add account
+            </PopoverTrigger>
+            <PopoverContent class="space-y-1.5 p-2 w-(--bits-popover-anchor-width)">
+                <TextField bind:value={name} label="Name"/>
+                <TextField bind:value={startingBalance} label="Starting balance"/>
+                <Button class="w-full" onclick={createAccount}>Save changes</Button>
+            </PopoverContent>
+        </Popover>
     </ul>
     <!---TODO: check border-->
     <!---TODO: change icon-->
