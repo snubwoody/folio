@@ -1,5 +1,9 @@
 # Folio Changelog
 
+## (unreleased)
+
+- Added a new collapsible sidebar with improved UI and UX. 
+  - The new sidebar has a list of all the accounts, as well as a button for creating accounts.
 
 ## 2.1.0 - 04-04-2026
 
