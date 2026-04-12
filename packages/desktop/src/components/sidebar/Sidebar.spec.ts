@@ -1,7 +1,7 @@
 import {expect, test, describe, beforeAll, beforeEach} from "vitest";
 import { render } from "vitest-browser-svelte";
 import {accountStore, mockCreateAccount} from "$lib/stores/account.svelte";
-import NavigationPanel from "./NavigationPanel.svelte";
+import Sidebar from "./Sidebar.svelte";
 import {clearMocks, mockIPC} from "@tauri-apps/api/mocks";
 
 beforeEach(()=>{
@@ -11,7 +11,7 @@ beforeEach(()=>{
 
 describe("Navigation Panel",() => {
     test("has navigation links",async() => {
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
         const transactionsLink = screen.getByRole("link",{name:"Transactions"});
         const spendingLink = screen.getByRole("link",{name:"Spending"});
 
@@ -23,7 +23,7 @@ describe("Navigation Panel",() => {
 
 
     test("open settings panel", async () => {
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
         await screen.getByLabelText("Open settings").click();
         await expect
             .element(screen.getByLabelText("Settings panel"))
@@ -31,12 +31,12 @@ describe("Navigation Panel",() => {
     });
 
     test("defaults to expanded", async () => {
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
         await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","true");
     });
 
     test("expand and collapse sidebar", async () => {
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
         await screen.getByRole("button",{name: "Collapse sidebar"}).click();
         await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","false");
         await screen.getByRole("button",{name: "Collapse sidebar"}).click();
@@ -44,7 +44,7 @@ describe("Navigation Panel",() => {
     });
 
     test("hide links in collapsed sidebar", async () => {
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
         await screen.getByRole("button",{name: "Collapse sidebar"}).click();
         const transactionsLink = screen.getByRole("link",{name:"Transactions"});
         const spendingLink = screen.getByRole("link",{name:"Spending"});
@@ -58,7 +58,7 @@ describe("Navigation Panel",() => {
         mockCreateAccount();
         await accountStore.createAccount({name: "Account 1",startingBalance: "20.00"});
         await accountStore.createAccount({name: "Account 2",startingBalance: "500.00"});
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
 
         await expect.element(screen.getByText("Account 1")).toBeVisible();
         await expect.element(screen.getByText("$20.00")).toBeVisible();
@@ -69,7 +69,7 @@ describe("Navigation Panel",() => {
         mockCreateAccount();
         await accountStore.createAccount({name: "Account 1",startingBalance: "20.00"});
         await accountStore.createAccount({name: "Account 2",startingBalance: "500.00"});
-        const screen = await render(NavigationPanel);
+        const screen = await render(Sidebar);
 
         await expect.element(screen.getByText("Accounts")).toBeVisible();
         await expect.element(screen.getByText("$520.00")).toBeVisible();

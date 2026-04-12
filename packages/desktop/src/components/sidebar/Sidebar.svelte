@@ -8,7 +8,7 @@
     import {formatMoney} from "$lib/lib";
     import {page} from "$app/state";
     import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
-    import TextField from "./TextField.svelte";
+    import TextField from "$components/TextField.svelte";
 
     const total = $derived.by(()=>{
         // TODO: test 0 accounts
@@ -19,6 +19,7 @@
     // TODO: max-height for accounts
     // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
+    // TODO: account balance max
     let expanded = $state(true);
     let name = $state("My account");
     let popoverOpen = $state(false);

@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import NavigationPanel from "$components/NavigationPanel.svelte";
+    import Sidebar from "$components/sidebar/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
     import ToastGroup from "$components/popups/ToastGroup.svelte";
     import "$styles/global.css";
@@ -74,7 +74,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <Titlebar />
 <div>
-    <NavigationPanel/>
+    <Sidebar/>
     {@render children()}
     <ToastGroup/>
 </div>
