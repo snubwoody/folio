@@ -2,11 +2,21 @@ import { expect, test, describe, beforeEach } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { accountStore, mockCreateAccount } from "$lib/stores/account.svelte";
 import Sidebar from "./Sidebar.svelte";
-import { clearMocks } from "@tauri-apps/api/mocks";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { mockSettings } from "$lib/stores/settings.svelte";
 
 beforeEach(() => {
     accountStore.clear();
     clearMocks();
+});
+
+mockIPC((cmd) => {
+    if (cmd === "settings") {
+        return { currencyCode: "USD" };
+    }
+    if (cmd === "currencies") {
+        return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
+    }
 });
 
 describe("Navigation Panel",() => {
@@ -22,6 +32,7 @@ describe("Navigation Panel",() => {
     });
 
     test("open settings panel", async () => {
+        mockSettings();
         const screen = await render(Sidebar);
         await screen.getByLabelText("Open settings").click();
         await expect
