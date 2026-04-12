@@ -17,7 +17,7 @@ import type { Account } from "../lib";
 import { SvelteMap } from "svelte/reactivity";
 import { logger } from "../logger";
 import type { Transaction } from "$lib/transaction";
-import {mockIPC} from "@tauri-apps/api/mocks";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 interface EditAccount{
     name?: string
@@ -117,7 +117,7 @@ export function accountBalance(accountId:string,transactions: Transaction[]): nu
  * Mocks the `create_account` command.
  */
 export function mockCreateAccount(){
-    mockIPC((cmd,payload)=>{
+    mockIPC((cmd,payload) => {
         if (cmd === "create_account"){
             let args = payload as {name:string,startingBalance: string};
             const account: Account = {

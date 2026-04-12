@@ -98,7 +98,7 @@ test("Create income stream", async () => {
 
     let items = screen.getByRole("listitem").all();
     expect(items).toHaveLength(2);
-    await screen.getByRole("button",{name: "Create income stream"}).click();
+    await screen.getByRole("button",{ name: "Create income stream" }).click();
     items = screen.getByRole("listitem").all();
     expect(items).toHaveLength(3);
 });

@@ -2,8 +2,8 @@
 <script>
     import IconButton from "$components/button/IconButton.svelte";
     import SettingsButton from "$components/settings/SettingsButton.svelte";
-    import {Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose} from "@lucide/svelte";
-    import {page} from "$app/state";
+    import { Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose } from "@lucide/svelte";
+    import { page } from "$app/state";
     import AccountSection from "./AccountSection.svelte";
 
     // TODO: test that account balance changes when handling transactions

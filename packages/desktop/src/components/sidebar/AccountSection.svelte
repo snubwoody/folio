@@ -1,24 +1,20 @@
 
 <script>
-    import {Plus} from "@lucide/svelte";
-    import {Button} from "$components/button";
-    import {accountStore} from "$lib/stores/account.svelte";
-    import {formatMoney} from "$lib/lib";
+    import { Plus } from "@lucide/svelte";
+    import { Button } from "$components/button";
+    import { accountStore } from "$lib/stores/account.svelte";
+    import { formatMoney } from "$lib/lib";
     import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
     import TextField from "$components/TextField.svelte";
-    import { transactionStore } from "$lib/stores/transaction.svelte";
 
-    const total = $derived.by(()=>{
+    const total = $derived.by(() => {
         // TODO: test 0 accounts
-        const _ = transactionStore.transactions;
         const t = accountStore.accounts.map(a => parseFloat(a.balance)).reduce((prev, current) => current + prev,0);
         return t.toString();
     });
 
-    // TODO: max-height for accounts
     // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
-    // TODO: account balance max
     let name = $state("My account");
     let popoverOpen = $state(false);
 	let startingBalance = $state("0.00");
@@ -46,7 +42,6 @@
     </ul>
     <Popover bind:open={popoverOpen}>
         <PopoverTrigger class="btn btn-small btn-neutral">
-            <!--TODO: change stoke width-->
             <Plus/>
             Add account
         </PopoverTrigger>
