@@ -1,9 +1,13 @@
-import { test, expect } from "vitest";
+import { test, expect, beforeEach } from "vitest";
 import SettingsPanel from "./SettingsPanel.svelte";
 import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { accountStore } from "$lib/stores/account.svelte";
 import { categoryStore, type Category } from "$lib/stores/categories.svelte";
+
+beforeEach(() => {
+    categoryStore.clear();
+});
 
 mockIPC((cmd) => {
     if (cmd === "settings") {

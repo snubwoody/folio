@@ -36,7 +36,11 @@
             aria-controls="nav-panel"
             onclick={() => expanded = !expanded}
         >
-            <PanelRightOpen/>
+            {#if expanded}
+                <PanelRightOpen/>
+            {:else}
+                <PanelRightClose/>
+            {/if}
         </IconButton>
     </div>
 </aside>
