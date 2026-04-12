@@ -2,33 +2,14 @@
 <script>
     import IconButton from "$components/button/IconButton.svelte";
     import SettingsButton from "$components/settings/SettingsButton.svelte";
-    import {Plus,Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose} from "@lucide/svelte";
-    import {Button} from "$components/button";
-    import {accountStore} from "$lib/stores/account.svelte";
-    import {formatMoney} from "$lib/lib";
+    import {Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose} from "@lucide/svelte";
     import {page} from "$app/state";
-    import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
-    import TextField from "$components/TextField.svelte";
+    import AccountSection from "./AccountSection.svelte";
 
-    const total = $derived.by(()=>{
-        // TODO: test 0 accounts
-        const t = accountStore.accounts.map(a => parseFloat(a.balance)).reduce((prev, current) => current + prev,0);
-        return t.toString();
-    });
-
-    // TODO: max-height for accounts
     // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
     // TODO: account balance max
     let expanded = $state(true);
-    let name = $state("My account");
-    let popoverOpen = $state(false);
-	let startingBalance = $state("0.00");
-
-	async function createAccount() {
-	    popoverOpen = false;
-	    await accountStore.createAccount({ name,startingBalance });
-	}
 </script>
 
 <aside id="nav-panel" data-testid="nav-panel" data-expanded={expanded}>
@@ -43,32 +24,7 @@
         </a>
     </div>
     <div class="h-[3px] w-full bg-neutral-100"></div>
-    <ul class="account-list">
-        <li class="font-medium">
-            <h6 class="text-body">Accounts</h6>
-            <p>{formatMoney(total)}</p>
-        </li>
-        {#each accountStore.accounts as account (account.id)}
-            <!--TODO: add title-->
-            <!--FIXME: use accountBalance method-->
-            <li>
-                <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
-                <p>{formatMoney(account.balance)}</p>
-            </li>
-        {/each}
-        <Popover bind:open={popoverOpen}>
-            <PopoverTrigger class="btn btn-small btn-neutral">
-                <!--TODO: change stoke width-->
-                <Plus size="12"/>
-                Add account
-            </PopoverTrigger>
-            <PopoverContent class="space-y-1.5 p-2 w-(--bits-popover-anchor-width)">
-                <TextField bind:value={name} label="Name"/>
-                <TextField bind:value={startingBalance} label="Starting balance"/>
-                <Button class="w-full" onclick={createAccount}>Save changes</Button>
-            </PopoverContent>
-        </Popover>
-    </ul>
+    <AccountSection/>
     <!---TODO: check border-->
     <!---TODO: change icon-->
     <div class="nav-panel-actions">
@@ -102,22 +58,6 @@
             width: fit-content;
         }
 	}
-
-    .account-list{
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        padding-inline: 20px;
-
-        :global([data-expanded="false"]) &{
-            display: none;
-        }
-    }
-
-    li{
-        display: flex;
-        justify-content: space-between;
-    }
 
     .page-link{
         display: flex;
