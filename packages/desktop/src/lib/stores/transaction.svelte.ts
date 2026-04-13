@@ -1,7 +1,7 @@
 // Copyright (C) 2025 Wakunguma Kalimukwa
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { logger } from "../utils/logger";
-import { getTransactions,type Transaction, type EditTransactionOpts, deleteTransactions, editTransaction, setInflow, setOutflow, setPayee, createTransaction, type CreateTransactionOpts } from "$lib/transaction";
+import { getTransactions,type Transaction, type EditTransactionOpts, deleteTransactions, editTransaction, setInflow, setOutflow, setPayee, createTransaction, type CreateTransactionOpts } from "$lib/api/transaction";
 
 export class TransactionStore {
     #transactions: Transaction[] = $state([]);
@@ -26,10 +26,7 @@ export class TransactionStore {
     /**
      * Creates a new expense.
      *
-     * @param amount The amount
-     * @param date The date the expense occurred
-     * @param note An optional note for additional context
-     * @param account The id of the account
+     * @param opts Options used for creating the expense.
      */
     async createExpense(opts: CreateTransactionOpts) {
         const transaction = await createTransaction(opts);

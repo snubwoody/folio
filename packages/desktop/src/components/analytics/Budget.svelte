@@ -3,11 +3,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 Copyright (C) 2025 Wakunguma Kalimukwa
 -->
 <script lang="ts">
-    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import MoneyCell from "$components/MoneyCell.svelte";
-    import { formatMoney, type Budget } from "$lib/lib";
+    import { type Budget } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
+    import {formatAmountWithoutSymbol, formatMoney, getCurrencySymbol} from "$lib/utils/money";
 
     type Props = {
         budget: Budget;

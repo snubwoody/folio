@@ -2,7 +2,7 @@
     import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/stores/account.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { transactionType, type Transaction } from "$lib/transaction";
+    import { transactionType, type Transaction } from "$lib/api/transaction";
 
     interface Props {
         transaction: Transaction

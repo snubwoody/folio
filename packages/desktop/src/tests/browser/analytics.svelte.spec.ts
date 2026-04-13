@@ -2,7 +2,8 @@ import { appStore } from "$lib/state.svelte";
 import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
 import { expect, test, beforeEach } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { formatMoney, type Budget } from "$lib/lib";
+import { type Budget } from "$lib/lib";
+import {formatMoney} from "$lib/utils/money";
 
 beforeEach(() => {
     appStore.budgets = [];

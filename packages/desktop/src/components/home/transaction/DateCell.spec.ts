@@ -1,12 +1,12 @@
 import { test,beforeEach,expect, vi } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { mockTransactions, type Transaction } from "$lib/transaction";
+import { mockTransactions, type Transaction } from "$lib/api/transaction";
 import { CalendarDate } from "@internationalized/date";
 import { accountStore } from "$lib/stores/account.svelte";
 import DateCell from "./DateCell.svelte";
-import { formatDate } from "$lib/lib";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 import { clearMocks } from "@tauri-apps/api/mocks";
+import {formatDate} from "$lib/utils/date";
 
 beforeEach(() => {
     accountStore.clear();

@@ -15,11 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { getCurrencies } from "$lib/lib.js";
     import SelectMenu from "$components/SelectMenu.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
     import Account from "./general/Account.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
+    import {getCurrencies} from "$lib/utils/money";
 
     let currencies: string[] = $state([]);
     $effect(() => {

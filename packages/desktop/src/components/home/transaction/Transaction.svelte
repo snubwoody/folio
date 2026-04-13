@@ -2,15 +2,15 @@
     import { SelectCell }  from "$components/table";
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
-    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { type Transaction, transactionType } from "$lib/transaction";
+    import { type Transaction, transactionType } from "$lib/api/transaction";
     import DateCell from "./DateCell.svelte";
     import { TableCell } from "$components/table";
     import AccountCell from "./AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { TableRow } from "$components/table";
+    import {formatAmountWithoutSymbol, getCurrencySymbol} from "$lib/utils/money";
 
     interface Props{
         transaction: Transaction

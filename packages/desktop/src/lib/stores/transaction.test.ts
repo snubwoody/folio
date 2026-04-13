@@ -2,7 +2,7 @@ import { test, expect, afterEach } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
 import { TransactionStore } from "$lib/stores/transaction.svelte";
-import type { RawTransaction } from "$lib/transaction";
+import type { RawTransaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
 
 afterEach(() => {

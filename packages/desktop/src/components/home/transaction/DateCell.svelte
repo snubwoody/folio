@@ -1,11 +1,11 @@
 <script lang="ts">
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { Popover } from "bits-ui";
-    import { formatDate } from "$lib/lib";
     import Calendar from "$components/Calendar.svelte";
     import type { DateValue } from "@internationalized/date";
-    import type { Transaction } from "$lib/transaction";
+    import type { Transaction } from "$lib/api/transaction";
     import { TableCell } from "$components/table";
+    import {formatDate} from "$lib/utils/date";
 
     interface Props{
         transaction: Transaction
