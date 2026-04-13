@@ -1,15 +1,17 @@
+# Folio Development
 
-[DATABASE_URL]
-## Prerequisites
-You will 
+Folio is a Tauri app, the project is split into the backend `crates/`, which uses Rust and the frontend `packages`
+which uses Svelte and TypeScript. You will need Rust, Node.js, Pnpm, Tauri CLI installed on your machine.
+
 ## Setup
-[Or maybe they'll just fork it?]
 
 ```bash
 git clone https://www.github.com/snubwoody/folio
 ```
 
-Because multiple CLI tools are used, this repo uses `just` runner to make typing commands simpler. You can ignore it if you want.
+The project uses [`just`](https://github.com/casey/just) runner to manage commands from different CLI tools.
+You can list all the commands using `just -l`. If you don't have just, or don't want to use it, you could 
+use the individual CLIs instead.
 
 Install dependencies
 
@@ -20,7 +22,9 @@ pnpm install
 # Install and build rust dependencies
 cargo build
 ```
-This repo uses `just` to make commands simpler
+
+Add `DATABASE_URL=sqlite://data.db` to your environment or `.env` file 
+(this is for [sqlx](https://github.com/launchbadge/sqlx?tab=readme-ov-file#compile-time-verification)).
 
 ## Run the app
 
@@ -32,11 +36,13 @@ just dev
 cargo tauri dev
 ```
 
-In debug mode logs will be saved to the `crates/folio-desktop/logs` folder, which is excluded from version control.
+In debug mode logs will be saved to the `crates/folio-desktop/logs` folder, which is excluded 
+from version control.
+
 ## Lint & format
 
-In order to have a PR accepted, you need to make sure everything passes our Linters, so make sure to run these before submitting.
-
+In order to have a PR accepted, you need to make sure everything passes our Linters, so make sure to run these 
+before submitting.
 
 - Frontend:
 ```shell
@@ -58,9 +64,8 @@ just lint
 
 ### Frontend
 
-On the frontend there are unit tests, ending in `.test.ts`, and browser tests `.spec.ts`.
-
-Running tests in browser mode will open a chromium browser, you may need to install playwright browsers.
+On the frontend there are unit tests, ending in `.test.ts`, and browser tests `.spec.ts`. Running tests in 
+browser mode will open a Chromium browser, you may need to install playwright browsers.
 
 ```bash
 # Install playwright browsers
@@ -74,7 +79,10 @@ pnpm -F @folio/desktop test:browser
 
 ### Backend
 
-The backend tests are rust tests as usual, please make sure to add tests for new functionality. Some tests may need to interact with a database, for this, use the `#[sqlx::test]` attribute which creates a new database for each test. For example:
+The backend tests are [rust tests](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html) as usual, 
+please make sure to add tests for new functionality. Some tests may 
+need to interact with a database, for this, use the `#[sqlx::test]` attribute which creates a new database for 
+each test. For example:
 
 ```rust
 #[sqlx::test]
