@@ -15,7 +15,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
     Settings
-} from "../lib";
+} from "../types";
 import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
 

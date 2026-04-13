@@ -2,7 +2,7 @@ import type { Account } from "$lib/types";
 import { describe, expect, test } from "vitest";
 import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
-import type { Transaction } from "./transaction";
+import type { Transaction } from "$lib/api/transaction";
 import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { getCurrencySymbol, parseMoney } from "$lib/utils/money";
 import { parseDate } from "$lib/utils/date";

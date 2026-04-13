@@ -4,7 +4,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 -->
 <script lang="ts">
     import MoneyCell from "$components/MoneyCell.svelte";
-    import type { Budget } from "$lib/lib";
+    import type { Budget } from "$lib/types";
     import { appStore } from "$lib/state.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { formatAmountWithoutSymbol, formatMoney, getCurrencySymbol } from "$lib/utils/money";
