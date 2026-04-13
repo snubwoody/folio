@@ -75,6 +75,13 @@ export class TransactionStore {
         const transaction = await editTransaction(opts);
         const index = this.#transactions.findIndex((t) => t.id === transaction.id);
         this.#transactions[index] = transaction;
+
+    }
+
+    /**
+     * Sorts the transactions in place.
+     */
+    sort(){
         this.#transactions
             .sort((a, b) => a.date.compare(b.date))
             .reverse();

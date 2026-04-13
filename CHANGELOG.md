@@ -5,6 +5,10 @@
 - Added a new collapsible sidebar with improved UI and UX. 
   - The new sidebar has a list of all the accounts, as well as a button for creating accounts.
 
+## 2.1.1 - 08-04-2026
+
+- Fixed janky UI when editing transactions
+  
 ## 2.1.0 - 04-04-2026
 
 - Improved calendar UI
