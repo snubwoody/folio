@@ -22,7 +22,7 @@ test("Format date",async() => {
         date: new CalendarDate(2020,1,1)
     };
     const screen = await render(DateCell,{ transaction });
-    await expect.element(screen.getByRole("button",{ name: formatDate(transaction.date.toString()) })).toBeInTheDocument();
+    await expect.element(screen.getByRole("button",{ name: formatDate(transaction.date) })).toBeInTheDocument();
 });
 
 test("Open calendar",async() => {
@@ -34,7 +34,7 @@ test("Open calendar",async() => {
         date: new CalendarDate(2020,1,1)
     };
     const screen = await render(DateCell,{ transaction });
-    await screen.getByRole("button",{ name: formatDate(transaction.date.toString()) }).click();
+    await screen.getByRole("button",{ name: formatDate(transaction.date) }).click();
     const calendar = screen.getByTestId("calendar");
     await expect.element(calendar).toBeInTheDocument();
 });
@@ -50,7 +50,7 @@ test("Change date",async() => {
         date: new CalendarDate(2020,1,1)
     };
     const screen = await render(DateCell,{ transaction });
-    await screen.getByRole("button",{ name: formatDate(transaction.date.toString()) }).click();
+    await screen.getByRole("button",{ name: formatDate(transaction.date) }).click();
     const calendar = screen.getByTestId("calendar");
     const days = calendar.getByRole("gridcell").all();
     const day = days[Math.round(days.length/2)];
@@ -72,7 +72,7 @@ test("Close calendar after selecting date",async() => {
         date: new CalendarDate(2020,1,1)
     };
     const screen = await render(DateCell,{ transaction });
-    await screen.getByRole("button",{ name: formatDate(transaction.date.toString()) }).click();
+    await screen.getByRole("button",{ name: formatDate(transaction.date) }).click();
     const calendar = screen.getByTestId("calendar");
     await expect.element(calendar).toBeInTheDocument();
     const days = calendar.getByRole("gridcell").all();

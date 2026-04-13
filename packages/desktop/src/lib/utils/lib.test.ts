@@ -1,4 +1,4 @@
-import { type Account } from "$lib/lib";
+import type { Account } from "$lib/types";
 import { describe, expect, test } from "vitest";
 import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";

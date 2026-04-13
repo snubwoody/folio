@@ -1,10 +1,7 @@
-import {CalendarDate} from "@internationalized/date";
+import {CalendarDate, getLocalTimeZone} from "@internationalized/date";
 
-export function formatDate(dateStr: string): string {
-    // TODO: use CalendarDate
-    const [year, month, day]: string[] = dateStr.split("-");
-    const date = new Date(Number(year), Number(month) - 1, Number(day));
-    return Intl.DateTimeFormat("en-US", {dateStyle: "medium"}).format(date);
+export function formatDate(date: CalendarDate): string {
+    return Intl.DateTimeFormat("en-US", {dateStyle: "medium"}).format(date.toDate(getLocalTimeZone()));
 }
 
 // The goal of this function to parse the input and always return a valid date.
