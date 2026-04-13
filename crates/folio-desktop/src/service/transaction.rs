@@ -100,6 +100,7 @@ impl TransactionBuilder<Income> {
         .bind(self.category_id)
         .fetch_one(pool)
         .await?;
+        info!(id=?row.id,"Created new income");
         Ok(row)
     }
 }
@@ -123,7 +124,7 @@ impl TransactionBuilder<Expense> {
         .bind(self.category_id)
         .fetch_one(pool)
         .await?;
-        info!(id=?row.id,"Created transaction");
+        info!(id=?row.id,"Created new expense");
         Ok(row)
     }
 }

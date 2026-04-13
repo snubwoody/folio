@@ -1,9 +1,11 @@
-.DS_Store
+.DS_Store/
 *.db
+*.sqlite
 *-shm
 *-wal
 logs/
 .obsidian/
+*.canvas
 
 # Build output
 .svelte-kit

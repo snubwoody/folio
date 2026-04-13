@@ -1,15 +1,19 @@
 {
-  "version": "v2.0.0",
-  "notes": "## What's new\r\n\r\n- Combined incomes and expenses into transactions table\r\n- Added transaction toolbar\r\n- Added action bar for manipulating transactions\r\n- Removed support section from settings\r\n",
-  "pub_date": "2026-03-23T23:12:40Z",
+  "version": "v2.1.1",
+  "notes": "## What's changed\r\n\r\n- Fixed janky UI when editing transactions",
+  "pub_date": "2026-04-08T21:10:59Z",
   "platforms": {
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTVBtOHRqZVJSa01VZGxBRVpQamZqUWlMZUVVdjA4dE9WQ0RpTkN3OUtybHV2ZUNmVmNuZFkvSkQ4eStKUWhlVDZBdlAwenFRK05zMkZub0tDc2dHN3dRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgxODIxCWZpbGU6Rm9saW9fMi4xLjFfYW1kNjQuQXBwSW1hZ2UKbW9ZTlZ5QVFLMkFPcnNDQ3Q4RVlialdmbzJwQ21XaUZWL1lnc25DRDEvUndVbXdidHlHbGV2dzJRZGFSVnBuNHh1MFlkV3EwMmE5OCs5VDRVK3MwQmc9PQo=",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio_2.1.1_amd64.AppImage"
+    },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTU5uc1NQZ1VoT2REcVd5UUZPaHM0RmFWcGlselFSai9UU282R25NOTVEazZBMWM0MERWeFNhS3g2bkVSTmVoWHBqQ2hScjZheE1ycDdXdDE3VmpIaXdJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc0MzA3MjUxCWZpbGU6Rm9saW9fMi4wLjBfeDY0LXNldHVwLmV4ZQp2SHdqWUQvbUZJeG5LU21KL0crK1UxYnlkelBUclVteVljYmJoVDVNR1YvREI1bE42SVc3bzltaUE4UEJhbU1jbTdmdkcrV1p1dDhRc0FwWWZiZnNDdz09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.0.0/Folio_2.0.0_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUk1dmZhS0tXRXYwbzVVa28vMHU4UFlObmptSHVha3dSK3hrOWQ0TDB1MExqVlZTZVM2b2liMmVYVHBlNHhJcmJYaUFMMEMybXBtVkNsSkpEaWxTNkFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgyMTM3CWZpbGU6Rm9saW9fMi4xLjFfeDY0LXNldHVwLmV4ZQpuRUZ3dmtXbGVndlBYOFM4NGRGREpsdmxpL2tMbEN3VU5malJ0TjhxMlQzS2xYWU9kUnM0bmxMcGtqS2lLYmVwWG0vSG5oVG53VjZnOWpEcWVkUkFCUT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio_2.1.1_x64-setup.exe"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUErSEExMmdrMlcxbXo2clU1ZFdkdFZrazI5ckVxY0pxSSs5NzRTYk1yTWg0WjN3a2pDOEIwV2ljdzBzOCsrYXJzSVJySHBhSjJwd3RXV3dTRW5ZWHdVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc0MzA3MDU1CWZpbGU6Rm9saW8uYXBwLnRhci5negpLcG5lK0VFV0dVaVpLL1RES3ZtZjcxRmNKZWxjWXlheHhJcnZhQ3FKcHhXK1BQaitTUDF4L1lwZ04wak1rTWprY2NRWGQxUkdtU1hHWHpKNkJkaHVCdz09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.0.0/Folio.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUZUR0NpSTFhM1UyUVIwTXEydTFnbW90RnhaUTl6UjRYcHdIbEE4VmJQcXRxS05jbkFoV0xhaTNJMVY1M0dpRnZXVlJKajVqblgyQ0xmdTZ1eXFQL0FRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgyNDQ0CWZpbGU6Rm9saW8uYXBwLnRhci5negowQkRWRnhxVlJweXdhS2R5eTdML0J0dVNIRVk1MlArcGgzTGNHUFZzYlMzdmhoaEZ0TmQweWlGTkpmSWFGNXREdnJud3NnZG1sODJBKzEvV3owVm9CUT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio.app.tar.gz"
     }
   }
 }

@@ -16,16 +16,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
 	import AccountSection from "../components/home/AccountSection.svelte";
-    import TransactionsSection from "../components/home/TransactionsSection.svelte";
+    import TransactionSection from "$components/home/transaction/TransactionSection.svelte";
 </script>
 
 <main>
 	<AccountSection/>
-	<TransactionsSection/>
+	<TransactionSection/>
 </main>
 
 <style>
 	main{
+        width: 100%;
 		display: flex;
 		flex-direction: column;
 		gap: 32px;

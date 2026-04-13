@@ -24,5 +24,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     const { children }: Props = $props();
 </script>
 
-<th class="table-header">{@render children()}</th>
+<div class="data-header">
+    {@render children()}
+</div>
 

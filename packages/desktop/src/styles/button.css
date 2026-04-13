@@ -17,12 +17,22 @@ button{
         padding: 4px 8px;
         gap: 4px;
         border-radius: var(--radius-sm);
+
+        svg{
+            width: 16px;
+            height: 16px;
+        }
     }
 
     .btn-medium{
         padding: 8px 12px;
         gap: 8px;
         border-radius: var(--radius-md);
+        
+        svg{
+            width: 16px;
+            height: 16px;
+        }
     }
     
     .btn-primary{
