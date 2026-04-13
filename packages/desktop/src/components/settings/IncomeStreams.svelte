@@ -36,6 +36,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <div class="flex items-center justify-between">
             <h6>Income streams</h6>
             <IconButton
+                aria-label="Create income stream"
                 onclick={() => categoryStore.createIncomeStream()}
                 variant="neutral"
             >

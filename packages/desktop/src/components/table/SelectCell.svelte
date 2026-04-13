@@ -1,66 +1,64 @@
-<!--
-Copyright (C) 2025 Wakunguma Kalimukwa
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
--->
 <script lang="ts">
     import { Select } from "bits-ui";
+    import { TableCell } from "$components/table";
+    import type { HTMLAttributes } from "svelte/elements";
 
-    interface Props{
-        items: {value: string, label: string}[],
-        // TODO: make bindable?
+    type SelectItem = {
+        value: string,
+        label: string,
+        disabled?:boolean
+    };
+
+    interface Props extends HTMLAttributes<HTMLDivElement>{
+        items: SelectItem[],
         value?: string,
         /**
          * Callback that runs when the selected value changes.
          * @param value
          */
-        onChange?: (value: string) => void,
+        onChange?: (value: string) => void
     }
 
-    const { items,value,onChange }: Props = $props();
+    const { items,value,onChange,...rest }: Props = $props();
 
     let selectedItem = $derived(items.find(item => item.value === value));
-    // TODO: add selected style
 
     const onValueChange = (value: string) => {
         selectedItem = items.find(item => item.value === value) ?? selectedItem;
         onChange?.(value);
     };
+    // TODO: add UI for selected and disabled select menu items
 </script>
 
-<Select.Root {onValueChange} type="single" name="Combobox">
-    <Select.Trigger class="w-full h-full flex justify-start outline-none">
-        {selectedItem?.label ?? ""}
-    </Select.Trigger>
-    <Select.Portal>
-        <!-- FIXME: make it fit the children -->
-        <Select.Content class="w-(--bits-select-anchor-width) popup-overlay space-y-1">
-            {#each items as item (item.value)}
-                <Select.Item value={item.value} label={item.label} class="select-item">
-                    <!--eslint-disable-next-line svelte/no-useless-children-snippet-->
-                    {#snippet children()}
-                        {item.label}
-                    {/snippet}
-                </Select.Item>
-            {/each}
-        </Select.Content>
-    </Select.Portal>
-</Select.Root>
+<TableCell {...rest}>
+    <Select.Root {onValueChange} type="single" name="Combobox">
+        <Select.Trigger>
+            {#if selectedItem}
+                <p>{selectedItem.label}</p>
+            {:else}
+                <p class="invisible">Select an item</p>
+            {/if}
+        </Select.Trigger>
+        <Select.Portal>
+            <Select.Content class="popup-overlay space-y-1 select-content">
+                {#each items as { value,label,disabled } (value)}
+                    <Select.Item value={value} label={label} {disabled} class="select-item">
+                        {label}
+                    </Select.Item>
+                {/each}
+            </Select.Content>
+        </Select.Portal>
+    </Select.Root>
+</TableCell>
 
 <style>
     :global([data-select-content]){
         background: white;
+    }
+
+    :global(.select-content){
+        width: var(--bits-select-anchor-width);
+        min-width: var(--bits-select-anchor-width);
     }
 
     :global(.select-item) {
@@ -74,6 +72,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
         &[data-selected="true"] {
             background-color: var(--color-neutral-50);
+        }
+
+        &[data-disabled=""] {
+            color: var(--color-text-muted);
+        }
+
+        &[data-disabled=""]:hover {
+            background-color: initial;
         }
     }
 </style>

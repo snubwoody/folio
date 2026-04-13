@@ -79,6 +79,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         padding-left: 12px;
         background-color: var(--color-neutral-25);
         border-bottom: 1px solid var(--color-neutral-100);
+        column-span: 1/-1;
+        grid-column: 1/-1;
     }
 
     button {

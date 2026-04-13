@@ -13,6 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+/**
+ * Creates a new toast store. Toasts are global alerts to the user of the application
+ * and are only used for very important actions like updates or errors.
+ */
 export const createToastStore = () => {
     let toasts: Toast[] = $state([]);
 
@@ -59,15 +63,24 @@ export interface ToastAction {
     action: () => void;
 }
 
+/**
+ * A global alert.
+ */
 export interface Toast extends ToastParams {
     id: string;
 }
 
 /**
- * Parameters for creating a toast
+ * Parameters for creating a {@link Toast}.
  */
 export interface ToastParams{
+    /**
+     * The primary header of the toast.
+     */
     title: string,
+    /**
+     * An optional description providing more details.
+     */
     body?: string,
     primaryAction?: ToastAction,
     secondaryAction?: ToastAction,
@@ -79,7 +92,8 @@ export interface ToastParams{
 export const toastStore = createToastStore();
 
 /**
- * Appends a {@link Toast} to the toast store.
+ * Appends a {@link Toast} to the toast store. By default, toasts last for 8.5 seconds.
+ *
  * @param params The parameters for the toast.
  * @param timeout The amount of time before removing the toast.
  */

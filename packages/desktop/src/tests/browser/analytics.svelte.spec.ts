@@ -1,40 +1,39 @@
 import { appStore } from "$lib/state.svelte";
 import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
-import { expect, test, beforeEach } from "vitest";
+import { beforeEach, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { formatAmount, type Budget } from "$lib/lib";
+import { formatMoney } from "$lib/utils/money";
 
 beforeEach(() => {
     appStore.budgets = [];
 });
 
 test("Show monthly budget", async () => {
-    const budgets: Budget[] = [
+    appStore.budgets = [
         {
             id: "",
             amount: "20",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
+            category: { id: "", title: "", createdAt: "", isIncomeStream: false }
         },
         {
             id: "",
             amount: "50",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
+            category: { id: "", title: "", createdAt: "", isIncomeStream: false }
         },
         {
             id: "",
             amount: "20",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
+            category: { id: "", title: "", createdAt: "", isIncomeStream: false }
         }
     ];
-    appStore.budgets = budgets;
 
-    const text = formatAmount("90", { compact: true });
+    const text = formatMoney("90", { compact: true });
     const page = render(BudgetOverview);
     await expect.element(page.getByText(text)).toBeInTheDocument();
 });

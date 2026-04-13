@@ -1,13 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { SvelteMap } from "svelte/reactivity";
-
-export type Category = {
-    id: string;
-    title: string;
-    createdAt: string;
-    isIncomeStream: boolean
-};
+import type { Category } from "$lib/types";
 
 export class CategoryStore {
     #categories: Category[] = $state([]);
@@ -20,6 +14,10 @@ export class CategoryStore {
      */
     get categories(): Category[]{
         return this.#categories.filter(c => !c.isIncomeStream);
+    }
+
+    get allCategories(): Category[]{
+        return this.#categories;
     }
 
     /**
@@ -87,6 +85,10 @@ export class CategoryStore {
     async load() {
         this.#categories = await invoke<Category[]>("fetch_categories");
         logger.debug("Loaded categories from backend");
+    }
+
+    clear() {
+        this.#categories = [];
     }
 }
 

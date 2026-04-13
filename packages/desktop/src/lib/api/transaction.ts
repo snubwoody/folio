@@ -1,7 +1,10 @@
 // Copyright (C) 2025 Wakunguma Kalimukwa
 // SPDX-License-Identifier: GPL-3.0-or-later
+
+// Wrappers for interacting with transactions from the backend.
 import { CalendarDate, getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 import { invoke } from "@tauri-apps/api/core";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 export type TransactionType = "Expense" | "Income" | "Transfer";
 
@@ -72,11 +75,7 @@ function parseTransaction(value: RawTransaction): Transaction {
  */
 export async function getTransactions(): Promise<Transaction[]>{
     const rawTransactions = await invoke<RawTransaction[]>("fetch_transactions");
-    const transactions = rawTransactions.map((value) => {
-        const transaction = parseTransaction(value);
-        return transaction;
-    });
-    return transactions;
+    return rawTransactions.map((value) => parseTransaction(value));
 }
 
 /**
@@ -99,6 +98,7 @@ export async function createTransaction({
 /**
  * Sets the outflow property of a transaction. Calling this on an income
  * will convert it into an expense.
+ *
  * @param id The id of the transaction
  * @param amount The amount to set as the outflow
  */
@@ -173,4 +173,17 @@ export const transactionType = (transaction: Transaction): TransactionType => {
     }
 
     return "Transfer";
+};
+
+export const mockTransactions = () => {
+    mockIPC((cmd) => {
+        if(cmd == "edit_transaction"){
+            const transaction: RawTransaction = {
+                id: "1",
+                amount: "20.00",
+                transactionDate: "2020-10-10"
+            };
+            return transaction;
+        }
+    });
 };

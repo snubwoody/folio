@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import type { Account } from "../lib";
+import type { Account } from "../types";
 import { SvelteMap } from "svelte/reactivity";
-import { logger } from "../logger";
-import type { Transaction } from "$lib/transaction";
+import { logger } from "../utils/logger";
+import type { Transaction } from "$lib/api/transaction";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 interface EditAccount{
     name?: string
@@ -110,4 +111,23 @@ export function accountBalance(accountId:string,transactions: Transaction[]): nu
         .filter(t => t.fromAccountId === accountId)
         .forEach(t => total -= parseFloat(t.amount));
     return total;
+}
+
+/**
+ * Mocks the `create_account` command.
+ */
+export function mockCreateAccount(){
+    mockIPC((cmd,payload) => {
+        if (cmd === "create_account"){
+            let args = payload as {name:string,startingBalance: string};
+            const account: Account = {
+                id: Math.random().toString(),
+                name: args.name,
+                startingBalance: args.startingBalance,
+                balance: args.startingBalance
+            };
+
+            return account;
+        }
+    });
 }

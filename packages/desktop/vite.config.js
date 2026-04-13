@@ -1,5 +1,6 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import { sveltekit } from "@sveltejs/kit/vite";
+import { playwright } from "@vitest/browser-playwright";
 import tailwind from "@tailwindcss/vite";
 
 // eslint-disable-next-line
@@ -32,7 +33,7 @@ export default defineConfig({
         coverage: {
             enabled: true,
             provider: "v8",
-            include: ["src/lib/**","src/components/**"],
+            include: ["src/**/*.svelte","src/**/*.ts"],
             exclude: ["src/**/*.spec.ts","src/**/*.test.ts"]
         },
         // eslint-disable-next-line no-undef
@@ -55,7 +56,7 @@ export default defineConfig({
                     environment: "jsdom",
                     browser: {
                         enabled: true,
-                        provider: "playwright",
+                        provider: playwright(),
                         screenshotFailures: false,
                         api: {
                             host: "127.0.0.1",

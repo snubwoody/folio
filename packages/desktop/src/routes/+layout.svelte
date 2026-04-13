@@ -15,10 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import Sidebar from "../components/Sidebar.svelte";
+    import Sidebar from "$components/sidebar/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
     import ToastGroup from "$components/popups/ToastGroup.svelte";
-    import "../styles/global.css";
+    import "$styles/global.css";
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
@@ -28,8 +28,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { check, type Update } from "@tauri-apps/plugin-updater";
     import { relaunch } from "@tauri-apps/plugin-process";
-    import { addToast } from "$lib/toast.svelte";
-    import { logger } from "$lib/logger";
+    import { addToast } from "$lib/stores/toast.svelte";
+    import { logger } from "$lib/utils/logger";
     import { BundleType, getBundleType } from "@tauri-apps/api/app";
 
     const { children } = $props();
@@ -60,37 +60,25 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 
     onMount(async () => {
-        await invoke("create_missing_budgets");
-        await settingsStore.load();
-        await appStore.load();
-        await transactionStore.load();
-        await accountStore.load();
-        await categoryStore.load();
+        await Promise.all([
+            invoke("create_missing_budgets"),
+            appStore.load(),
+            transactionStore.load(),
+            accountStore.load(),
+            categoryStore.load(),
+            settingsStore.load()
+        ]);
         checkForUpdate();
         transactionStore.sort();
     });
 </script>
 
-<!---FIXME: remove icon url-->
-<svelte:head>
-    <link
-        rel="stylesheet"
-        type="text/css"
-        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
-    />
-    <link
-        rel="stylesheet"
-        type="text/css"
-        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
-    />
-</svelte:head>
-
 <Titlebar />
-<main class="flex">
-    <Sidebar />
+<div>
+    <Sidebar/>
     {@render children()}
     <ToastGroup/>
-</main>
+</div>
 
 <style>
     :global(body) {
@@ -99,9 +87,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         overflow: hidden;
     }
 
-    main {
-        display: grid;
-        grid-template-columns: auto 1fr;
+    div {
+        display: flex;
         overflow-y: hidden;
         height: 100%;
     }

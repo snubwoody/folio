@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { type Toast, toastStore } from "$lib/toast.svelte.js";
+    import { type Toast, toastStore } from "$lib/stores/toast.svelte";
     import { Info,X } from "@lucide/svelte";
     import { IconButton, Button } from "$components/button";
     import { fly } from "svelte/transition";

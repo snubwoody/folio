@@ -2,7 +2,7 @@ import ToastGroup from "$components/popups/ToastGroup.svelte";
 import ToastComponent from "$components/popups/Toast.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { toastStore,addToast,type Toast } from "$lib/toast.svelte";
+import { toastStore,addToast,type Toast } from "$lib/stores/toast.svelte";
 
 beforeEach(() => {
     toastStore.clear();

@@ -3,11 +3,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 Copyright (C) 2025 Wakunguma Kalimukwa
 -->
 <script lang="ts">
-    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/lib";
     import MoneyCell from "$components/MoneyCell.svelte";
-    import { formatAmount, type Budget } from "$lib/lib";
+    import type { Budget } from "$lib/types";
     import { appStore } from "$lib/state.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
+    import { formatAmountWithoutSymbol, formatMoney, getCurrencySymbol } from "$lib/utils/money";
 
     type Props = {
         budget: Budget;
@@ -40,9 +40,9 @@ Copyright (C) 2025 Wakunguma Kalimukwa
             <p>Fully spent</p>
         {:else if totalSpent > amount}
             {@const excess = totalSpent -amount}
-            Overspent by {formatAmount(excess.toString())}
+            Overspent by {formatMoney(excess.toString())}
         {:else}
-            Spent {formatAmount(budget.totalSpent)} of {formatAmount(budget.amount)}
+            Spent {formatMoney(budget.totalSpent)} of {formatMoney(budget.amount)}
         {/if}
     </div>
     <div>
@@ -53,7 +53,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 </div>
 <MoneyCell symbol={getCurrencySymbol(settingsStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
 <p>
-    {formatAmount(budget.remaining,{ currency: settingsStore.settings.currencyCode })}
+    {formatMoney(budget.remaining,{ currency: settingsStore.settings.currencyCode })}
 </p>
 
 <style>

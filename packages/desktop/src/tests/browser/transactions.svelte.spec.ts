@@ -2,14 +2,13 @@ import { test, beforeEach, describe, expect, afterEach } from "vitest";
 import TransactionComponent from "$components/home/transaction/Transaction.svelte";
 import Toolbar from "$components/home/transaction/Toolbar.svelte";
 import Actionbar from "$components/home/transaction/Actionbar.svelte";
-import AccountCell from "$components/home/transaction/AccountCell.svelte";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
 import { mockIPC, clearMocks } from "@tauri-apps/api/mocks";
-import { randomId } from "$lib/toast.svelte";
-import type { RawTransaction, Transaction } from "$lib/transaction";
+import { randomId } from "$lib/stores/toast.svelte";
+import type { RawTransaction, Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 
 beforeEach(() => {
@@ -200,39 +199,3 @@ describe("Transaction component", async () => {
     });
 });
 
-describe("AccountCell", async () => {
-    test("shows account if income", async () => {
-        const account = await accountStore.createTestAccount({ name: "Income account" });
-
-        const transaction: Transaction = {
-            id: "1",
-            toAccountId: account.id,
-            amount: "500.0",
-            date: parseDate("2024-12-12")
-        };
-
-        const screen = render(AccountCell, {
-            transaction
-        });
-        const accountCell = screen.getByTestId("account");
-        expect(accountCell).toHaveTextContent("Income account");
-    });
-    test("shows expense account if transfer", async () => {
-        const account = await accountStore.createTestAccount({ name: "Income account" });
-        const account2 = await accountStore.createTestAccount({ name: "Expense account" });
-
-        const transaction: Transaction = {
-            id: "1",
-            toAccountId: account.id,
-            fromAccountId: account2.id,
-            amount: "500.0",
-            date: parseDate("2024-12-12")
-        };
-
-        const screen = render(AccountCell, {
-            transaction
-        });
-        const accountCell = screen.getByTestId("account");
-        expect(accountCell).toHaveTextContent("Expense account");
-    });
-});

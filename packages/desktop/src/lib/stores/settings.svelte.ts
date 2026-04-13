@@ -15,8 +15,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
     Settings
-} from "../lib";
-import { logger } from "../logger";
+} from "../types";
+import { logger } from "../utils/logger";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 export class SettingsStore{
     #settings: Settings = $state({ currencyCode: "USD" });
@@ -38,6 +39,20 @@ export class SettingsStore{
         this.#settings = await invoke<Settings>("settings");
         logger.debug("Loaded settings from backend");
     }
+}
+
+export function mockSettings(){
+    mockIPC((cmd) => {
+        if (cmd === "settings") {
+            return { currencyCode: "USD" };
+        }
+        if (cmd === "currencies") {
+            return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
+        }
+        if (cmd === "set_currency_code") {
+            return;
+        }
+    });
 }
 
 export const settingsStore = new SettingsStore();
