@@ -13,44 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import type { Category } from "./stores/categories.svelte";
 import { CalendarDate } from "@internationalized/date";
 import { settingsStore } from "./stores/settings.svelte";
 
-export type Account = {
-    id: string;
-    name: string;
-    startingBalance: string;
-    balance: string;
-};
 
-export type Budget = {
-    id: string;
-    amount: string;
-    totalSpent: string;
-    remaining: string;
-    category: Category;
-};
-
-export type IncomeAnalytic = {
-    stream: Category;
-    total: string;
-};
-
-export type Settings = {
-    /**
-     * The global currency code.
-     */
-    currencyCode: string;
-};
-
-/**
- * @deprecated
- */
-export type SupportResponse = {
-    issue_url: string;
-    issue_id: number;
-};
 
 export function formatDate(dateStr: string): string {
     const [year, month, day]: string[] = dateStr.split("-");
