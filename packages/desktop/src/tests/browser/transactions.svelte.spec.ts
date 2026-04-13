@@ -7,7 +7,7 @@ import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
 import { mockIPC, clearMocks } from "@tauri-apps/api/mocks";
-import { randomId } from "$lib/toast.svelte";
+import { randomId } from "$lib/stores/toast.svelte";
 import type { RawTransaction, Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 

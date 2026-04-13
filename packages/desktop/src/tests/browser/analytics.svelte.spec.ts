@@ -1,8 +1,7 @@
-import { appStore } from "$lib/state.svelte";
+import {appStore} from "$lib/state.svelte";
 import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
-import { expect, test, beforeEach } from "vitest";
-import { render } from "vitest-browser-svelte";
-import { type Budget } from "$lib/lib";
+import {beforeEach, expect, test} from "vitest";
+import {render} from "vitest-browser-svelte";
 import {formatMoney} from "$lib/utils/money";
 
 beforeEach(() => {
@@ -10,30 +9,29 @@ beforeEach(() => {
 });
 
 test("Show monthly budget", async () => {
-    const budgets: Budget[] = [
+    appStore.budgets = [
         {
             id: "",
             amount: "20",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
+            category: {id: "", title: "", createdAt: "", isIncomeStream: false}
         },
         {
             id: "",
             amount: "50",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
+            category: {id: "", title: "", createdAt: "", isIncomeStream: false}
         },
         {
             id: "",
             amount: "20",
             totalSpent: "10",
             remaining: "10",
-            category: { id: "", title: "", createdAt: "",isIncomeStream:false }
+            category: {id: "", title: "", createdAt: "", isIncomeStream: false}
         }
     ];
-    appStore.budgets = budgets;
 
     const text = formatMoney("90", { compact: true });
     const page = render(BudgetOverview);

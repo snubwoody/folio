@@ -1,5 +1,5 @@
 import { test, expect, beforeEach,vi } from "vitest";
-import { addToast, createToastStore, toastStore } from "$lib/toast.svelte";
+import { addToast, createToastStore, toastStore } from "./toast.svelte";
 
 beforeEach(() => {
     toastStore.clear();
