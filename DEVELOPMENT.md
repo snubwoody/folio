@@ -37,7 +37,8 @@ cargo tauri dev
 ```
 
 In debug mode logs will be saved to the `crates/folio-desktop/logs` folder, which is excluded 
-from version control.
+from version control. Please log important actions like updating the user's settings 
+or editing transactions.
 
 ## Lint & format
 
