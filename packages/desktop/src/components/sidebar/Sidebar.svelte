@@ -97,7 +97,7 @@
         margin-top: auto;
         border-top: 1px solid var(--color-neutral-100);
         align-items: center;
-        padding-block: 12px;
+        padding: 12px;
 
         :global([data-expanded="false"]) &{
             flex-direction: column-reverse;

@@ -49,6 +49,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         currencies,
         set_currency_code,
         settings,
+        get_budget,
         analytics,
         create_income_stream,
         fetch_categories,
@@ -234,6 +235,13 @@ pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Cate
 #[tauri::command]
 pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
     service::fetch_budgets(&state.pool)
+        .await
+        .inspect_err(|err| tracing::warn!("Error: {err}"))
+}
+
+#[tauri::command]
+pub async fn get_budget(state: tauri::State<'_, State>,id: String) -> Result<Budget> {
+    service::Budget::from_category(&id,&state.pool)
         .await
         .inspect_err(|err| tracing::warn!("Error: {err}"))
 }

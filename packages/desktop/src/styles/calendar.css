@@ -26,6 +26,7 @@
     outline: 2px solid transparent;
     outline-offset: -1px;
     position: relative;
+    cursor: pointer;
 
     &:hover{
         background: var(--color-purple-50);

@@ -57,7 +57,6 @@ export class CategoryStore {
         const category = await invoke<Category>("edit_category", { id, title });
         const index = this.#categories.findIndex((c) => c.id === category.id);
         this.#categories[index] = category;
-        await this.load();
     }
 
     /**

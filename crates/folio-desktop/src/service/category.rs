@@ -16,7 +16,7 @@ use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
-
+use tracing::info;
 use crate::{Money, db, service::Budget};
 
 // TODO: check for categories that do not have a corresponding budget
@@ -110,7 +110,7 @@ impl Category {
             .bind(id)
             .execute(pool)
             .await?;
-
+        info!(id=id,"Updated category");
         Self::from_id(id, pool).await
     }
 
@@ -122,6 +122,7 @@ impl Category {
             .execute(pool)
             .await?;
 
+        info!(id=id,"Deleted category");
         Ok(())
     }
 
