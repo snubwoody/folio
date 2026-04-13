@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
     import { transactionType } from "$lib/api/transaction";
-    import {formatMoney} from "$lib/utils/money";
+    import { formatMoney } from "$lib/utils/money";
 
     const currentDate = today(getLocalTimeZone());
     const incomes = transactionStore.transactions.filter(transaction => {

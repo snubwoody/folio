@@ -1,5 +1,5 @@
-import {settingsStore} from "$lib/stores/settings.svelte";
-import {invoke} from "@tauri-apps/api/core";
+import { settingsStore } from "$lib/stores/settings.svelte";
+import { invoke } from "@tauri-apps/api/core";
 
 export interface MoneyFormatOpts {
     /** Truncate large values */

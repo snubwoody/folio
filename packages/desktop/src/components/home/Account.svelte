@@ -3,7 +3,7 @@
     import type { Account } from "$lib/lib";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountBalance } from "$lib/stores/account.svelte";
-    import {formatMoney} from "$lib/utils/money";
+    import { formatMoney } from "$lib/utils/money";
 
     interface Props {
         account: Account

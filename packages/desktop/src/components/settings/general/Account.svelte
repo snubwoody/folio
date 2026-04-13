@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { Account } from "$lib/lib";
     import InlineTextField from "$components/InlineTextField.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import {formatAmountWithoutSymbol, getCurrencySymbol} from "$lib/utils/money";
+    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/utils/money";
 
     interface Props{
         account: Account

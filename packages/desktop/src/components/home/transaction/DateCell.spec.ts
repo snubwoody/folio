@@ -6,7 +6,7 @@ import { accountStore } from "$lib/stores/account.svelte";
 import DateCell from "./DateCell.svelte";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 import { clearMocks } from "@tauri-apps/api/mocks";
-import {formatDate} from "$lib/utils/date";
+import { formatDate } from "$lib/utils/date";
 
 beforeEach(() => {
     accountStore.clear();

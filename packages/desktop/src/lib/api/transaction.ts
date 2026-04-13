@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // Wrappers for interacting with transactions from the backend.
-import {CalendarDate, getLocalTimeZone, now, parseDate, toCalendarDate} from "@internationalized/date";
-import {invoke} from "@tauri-apps/api/core";
-import {mockIPC} from "@tauri-apps/api/mocks";
+import { CalendarDate, getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
+import { invoke } from "@tauri-apps/api/core";
+import { mockIPC } from "@tauri-apps/api/mocks";
 
 export type TransactionType = "Expense" | "Income" | "Transfer";
 

@@ -10,7 +10,7 @@
     import AccountCell from "./AccountCell.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { TableRow } from "$components/table";
-    import {formatAmountWithoutSymbol, getCurrencySymbol} from "$lib/utils/money";
+    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/utils/money";
 
     interface Props{
         transaction: Transaction

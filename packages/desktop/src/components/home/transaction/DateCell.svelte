@@ -2,10 +2,10 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { Popover } from "bits-ui";
     import Calendar from "$components/Calendar.svelte";
-    import {type DateValue, toCalendarDate} from "@internationalized/date";
+    import { type DateValue, toCalendarDate } from "@internationalized/date";
     import type { Transaction } from "$lib/api/transaction";
     import { TableCell } from "$components/table";
-    import {formatDate} from "$lib/utils/date";
+    import { formatDate } from "$lib/utils/date";
 
     interface Props{
         transaction: Transaction
