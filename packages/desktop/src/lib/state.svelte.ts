@@ -12,11 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-import { invoke } from "@tauri-apps/api/core";
-import type {
-    Budget
-} from "./lib";
-import { logger } from "./logger";
+import {invoke} from "@tauri-apps/api/core";
+import type {Budget} from "./lib";
+import {logger} from "./utils/logger";
 
 // TODO: just manage state manually
 /**
@@ -25,23 +23,8 @@ import { logger } from "./logger";
 export class AppStore {
     budgets: Budget[] = $state([]);
 
-    async createBudget(amount: string, categoryId: string) {
-        await invoke("create_budget", { amount, categoryId });
-        await this.load();
-    }
-
     async editBudget(id: string, amount: string) {
         await invoke("edit_budget", { id, amount });
-        await this.load();
-    }
-
-    async deleteBudget(id: string) {
-        try{
-            await invoke("delete_budget", { id });
-        } catch(e){
-            logger.error(`${e}`);
-        }
-        // FIXME: no longer exists
         await this.load();
     }
 

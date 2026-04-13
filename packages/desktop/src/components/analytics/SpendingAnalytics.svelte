@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import type { Analytic } from "$lib/analytics.svelte";
+    import type { Analytic } from "$lib/types";
     import { invoke } from "@tauri-apps/api/core";
     import { transactionStore } from "$lib/stores/transaction.svelte";
 
