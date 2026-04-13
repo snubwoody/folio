@@ -1,13 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { SvelteMap } from "svelte/reactivity";
-
-export type Category = {
-    id: string;
-    title: string;
-    createdAt: string;
-    isIncomeStream: boolean
-};
+import type { Category } from "$lib/types";
 
 export class CategoryStore {
     #categories: Category[] = $state([]);

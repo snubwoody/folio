@@ -15,12 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { formatMoney } from "$lib/lib";
     import { appStore } from "$lib/state.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
-    import { transactionType } from "$lib/transaction";
+    import { transactionType } from "$lib/api/transaction";
+    import { formatMoney } from "$lib/utils/money";
 
     const currentDate = today(getLocalTimeZone());
     const incomes = transactionStore.transactions.filter(transaction => {

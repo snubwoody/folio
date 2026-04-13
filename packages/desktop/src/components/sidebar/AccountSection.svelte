@@ -3,9 +3,9 @@
     import { Plus } from "@lucide/svelte";
     import { Button } from "$components/button";
     import { accountStore } from "$lib/stores/account.svelte";
-    import { formatMoney } from "$lib/lib";
     import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
     import TextField from "$components/TextField.svelte";
+    import { formatMoney } from "$lib/utils/money";
 
     const total = $derived.by(() => {
         // TODO: test 0 accounts

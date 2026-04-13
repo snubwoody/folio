@@ -15,8 +15,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
     Settings
-} from "../lib";
-import { logger } from "../logger";
+} from "../types";
+import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
 
 export class SettingsStore{

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { formatMoney } from "$lib/lib";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import type { Account } from "$lib/lib";
+    import type { Account } from "$lib/types";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountBalance } from "$lib/stores/account.svelte";
+    import { formatMoney } from "$lib/utils/money";
 
     interface Props {
         account: Account

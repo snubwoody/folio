@@ -15,13 +15,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { formatAmountWithoutSymbol, getCurrencySymbol  } from "$lib/lib.js";
     import { accountStore } from "$lib/stores/account.svelte";
     import IconButton from "$components/button/IconButton.svelte";
     import { Trash2 } from "@lucide/svelte";
-    import type { Account } from "$lib/lib";
+    import type { Account } from "$lib/types";
     import InlineTextField from "$components/InlineTextField.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
+    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/utils/money";
 
     interface Props{
         account: Account
