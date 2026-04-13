@@ -19,7 +19,8 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // FIXME: overspent error
     // FIXME: add a budget_amount field to categories
     const totalSpent = $derived(parseFloat(budget.totalSpent));
-    const amount = $derived(parseFloat(budget.amount));
+    let amount = $derived(parseFloat(budget.amount));
+    let remaining = $derived(amount - totalSpent);
 
     /// Max 1 to prevent NaN and mess up the bar width
     let percentage = $derived(Math.min(Math.round((totalSpent / Math.max(amount,1)) * 100),100));
@@ -28,8 +29,9 @@ Copyright (C) 2025 Wakunguma Kalimukwa
         formatAmountWithoutSymbol(budget.amount)
     );
 
-    async function updateAmount(amount: string) {
-        await appStore.editBudget(budget.id, amount);
+    async function updateAmount(newAmount: string) {
+        await appStore.editBudget(budget.id, newAmount);
+        amount = parseFloat(newAmount);
     }
 </script>
 
@@ -53,7 +55,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 </div>
 <MoneyCell symbol={getCurrencySymbol(settingsStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
 <p>
-    {formatMoney(budget.remaining,{ currency: settingsStore.settings.currencyCode })}
+    {formatMoney(remaining.toString(),{ currency: settingsStore.settings.currencyCode })}
 </p>
 
 <style>

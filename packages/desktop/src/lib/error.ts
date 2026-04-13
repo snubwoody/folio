@@ -12,6 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+/**
+ * An AppError.
+ */
 export class AppError extends Error{
     cause?: unknown;
     constructor(message: string,cause?: unknown){
@@ -19,8 +23,3 @@ export class AppError extends Error{
         this.cause = cause;
     }
 }
-
-/** An error from the backend. */
-export type ErrorResponse = {
-    message: string
-};

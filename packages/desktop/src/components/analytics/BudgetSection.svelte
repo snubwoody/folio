@@ -3,8 +3,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
 Copyright (C) 2025 Wakunguma Kalimukwa
 -->
 <script lang="ts">
-    import {appStore, getBudget} from "$lib/state.svelte";
+    import {getBudget} from "$lib/budget.ts";
     import {categoryStore} from "$lib/stores/categories.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
     import Budget from "./Budget.svelte";
     // TODO: key by transactions
     // FIXME: remove cell background when focused
@@ -18,17 +19,16 @@ Copyright (C) 2025 Wakunguma Kalimukwa
         <h6>Total</h6>
         <h6>Left to spend</h6>
         <!-- <p class="table-heading">Remaining</p> -->
-        {#each categoryStore.categories as category (category.id)}
-            {#await getBudget(category.id)}
-                Loading
-            {:then budget}
-                <Budget budget={budget}/>
-            {/await}
-            <!--{#key budget.amount}-->
-<!--                <Budget {budget}/>-->
-<!--            {/key}-->
-            <div class="bg-neutral-50 w-full h-[1px] col-span-3"></div>
-        {/each}
+        {#key transactionStore.transactions}
+            {#each categoryStore.categories as category (category.id)}
+                {#await getBudget(category.id)}
+                    <div class="hidden" aria-hidden="true"></div>
+                {:then budget}
+                    <Budget budget={budget}/>
+                {/await}
+                <div class="bg-neutral-50 w-full h-[1px] col-span-3"></div>
+            {/each}
+        {/key}
     </ul>
 </section>
 

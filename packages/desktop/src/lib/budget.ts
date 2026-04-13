@@ -14,24 +14,8 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import {invoke} from "@tauri-apps/api/core";
 import type {Budget} from "./lib";
-import {logger} from "./logger";
 
-// TODO: just manage state manually
-/**
- * @deprecated
- */
-export class AppStore {
-    budgets: Budget[] = $state([]);
 
-    async editBudget(id: string, amount: string) {
-        await invoke("edit_budget", { id, amount });
-        await this.load();
-    }
-
-    async load() {
-        this.budgets = (await invoke("fetch_budgets")) as Budget[];
-        logger.debug("Loaded budgets from backend");
-    }
+export async function getBudget(categoryId:string): Promise<Budget>{
+    return await invoke<Budget>("get_budget", { id: categoryId });
 }
-
-export const appStore = new AppStore();
