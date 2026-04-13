@@ -1,6 +1,6 @@
 // Copyright (C) 2025 Wakunguma Kalimukwa
 // SPDX-License-Identifier: GPL-3.0-or-later
-import { logger } from "../logger";
+import { logger } from "../utils/logger";
 import { getTransactions,type Transaction, type EditTransactionOpts, deleteTransactions, editTransaction, setInflow, setOutflow, setPayee, createTransaction, type CreateTransactionOpts } from "$lib/transaction";
 
 export class TransactionStore {

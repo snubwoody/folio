@@ -7,6 +7,13 @@ export type Category = {
     isIncomeStream: boolean
 };
 
+export type SelectOption = {
+    /** Label for display purposes. */
+    label: string;
+    /** Unique value for identifying. */
+    value: string;
+};
+
 export type Account = {
     id: string;
     name: string;
@@ -22,14 +29,14 @@ export type Budget = {
     category: Category;
 };
 
-export type IncomeAnalytic = {
-    stream: Category;
-    total: string;
-};
-
 export type Settings = {
     /**
      * The global currency code.
      */
     currencyCode: string;
 };
+
+export interface Analytic {
+    category: Category,
+    total: string
+}

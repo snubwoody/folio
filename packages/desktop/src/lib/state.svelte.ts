@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import {invoke} from "@tauri-apps/api/core";
 import type {Budget} from "./lib";
-import {logger} from "./logger";
+import {logger} from "./utils/logger";
 
 // TODO: just manage state manually
 /**

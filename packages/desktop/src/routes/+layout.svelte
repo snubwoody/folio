@@ -28,8 +28,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { check, type Update } from "@tauri-apps/plugin-updater";
     import { relaunch } from "@tauri-apps/plugin-process";
-    import { addToast } from "$lib/toast.svelte";
-    import { logger } from "$lib/logger";
+    import { addToast } from "$lib/stores/toast.svelte";
+    import { logger } from "$lib/utils/logger";
     import { BundleType, getBundleType } from "@tauri-apps/api/app";
 
     const { children } = $props();

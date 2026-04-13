@@ -43,7 +43,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts" generics="T">
     import { Select } from "melt/builders";
-    import type { SelectOption } from "$lib/select.svelte";
+    import type { SelectOption } from "$lib/types";
     import { ChevronDown } from "@lucide/svelte";
 
     type Props = {
