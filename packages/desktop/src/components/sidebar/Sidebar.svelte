@@ -5,11 +5,17 @@
     import { Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose } from "@lucide/svelte";
     import { page } from "$app/state";
     import AccountSection from "./AccountSection.svelte";
+    import {settingsStore} from "$lib/stores/settings.svelte";
 
     // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
     // TODO: account balance max
-    let expanded = $state(true);
+    let expanded = $derived(settingsStore.settings.sidebarOpen);
+
+    const toggleSidebar = () => {
+        settingsStore.setSidebarState(!expanded);
+    }
+    // TODO: test this
 </script>
 
 <aside id="nav-panel" data-testid="nav-panel" data-expanded={expanded}>
@@ -34,7 +40,7 @@
             aria-label="Collapse sidebar"
             aria-expanded={expanded}
             aria-controls="nav-panel"
-            onclick={() => expanded = !expanded}
+            onclick={toggleSidebar}
         >
             {#if expanded}
                 <PanelRightOpen/>

@@ -33,6 +33,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         set_transaction_inflow,
         create_account,
         delete_category,
+        set_sidebar_state,
         edit_category,
         parse_date,
         delete_transactions,
@@ -100,6 +101,15 @@ pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currenc
     settings
         .set_currency_code(currency)
         .inspect_err(|err| warn!("Failed to set currency code: {err}"))?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn set_sidebar_state(state: tauri::State<'_, State>, open: bool) -> Result<()> {
+    let mut settings = state.settings.lock().await;
+    settings
+        .set_sidebar_state(open)
+        .inspect_err(|err| warn!("Failed to set sidebar state: {err}"))?;
     Ok(())
 }
 
