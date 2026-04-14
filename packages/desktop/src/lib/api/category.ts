@@ -7,6 +7,10 @@ export async function getBudget(categoryId: string){
     return await invoke<Budget>("get_budget", {categoryId});
 }
 
+export async function editBudget(id: string, amount: string) {
+    await invoke("edit_budget", { id, amount });
+}
+
 /**
  * Returns the total amount spent in the provided category during in a specific month.
  *
