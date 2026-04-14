@@ -16,8 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import Budget from "./Budget.svelte";
-    import {categoryStore} from "$lib/stores/categories.svelte";
-    import {getBudget} from "$lib/api/category";
+    import { categoryStore } from "$lib/stores/categories.svelte";
+    import { getBudget } from "$lib/api/category";
 </script>
 
 <section>

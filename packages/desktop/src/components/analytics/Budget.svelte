@@ -8,9 +8,9 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     import { appStore } from "$lib/state.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { formatAmountWithoutSymbol, formatMoney, getCurrencySymbol } from "$lib/utils/money";
-    import {totalSpent} from "$lib/api/category";
-    import {transactionStore} from "$lib/stores/transaction.svelte";
-    import {getLocalTimeZone, today} from "@internationalized/date";
+    import { totalSpent } from "$lib/api/category";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
+    import { getLocalTimeZone, today } from "@internationalized/date";
 
     type Props = {
         budget: Budget;

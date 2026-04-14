@@ -1,7 +1,7 @@
-import {test, expect, afterEach,describe} from "vitest";
-import {clearMocks, mockIPC} from "@tauri-apps/api/mocks";
-import {createTransaction, getTransactions, type RawTransaction} from "./transaction";
-import {getLocalTimeZone, now, parseDate, toCalendarDate} from "@internationalized/date";
+import { test, expect, afterEach,describe } from "vitest";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { createTransaction, getTransactions, type RawTransaction } from "./transaction";
+import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
 
 afterEach(() => {
     clearMocks();
