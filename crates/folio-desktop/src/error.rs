@@ -19,6 +19,9 @@ use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+// TODO: with_context (with_message) like Anyhow
+// TODO: add AppError to frontend
+// TODO: add source chain
 // TODO: stack trace errors like, implement source
 #[derive(Debug)]
 pub struct AppError{
@@ -35,10 +38,10 @@ impl AppError{
     }
 
     // impl or Box?
-    pub fn with_source(message: &str, source: Box<dyn std::error::Error>) -> Self{
+    pub fn with_source<E:std::error::Error + 'static>(message: &str, source: E) -> Self{
         Self{
             message: message.to_owned(),
-            source: Some(source)
+            source: Some(Box::new(source))
         }
     }
 }
@@ -83,5 +86,25 @@ impl Serialize for Error {
         let message = self.to_string();
         s.serialize_field("message", &message)?;
         s.end()
+    }
+}
+
+#[cfg(test)]
+mod test{
+    use std::error::Error;
+    use crate::service::Category;
+    use super::*;
+
+    #[test]
+    fn source(){
+        let result = serde_json::from_str::<Category>("0");
+        match result {
+            Ok(_) => {},
+            Err(e) => {
+                dbg!(e.source());
+                let error = AppError::with_source("Failed to parse category",e);
+                dbg!(error);
+            }
+        }
     }
 }
