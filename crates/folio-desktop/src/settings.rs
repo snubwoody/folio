@@ -4,12 +4,20 @@ use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 use tracing::info;
 
+// Very annoying workaround
+// Serde doesn't allow constant values e.g. true
+const fn default_true() -> bool{
+    true
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Settings {
     #[serde(skip)]
     path: PathBuf,
     currency_code: Currency,
+    #[serde(default = "default_true")]
+    sidebar_open: bool,
 }
 
 impl Settings {
@@ -24,9 +32,12 @@ impl Settings {
         match serde_json::from_reader::<_, Settings>(file) {
             Ok(mut settings) => {
                 settings.path = path.as_ref().to_path_buf();
+
+                // Make sure new settings fields are saved
+                settings.write()?;
                 Ok(settings)
             }
-            Err(_e) => Self::init(path),
+            Err(_) => Self::init(path),
         }
     }
 
@@ -34,6 +45,7 @@ impl Settings {
         let settings = Settings {
             path: path.as_ref().to_path_buf(),
             currency_code: Currency::USD,
+            sidebar_open: true
         };
 
         let file = File::create(&path)?;
@@ -63,7 +75,6 @@ impl Settings {
 #[cfg(test)]
 mod test {
     use super::*;
-
     use serde_json::json;
     use std::fs;
     use tempfile::tempdir;
@@ -84,8 +95,26 @@ mod test {
         let dir = tempdir()?;
         let path = dir.path().join("settings.json");
         let file = File::create(&path)?;
+        let json = json! ({
+            "currencyCode":"XOF",
+            "sidebarOpen":false
+        });
+        serde_json::to_writer(file, &json)?;
+        let settings: Settings = Settings::open(&path)?;
+        assert_eq!(settings.currency_code, Currency::XOF);
+        assert_eq!(settings.sidebar_open, false);
+        assert_eq!(settings.path, path);
+        Ok(())
+    }
+
+    #[test]
+    fn open_partial_settings() -> crate::Result<()> {
+        let dir = tempdir()?;
+        let path = dir.path().join("settings.json");
+        let file = File::create(&path)?;
         serde_json::to_writer(file, &json! ({"currencyCode":"XOF"}))?;
         let settings: Settings = Settings::open(&path)?;
+        dbg!(&settings);
         assert_eq!(settings.currency_code, Currency::XOF);
         assert_eq!(settings.path, path);
         Ok(())
@@ -99,10 +128,12 @@ mod test {
         let settings = Settings {
             path: path.clone(),
             currency_code: Currency::ZMW,
+            sidebar_open: false
         };
         settings.write()?;
         let settings = Settings::open(&path)?;
         assert_eq!(settings.currency_code, Currency::ZMW);
+        assert_eq!(settings.sidebar_open, false);
         Ok(())
     }
 
