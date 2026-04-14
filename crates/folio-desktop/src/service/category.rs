@@ -15,7 +15,7 @@
 use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{FromRow, SqlitePool};
 
 use crate::{Money, db, service::Budget};
 
@@ -33,7 +33,7 @@ pub struct Category {
     pub is_income_stream: bool,
 }
 
-// TODO: add fetch_all, fetch_categories, fetch_income_streams, create_income_stream
+// TODO: add change_group
 impl Category {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
@@ -173,6 +173,29 @@ impl Category {
             categories.push(category);
         }
         Ok(categories)
+    }
+}
+
+// TODO: add default "No group" in UI for categories without a group
+#[derive(FromRow,Debug,Serialize,Deserialize,PartialOrd, PartialEq,Clone)]
+pub struct CategoryGroup{
+    id: String,
+    title: String
+}
+
+// TODO: ops
+// - Create
+// - Fetch
+// - Edit (title)
+// - Delete
+// - Reorder
+impl CategoryGroup{
+    pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self>{
+        let group: CategoryGroup = sqlx::query_as("SELECT * FROM category_groups WHERE id = $1")
+            .bind(id)
+            .fetch_one(pool)
+            .await?;
+        Ok(group)
     }
 }
 

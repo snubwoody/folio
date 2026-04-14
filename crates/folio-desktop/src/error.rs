@@ -19,7 +19,9 @@ use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-// TODO: Switch to anyhow?
+// TODO: Switch to struct based Error, no need for an enum if we rarely match,
+// maybe with stack trace (although that just sound like anyhow)
+
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("IO Error: {0}")]
