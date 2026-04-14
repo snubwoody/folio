@@ -17,6 +17,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { appStore } from "$lib/state.svelte";
     import Budget from "./Budget.svelte";
+    import {categoryStore} from "$lib/stores/categories.svelte";
+    import {getBudget} from "$lib/api/category";
 </script>
 
 <section>
@@ -27,11 +29,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <h6>Total</h6>
         <h6>Left to spend</h6>
         <!-- <p class="table-heading">Remaining</p> -->
-        {#each appStore.budgets as budget (budget.category.id)}
-            {#key budget.amount}
+        {#each categoryStore.categories as category (category.id)}
+            {#await getBudget(category.id)}
+                <div class="hidden"></div>
+            {:then budget}
                 <Budget {budget}/>
-            {/key}
-            <div class="bg-neutral-50 w-full h-[1px] col-span-3"></div>
+                <div class="bg-neutral-50 w-full h-[1px] col-span-3"></div>
+            {/await}
         {/each}
     </ul>
 </section>
