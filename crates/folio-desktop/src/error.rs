@@ -19,9 +19,31 @@ use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-// TODO: Switch to struct based Error, no need for an enum if we rarely match,
-// maybe with stack trace (although that just sound like anyhow)
+// TODO: stack trace errors like, implement source
+#[derive(Debug)]
+pub struct AppError{
+    message: String,
+    source: Option<Box<dyn std::error::Error>>
+}
 
+impl AppError{
+    pub fn new(message: &str) -> Self{
+        Self{
+            message: message.to_owned(),
+            source: None
+        }
+    }
+
+    // impl or Box?
+    pub fn with_source(message: &str, source: Box<dyn std::error::Error>) -> Self{
+        Self{
+            message: message.to_owned(),
+            source: Some(source)
+        }
+    }
+}
+
+// TODO: Switch to anyhow?
 #[derive(Error, Debug)]
 pub enum Error {
     #[error("IO Error: {0}")]
@@ -49,6 +71,8 @@ impl Error {
         Self::InvalidOperation(message.to_owned())
     }
 }
+
+// TODO: test Serialise for AppError
 
 impl Serialize for Error {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
