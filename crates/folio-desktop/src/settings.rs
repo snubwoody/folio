@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use tracing::info;
 
 // Serde doesn't allow constant values e.g. true
-const fn default_true() -> bool{
+const fn default_true() -> bool {
     true
 }
 
@@ -34,7 +34,7 @@ impl Settings {
 
                 // Make sure new settings fields are saved
                 settings.write()?;
-                info!("Loaded settings from {:?}",path.as_ref());
+                info!("Loaded settings from {:?}", path.as_ref());
                 Ok(settings)
             }
             Err(_) => Self::init(path),
@@ -45,7 +45,7 @@ impl Settings {
         let settings = Settings {
             path: path.as_ref().to_path_buf(),
             currency_code: Currency::USD,
-            sidebar_open: true
+            sidebar_open: true,
         };
 
         let file = File::create(&path)?;
@@ -65,7 +65,7 @@ impl Settings {
     pub fn set_sidebar_state(&mut self, open: bool) -> crate::Result<()> {
         self.sidebar_open = open;
         self.write()?;
-        info!(open=open,"Set sidebar state");
+        info!(open = open, "Set sidebar state");
         Ok(())
     }
 
@@ -74,11 +74,13 @@ impl Settings {
     }
 
     fn write(&self) -> crate::Result<()> {
-        let file = OpenOptions::new().write(true).truncate(true).open(&self.path)?;
+        let file = OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .open(&self.path)?;
         serde_json::to_writer_pretty(file, &self)?;
         Ok(())
     }
-
 }
 
 #[cfg(test)]
@@ -89,24 +91,24 @@ mod test {
     use tempfile::tempdir;
 
     #[test]
-    fn truncate_write() -> crate::Result<()>{
+    fn truncate_write() -> crate::Result<()> {
         let dir = tempdir()?;
         let path = dir.path().join("settings.json");
         File::create(&path)?;
-        let settings = Settings{
+        let settings = Settings {
             path: path.to_path_buf(),
             currency_code: Currency::AED,
-            sidebar_open: false
+            sidebar_open: false,
         };
         settings.write()?;
-        let settings = Settings{
+        let settings = Settings {
             path: path.to_path_buf(),
             currency_code: Currency::AED,
-            sidebar_open: true
+            sidebar_open: true,
         };
         settings.write()?;
         let settings: Settings = serde_json::from_str(&fs::read_to_string(&path)?)?;
-        assert_eq!(settings.currency_code,Currency::AED);
+        assert_eq!(settings.currency_code, Currency::AED);
         Ok(())
     }
 
@@ -133,7 +135,7 @@ mod test {
         serde_json::to_writer(file, &json)?;
         let settings: Settings = Settings::open(&path)?;
         assert_eq!(settings.currency_code, Currency::XOF);
-        assert_eq!(settings.sidebar_open, false);
+        assert!(!settings.sidebar_open);
         assert_eq!(settings.path, path);
         Ok(())
     }
@@ -146,7 +148,7 @@ mod test {
         serde_json::to_writer(file, &json! ({"currencyCode":"XOF"}))?;
         let settings: Settings = Settings::open(&path)?;
         assert_eq!(settings.currency_code, Currency::XOF);
-        assert_eq!(settings.sidebar_open, true);
+        assert!(settings.sidebar_open);
         assert_eq!(settings.path, path);
         Ok(())
     }
@@ -159,12 +161,12 @@ mod test {
         let settings = Settings {
             path: path.clone(),
             currency_code: Currency::ZMW,
-            sidebar_open: false
+            sidebar_open: false,
         };
         settings.write()?;
         let settings = Settings::open(&path)?;
         assert_eq!(settings.currency_code, Currency::ZMW);
-        assert_eq!(settings.sidebar_open, false);
+        assert!(!settings.sidebar_open);
         Ok(())
     }
 
