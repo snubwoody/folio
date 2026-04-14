@@ -240,8 +240,8 @@ pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>
 }
 
 #[tauri::command]
-pub async fn get_budget(category_id:String,state: tauri::State<'_, State>) -> Result<Budget> {
-    Budget::from_category(&category_id,&state.pool)
+pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
+    Budget::from_category(&category_id, &state.pool)
         .await
         .inspect_err(|err| warn!("Error: {err}"))
 }
