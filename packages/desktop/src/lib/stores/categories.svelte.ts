@@ -10,7 +10,7 @@ export class CategoryStore {
     #incomeStreamMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.incomeStreams.map(a => [a.id,a])));
 
     /**
-     * Returns a list of all the categories
+     * Returns a list of all the categories.
      */
     get categories(): Category[]{
         return this.#categories.filter(c => !c.isIncomeStream);
