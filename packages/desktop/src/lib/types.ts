@@ -34,6 +34,7 @@ export type Settings = {
      * The global currency code.
      */
     currencyCode: string;
+    sidebarOpen: boolean;
 };
 
 export interface Analytic {

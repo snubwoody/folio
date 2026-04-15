@@ -2,21 +2,25 @@ import { expect, test, describe, beforeEach } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { accountStore, mockCreateAccount } from "$lib/stores/account.svelte";
 import Sidebar from "./Sidebar.svelte";
-import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
-import { mockSettings } from "$lib/stores/settings.svelte";
-
-beforeEach(() => {
-    accountStore.clear();
-    clearMocks();
-});
+import { mockIPC } from "@tauri-apps/api/mocks";
+import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
-        return { currencyCode: "USD" };
+        return { currencyCode: "USD",sidebarOpen: true };
+    }
+    if (cmd === "set_sidebar_state") {
+        return;
     }
     if (cmd === "currencies") {
         return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
     }
+});
+
+beforeEach(() => {
+    accountStore.clear();
+    settingsStore.reset();
+    // clearMocks();
 });
 
 describe("Navigation Panel",() => {
@@ -51,6 +55,14 @@ describe("Navigation Panel",() => {
         await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","false");
         await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
         await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","true");
+    });
+
+    test("set sidebarOpen setting", async () => {
+        const screen = await render(Sidebar);
+        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
+        expect(settingsStore.settings.sidebarOpen).toBe(false);
+        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
+        expect(settingsStore.settings.sidebarOpen).toBe(true);
     });
 
     test("hide links in collapsed sidebar", async () => {

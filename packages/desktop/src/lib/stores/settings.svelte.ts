@@ -20,16 +20,32 @@ import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
 
 export class SettingsStore{
-    #settings: Settings = $state({ currencyCode: "USD" });
+    #settings: Settings = $state({ currencyCode: "USD", sidebarOpen: true });
 
     get settings():Settings {
         return this.#settings;
+    }
+
+    /**
+     * Resets to default settings.
+     */
+    reset(){
+        this.#settings = { currencyCode: "USD", sidebarOpen: true };
     }
 
     async setCurrencyCode(currency: string) {
         try{
             await invoke("set_currency_code", { currency });
             this.#settings.currencyCode = currency;
+        }catch (e) {
+            console.error(e);
+        }
+    }
+
+    async setSidebarState(open: boolean) {
+        try{
+            await invoke("set_sidebar_state", { open });
+            this.#settings.sidebarOpen = open;
         }catch (e) {
             console.error(e);
         }
