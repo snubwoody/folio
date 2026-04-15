@@ -19,8 +19,8 @@ use sqlx::{FromRow, SqlitePool};
 
 use crate::{Money, db, service::Budget};
 
-// TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
+
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[serde(rename_all = "camelCase")]
@@ -179,15 +179,14 @@ impl Category {
 // TODO: add default "No group" in UI for categories without a group
 #[derive(FromRow,Debug,Serialize,Deserialize,PartialOrd, PartialEq,Clone)]
 pub struct CategoryGroup{
-    id: String,
-    title: String
+    pub id: String,
+    pub title: String
 }
 
 // TODO: ops
-// - Create
-// - Fetch
-// - Edit (title)
 // - Delete
+// - Add category
+// - Remove category
 // - Reorder
 impl CategoryGroup{
     pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self>{
@@ -196,6 +195,36 @@ impl CategoryGroup{
             .fetch_one(pool)
             .await?;
         Ok(group)
+    }
+    
+    /// Creates a new category group.
+    pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self>{
+        let row: Self = sqlx::query_as("INSERT INTO category_groups(title) VALUES($1) RETURNING *")
+            .bind(title)
+            .fetch_one(pool)
+            .await?;
+        
+        Ok(row)
+    }
+
+    /// Updates the title of the category group.
+    pub async fn set_title(id:&str,title: &str, pool: &SqlitePool) -> crate::Result<Self>{
+        let row: Self = sqlx::query_as("UPDATE category_groups SET title=$1 WHERE id=$2 RETURNING *")
+            .bind(title)
+            .bind(id)
+            .fetch_one(pool)
+            .await?;
+
+        Ok(row)
+    }
+
+    pub async fn delete(id:&str,pool: &SqlitePool) -> crate::Result<()>{
+        sqlx::query("DELETE FROM category_groups WHERE id=$1")
+            .bind(id)
+            .execute(pool)
+            .await?;
+
+        Ok(())
     }
 }
 

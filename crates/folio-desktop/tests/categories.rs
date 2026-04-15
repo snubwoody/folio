@@ -1,6 +1,46 @@
 use folio_lib::Result;
-use folio_lib::service::{Budget, Category, create_missing_budgets};
+use folio_lib::service::{Budget, Category, CategoryGroup, create_missing_budgets};
 use sqlx::SqlitePool;
+
+#[sqlx::test]
+async fn get_category_group(pool: SqlitePool) -> Result<()> {
+    let row: CategoryGroup = sqlx::query_as("INSERT INTO category_groups(title) VALUES('Subscriptions') RETURNING *")
+        .fetch_one(&pool)
+        .await?;
+    let group = CategoryGroup::get(&row.id, &pool).await?;
+    assert_eq!(group.title,"Subscriptions");
+    Ok(())
+}
+
+#[sqlx::test]
+async fn create_category_group(pool: SqlitePool) -> Result<()> {
+    let row = CategoryGroup::create("Wants", &pool).await?;
+    let group = CategoryGroup::get(&row.id, &pool).await?;
+    assert_eq!(group.title,"Wants");
+    Ok(())
+}
+
+#[sqlx::test]
+async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
+    let row = CategoryGroup::create("Wants", &pool).await?;
+    CategoryGroup::set_title(&row.id, "Needs", &pool).await?;
+    let group = CategoryGroup::get(&row.id, &pool).await?;
+    assert_eq!(group.title,"Needs");
+    Ok(())
+}
+
+#[sqlx::test]
+async fn delete_category_group(pool: SqlitePool) -> Result<()> {
+    let row = CategoryGroup::create("Wants", &pool).await?;
+    CategoryGroup::delete(&row.id, &pool).await?;
+    let result = sqlx::query("SELECT * FROM category_groups WHERE id=$1")
+        .bind(row.id)
+        .fetch_optional(&pool)
+        .await?;
+
+    assert!(result.is_none());
+    Ok(())
+}
 
 #[sqlx::test]
 async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
