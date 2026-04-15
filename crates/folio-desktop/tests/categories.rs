@@ -4,11 +4,12 @@ use sqlx::SqlitePool;
 
 #[sqlx::test]
 async fn get_category_group(pool: SqlitePool) -> Result<()> {
-    let row: CategoryGroup = sqlx::query_as("INSERT INTO category_groups(title) VALUES('Subscriptions') RETURNING *")
-        .fetch_one(&pool)
-        .await?;
+    let row: CategoryGroup =
+        sqlx::query_as("INSERT INTO category_groups(title) VALUES('Subscriptions') RETURNING *")
+            .fetch_one(&pool)
+            .await?;
     let group = CategoryGroup::get(&row.id, &pool).await?;
-    assert_eq!(group.title,"Subscriptions");
+    assert_eq!(group.title, "Subscriptions");
     Ok(())
 }
 
@@ -16,7 +17,7 @@ async fn get_category_group(pool: SqlitePool) -> Result<()> {
 async fn create_category_group(pool: SqlitePool) -> Result<()> {
     let row = CategoryGroup::create("Wants", &pool).await?;
     let group = CategoryGroup::get(&row.id, &pool).await?;
-    assert_eq!(group.title,"Wants");
+    assert_eq!(group.title, "Wants");
     Ok(())
 }
 
@@ -25,7 +26,7 @@ async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
     let row = CategoryGroup::create("Wants", &pool).await?;
     CategoryGroup::set_title(&row.id, "Needs", &pool).await?;
     let group = CategoryGroup::get(&row.id, &pool).await?;
-    assert_eq!(group.title,"Needs");
+    assert_eq!(group.title, "Needs");
     Ok(())
 }
 
