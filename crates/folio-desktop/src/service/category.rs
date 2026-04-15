@@ -15,11 +15,10 @@
 use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::SqlitePool;
+use sqlx::{FromRow, SqlitePool};
 
 use crate::{Money, db, service::Budget};
 
-// TODO: check for categories that do not have a corresponding budget
 // TODO: soft delete categories
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
@@ -33,7 +32,7 @@ pub struct Category {
     pub is_income_stream: bool,
 }
 
-// TODO: add fetch_all, fetch_categories, fetch_income_streams, create_income_stream
+// TODO: add change_group
 impl Category {
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
@@ -173,6 +172,58 @@ impl Category {
             categories.push(category);
         }
         Ok(categories)
+    }
+}
+
+// TODO: add default "No group" in UI for categories without a group
+#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
+pub struct CategoryGroup {
+    pub id: String,
+    pub title: String,
+}
+
+// TODO: ops
+// - Add category
+// - Remove category
+// - Reorder
+impl CategoryGroup {
+    pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let group: CategoryGroup = sqlx::query_as("SELECT * FROM category_groups WHERE id = $1")
+            .bind(id)
+            .fetch_one(pool)
+            .await?;
+        Ok(group)
+    }
+
+    /// Creates a new category group.
+    pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let row: Self = sqlx::query_as("INSERT INTO category_groups(title) VALUES($1) RETURNING *")
+            .bind(title)
+            .fetch_one(pool)
+            .await?;
+
+        Ok(row)
+    }
+
+    /// Updates the title of the category group.
+    pub async fn set_title(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let row: Self =
+            sqlx::query_as("UPDATE category_groups SET title=$1 WHERE id=$2 RETURNING *")
+                .bind(title)
+                .bind(id)
+                .fetch_one(pool)
+                .await?;
+
+        Ok(row)
+    }
+
+    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
+        sqlx::query("DELETE FROM category_groups WHERE id=$1")
+            .bind(id)
+            .execute(pool)
+            .await?;
+
+        Ok(())
     }
 }
 
