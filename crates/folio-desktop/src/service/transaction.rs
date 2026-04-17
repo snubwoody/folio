@@ -285,8 +285,8 @@ impl Transaction {
     // TODO: add duplicate method
     /// Deletes all the transactions with the corresponding ids
     pub async fn delete<S: AsRef<str>>(ids: &[S], pool: &SqlitePool) -> crate::Result<()> {
-        if ids.is_empty(){
-            return Ok(())
+        if ids.is_empty() {
+            return Ok(());
         }
         let mut query = QueryBuilder::new("DELETE FROM transactions WHERE id IN ");
         query.push("(");

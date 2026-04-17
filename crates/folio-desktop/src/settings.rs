@@ -1,9 +1,9 @@
+use crate::error::ErrorExt;
 use iso_currency::Currency;
 use serde::{Deserialize, Serialize};
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 use tracing::info;
-use crate::error::ErrorExt;
 
 // Serde doesn't allow constant values e.g. true
 const fn default_true() -> bool {
@@ -80,7 +80,7 @@ impl Settings {
             .truncate(true)
             .open(&self.path)?;
         serde_json::to_writer_pretty(file, &self)
-            .context(format!("Failed to write to settings to {:?}",&self.path))?;
+            .context(format!("Failed to write to settings to {:?}", &self.path))?;
         Ok(())
     }
 }

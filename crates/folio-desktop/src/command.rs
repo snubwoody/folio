@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use crate::analytics::Analytic;
+use crate::error::ErrorExt;
 use crate::settings::Settings;
 use crate::{
     Money, Result, State, analytics,
@@ -24,7 +25,6 @@ use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
 use tracing::{debug, error, info, warn};
-use crate::error::ErrorExt;
 
 /// Adds tauri commands to the app instance.
 pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
@@ -101,7 +101,7 @@ pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currenc
     let mut settings = state.settings.lock().await;
     settings
         .set_currency_code(currency)
-        .inspect_err(|err| warn!("{}",err.report()))?;
+        .inspect_err(|err| warn!("{}", err.report()))?;
     Ok(())
 }
 
@@ -110,7 +110,7 @@ pub async fn set_sidebar_state(state: tauri::State<'_, State>, open: bool) -> Re
     let mut settings = state.settings.lock().await;
     settings
         .set_sidebar_state(open)
-        .inspect_err(|err| warn!("{}",err.report()))?;
+        .inspect_err(|err| warn!("{}", err.report()))?;
     Ok(())
 }
 
@@ -123,7 +123,7 @@ pub async fn set_transaction_payee(
     Transaction::set_payee(&id, &account_id, &state.pool)
         .await
         .context("Failed to set transaction payee")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -144,7 +144,7 @@ pub async fn create_expense(
         .date(date)
         .create(&state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -154,7 +154,7 @@ pub async fn edit_transaction(
 ) -> Result<Transaction> {
     data.update(&state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -165,7 +165,7 @@ pub async fn set_transaction_outflow(
 ) -> Result<Transaction> {
     Transaction::set_outflow(&id, amount, &state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -176,28 +176,28 @@ pub async fn set_transaction_inflow(
 ) -> Result<Transaction> {
     Transaction::set_inflow(&id, amount, &state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn fetch_transactions(state: tauri::State<'_, State>) -> Result<Vec<Transaction>> {
     Transaction::fetch_all(&state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
     Category::delete(&id, &state.pool)
         .await
-        .inspect_err(|err|warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
     service::create_missing_budgets(&state.pool)
         .await
-        .inspect_err(|err|warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -209,7 +209,7 @@ pub async fn edit_category(
     Category::edit(&id, &title, &state.pool)
         .await
         .context("Failed to edit category")
-        .inspect_err(|err|warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -217,7 +217,7 @@ pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> 
     analytics::analytics(&state.pool)
         .await
         .context("Failed to fetch analytics")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -228,14 +228,14 @@ pub async fn create_account(
 ) -> Result<Account> {
     Account::create(name, starting_balance, &state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
     Account::calculate_balance(&id, &state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -243,28 +243,28 @@ pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Accoun
     Account::fetch_all(&state.pool)
         .await
         .context("Failed to fetch accounts")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
     Category::fetch_all(&state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
     service::fetch_budgets(&state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
     Budget::from_category(&category_id, &state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -276,7 +276,7 @@ pub async fn create_budget(
     Budget::create(Money::from_str(amount)?, category_id, &state.pool)
         .await
         .context("Failed to create budget")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -288,7 +288,7 @@ pub async fn edit_budget(
     Budget::edit(&id, amount, &state.pool)
         .await
         .context("Failed to edit budget")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -296,7 +296,7 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
     Category::create(title, &state.pool)
         .await
         .context("Failed to create category")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -304,7 +304,7 @@ pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Resul
     Account::delete(&id, &state.pool)
         .await
         .context("Failed to delete account")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -312,7 +312,7 @@ pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String
     Transaction::delete(ids.as_slice(), &state.pool)
         .await
         .context("Failed to delete transactions")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -323,7 +323,7 @@ pub async fn edit_account(
 ) -> Result<Account> {
     Account::edit(&id, opts, &state.pool)
         .await
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
@@ -331,5 +331,5 @@ pub async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -
     Category::create_income_stream(title, &state.pool)
         .await
         .context("Failed to create income stream")
-        .inspect_err(|err| warn!("{}",err.report()))
+        .inspect_err(|err| warn!("{}", err.report()))
 }

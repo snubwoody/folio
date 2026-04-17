@@ -19,7 +19,7 @@ use std::fmt::{Display, Formatter};
 pub type Result<T> = std::result::Result<T, Error>;
 
 /// Error extension trait that provides extra context for errors.
-pub trait ErrorExt<T, E>: {
+pub trait ErrorExt<T, E> {
     /// Wrap the error value with additional context.
     fn context<C>(self, context: C) -> std::result::Result<T, Error>
     where
@@ -33,48 +33,49 @@ pub trait ErrorExt<T, E>: {
         F: FnOnce() -> C;
 }
 
-
 #[derive(Debug)]
-pub struct Error{
+pub struct Error {
     message: String,
-    source: Option<Box<dyn std::error::Error + Send>>
+    source: Option<Box<dyn std::error::Error + Send>>,
 }
 
-impl Error{
+impl Error {
     /// Create a new error.
-    pub fn new(message: &str) -> Self{
-        Self{
+    pub fn new(message: &str) -> Self {
+        Self {
             message: message.to_owned(),
-            source: None
+            source: None,
         }
     }
 
     /// Create a new error with an underlying error source.
-    pub fn with_source<E:std::error::Error + Send + 'static>(message: &str, source: E) -> Self{
-        Self{
+    pub fn with_source<E: std::error::Error + Send + 'static>(message: &str, source: E) -> Self {
+        Self {
             message: message.to_owned(),
-            source: Some(Box::new(source))
+            source: Some(Box::new(source)),
         }
     }
 
     /// Returns a multiline string containing the error message and sources.
-    pub fn report(&self) -> String{
-        let mut message = String::from(format!("Error: {}",self.to_string()));
-        if self.source.is_some(){
+    pub fn report(&self) -> String {
+        let mut message = format!("Error: {}", self);
+        if self.source.is_some() {
             message.push_str("\n\tCaused by:")
         }
-        let mut source = self.source.as_deref().map(|e| e as &(dyn std::error::Error + 'static));
+        let mut source = self
+            .source
+            .as_deref()
+            .map(|e| e as &(dyn std::error::Error + 'static));
         let mut index = 1;
 
-        while let Some(s) = source{
-            message.push_str(&format!("\n\t\t{index}: {}",s.to_string()));
+        while let Some(s) = source {
+            message.push_str(&format!("\n\t\t{index}: {}", s));
             source = s.source();
             index += 1
         }
         message
     }
 }
-
 
 impl<T, E> ErrorExt<T, E> for std::result::Result<T, E>
 where
@@ -86,8 +87,7 @@ where
     {
         match self {
             Ok(ok) => Ok(ok),
-            Err(error) =>
-                Err(Error::with_source(context.to_string().as_str(),error))
+            Err(error) => Err(Error::with_source(context.to_string().as_str(), error)),
         }
     }
 
@@ -98,24 +98,25 @@ where
     {
         match self {
             Ok(ok) => Ok(ok),
-            Err(error) => Err(Error::with_source(context().to_string().as_str(),error)),
+            Err(error) => Err(Error::with_source(context().to_string().as_str(), error)),
         }
     }
 }
 
-impl Display for Error{
+impl Display for Error {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f,"{}",self.message)
+        write!(f, "{}", self.message)
     }
 }
 
-impl std::error::Error for Error{
+impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         // Type masturbation indeed
-        self.source.as_deref().map(|e| e as &(dyn std::error::Error + 'static))
+        self.source
+            .as_deref()
+            .map(|e| e as &(dyn std::error::Error + 'static))
     }
 }
-
 
 macro_rules! from_error {
     ($($t:ty => $message:expr),+) => {
@@ -129,7 +130,7 @@ macro_rules! from_error {
     };
 }
 
-from_error!{
+from_error! {
     chrono::ParseError => "Date parse error",
     std::io::Error => "IO error",
     sqlx::Error => "Database error",
@@ -139,7 +140,6 @@ from_error!{
     reqwest::Error => "Request error",
     std::num::ParseFloatError => "Parse float error"
 }
-
 
 impl Serialize for Error {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
@@ -153,10 +153,9 @@ impl Serialize for Error {
         let mut s = serializer.serialize_struct("Error", len)?;
         let message = self.to_string();
         s.serialize_field("message", &message)?;
-        if let Some(source) = &self.source{
+        if let Some(source) = &self.source {
             s.serialize_field("source", &source.to_string())?;
         }
         s.end()
     }
 }
-
