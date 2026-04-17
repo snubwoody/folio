@@ -23,14 +23,14 @@
     <SelectCell
         data-testid="account"
         value={toAccount?.id}
-        onChange={(id) => transactionStore.editTransaction({ id: transaction.id,toAccountId: id })}
+        onChange={(id) => transactionStore.setAccount(transaction.id,id)}
         items={accountStore.accounts.map(a => ({ value: a.id, label: a.name }))}
     />
 {:else}
     <SelectCell
         data-testid="account"
         value={fromAccount?.id}
-        onChange={(id) => transactionStore.editTransaction({ id: transaction.id,fromAccountId: id })}
+        onChange={(id) => transactionStore.setAccount(transaction.id,id)}
         items={accountStore.accounts.map(a => ({ value: a.id, label: a.name,disabled: a.id === transaction.toAccountId }))}
     />
 {/if}
