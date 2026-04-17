@@ -14,9 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use serde::{Serialize, ser::SerializeStruct};
-use std::{io, num::ParseFloatError};
 use std::fmt::{Display, Formatter};
-use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -36,7 +34,6 @@ pub trait ErrorExt<T, E>: {
 }
 
 
-// TODO: add Error to frontend
 #[derive(Debug)]
 pub struct Error{
     message: String,
@@ -67,11 +64,12 @@ impl Error{
             message.push_str("\n\tCaused by:")
         }
         let mut source = self.source.as_deref().map(|e| e as &(dyn std::error::Error + 'static));
-        let index = 1;
+        let mut index = 1;
 
         while let Some(s) = source{
             message.push_str(&format!("\n\t\t{index}: {}",s.to_string()));
-            source = s.source()
+            source = s.source();
+            index += 1
         }
         message
     }
@@ -86,12 +84,9 @@ where
     where
         C: Display,
     {
-        // Not using map_err to save 2 useless frames off the captured backtrace
-        // in ext_context.
         match self {
             Ok(ok) => Ok(ok),
             Err(error) =>
-                // TODO: change param to &str?
                 Err(Error::with_source(context.to_string().as_str(),error))
         }
     }
@@ -123,11 +118,11 @@ impl std::error::Error for Error{
 
 
 macro_rules! from_error {
-    ($($t:ty),+) => {
+    ($($t:ty => $message:expr),+) => {
         $(
             impl From<$t> for Error{
                 fn from(value: $t) -> Self {
-                    Error::with_source(value.to_string().as_str(),value)
+                    Error::with_source($message,value)
                 }
             }
         )+
@@ -135,14 +130,14 @@ macro_rules! from_error {
 }
 
 from_error!{
-    chrono::ParseError,
-    std::io::Error,
-    sqlx::Error,
-    serde_json::Error,
-    sqlx::migrate::MigrateError,
-    rust_decimal::Error,
-    reqwest::Error,
-    std::num::ParseFloatError
+    chrono::ParseError => "Date parse error",
+    std::io::Error => "IO error",
+    sqlx::Error => "Database error",
+    serde_json::Error => "Serde error",
+    sqlx::migrate::MigrateError => "Migrate error",
+    rust_decimal::Error => "rust_decimal error",
+    reqwest::Error => "Request error",
+    std::num::ParseFloatError => "Parse float error"
 }
 
 
@@ -151,7 +146,11 @@ impl Serialize for Error {
     where
         S: serde::Serializer,
     {
-        let mut s = serializer.serialize_struct("Error", 1)?;
+        let len = match &self.source.is_some() {
+            true => 2,
+            false => 1,
+        };
+        let mut s = serializer.serialize_struct("Error", len)?;
         let message = self.to_string();
         s.serialize_field("message", &message)?;
         if let Some(source) = &self.source{
