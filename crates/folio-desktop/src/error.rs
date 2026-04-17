@@ -15,9 +15,26 @@
 
 use serde::{Serialize, ser::SerializeStruct};
 use std::{io, num::ParseFloatError};
+use std::fmt::{Display, Formatter};
+use std::ops::Deref;
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
+
+pub trait ErrorExt<T, E>: {
+    /// Wrap the error value with additional context.
+    fn context<C>(self, context: C) -> std::result::Result<T, AppError>
+    where
+        C: Display + Send + Sync + 'static;
+
+    /// Wrap the error value with additional context that is evaluated lazily
+    /// only once an error does occur.
+    fn with_context<C, F>(self, f: F) -> std::result::Result<T, AppError>
+    where
+        C: Display + Send + Sync + 'static,
+        F: FnOnce() -> C;
+}
+
 
 // TODO: with_context (with_message) like Anyhow
 // TODO: add AppError to frontend
@@ -30,6 +47,7 @@ pub struct AppError{
 }
 
 impl AppError{
+    /// Create a new error.
     pub fn new(message: &str) -> Self{
         Self{
             message: message.to_owned(),
@@ -38,11 +56,56 @@ impl AppError{
     }
 
     // impl or Box?
+    /// Create a new error with an underlying error source.
     pub fn with_source<E:std::error::Error + 'static>(message: &str, source: E) -> Self{
         Self{
             message: message.to_owned(),
             source: Some(Box::new(source))
         }
+    }
+}
+
+
+// TODO: might not need Send + Sync + 'static
+impl<T, E> ErrorExt<T, E> for std::result::Result<T, E>
+where
+    E: std::error::Error + 'static,
+{
+    fn context<C>(self, context: C) -> std::result::Result<T, AppError>
+    where
+        C: Display,
+    {
+        // Not using map_err to save 2 useless frames off the captured backtrace
+        // in ext_context.
+        match self {
+            Ok(ok) => Ok(ok),
+            Err(error) =>
+                // TODO: change param to &str?
+                Err(AppError::with_source(context.to_string().as_str(),error))
+        }
+    }
+
+    fn with_context<C, F>(self, context: F) -> std::result::Result<T, AppError>
+    where
+        C: Display,
+        F: FnOnce() -> C,
+    {
+        match self {
+            Ok(ok) => Ok(ok),
+            Err(error) => Err(AppError::with_source(context().to_string().as_str(),error)),
+        }
+    }
+}
+
+impl Display for AppError{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f,"{}",self.message)
+    }
+}
+
+impl std::error::Error for AppError{
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.source.as_deref()
     }
 }
 
@@ -97,10 +160,13 @@ mod test{
 
     #[test]
     fn source(){
-        let result = serde_json::from_str::<Category>("0");
+        let result = serde_json::from_str::<Category>("0")
+            .context("Cannot parse user")
+            .context("Failed to parse JSON");
         match result {
             Ok(_) => {},
             Err(e) => {
+
                 dbg!(e.source());
                 let error = AppError::with_source("Failed to parse category",e);
                 dbg!(error);
