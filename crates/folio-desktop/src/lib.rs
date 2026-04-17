@@ -16,7 +16,7 @@ pub mod analytics;
 pub mod command;
 mod date;
 pub mod db;
-mod error;
+pub mod error;
 mod money;
 pub mod service;
 mod settings;
