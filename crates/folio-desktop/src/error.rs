@@ -23,27 +23,27 @@ pub type Result<T> = std::result::Result<T, Error>;
 /// Error extension trait that provides extra context for errors.
 pub trait ErrorExt<T, E>: {
     /// Wrap the error value with additional context.
-    fn context<C>(self, context: C) -> std::result::Result<T, AppError>
+    fn context<C>(self, context: C) -> std::result::Result<T, Error>
     where
         C: Display + Send + Sync + 'static;
 
     /// Wrap the error value with additional context that is evaluated lazily
     /// only once an error does occur.
-    fn with_context<C, F>(self, f: F) -> std::result::Result<T, AppError>
+    fn with_context<C, F>(self, f: F) -> std::result::Result<T, Error>
     where
         C: Display + Send + Sync + 'static,
         F: FnOnce() -> C;
 }
 
 
-// TODO: add AppError to frontend
+// TODO: add Error to frontend
 #[derive(Debug)]
-pub struct AppError{
+pub struct Error{
     message: String,
-    source: Option<Box<dyn std::error::Error>>
+    source: Option<Box<dyn std::error::Error + Send>>
 }
 
-impl AppError{
+impl Error{
     /// Create a new error.
     pub fn new(message: &str) -> Self{
         Self{
@@ -53,20 +53,36 @@ impl AppError{
     }
 
     /// Create a new error with an underlying error source.
-    pub fn with_source<E:std::error::Error + 'static>(message: &str, source: E) -> Self{
+    pub fn with_source<E:std::error::Error + Send + 'static>(message: &str, source: E) -> Self{
         Self{
             message: message.to_owned(),
             source: Some(Box::new(source))
         }
+    }
+
+    /// Returns a multiline string containing the error message and sources.
+    pub fn report(&self) -> String{
+        let mut message = String::from(format!("Error: {}",self.to_string()));
+        if self.source.is_some(){
+            message.push_str("\n\tCaused by:")
+        }
+        let mut source = self.source.as_deref().map(|e| e as &(dyn std::error::Error + 'static));
+        let index = 1;
+
+        while let Some(s) = source{
+            message.push_str(&format!("\n\t\t{index}: {}",s.to_string()));
+            source = s.source()
+        }
+        message
     }
 }
 
 
 impl<T, E> ErrorExt<T, E> for std::result::Result<T, E>
 where
-    E: std::error::Error + 'static,
+    E: std::error::Error + Send + 'static,
 {
-    fn context<C>(self, context: C) -> std::result::Result<T, AppError>
+    fn context<C>(self, context: C) -> std::result::Result<T, Error>
     where
         C: Display,
     {
@@ -76,31 +92,32 @@ where
             Ok(ok) => Ok(ok),
             Err(error) =>
                 // TODO: change param to &str?
-                Err(AppError::with_source(context.to_string().as_str(),error))
+                Err(Error::with_source(context.to_string().as_str(),error))
         }
     }
 
-    fn with_context<C, F>(self, context: F) -> std::result::Result<T, AppError>
+    fn with_context<C, F>(self, context: F) -> std::result::Result<T, Error>
     where
         C: Display,
         F: FnOnce() -> C,
     {
         match self {
             Ok(ok) => Ok(ok),
-            Err(error) => Err(AppError::with_source(context().to_string().as_str(),error)),
+            Err(error) => Err(Error::with_source(context().to_string().as_str(),error)),
         }
     }
 }
 
-impl Display for AppError{
+impl Display for Error{
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f,"{}",self.message)
     }
 }
 
-impl std::error::Error for AppError{
+impl std::error::Error for Error{
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        self.source.as_deref()
+        // Type masturbation indeed
+        self.source.as_deref().map(|e| e as &(dyn std::error::Error + 'static))
     }
 }
 
@@ -108,9 +125,9 @@ impl std::error::Error for AppError{
 macro_rules! from_error {
     ($($t:ty),+) => {
         $(
-            impl From<$t> for AppError{
+            impl From<$t> for Error{
                 fn from(value: $t) -> Self {
-                    AppError::with_source(value.to_string().as_str(),value)
+                    Error::with_source(value.to_string().as_str(),value)
                 }
             }
         )+
@@ -128,48 +145,8 @@ from_error!{
     std::num::ParseFloatError
 }
 
-// TODO: Switch to anyhow?
-#[derive(Error, Debug)]
-pub enum Error {
-    #[error("IO Error: {0}")]
-    IoError(#[from] io::Error),
-    #[error("Failed to parse date: {0}")]
-    ParseDateError(#[from] chrono::ParseError),
-    #[error("Database error: {0}")]
-    SqlxError(#[from] sqlx::Error),
-    #[error("Failed to parse JSON file: {0}")]
-    SerdeJsonError(#[from] serde_json::Error),
-    #[error("Migrate error: {0}")]
-    MigrateError(#[from] sqlx::migrate::MigrateError),
-    #[error("Failed to parse decimal: {0}")]
-    ParseDecimalError(#[from] rust_decimal::Error),
-    #[error(transparent)]
-    ReqwestError(#[from] reqwest::Error),
-    #[error("Failed to parse float: {0}")]
-    ParseFloatError(#[from] ParseFloatError),
-    #[error("Invalid operation: {0}")]
-    InvalidOperation(String),
-}
-
-impl Error {
-    pub fn invalid_op(message: &str) -> Self {
-        Self::InvalidOperation(message.to_owned())
-    }
-}
 
 impl Serialize for Error {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        let mut s = serializer.serialize_struct("Error", 1)?;
-        let message = self.to_string();
-        s.serialize_field("message", &message)?;
-        s.end()
-    }
-}
-
-impl Serialize for AppError {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -184,27 +161,3 @@ impl Serialize for AppError {
     }
 }
 
-#[cfg(test)]
-mod test{
-    use std::error::Error;
-    use crate::service::Category;
-    use super::*;
-
-    #[test]
-    fn source(){
-        let result = serde_json::from_str::<Category>("0")
-            .context("Cannot parse user")
-            .context("Failed to parse JSON");
-        match result {
-            Ok(_) => {},
-            Err(e) => {
-
-
-                dbg!(serde_json::to_string(&e).unwrap());
-                dbg!(e.source());
-                let error = AppError::with_source("Failed to parse category",e);
-                dbg!(error);
-            }
-        }
-    }
-}

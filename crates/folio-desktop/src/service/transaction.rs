@@ -327,7 +327,7 @@ impl Transaction {
         let transaction = Self::fetch(id, pool).await?;
 
         if transaction.transaction_type() == TransactionType::Transfer {
-            return Err(Error::invalid_op("Cannot set inflow for a transfer"));
+            return Err(Error::new("Cannot set inflow for a transfer"));
         }
 
         let mut query = QueryBuilder::new("UPDATE transactions ");
