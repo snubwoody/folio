@@ -16,11 +16,11 @@
 use serde::{Serialize, ser::SerializeStruct};
 use std::{io, num::ParseFloatError};
 use std::fmt::{Display, Formatter};
-use std::ops::Deref;
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// Error extension trait that provides extra context for errors.
 pub trait ErrorExt<T, E>: {
     /// Wrap the error value with additional context.
     fn context<C>(self, context: C) -> std::result::Result<T, AppError>
@@ -36,10 +36,7 @@ pub trait ErrorExt<T, E>: {
 }
 
 
-// TODO: with_context (with_message) like Anyhow
 // TODO: add AppError to frontend
-// TODO: add source chain
-// TODO: stack trace errors like, implement source
 #[derive(Debug)]
 pub struct AppError{
     message: String,
@@ -55,7 +52,6 @@ impl AppError{
         }
     }
 
-    // impl or Box?
     /// Create a new error with an underlying error source.
     pub fn with_source<E:std::error::Error + 'static>(message: &str, source: E) -> Self{
         Self{
@@ -66,7 +62,6 @@ impl AppError{
 }
 
 
-// TODO: might not need Send + Sync + 'static
 impl<T, E> ErrorExt<T, E> for std::result::Result<T, E>
 where
     E: std::error::Error + 'static,
@@ -138,8 +133,6 @@ impl Error {
     }
 }
 
-// TODO: test Serialise for AppError
-
 impl Serialize for Error {
     fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
     where
@@ -148,6 +141,21 @@ impl Serialize for Error {
         let mut s = serializer.serialize_struct("Error", 1)?;
         let message = self.to_string();
         s.serialize_field("message", &message)?;
+        s.end()
+    }
+}
+
+impl Serialize for AppError {
+    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut s = serializer.serialize_struct("Error", 1)?;
+        let message = self.to_string();
+        s.serialize_field("message", &message)?;
+        if let Some(source) = &self.source{
+            s.serialize_field("source", &source.to_string())?;
+        }
         s.end()
     }
 }
@@ -167,6 +175,8 @@ mod test{
             Ok(_) => {},
             Err(e) => {
 
+
+                dbg!(serde_json::to_string(&e).unwrap());
                 dbg!(e.source());
                 let error = AppError::with_source("Failed to parse category",e);
                 dbg!(error);
