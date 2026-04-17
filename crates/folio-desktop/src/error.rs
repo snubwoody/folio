@@ -104,6 +104,30 @@ impl std::error::Error for AppError{
     }
 }
 
+
+macro_rules! from_error {
+    ($($t:ty),+) => {
+        $(
+            impl From<$t> for AppError{
+                fn from(value: $t) -> Self {
+                    AppError::with_source(value.to_string().as_str(),value)
+                }
+            }
+        )+
+    };
+}
+
+from_error!{
+    chrono::ParseError,
+    std::io::Error,
+    sqlx::Error,
+    serde_json::Error,
+    sqlx::migrate::MigrateError,
+    rust_decimal::Error,
+    reqwest::Error,
+    std::num::ParseFloatError
+}
+
 // TODO: Switch to anyhow?
 #[derive(Error, Debug)]
 pub enum Error {
