@@ -57,7 +57,6 @@
     }
 
     :global(.select-content){
-        width: var(--bits-select-anchor-width);
         min-width: var(--bits-select-anchor-width);
     }
 
