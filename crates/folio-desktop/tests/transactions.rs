@@ -156,7 +156,6 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-
 #[sqlx::test]
 async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
     let account = Account::create("__", Money::ZERO, &pool).await?;
@@ -285,7 +284,7 @@ async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Transaction::set_account(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     assert_eq!(t.from_account_id.unwrap(), account2.id);
-    assert_eq!(t.to_account_id,None);
+    assert_eq!(t.to_account_id, None);
     Ok(())
 }
 
@@ -302,7 +301,7 @@ async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     Transaction::set_account(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     assert_eq!(t.to_account_id.unwrap(), account2.id);
-    assert_eq!(t.from_account_id,None);
+    assert_eq!(t.from_account_id, None);
     Ok(())
 }
 
@@ -313,7 +312,7 @@ async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     let account3 = Account::create("__", Money::ZERO, &pool).await?;
     let transaction = Transaction::transfer()
         .amount(Money::ZERO)
-        .accounts(&account.id,&account2.id)
+        .accounts(&account.id, &account2.id)
         .create(&pool)
         .await?;
 

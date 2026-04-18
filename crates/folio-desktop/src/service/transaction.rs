@@ -4,7 +4,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
 use std::marker::PhantomData;
 use tracing::info;
-use crate::error::ErrorExt;
 
 pub struct Expense;
 pub struct Income;
@@ -277,10 +276,7 @@ impl Transaction {
 
         query_builder.push_bind(account_id);
 
-        let query = query_builder
-            .push("WHERE id = ")
-            .push_bind(id)
-            .build();
+        let query = query_builder.push("WHERE id = ").push_bind(id).build();
         query.execute(pool).await?;
         info!(id = id, "Set transaction account");
         Self::fetch(id, pool).await
@@ -401,8 +397,6 @@ impl Transaction {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{Account, Category};
-
 
     #[test]
     fn transaction_builder_fields() {
