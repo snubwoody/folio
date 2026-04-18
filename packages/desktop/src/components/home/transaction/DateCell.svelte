@@ -1,7 +1,7 @@
 <script lang="ts">
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { Popover } from "bits-ui";
-    import Calendar from "$components/Calendar.svelte";
+    import { Calendar } from "$components/date";
     import { type DateValue, toCalendarDate } from "@internationalized/date";
     import type { Transaction } from "$lib/api/transaction";
     import { TableCell } from "$components/table";
