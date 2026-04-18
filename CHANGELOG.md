@@ -2,6 +2,8 @@
 
 ## (unreleased)
 
+- Added a date field to the calendar.
+  - The date field will try it's best to parse the value, if no value can be parsed then it will set to the current date 
 - Fixed errors with budget state.
 - Changed date formatting to use British locale.
 - Added a new collapsible sidebar with improved UI and UX. 

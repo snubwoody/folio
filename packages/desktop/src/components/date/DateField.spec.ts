@@ -11,7 +11,6 @@ beforeEach(()=>{
     clearMocks();
 });
 
-// TODO: test blur and enter
 test("Format date", async () => {
     const date = parseDate("2020-01-01");
     const screen = await render(DateField,{value: date});

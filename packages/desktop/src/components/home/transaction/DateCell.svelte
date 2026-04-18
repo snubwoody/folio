@@ -22,8 +22,11 @@
         await transactionStore.editTransaction({ id: transaction.id,transactionDate: date.toString() });
         displayDate = formatDate(toCalendarDate(date));
     };
+    // TODO: change on value
+    // TODO: close focus https://bits-ui.com/docs/components/popover#close-focus
     let date = $derived(transaction.date);
     let calendarOpen = $state(false);
+    // TODO: time might not be updated, check value
 </script>
 
 <TableCell>
@@ -34,7 +37,7 @@
             </time>
         </Popover.Trigger>
         <Popover.Portal>
-            <Popover.Content>
+            <Popover.Content onInteractOutside={() => updateDate(date)}>
                 <Calendar bind:value={date} onDateChange={updateDate}/>
             </Popover.Content>
         </Popover.Portal>

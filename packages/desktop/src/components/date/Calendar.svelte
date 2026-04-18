@@ -27,21 +27,19 @@
         updateDate(today(getLocalTimeZone()));
     }
 
-    // $effect(()=>{
-    //     updateDate(value)
-    //     console.log("Updating date")
-    // })
     // TODO: update after a certain timeout, onblur
     // TODO: focus trap
     // TODO: red border
     // TODO: ARIA label for date field or properties
     // TODO: bind value
     // FIXME: not updating date, test
-    let dateFieldValue = value?.toDate(getLocalTimeZone()).toString();
     // TODO: add enter and on blur
+    // TODO: test that date changes, when date field changes
 
     // TODO: close on enter instead of click?
     // TODO: test has date field
+    // TODO: focus trap on date cell after changing
+    // TODO: test that date field has focus
 </script>
 
 <Calendar.Root
@@ -51,7 +49,6 @@
     onValueChange={updateDate}
     class="calendar"
     data-testid="calendar"
-    onblur={(e)=> console.log("Blurred")}
     bind:value
 >
     {#snippet children({ months, weekdays })}
