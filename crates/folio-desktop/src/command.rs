@@ -49,6 +49,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         create_budget,
         edit_budget,
         currencies,
+        set_transaction_account,
         set_currency_code,
         settings,
         get_budget,
@@ -176,6 +177,18 @@ pub async fn set_transaction_inflow(
 ) -> Result<Transaction> {
     Transaction::set_inflow(&id, amount, &state.pool)
         .await
+        .inspect_err(|err| warn!("{}", err.report()))
+}
+
+#[tauri::command]
+pub async fn set_transaction_account(
+    state: tauri::State<'_, State>,
+    id: String,
+    account: String,
+) -> Result<Transaction> {
+    Transaction::set_account(&id, &account, &state.pool)
+        .await
+        .context("Failed to set transaction account")
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

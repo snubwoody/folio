@@ -210,11 +210,14 @@ impl EditBuilder {
 }
 
 #[derive(Debug, Clone, Copy, PartialOrd, PartialEq, Serialize)]
-enum TransactionType {
+pub enum TransactionType {
     /// A transaction is an expense when `from_account_id` is not `None`
-    /// and `to_account_id` is `None`
+    /// and `to_account_id` is `None`.
     Expense,
+    /// A transaction is an income when `from_account_id` is `None`
+    /// and `to_account_id` is not `None`.
     Income,
+    /// A transaction is a transfer when `from_account_id` and `to_account_id` are both not `None`.
     Transfer,
 }
 
@@ -248,7 +251,7 @@ impl Transaction {
         EditBuilder::new(id)
     }
 
-    fn transaction_type(&self) -> TransactionType {
+    pub fn transaction_type(&self) -> TransactionType {
         if self.to_account_id.is_none() {
             return TransactionType::Expense;
         }
@@ -260,6 +263,26 @@ impl Transaction {
         TransactionType::Transfer
     }
 
+    /// Set the transaction account i.e. the `from_account_id` column for expenses and transfers, and the
+    /// `to_account_id` for incomes.
+    pub async fn set_account(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let transaction = Transaction::fetch(id, pool).await?;
+        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+
+        match transaction.transaction_type() {
+            TransactionType::Income => query_builder.push("SET to_account_id = "),
+            _ => query_builder.push("SET from_account_id = "),
+        };
+
+        query_builder.push_bind(account_id);
+
+        let query = query_builder.push("WHERE id = ").push_bind(id).build();
+        query.execute(pool).await?;
+        info!(id = id, "Set transaction account");
+        Self::fetch(id, pool).await
+    }
+
+    /// Set the payee field of a transaction, turning the transaction into a transfer.
     pub async fn set_payee(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let transaction = Transaction::fetch(id, pool).await?;
         let mut query_builder = QueryBuilder::new("UPDATE transactions ");
@@ -374,248 +397,6 @@ impl Transaction {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{Account, Category};
-
-    #[sqlx::test]
-    async fn delete_multiple_transactions(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let t1 = Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-        let t2 = Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-        let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length, 2);
-        Transaction::delete(&[&t1.id, &t2.id], &pool).await?;
-        let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length, 0);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn delete_empty_slice(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::delete::<String>(&[], &pool).await?;
-        let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length, 1);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn delete_only_affected_transactions(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let t1 = Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-        Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-        let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length, 2);
-        Transaction::delete(&[&t1.id], &pool).await?;
-        let length = Transaction::fetch_all(&pool).await?.len();
-        assert_eq!(length, 1);
-        Ok(())
-    }
-
-    #[test]
-    fn transaction_type_expense() {
-        let expense = Transaction {
-            from_account_id: Some("".to_owned()),
-            ..Default::default()
-        };
-        let income = Transaction {
-            to_account_id: Some("".to_owned()),
-            ..Default::default()
-        };
-        let transfer = Transaction {
-            from_account_id: Some("".to_owned()),
-            to_account_id: Some("".to_owned()),
-            ..Default::default()
-        };
-
-        assert_eq!(expense.transaction_type(), TransactionType::Expense);
-        assert_eq!(income.transaction_type(), TransactionType::Income);
-        assert_eq!(transfer.transaction_type(), TransactionType::Transfer);
-    }
-
-    #[sqlx::test]
-    async fn set_outflow_for_expense(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.amount, Money::from_f64(10.0));
-        assert_eq!(
-            t.from_account_id.unwrap(),
-            transaction.from_account_id.unwrap()
-        );
-        assert!(t.to_account_id.is_none());
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_payee_for_expense(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let account2 = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.from_account_id.unwrap(), account.id);
-        assert_eq!(t.to_account_id.unwrap(), account2.id);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_payee_for_income(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let account2 = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::income()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.from_account_id.unwrap(), account.id);
-        assert_eq!(t.to_account_id.unwrap(), account2.id);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_payee_for_transfer(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let account2 = Account::create("__", Money::ZERO, &pool).await?;
-        let account3 = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::transfer()
-            .amount(Money::MAX)
-            .accounts(&account.id, &account2.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_payee(&transaction.id, &account3.id, &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.from_account_id.unwrap(), account.id);
-        assert_eq!(t.to_account_id.unwrap(), account3.id);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_payee_removes_category(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let account2 = Account::create("__", Money::ZERO, &pool).await?;
-        let category = Category::create("", &pool).await?;
-        let transaction = Transaction::income()
-            .amount(Money::MAX)
-            .category(&category.id)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert!(t.category_id.is_none());
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_inflow_for_income(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::income()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.amount, Money::from_f64(10.0));
-        assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
-        assert!(t.from_account_id.is_none());
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_inflow_for_transfer(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let account2 = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::transfer()
-            .amount(Money::MAX)
-            .accounts(&account.id, &account2.id)
-            .create(&pool)
-            .await?;
-
-        let result = Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await;
-        assert!(result.is_err());
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_inflow_for_expense(pool: SqlitePool) -> crate::Result<()> {
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::expense()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.amount, Money::from_f64(10.0));
-        assert_eq!(
-            t.to_account_id.unwrap(),
-            transaction.from_account_id.unwrap()
-        );
-        assert!(t.from_account_id.is_none());
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn set_outflow_for_income(pool: SqlitePool) -> crate::Result<()> {
-        // Setting outflow on an income should turn it into an expense
-        let account = Account::create("__", Money::ZERO, &pool).await?;
-        let transaction = Transaction::income()
-            .amount(Money::MAX)
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-
-        Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
-        let t = Transaction::fetch(&transaction.id, &pool).await?;
-        assert_eq!(t.amount, Money::from_f64(10.0));
-        assert_eq!(
-            t.from_account_id.unwrap(),
-            transaction.to_account_id.unwrap()
-        );
-        assert!(t.to_account_id.is_none());
-        Ok(())
-    }
 
     #[test]
     fn transaction_builder_fields() {

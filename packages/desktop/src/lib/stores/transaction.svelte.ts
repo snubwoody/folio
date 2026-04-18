@@ -1,7 +1,19 @@
 // Copyright (C) 2025 Wakunguma Kalimukwa
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { logger } from "../utils/logger";
-import { getTransactions,type Transaction, type EditTransactionOpts, deleteTransactions, editTransaction, setInflow, setOutflow, setPayee, createTransaction, type CreateTransactionOpts } from "$lib/api/transaction";
+import {
+    getTransactions,
+    type Transaction,
+    type EditTransactionOpts,
+    deleteTransactions,
+    editTransaction,
+    setInflow,
+    setOutflow,
+    setPayee,
+    createTransaction,
+    type CreateTransactionOpts,
+    setAccount
+} from "$lib/api/transaction";
 
 export class TransactionStore {
     #transactions: Transaction[] = $state([]);
@@ -41,6 +53,19 @@ export class TransactionStore {
      */
     async setOutflow(id: string, amount: string) {
         const transaction = await setOutflow(id,amount);
+        const index = this.#transactions.findIndex(
+            (t) => t.id === transaction.id
+        );
+        this.#transactions[index] = transaction;
+    }
+
+    /**
+     * Sets the account property of a transaction.
+     * @param id The id of the transaction
+     * @param account The id of the account
+     */
+    async setAccount(id: string, account: string) {
+        const transaction = await setAccount(id,account);
         const index = this.#transactions.findIndex(
             (t) => t.id === transaction.id
         );

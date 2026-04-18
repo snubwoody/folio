@@ -111,6 +111,20 @@ export async function setOutflow(id:string,amount:string): Promise<Transaction> 
 }
 
 /**
+ * Sets the account property of a transaction.
+ *
+ * @param id The id of the transaction
+ * @param account The id of the account
+ */
+export async function setAccount(id:string,account:string): Promise<Transaction> {
+    const transaction = await invoke<RawTransaction>(
+        "set_transaction_account",
+        { id, account }
+    );
+    return parseTransaction(transaction);
+}
+
+/**
  * Sets the inflow property of a transaction. Calling this on an expense
  * will convert it into an income.
  * @param id The id of the transaction
