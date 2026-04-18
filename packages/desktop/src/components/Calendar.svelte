@@ -14,7 +14,7 @@
 
     // TODO: default today
     let {
-        value = $bindable(),
+        value = $bindable(today(getLocalTimeZone())),
         onDateChange
     }:Props = $props();
 
@@ -26,11 +26,21 @@
     function setToday(){
         updateDate(today(getLocalTimeZone()));
     }
+
+    // $effect(()=>{
+    //     updateDate(value)
+    //     console.log("Updating date")
+    // })
     // TODO: update after a certain timeout, onblur
     // TODO: focus trap
     // TODO: red border
     // TODO: ARIA label for date field or properties
+    // TODO: bind value
+    // FIXME: not updating date, test
     let dateFieldValue = value?.toDate(getLocalTimeZone()).toString();
+    // TODO: add enter and on blur
+
+    // TODO: close on enter instead of click?
 </script>
 
 <Calendar.Root
@@ -40,10 +50,11 @@
     onValueChange={updateDate}
     class="calendar"
     data-testid="calendar"
+    onblur={(e)=> console.log("Blurred")}
     bind:value
 >
     {#snippet children({ months, weekdays })}
-        <DateField/>
+        <DateField bind:value/>
         <Calendar.Header class="flex items-center justify-between px-0.5">
             <Calendar.Heading  class="font-semibold"/>
             <div class="flex items-center gap-1">

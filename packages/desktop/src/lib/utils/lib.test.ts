@@ -3,16 +3,8 @@ import { describe, expect, test } from "vitest";
 import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import type { Transaction } from "$lib/api/transaction";
-import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { getCurrencySymbol, parseMoney } from "$lib/utils/money";
-import { parseDate } from "$lib/utils/date";
-
-describe("parseDate",() => {
-    test("parses single number as day of month",() => {
-        expect(parseDate("10",new CalendarDate(2024,1,2))).toStrictEqual(new CalendarDate(2024,1,10));
-        expect(parseDate("30",new CalendarDate(2024,2,1))).toStrictEqual(new CalendarDate(2024,2,29));
-    });
-});
 
 describe("AccountStore",() => {
     test("create a new account",async() => {

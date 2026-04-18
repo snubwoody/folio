@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts">
     import {type DateValue, getLocalTimeZone, toCalendarDate, today} from "@internationalized/date";
-    import {formatDate} from "$lib/utils/date";
+    import {formatDate, parseDate} from "$lib/utils/date";
 
     type DateFn = (date: DateValue) => void;
 
@@ -32,18 +32,33 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         value = $bindable(today(getLocalTimeZone()))
     }: Props = $props();
 
-    const currentDate = today(getLocalTimeZone());
-    // The date is always parsed as YYYY-MM-DD regardless of the locale.
-    let selectedDate = $state(currentDate.toString());
+    let dateString = $state(formatDate(toCalendarDate(value)));
 
-    let dateString = formatDate(toCalendarDate(value));
-    $effect(() => {
-        // const [year,month,day] = selectedDate.split("-").map(d => parseInt(d));
-        // onChange?.(year,month,day);
-    });
+    // TODO: test onDateChange is called
+    // TODO: move to date/
+    // TODO: focus trap
+    // TODO: test enter and blur
+    // TODO: if i update value it might cause a circular dependency
+    // TODO: allow enter
+    const updateDate = async(val:string) => {
+        const date = await parseDate(val);
+        dateString = formatDate(toCalendarDate(date))
+        value = date;
+        onDateChange?.(value);
+    }
+
+    const handleKeyPress = (event: KeyboardEvent) => {
+        if (event.key !== "Enter") return
+        (event.target as HTMLElement).blur();
+    }
 </script>
 
-<input type="text" bind:value={dateString} class="date-field">
+<input
+    type="text"
+    bind:value={dateString}
+    onkeydown={handleKeyPress}
+    onblur={(e) => updateDate(e.currentTarget.value)}
+    class="date-field">
 
 <style>
     .date-field{
@@ -52,20 +67,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         border: 1px solid var(--color-neutral-100);
         border-radius: var(--radius-sm);
         width: 100%;
+        outline-color: var(--color-purple-500);
     }
-
-    /*input{*/
-	/*	display: flex;*/
-	/*	gap: 12px;*/
-	/*	border: 1px solid var(--color-neutral-50);*/
-	/*	padding: 8px 12px;*/
-	/*	border-radius: var(--radius-sm);*/
-    /*    outline: none;*/
-    /*    transition: all 150ms;*/
-
-    /*    &:focus{*/
-    /*        border-color: var(--color-purple-500);*/
-    /*    }*/
-	/*}*/
-
 </style>

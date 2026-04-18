@@ -1,4 +1,5 @@
-import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone,parseDate as parseCalendarDate } from "@internationalized/date";
+import {invoke} from "@tauri-apps/api/core";
 
 export function formatDate(date: CalendarDate): string {
     return Intl
@@ -6,17 +7,7 @@ export function formatDate(date: CalendarDate): string {
         .format(date.toDate(getLocalTimeZone()));
 }
 
-// The goal of this function to parse the input and always return a valid date.
-export function parseDate(value: string, reference: CalendarDate): CalendarDate {
-    // TODO: use backend command
-    const singleDigit = /^\d+$/.test(value.trim());
-    if (singleDigit) {
-        return reference.set({ day: parseInt(value.trim()) });
-    }
-    // Test constraints
-    console.log(singleDigit);
-
-    // return previous date if all else fail.
-    return reference;
-
+export async function parseDate(value: string): Promise<CalendarDate> {
+    const date = await invoke<string>("parse_date",{value});
+    return parseCalendarDate(date);
 }
