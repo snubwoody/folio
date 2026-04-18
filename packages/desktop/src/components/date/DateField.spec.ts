@@ -1,10 +1,9 @@
-import {expect, test, describe, beforeAll, beforeEach} from "vitest";
+import {expect, test, beforeEach} from "vitest";
 import { render } from "vitest-browser-svelte";
-import Calendar from "./Calendar.svelte";
-import {CalendarDate, getLocalTimeZone, today, type DateValue, parseDate} from "@internationalized/date";
+import { parseDate } from "@internationalized/date";
 import DateField from "./DateField.svelte";
 import {formatDate} from "$lib/utils/date";
-import {userEvent} from "@vitest/browser/context";
+import {userEvent} from "vitest/browser";
 import {clearMocks, mockIPC} from "@tauri-apps/api/mocks";
 
 beforeEach(()=>{

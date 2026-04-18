@@ -8,7 +8,14 @@
     type DateFn = (date: DateValue) => void;
 
     type Props = {
-        onDateChange?: DateFn;
+        /**
+         * The date change event fires whenever the date is changed, which occurs when a date
+         * button is clicked.
+         */
+        onDateChange?: DateFn
+        /**
+         * The bindable calendar value.
+         */
         value?: DateValue
     };
 
@@ -27,17 +34,10 @@
         updateDate(today(getLocalTimeZone()));
     }
 
-    // TODO: update after a certain timeout, onblur
     // TODO: focus trap
-    // TODO: red border
     // TODO: ARIA label for date field or properties
-    // TODO: bind value
-    // FIXME: not updating date, test
-    // TODO: add enter and on blur
-    // TODO: test that date changes, when date field changes
 
     // TODO: close on enter instead of click?
-    // TODO: test has date field
     // TODO: focus trap on date cell after changing
     // TODO: test that date field has focus
 </script>
@@ -61,7 +61,7 @@
                     <Calendar.PrevButton class="icon-btn icon-btn-primary-icon icon-btn-medium">
                         <ChevronLeft strokeWidth="3"/>
                     </Calendar.PrevButton>
-                    <Calendar.NextButton class="icon-btn icon-btn-primary-icon icon-btn-medium">
+                    <Calendar.NextButton aria-label="Next month" class="icon-btn icon-btn-primary-icon icon-btn-medium">
                         <ChevronRight strokeWidth="3"/>
                     </Calendar.NextButton>
                 </div>

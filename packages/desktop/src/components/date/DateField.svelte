@@ -54,6 +54,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <input
+    aria-label="Date field"
     type="text"
     bind:value={dateString}
     onkeydown={handleKeyPress}
