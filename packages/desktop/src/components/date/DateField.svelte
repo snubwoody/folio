@@ -22,11 +22,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     type DateFn = (date: DateValue) => void;
 
     type Props = {
+        /**
+         * The date change event fires whenever the date is changed, which occurs when
+         * the date field loses focus or when the user presses the Enter key.
+         */
         onDateChange?: DateFn;
         value?: DateValue
     };
 
-    // TODO: test this
     let {
         onDateChange,
         value = $bindable(today(getLocalTimeZone()))
@@ -34,12 +37,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     let dateString = $state(formatDate(toCalendarDate(value)));
 
-    // TODO: test onDateChange is called
-    // TODO: move to date/
+    // TODO: add accessible, aria-invalid?
     // TODO: focus trap
-    // TODO: test enter and blur
     // TODO: if i update value it might cause a circular dependency
-    // TODO: allow enter
     const updateDate = async(val:string) => {
         const date = await parseDate(val);
         dateString = formatDate(toCalendarDate(date))

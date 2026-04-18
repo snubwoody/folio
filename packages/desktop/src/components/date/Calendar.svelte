@@ -3,7 +3,7 @@
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
     import { getLocalTimeZone, today, type DateValue } from "@internationalized/date";
     import { TextButton } from "$components/button";
-    import DateField from "$components/DateField.svelte";
+    import DateField from "./DateField.svelte";
 
     type DateFn = (date: DateValue) => void;
 
@@ -41,6 +41,7 @@
     // TODO: add enter and on blur
 
     // TODO: close on enter instead of click?
+    // TODO: test has date field
 </script>
 
 <Calendar.Root

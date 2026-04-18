@@ -2,6 +2,13 @@ import { expect, test,describe } from "vitest";
 import { render } from "vitest-browser-svelte";
 import Calendar from "./Calendar.svelte";
 import { CalendarDate, getLocalTimeZone, today, type DateValue } from "@internationalized/date";
+import {mockIPC} from "@tauri-apps/api/mocks";
+
+mockIPC((cmd)=>{
+   if (cmd === "parse_date"){
+       return "2020-01-01";
+   }
+});
 
 describe("Calendar",() => {
     test("today button sets current date",async() => {
