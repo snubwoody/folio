@@ -1,7 +1,9 @@
 import { CalendarDate, getLocalTimeZone } from "@internationalized/date";
 
 export function formatDate(date: CalendarDate): string {
-    return Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(date.toDate(getLocalTimeZone()));
+    return Intl
+        .DateTimeFormat("en-GB", { dateStyle: "medium" })
+        .format(date.toDate(getLocalTimeZone()));
 }
 
 // The goal of this function to parse the input and always return a valid date.

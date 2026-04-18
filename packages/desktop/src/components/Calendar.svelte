@@ -3,6 +3,7 @@
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
     import { getLocalTimeZone, today, type DateValue } from "@internationalized/date";
     import { TextButton } from "$components/button";
+    import DateField from "$components/DateField.svelte";
 
     type DateFn = (date: DateValue) => void;
 
@@ -11,6 +12,7 @@
         value?: DateValue
     };
 
+    // TODO: default today
     let {
         value = $bindable(),
         onDateChange
@@ -24,6 +26,11 @@
     function setToday(){
         updateDate(today(getLocalTimeZone()));
     }
+    // TODO: update after a certain timeout, onblur
+    // TODO: focus trap
+    // TODO: red border
+    // TODO: ARIA label for date field or properties
+    let dateFieldValue = value?.toDate(getLocalTimeZone()).toString();
 </script>
 
 <Calendar.Root
@@ -36,6 +43,7 @@
     bind:value
 >
     {#snippet children({ months, weekdays })}
+        <DateField/>
         <Calendar.Header class="flex items-center justify-between px-0.5">
             <Calendar.Heading  class="font-semibold"/>
             <div class="flex items-center gap-1">
@@ -50,7 +58,6 @@
                 </div>
             </div>
         </Calendar.Header>
-        <div>
             {#each months as month, i (i)}
                 <Calendar.Grid>
                     <Calendar.GridHead>
@@ -78,6 +85,15 @@
                     </Calendar.GridBody>
                 </Calendar.Grid>
             {/each}
-        </div>
     {/snippet}
 </Calendar.Root>
+
+<style>
+    .date-field{
+        padding: 8px;
+        background: var(--color-neutral-25);
+        border: 1px solid var(--color-neutral-100);
+        border-radius: var(--radius-sm);
+        width: 100%;
+    }
+</style>
