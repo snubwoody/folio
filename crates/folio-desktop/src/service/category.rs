@@ -19,8 +19,6 @@ use sqlx::{FromRow, SqlitePool};
 
 use crate::{Money, db, service::Budget};
 
-// TODO: soft delete categories
-
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
@@ -34,6 +32,10 @@ pub struct Category {
 
 // TODO: add change_group
 impl Category {
+    /// Create a new category, a corresponding budget pointing to this category
+    /// will be created as well. To only create a category use [`create_raw`].
+    ///
+    /// [`create_raw`]: Category::create_raw
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
         let record: db::Category =
@@ -64,7 +66,7 @@ impl Category {
         Category::from_id(&record.id, pool).await
     }
 
-    /// Creates a category without creating a corresponding budget.
+    /// Creates a category without creating a budget.
     pub async fn create_raw(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
         let record: db::Category =
@@ -175,11 +177,14 @@ impl Category {
     }
 }
 
+// TODO: test is_sorted
 // TODO: add default "No group" in UI for categories without a group
 #[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
 pub struct CategoryGroup {
     pub id: String,
     pub title: String,
+    pub sort_order: i64,
+    pub created_at: i64,
 }
 
 // TODO: ops
@@ -187,6 +192,7 @@ pub struct CategoryGroup {
 // - Remove category
 // - Reorder
 impl CategoryGroup {
+    /// Fetch a category group from the database.
     pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let group: CategoryGroup = sqlx::query_as("SELECT * FROM category_groups WHERE id = $1")
             .bind(id)
@@ -195,7 +201,7 @@ impl CategoryGroup {
         Ok(group)
     }
 
-    /// Creates a new category group.
+    /// Create a new category group.
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let row: Self = sqlx::query_as("INSERT INTO category_groups(title) VALUES($1) RETURNING *")
             .bind(title)
@@ -205,7 +211,7 @@ impl CategoryGroup {
         Ok(row)
     }
 
-    /// Updates the title of the category group.
+    /// Update the title of the category group.
     pub async fn set_title(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let row: Self =
             sqlx::query_as("UPDATE category_groups SET title=$1 WHERE id=$2 RETURNING *")
