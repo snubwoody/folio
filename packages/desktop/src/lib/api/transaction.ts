@@ -188,16 +188,3 @@ export const transactionType = (transaction: Transaction): TransactionType => {
 
     return "Transfer";
 };
-
-export const mockTransactions = () => {
-    mockIPC((cmd) => {
-        if(cmd == "edit_transaction"){
-            const transaction: RawTransaction = {
-                id: "1",
-                amount: "20.00",
-                transactionDate: "2020-10-10"
-            };
-            return transaction;
-        }
-    });
-};
