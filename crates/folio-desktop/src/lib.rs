@@ -24,11 +24,14 @@ mod settings;
 use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;
-use sqlx::SqlitePool;
+use sqlx::{ SqlitePool};
+use rusqlite::Connection;
 use sqlx::sqlite::SqliteConnectOptions;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::rc::Rc;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
+use tokio::runtime::Handle;
 use tokio::sync::Mutex;
 use tracing::{error, info};
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
@@ -105,12 +108,19 @@ pub async fn run() {
 pub struct State {
     pool: SqlitePool,
     settings: Arc<Mutex<Settings>>,
+    // TODO: might not need Arc<Mutex>
+    connection: Arc<std::sync::Mutex<Connection>>
 }
 
 impl State {
     pub async fn new() -> Result<Self> {
+        // FIXME: check if foreign keys are on
+        // TODO: check WAL and journal mode
         let pool = init_database().await?;
-        tracing::info!("Initialised database pool");
+        info!("Initialised database pool");
+
+        // TODO: global test connection
+        let connection = Connection::open("data.db").unwrap();
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
@@ -124,10 +134,32 @@ impl State {
         Ok(Self {
             pool,
             settings: Arc::new(Mutex::new(settings)),
+            connection: Arc::new(std::sync::Mutex::new(connection))
         })
     }
 }
 
+pub async fn setup_test_db(path: impl AsRef<Path>) -> Connection{
+    let connection = Connection::open(&path).unwrap();
+
+    let opts = SqliteConnectOptions::new()
+        .filename(&path)
+        .create_if_missing(true);
+
+    // Temporary solution
+    let pool = SqlitePool::connect_with(opts)
+        .await
+        .unwrap();
+
+    sqlx::migrate!()
+        .run(&pool)
+        .await
+        .unwrap();
+
+    connection
+}
+
+// TODO: use prepared statements
 pub async fn init_database() -> Result<SqlitePool> {
     #[cfg(not(debug_assertions))]
     let path = {

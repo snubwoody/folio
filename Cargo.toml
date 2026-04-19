@@ -38,6 +38,8 @@ tempfile = "3.23.0"
 toml = { version = "0.9.8", features = ["serde"] }
 zip = "6.0.0"
 clap = {version = "4.5.53",features = ["derive"]}
+# Pinned to match sqlx version, will update after migrating fully
+rusqlite = { version = "=0.32.0", features = ["bundled"] }
 
 [workspace.dependencies.sqlx]
 version = "0.8.6"

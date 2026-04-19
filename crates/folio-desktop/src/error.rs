@@ -138,7 +138,8 @@ from_error! {
     sqlx::migrate::MigrateError => "Migrate error",
     rust_decimal::Error => "rust_decimal error",
     reqwest::Error => "Request error",
-    std::num::ParseFloatError => "Parse float error"
+    std::num::ParseFloatError => "Parse float error",
+    rusqlite::Error => "Sqlite error"
 }
 
 impl Serialize for Error {

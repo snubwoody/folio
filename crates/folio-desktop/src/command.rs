@@ -314,8 +314,7 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
 
 #[tauri::command]
 pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Account::delete(&id, &state.pool)
-        .await
+    Account::delete(&id, &state.connection.lock().unwrap())
         .context("Failed to delete account")
         .inspect_err(|err| warn!("{}", err.report()))
 }

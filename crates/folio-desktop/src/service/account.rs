@@ -15,6 +15,7 @@
 
 use crate::Money;
 use chrono::{DateTime, Utc};
+use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::info;
@@ -145,13 +146,10 @@ impl Account {
         Ok(Money::from_scaled(difference))
     }
 
-    /// Delete an [`Account`].
-    #[allow(unused)]
-    pub async fn delete(id: &str, pool: &SqlitePool) -> Result<(), crate::Error> {
-        sqlx::query!("DELETE FROM accounts WHERE id=$1", id)
-            .execute(pool)
-            .await?;
 
+    /// Delete an [`Account`].
+    pub fn delete(id: &str, conn: &Connection) -> Result<(), crate::Error> {
+        conn.execute("DELETE FROM accounts WHERE id=$1",[id])?;
         info!(id=?id,"Deleted account");
         Ok(())
     }
@@ -176,6 +174,7 @@ impl Account {
 mod test {
     use super::*;
     use crate::service::Transaction;
+    use crate::setup_test_db;
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
@@ -243,6 +242,7 @@ mod test {
 
     #[sqlx::test]
     async fn delete_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         Account::create("My account", Money::ZERO, &pool).await?;
         Account::create("My account", Money::ZERO, &pool).await?;
         let account = Account::create("My account", Money::ZERO, &pool).await?;
@@ -251,7 +251,7 @@ mod test {
             .await?;
         assert_eq!(records.len(), 3);
 
-        Account::delete(&account.id, &pool).await?;
+        Account::delete(&account.id,&conn)?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;
@@ -261,6 +261,7 @@ mod test {
 
     #[sqlx::test]
     async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let account = Account::create("My account", Money::ZERO, &pool).await?;
         Transaction::expense()
             .account_id(&account.id)
@@ -271,7 +272,7 @@ mod test {
             .await?;
         assert_eq!(records.len(), 1);
 
-        Account::delete(&account.id, &pool).await?;
+        Account::delete(&account.id, &conn)?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;
@@ -281,6 +282,7 @@ mod test {
 
     #[sqlx::test]
     async fn delete_account_with_income(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let account = Account::create("My account", Money::ZERO, &pool).await?;
         Transaction::income()
             .account_id(&account.id)
@@ -291,7 +293,7 @@ mod test {
             .await?;
         assert_eq!(records.len(), 1);
 
-        Account::delete(&account.id, &pool).await?;
+        Account::delete(&account.id, &conn)?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;
