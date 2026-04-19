@@ -3,6 +3,7 @@ use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
 use std::marker::PhantomData;
+use rusqlite::{params_from_iter, Connection};
 use tracing::info;
 
 pub struct Expense;
@@ -111,6 +112,7 @@ impl TransactionBuilder<Expense> {
         self
     }
 
+    /// Finalise the query and insert a transaction.
     pub async fn create(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
         let row: Transaction = sqlx::query_as(
             "INSERT INTO transactions(transaction_date,from_account_id,amount,note,category_id)
@@ -305,21 +307,25 @@ impl Transaction {
         Self::fetch(id, pool).await
     }
 
-    // TODO: add duplicate method
     /// Deletes all the transactions with the corresponding ids
-    pub async fn delete<S: AsRef<str>>(ids: &[S], pool: &SqlitePool) -> crate::Result<()> {
+    pub fn delete<S: AsRef<str>>(ids: &[S], conn: &Connection) -> crate::Result<()> {
         if ids.is_empty() {
             return Ok(());
         }
-        let mut query = QueryBuilder::new("DELETE FROM transactions WHERE id IN ");
-        query.push("(");
-        let mut separated = query.separated(", ");
-        for id in ids {
-            separated.push_bind(id.as_ref());
+        let mut query = String::from("DELETE FROM transactions WHERE id IN ");
+        query.push_str("(");
+        for (index,_) in ids.iter().enumerate() {
+            if index == ids.len() - 1 {
+                query.push_str("?");
+                continue;
+            }
+            query.push_str("?,");
         }
-        separated.push_unseparated(")");
+        query.push_str(")");
 
-        query.build().execute(pool).await?;
+        let mut stmt = conn.prepare_cached(&query)?;
+        let params = params_from_iter(ids.into_iter().map(|id|id.as_ref()));
+        stmt.execute(params)?;
 
         info!("Deleted {} transactions", ids.len());
         Ok(())

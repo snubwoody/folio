@@ -244,10 +244,10 @@ pub async fn create_account(
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
+// FIXME: don't unwrap
 #[tauri::command]
 pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
-    Account::calculate_balance(&id, &state.pool)
-        .await
+    Account::calculate_balance(&id, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -320,9 +320,8 @@ pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Resul
 }
 
 #[tauri::command]
-pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
-    Transaction::delete(ids.as_slice(), &state.pool)
-        .await
+pub fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
+    Transaction::delete(ids.as_slice(), &state.connection.lock().unwrap())
         .context("Failed to delete transactions")
         .inspect_err(|err| warn!("{}", err.report()))
 }

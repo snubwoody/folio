@@ -15,7 +15,7 @@
 
 use crate::Money;
 use chrono::{DateTime, Utc};
-use rusqlite::Connection;
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::info;
@@ -44,7 +44,8 @@ impl EditAccount {
     }
 }
 
-#[derive(Debug, Serialize, Clone, PartialEq)]
+// TODO: make created_at non-null
+#[derive(Debug, Serialize, Clone, PartialEq,PartialOrd,Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub id: String,
@@ -79,6 +80,40 @@ impl Account {
         Self::from_id(&id, pool).await
     }
 
+    /// Parses an [`Account`] from a sqlite [`Row`]
+    ///
+    /// [`Row`]: rusqlite::Row
+    fn from_row(row: &rusqlite::Row) -> rusqlite::Result<Self>{
+        let created_at = DateTime::from_timestamp(row.get(3)?,0);
+        let starting_balance = Money::from_scaled(row.get(2)?);
+        // FIXME: calculate balance
+        let account = Account{
+            id: row.get(0)?,
+            name: row.get(1)?,
+            balance: Money::ZERO,
+            starting_balance,
+            created_at,
+        };
+
+        Ok(account)
+    }
+
+    /// Sets the account name.
+    pub fn set_name(id:&str,name:&str,conn: &Connection) -> crate::Result<Self>{
+        let mut stmt = conn
+            .prepare_cached("UPDATE accounts SET name=?1 WHERE id=?2 RETURNING *")?;
+        let account = stmt.query_row([name,id],Self::from_row)?;
+        Ok(account)
+    }
+
+    /// Sets the account starting balance.
+    pub fn set_starting_balance(id:&str,balance:Money,conn: &Connection) -> crate::Result<Self>{
+        let mut stmt = conn
+            .prepare_cached("UPDATE accounts SET starting_balance=?1 WHERE id=?2 RETURNING *")?;
+        let account = stmt.query_row(params![balance.inner(),id],Self::from_row)?;
+        Ok(account)
+    }
+
     pub async fn edit(
         id: &str,
         opts: EditAccount,
@@ -102,6 +137,7 @@ impl Account {
         Self::from_id(id, pool).await
     }
 
+    // TODO: rename to fetch
     /// Fetch the [`Account`] from the database.
     pub async fn from_id(id: &str, pool: &sqlx::SqlitePool) -> Result<Self, crate::Error> {
         let record = sqlx::query!("SELECT * FROM accounts WHERE id = $1", id)
@@ -109,7 +145,9 @@ impl Account {
             .await?;
 
         let starting_balance = Money::from_scaled(record.starting_balance);
-        let balance = Self::calculate_balance(id, pool).await? + starting_balance;
+        // FIXME:
+        // let balance = Self::calculate_balance(id, pool).await? + starting_balance;
+        let balance = Money::ZERO;
         let created_at = record
             .created_at
             .and_then(|t| DateTime::from_timestamp(t, 0));
@@ -122,28 +160,23 @@ impl Account {
         })
     }
 
-    pub async fn calculate_balance(id: &str, pool: &SqlitePool) -> Result<Money, crate::Error> {
-        let total_expenses = sqlx::query!(
-            "
-                SELECT COALESCE(SUM(amount),0) as total FROM transactions WHERE from_account_id = $1
-                ",
-            id
-        )
-        .fetch_one(pool)
-        .await?
-        .total;
+    /// Calculate the current account balance.
+    pub fn calculate_balance(id: &str, conn: &Connection) -> Result<Money, crate::Error> {
+        let mut expense_stmt = conn
+            .prepare_cached("SELECT COALESCE(SUM(amount),0) FROM transactions WHERE from_account_id = ?1")?;
+        let mut income_stmt = conn
+            .prepare_cached("SELECT COALESCE(SUM(amount),0) FROM transactions WHERE to_account_id = ?1")?;
 
-        let total_income = sqlx::query!(
-            "
-            SELECT COALESCE(SUM(amount),0) as total FROM transactions WHERE to_account_id = $1",
-            id
-        )
-        .fetch_one(pool)
-        .await?
-        .total;
-
+        let total_expenses = expense_stmt.query_row([id],|row|{
+            let amount: i64 = row.get(0)?;
+            Ok(Money::from_scaled(amount))
+        })?;
+        let total_income = income_stmt.query_row([id],|row|{
+            let amount: i64 = row.get(0)?;
+            Ok(Money::from_scaled(amount))
+        })?;
         let difference = total_income - total_expenses;
-        Ok(Money::from_scaled(difference))
+        Ok(difference)
     }
 
 
@@ -156,6 +189,7 @@ impl Account {
 
     /// Fetch all the accounts from the database.
     pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Account>, crate::Error> {
+        // FIXME: don't fetch twice just remove balance field
         let records = sqlx::query!("SELECT id FROM accounts")
             .fetch_all(pool)
             .await?;
@@ -189,6 +223,7 @@ mod test {
 
     #[sqlx::test]
     async fn calculate_account_balance(pool: SqlitePool) -> Result<(), crate::Error> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let account = Account::create("", Money::ZERO, &pool).await?;
         Transaction::expense()
             .account_id(&account.id)
@@ -205,7 +240,7 @@ mod test {
             .amount(Money::from_unscaled(50))
             .create(&pool)
             .await?;
-        let balance = Account::calculate_balance(&account.id, &pool).await?;
+        let balance = Account::calculate_balance(&account.id, &conn)?;
         assert_eq!(balance, Money::from_unscaled(10));
         Ok(())
     }

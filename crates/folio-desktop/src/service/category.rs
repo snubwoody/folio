@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
+use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqlitePool};
 
@@ -78,6 +79,7 @@ impl Category {
 
         tracing::info!(id=?record.id,"Created new category");
 
+        // TODO: just use return value
         Category::from_id(&record.id, pool).await
     }
 
@@ -86,6 +88,19 @@ impl Category {
             .bind(id)
             .fetch_one(pool)
             .await?;
+
+        //
+        // let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE id=$1")?;
+        // let a  = stmt.query_map([id],|row|{
+        //     dbg!(row);
+        //    Ok(Category{
+        //        id: row.get(0)?,
+        //        title: row.get(1)?,
+        //        created_at: None,
+        //        deleted_at: None,
+        //        is_income_stream: row.get(5)?,
+        //    })
+        // })?;
 
         let created_at = record
             .created_at
@@ -130,6 +145,7 @@ impl Category {
     pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();
         let mut total = Money::ZERO;
+
         let transactions: Vec<Transaction> =
             sqlx::query_as("SELECT * FROM transactions WHERE category_id = $1")
                 .bind(id)
@@ -161,6 +177,7 @@ impl Category {
         Ok(categories)
     }
 
+    // TODO: deprecate this
     pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
         let records: Vec<db::Category> = sqlx::query_as(
             "SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false",
@@ -223,11 +240,10 @@ impl CategoryGroup {
         Ok(row)
     }
 
-    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query("DELETE FROM category_groups WHERE id=$1")
-            .bind(id)
-            .execute(pool)
-            .await?;
+    pub fn delete(id: &str, conn: &Connection) -> crate::Result<()> {
+        // TODO: on cascade set null
+        let mut stmt = conn.prepare_cached("DELETE FROM category_groups WHERE id=$1")?;
+        stmt.execute([id])?;
 
         Ok(())
     }

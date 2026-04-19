@@ -1,4 +1,4 @@
-use folio_lib::Result;
+use folio_lib::{setup_test_db, Result};
 use folio_lib::service::{Budget, Category, CategoryGroup, create_missing_budgets};
 use sqlx::SqlitePool;
 
@@ -32,8 +32,9 @@ async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
 
 #[sqlx::test]
 async fn delete_category_group(pool: SqlitePool) -> Result<()> {
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
     let row = CategoryGroup::create("Wants", &pool).await?;
-    CategoryGroup::delete(&row.id, &pool).await?;
+    CategoryGroup::delete(&row.id, &conn)?;
     let result = sqlx::query("SELECT * FROM category_groups WHERE id=$1")
         .bind(row.id)
         .fetch_optional(&pool)
