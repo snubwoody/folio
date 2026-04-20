@@ -40,7 +40,8 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         delete_transactions,
         create_category,
         fetch_accounts,
-        edit_account,
+        set_account_name,
+        set_account_starting_balance,
         delete_account,
         fetch_budgets,
         create_account,
@@ -327,13 +328,22 @@ pub fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> 
 }
 
 #[tauri::command]
-pub async fn edit_account(
+pub fn set_account_name(
     state: tauri::State<'_, State>,
     id: String,
-    opts: EditAccount,
+    name: String,
 ) -> Result<Account> {
-    Account::edit(&id, opts, &state.pool)
-        .await
+    Account::set_name(&id, &name,&state.connection.lock().unwrap())
+        .inspect_err(|err| warn!("{}", err.report()))
+}
+
+#[tauri::command]
+pub fn set_account_starting_balance(
+    state: tauri::State<'_, State>,
+    id: String,
+    balance: Money,
+) -> Result<Account> {
+    Account::set_starting_balance(&id, balance,&state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

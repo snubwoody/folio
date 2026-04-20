@@ -20,31 +20,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::info;
 
-// TODO: test the command input
-#[derive(Debug, Default, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct EditAccount {
-    name: Option<String>,
-    starting_balance: Option<Money>,
-}
 
-impl EditAccount {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn name(mut self, name: &str) -> Self {
-        self.name = Some(name.to_owned());
-        self
-    }
-
-    pub fn starting_balance(mut self, money: Money) -> Self {
-        self.starting_balance = Some(money);
-        self
-    }
-}
-
-// TODO: make created_at non-null
 #[derive(Debug, Serialize, Clone, PartialEq,PartialOrd,Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
@@ -103,6 +79,7 @@ impl Account {
         let mut stmt = conn
             .prepare_cached("UPDATE accounts SET name=?1 WHERE id=?2 RETURNING *")?;
         let account = stmt.query_row([name,id],Self::from_row)?;
+        info!(id=?id,"Updated account name");
         Ok(account)
     }
 
@@ -111,30 +88,8 @@ impl Account {
         let mut stmt = conn
             .prepare_cached("UPDATE accounts SET starting_balance=?1 WHERE id=?2 RETURNING *")?;
         let account = stmt.query_row(params![balance.inner(),id],Self::from_row)?;
+        info!(id=?id,"Updated account starting balance");
         Ok(account)
-    }
-
-    pub async fn edit(
-        id: &str,
-        opts: EditAccount,
-        pool: &SqlitePool,
-    ) -> Result<Self, crate::Error> {
-        let account = Self::from_id(id, pool).await?;
-        let starting_balance = opts
-            .starting_balance
-            .unwrap_or(account.starting_balance)
-            .inner();
-        let name = opts.name.unwrap_or(account.name);
-
-        sqlx::query("UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3")
-            .bind(name)
-            .bind(starting_balance)
-            .bind(id)
-            .execute(pool)
-            .await?;
-
-        info!(id=?id,"Updated account");
-        Self::from_id(id, pool).await
     }
 
     // TODO: rename to fetch
