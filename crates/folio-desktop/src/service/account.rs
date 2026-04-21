@@ -44,6 +44,7 @@ impl EditAccount {
 }
 
 /// Service struct for creating, reading and editing accounts.
+#[derive(Clone)]
 pub struct AccountService{
     pool: SqlitePool
 }

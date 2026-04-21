@@ -33,6 +33,7 @@ use tokio::sync::Mutex;
 use tracing::{error, info};
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
+use crate::service::AccountService;
 
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
@@ -105,6 +106,7 @@ pub async fn run() {
 pub struct State {
     pool: SqlitePool,
     settings: Arc<Mutex<Settings>>,
+    account_service: AccountService
 }
 
 impl State {
@@ -112,6 +114,7 @@ impl State {
         let pool = init_database().await?;
         tracing::info!("Initialised database pool");
 
+        let account_service = AccountService::new(pool.clone());
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
         // FIXME: return error
@@ -124,6 +127,7 @@ impl State {
         Ok(Self {
             pool,
             settings: Arc::new(Mutex::new(settings)),
+            account_service
         })
     }
 }
