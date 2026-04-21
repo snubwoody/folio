@@ -43,13 +43,148 @@ impl EditAccount {
     }
 }
 
+/// Service struct for creating, reading and editing accounts.
+pub struct AccountService{
+    pool: SqlitePool
+}
+
+impl AccountService{
+    /// Creates a new [`AccountService`]
+    pub fn new(pool: SqlitePool) -> Self{
+        Self { pool }
+    }
+
+    /// Creates a new account.
+    pub async fn create_account(
+        &self,
+        name: &str,
+        starting_balance: Money,
+    ) -> crate::Result<Account> {
+        let now = Utc::now().timestamp();
+        let balance = starting_balance.inner();
+        let record = sqlx::query(
+            "INSERT INTO accounts(name,starting_balance,created_at) VALUES($1,$2,$3) RETURNING id",
+        )
+            .bind(name)
+            .bind(balance)
+            .bind(now)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let id: String = record.get("id");
+        info!(id=?id,"Created new account");
+        self.fetch_account(&id).await
+    }
+
+
+    /// Fetch the [`Account`] from the database.
+    ///
+    /// # Error
+    /// Returns an error if the account doesn't exist.
+    pub async fn fetch_account(&self,id: &str) -> crate::Result<Account> {
+        let record = sqlx::query!("SELECT * FROM accounts WHERE id = $1", id)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let starting_balance = Money::from_scaled(record.starting_balance);
+        let balance = self.calculate_balance(id).await? + starting_balance;
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
+        Ok(Account {
+            id: record.id,
+            name: record.name,
+            starting_balance,
+            balance,
+            created_at,
+        })
+    }
+
+
+    pub async fn edit_account(
+        &self,
+        id: &str,
+        opts: EditAccount,
+    ) -> crate::Result<Account> {
+        let account = self.fetch_account(id).await?;
+        let starting_balance = opts
+            .starting_balance
+            .unwrap_or(account.starting_balance)
+            .inner();
+        let name = opts.name.unwrap_or(account.name);
+
+        sqlx::query("UPDATE accounts SET name=$1,starting_balance=$2 WHERE id=$3")
+            .bind(name)
+            .bind(starting_balance)
+            .bind(id)
+            .execute(&self.pool)
+            .await?;
+
+        info!(id=?id,"Updated account");
+        self.fetch_account(id).await
+    }
+
+    /// Deletes an [`Account`].
+    pub async fn delete_account(&self,id: &str) -> crate::Result<()> {
+        sqlx::query("DELETE FROM accounts WHERE id=$1")
+            .bind(id)
+            .execute(&self.pool)
+            .await?;
+
+        info!(id=?id,"Deleted account");
+        Ok(())
+    }
+
+    /// Calculates the balance for an account. The balance is the sum of all expenses minus
+    /// the sum of all incomes.
+    pub async fn calculate_balance(&self,id: &str,) -> Result<Money, crate::Error> {
+        let total_expenses = sqlx::query!(
+            "
+                SELECT COALESCE(SUM(amount),0) as total FROM transactions WHERE from_account_id = $1
+                ",
+            id
+        )
+            .fetch_one(&self.pool)
+            .await?
+            .total;
+
+        let total_income = sqlx::query!(
+            "
+            SELECT COALESCE(SUM(amount),0) as total FROM transactions WHERE to_account_id = $1",
+            id
+        )
+            .fetch_one(&self.pool)
+            .await?
+            .total;
+
+        let difference = total_income - total_expenses;
+        Ok(Money::from_scaled(difference))
+    }
+
+    /// Fetch all the accounts from the database.
+    pub async fn fetch_all(&self) -> crate::Result<Vec<Account>> {
+        let records = sqlx::query!("SELECT id FROM accounts")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let mut accounts = vec![];
+        for record in records {
+            let account = self.fetch_account(&record.id).await?;
+            accounts.push(account);
+        }
+
+        Ok(accounts)
+    }
+}
+
+// TODO: move to models
 #[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub id: String,
     pub name: String,
     pub starting_balance: Money,
-    // TODO: fetch balance on demand
+    // TODO: deprecate: fetch balance on demand
     pub balance: Money,
     pub created_at: Option<DateTime<Utc>>,
 }
@@ -146,7 +281,6 @@ impl Account {
     }
 
     /// Delete an [`Account`].
-    #[allow(unused)]
     pub async fn delete(id: &str, pool: &SqlitePool) -> Result<(), crate::Error> {
         sqlx::query!("DELETE FROM accounts WHERE id=$1", id)
             .execute(pool)
