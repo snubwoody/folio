@@ -40,7 +40,8 @@
             {/if}
         </Select.Trigger>
         <Select.Portal>
-            <Select.Content class="popup-overlay space-y-1 select-content">
+            <Select.Content
+                class="popup-overlay space-y-1 select-content">
                 {#each items as { value,label,disabled } (value)}
                     <Select.Item value={value} label={label} {disabled} class="select-item">
                         {label}

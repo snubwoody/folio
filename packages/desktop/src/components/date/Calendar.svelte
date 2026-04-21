@@ -3,16 +3,25 @@
     import { ChevronLeft,ChevronRight } from "@lucide/svelte";
     import { getLocalTimeZone, today, type DateValue } from "@internationalized/date";
     import { TextButton } from "$components/button";
+    import DateField from "./DateField.svelte";
 
     type DateFn = (date: DateValue) => void;
 
     type Props = {
-        onDateChange?: DateFn;
+        /**
+         * The date change event fires whenever the date is changed, which occurs when a date
+         * button is clicked.
+         */
+        onDateChange?: DateFn
+        /**
+         * The bindable calendar value.
+         */
         value?: DateValue
     };
 
+    // TODO: default today
     let {
-        value = $bindable(),
+        value = $bindable(today(getLocalTimeZone())),
         onDateChange
     }:Props = $props();
 
@@ -24,6 +33,13 @@
     function setToday(){
         updateDate(today(getLocalTimeZone()));
     }
+
+    // TODO: focus trap
+    // TODO: ARIA label for date field or properties
+
+    // TODO: close on enter instead of click?
+    // TODO: focus trap on date cell after changing
+    // TODO: test that date field has focus
 </script>
 
 <Calendar.Root
@@ -36,6 +52,7 @@
     bind:value
 >
     {#snippet children({ months, weekdays })}
+        <DateField bind:value/>
         <Calendar.Header class="flex items-center justify-between px-0.5">
             <Calendar.Heading  class="font-semibold"/>
             <div class="flex items-center gap-1">
@@ -44,13 +61,12 @@
                     <Calendar.PrevButton class="icon-btn icon-btn-primary-icon icon-btn-medium">
                         <ChevronLeft strokeWidth="3"/>
                     </Calendar.PrevButton>
-                    <Calendar.NextButton class="icon-btn icon-btn-primary-icon icon-btn-medium">
+                    <Calendar.NextButton aria-label="Next month" class="icon-btn icon-btn-primary-icon icon-btn-medium">
                         <ChevronRight strokeWidth="3"/>
                     </Calendar.NextButton>
                 </div>
             </div>
         </Calendar.Header>
-        <div>
             {#each months as month, i (i)}
                 <Calendar.Grid>
                     <Calendar.GridHead>
@@ -78,6 +94,6 @@
                     </Calendar.GridBody>
                 </Calendar.Grid>
             {/each}
-        </div>
     {/snippet}
 </Calendar.Root>
+

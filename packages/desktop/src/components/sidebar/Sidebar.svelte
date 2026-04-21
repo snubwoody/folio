@@ -14,7 +14,7 @@
     };
 </script>
 
-<aside id="nav-panel" data-testid="nav-panel" data-expanded={expanded}>
+<aside id="nav-panel" data-testid="nav-panel" aria-label="Sidebar" data-expanded={expanded}>
     <div class="flex flex-col">
         <a href="/" class="page-link" data-selected={page.route.id === "/"}>
             <Landmark/>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { Popover } from "bits-ui";
-    import Calendar from "$components/Calendar.svelte";
+    import { Calendar } from "$components/date";
     import { type DateValue, toCalendarDate } from "@internationalized/date";
     import type { Transaction } from "$lib/api/transaction";
     import { TableCell } from "$components/table";
@@ -15,7 +15,6 @@
 
     let displayDate = $derived(formatDate(transaction.date));
 
-    // TODO: make editTransaction take date
     const updateDate = async (date: DateValue) => {
         calendarOpen = false;
 
@@ -29,12 +28,14 @@
 <TableCell>
     <Popover.Root bind:open={calendarOpen}>
         <Popover.Trigger class="text-left">
-            <time datetime={transaction.date.toString()}>
+            <time datetime={date.toString()}>
                 {displayDate}
             </time>
         </Popover.Trigger>
         <Popover.Portal>
-            <Popover.Content>
+            <Popover.Content
+                onCloseAutoFocus={(e) => e.preventDefault()}
+                onInteractOutside={() => updateDate(date)}>
                 <Calendar bind:value={date} onDateChange={updateDate}/>
             </Popover.Content>
         </Popover.Portal>
