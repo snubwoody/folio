@@ -4,36 +4,39 @@ use sqlx::SqlitePool;
 
 #[sqlx::test]
 async fn get_category_group(pool: SqlitePool) -> Result<()> {
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
     let row: CategoryGroup =
         sqlx::query_as("INSERT INTO category_groups(title) VALUES('Subscriptions') RETURNING *")
             .fetch_one(&pool)
             .await?;
-    let group = CategoryGroup::get(&row.id, &pool).await?;
+    let group = CategoryGroup::get(&row.id, &conn)?;
     assert_eq!(group.title, "Subscriptions");
     Ok(())
 }
 
 #[sqlx::test]
 async fn create_category_group(pool: SqlitePool) -> Result<()> {
-    let row = CategoryGroup::create("Wants", &pool).await?;
-    let group = CategoryGroup::get(&row.id, &pool).await?;
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
+    let row = CategoryGroup::create("Wants", &conn)?;
+    let group = CategoryGroup::get(&row.id, &conn)?;
     assert_eq!(group.title, "Wants");
     Ok(())
 }
 
 #[sqlx::test]
 async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
-    let row = CategoryGroup::create("Wants", &pool).await?;
-    CategoryGroup::set_title(&row.id, "Needs", &pool).await?;
-    let group = CategoryGroup::get(&row.id, &pool).await?;
-    assert_eq!(group.title, "Needs");
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
+    let row = CategoryGroup::create("Wants", &conn)?;
+    let new_group = CategoryGroup::set_title(&row.id, "Needs", &conn)?;
+    let group = CategoryGroup::get(&row.id, &conn)?;
+    assert_eq!(group.title,new_group.title);
     Ok(())
 }
 
 #[sqlx::test]
 async fn delete_category_group(pool: SqlitePool) -> Result<()> {
     let conn = setup_test_db(pool.connect_options().get_filename()).await;
-    let row = CategoryGroup::create("Wants", &pool).await?;
+    let row = CategoryGroup::create("Wants", &conn)?;
     CategoryGroup::delete(&row.id, &conn)?;
     let result = sqlx::query("SELECT * FROM category_groups WHERE id=$1")
         .bind(row.id)

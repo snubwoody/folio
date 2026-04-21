@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
-use rusqlite::Connection;
+use rusqlite::{Connection, Row};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqlitePool};
 
@@ -196,12 +196,12 @@ impl Category {
 
 // TODO: test is_sorted
 // TODO: add default "No group" in UI for categories without a group
-#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
+#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone,Default)]
 pub struct CategoryGroup {
     pub id: String,
     pub title: String,
     pub sort_order: i64,
-    pub created_at: i64,
+    pub created_at: DateTime<Utc>
 }
 
 // TODO: ops
@@ -210,42 +210,53 @@ pub struct CategoryGroup {
 // - Reorder
 impl CategoryGroup {
     /// Fetch a category group from the database.
-    pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let group: CategoryGroup = sqlx::query_as("SELECT * FROM category_groups WHERE id = $1")
-            .bind(id)
-            .fetch_one(pool)
-            .await?;
+    pub fn get(id: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt = conn
+            .prepare_cached("SELECT * FROM category_groups WHERE id=?")?;
+        let group = stmt.query_row([id],|row|Self::try_from(row))?;
         Ok(group)
     }
 
     /// Create a new category group.
-    pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let row: Self = sqlx::query_as("INSERT INTO category_groups(title) VALUES($1) RETURNING *")
-            .bind(title)
-            .fetch_one(pool)
-            .await?;
-
-        Ok(row)
+    pub fn create(title: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO category_groups(title) VALUES (?) RETURNING *")?;
+        let group = stmt.query_row([title],|row|Self::try_from(row))?;
+        Ok(group)
     }
 
     /// Update the title of the category group.
-    pub async fn set_title(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let row: Self =
-            sqlx::query_as("UPDATE category_groups SET title=$1 WHERE id=$2 RETURNING *")
-                .bind(title)
-                .bind(id)
-                .fetch_one(pool)
-                .await?;
+    pub fn set_title(id: &str, title: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt = conn
+            .prepare_cached("UPDATE category_groups SET title=?1 WHERE id=?2 RETURNING *")?;
 
-        Ok(row)
+        let category_group = stmt.query_row([title,id],|row|Self::try_from(row))?;
+        Ok(category_group)
     }
 
     pub fn delete(id: &str, conn: &Connection) -> crate::Result<()> {
-        // TODO: on cascade set null
+        // TODO: on delete cascade set null
         let mut stmt = conn.prepare_cached("DELETE FROM category_groups WHERE id=$1")?;
         stmt.execute([id])?;
 
         Ok(())
+    }
+}
+
+impl<'a> TryFrom<&Row<'a>> for CategoryGroup{
+    type Error = rusqlite::Error;
+
+    fn try_from(row: &Row) -> Result<Self, Self::Error> {
+        let created_at = DateTime::from_timestamp(row.get(3)?, 0)
+            .unwrap_or_default();
+        let group = Self{
+            id: row.get(0)?,
+            title: row.get(1)?,
+            sort_order: row.get(2)?,
+            created_at
+        };
+
+        Ok(group)
     }
 }
 
