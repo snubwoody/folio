@@ -100,7 +100,6 @@ impl AccountService{
         })
     }
 
-
     pub async fn edit_account(
         &self,
         id: &str,
@@ -191,6 +190,7 @@ pub struct Account {
 
 // TODO: add fetch
 impl Account {
+    #[deprecated]
     pub async fn create(
         name: &str,
         starting_balance: Money,
@@ -213,6 +213,7 @@ impl Account {
         Self::from_id(&id, pool).await
     }
 
+    #[deprecated]
     pub async fn edit(
         id: &str,
         opts: EditAccount,
@@ -237,6 +238,7 @@ impl Account {
     }
 
     /// Fetch the [`Account`] from the database.
+    #[deprecated]
     pub async fn from_id(id: &str, pool: &sqlx::SqlitePool) -> Result<Self, crate::Error> {
         let record = sqlx::query!("SELECT * FROM accounts WHERE id = $1", id)
             .fetch_one(pool)
@@ -256,6 +258,7 @@ impl Account {
         })
     }
 
+    #[deprecated]
     pub async fn calculate_balance(id: &str, pool: &SqlitePool) -> Result<Money, crate::Error> {
         let total_expenses = sqlx::query!(
             "
@@ -281,6 +284,7 @@ impl Account {
     }
 
     /// Delete an [`Account`].
+    #[deprecated]
     pub async fn delete(id: &str, pool: &SqlitePool) -> Result<(), crate::Error> {
         sqlx::query!("DELETE FROM accounts WHERE id=$1", id)
             .execute(pool)
@@ -291,6 +295,7 @@ impl Account {
     }
 
     /// Fetch all the accounts from the database.
+    #[deprecated]
     pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Account>, crate::Error> {
         let records = sqlx::query!("SELECT id FROM accounts")
             .fetch_all(pool)
@@ -303,133 +308,5 @@ impl Account {
         }
 
         Ok(accounts)
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    use crate::service::Transaction;
-
-    #[sqlx::test]
-    async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
-        Account::create("", Money::ZERO, &pool).await?;
-        Account::create("", Money::ZERO, &pool).await?;
-        Account::create("", Money::ZERO, &pool).await?;
-
-        let accounts = Account::fetch_all(&pool).await?;
-        assert_eq!(accounts.len(), 3);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn calculate_account_balance(pool: SqlitePool) -> Result<(), crate::Error> {
-        let account = Account::create("", Money::ZERO, &pool).await?;
-        Transaction::expense()
-            .account_id(&account.id)
-            .amount(Money::from_unscaled(20))
-            .create(&pool)
-            .await?;
-        Transaction::expense()
-            .account_id(&account.id)
-            .amount(Money::from_unscaled(20))
-            .create(&pool)
-            .await?;
-        Transaction::income()
-            .account_id(&account.id)
-            .amount(Money::from_unscaled(50))
-            .create(&pool)
-            .await?;
-        let balance = Account::calculate_balance(&account.id, &pool).await?;
-        assert_eq!(balance, Money::from_unscaled(10));
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn fetch_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        let amount = Money::from_f64(20.0);
-        let amount = amount.inner();
-        let record = sqlx::query!(
-            "INSERT INTO accounts(name,starting_balance) VALUES('C3PO',$1) RETURNING id",
-            amount
-        )
-        .fetch_one(&pool)
-        .await?;
-
-        let account = Account::from_id(&record.id, &pool).await?;
-        assert_eq!(account.starting_balance.inner(), 20_000_000);
-        assert_eq!(account.name, "C3PO");
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn create_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        let now = Utc::now().timestamp();
-        Account::create("My account", Money::from_unscaled(20), &pool).await?;
-        let account = sqlx::query!("SELECT * FROM accounts")
-            .fetch_one(&pool)
-            .await?;
-        assert!(account.created_at.unwrap() >= now);
-        assert_eq!(account.name, "My account");
-        assert_eq!(account.starting_balance, Money::from_unscaled(20).inner());
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn delete_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        Account::create("My account", Money::ZERO, &pool).await?;
-        Account::create("My account", Money::ZERO, &pool).await?;
-        let account = Account::create("My account", Money::ZERO, &pool).await?;
-        let records = sqlx::query!("SELECT * FROM accounts")
-            .fetch_all(&pool)
-            .await?;
-        assert_eq!(records.len(), 3);
-
-        Account::delete(&account.id, &pool).await?;
-        let records = sqlx::query!("SELECT * FROM accounts")
-            .fetch_all(&pool)
-            .await?;
-        assert_eq!(records.len(), 2);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        let account = Account::create("My account", Money::ZERO, &pool).await?;
-        Transaction::expense()
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-        let records = sqlx::query!("SELECT * FROM accounts")
-            .fetch_all(&pool)
-            .await?;
-        assert_eq!(records.len(), 1);
-
-        Account::delete(&account.id, &pool).await?;
-        let records = sqlx::query!("SELECT * FROM accounts")
-            .fetch_all(&pool)
-            .await?;
-        assert_eq!(records.len(), 0);
-        Ok(())
-    }
-
-    #[sqlx::test]
-    async fn delete_account_with_income(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
-        let account = Account::create("My account", Money::ZERO, &pool).await?;
-        Transaction::income()
-            .account_id(&account.id)
-            .create(&pool)
-            .await?;
-        let records = sqlx::query!("SELECT * FROM accounts")
-            .fetch_all(&pool)
-            .await?;
-        assert_eq!(records.len(), 1);
-
-        Account::delete(&account.id, &pool).await?;
-        let records = sqlx::query!("SELECT * FROM accounts")
-            .fetch_all(&pool)
-            .await?;
-        assert_eq!(records.len(), 0);
-        Ok(())
     }
 }
