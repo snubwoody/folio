@@ -235,19 +235,19 @@ pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> 
 }
 
 #[tauri::command]
-pub async fn create_account(
+pub fn create_account(
     state: tauri::State<'_, State>,
     name: &str,
     starting_balance: Money,
 ) -> Result<Account> {
-    Account::create(name, starting_balance, &state.pool)
-        .await
+    // TODO: wrap mutex error
+    Account::create(name, starting_balance, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 // FIXME: don't unwrap
 #[tauri::command]
-pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
+pub fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
     Account::calculate_balance(&id, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }

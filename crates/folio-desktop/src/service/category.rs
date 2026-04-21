@@ -253,11 +253,13 @@ impl CategoryGroup {
 mod test {
     use super::*;
     use crate::service::{Account, Transaction};
+    use crate::setup_test_db;
 
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let category = Category::create("", &pool).await?;
-        let account = Account::create("", Money::ZERO, &pool).await?;
+        let account = Account::create("", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(100))

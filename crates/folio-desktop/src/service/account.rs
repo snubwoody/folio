@@ -34,29 +34,21 @@ pub struct Account {
 
 // TODO: add fetch
 impl Account {
-    pub async fn create(
+    pub fn create(
         name: &str,
         starting_balance: Money,
-        pool: &SqlitePool,
+        conn: &Connection,
     ) -> Result<Self, crate::Error> {
-        // TODO: add currency code
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO accounts(name,starting_balance,created_at) VALUES(?1,?2,?3) RETURNING *")?;
         let now = Utc::now().timestamp();
         let balance = starting_balance.inner();
-        let record = sqlx::query(
-            "INSERT INTO accounts(name,starting_balance,created_at) VALUES($1,$2,$3) RETURNING id",
-        )
-        .bind(name)
-        .bind(balance)
-        .bind(now)
-        .fetch_one(pool)
-        .await?;
-
-        let id: String = record.get("id");
-        info!(id=?id,"Created new account");
-        Self::from_id(&id, pool).await
+        let account = stmt.query_row(params![name,balance,now],|row|Self::from_row(row))?;
+        info!(id=?account.id,"Created new account");
+        Ok(account)
     }
 
-    /// Parses an [`Account`] from a sqlite [`Row`]
+    /// Parses an [`Account`] from a sqlite [`Row`].
     ///
     /// [`Row`]: rusqlite::Row
     fn from_row(row: &rusqlite::Row) -> rusqlite::Result<Self>{
@@ -167,9 +159,10 @@ mod test {
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
-        Account::create("", Money::ZERO, &pool).await?;
-        Account::create("", Money::ZERO, &pool).await?;
-        Account::create("", Money::ZERO, &pool).await?;
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
+        Account::create("", Money::ZERO, &conn)?;
+        Account::create("", Money::ZERO, &conn)?;
+        Account::create("", Money::ZERO, &conn)?;
 
         let accounts = Account::fetch_all(&pool).await?;
         assert_eq!(accounts.len(), 3);
@@ -179,7 +172,7 @@ mod test {
     #[sqlx::test]
     async fn calculate_account_balance(pool: SqlitePool) -> Result<(), crate::Error> {
         let conn = setup_test_db(pool.connect_options().get_filename()).await;
-        let account = Account::create("", Money::ZERO, &pool).await?;
+        let account = Account::create("", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(20))
@@ -219,8 +212,9 @@ mod test {
 
     #[sqlx::test]
     async fn create_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let now = Utc::now().timestamp();
-        Account::create("My account", Money::from_unscaled(20), &pool).await?;
+        Account::create("My account", Money::from_unscaled(20), &conn)?;
         let account = sqlx::query!("SELECT * FROM accounts")
             .fetch_one(&pool)
             .await?;
@@ -233,9 +227,9 @@ mod test {
     #[sqlx::test]
     async fn delete_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let conn = setup_test_db(pool.connect_options().get_filename()).await;
-        Account::create("My account", Money::ZERO, &pool).await?;
-        Account::create("My account", Money::ZERO, &pool).await?;
-        let account = Account::create("My account", Money::ZERO, &pool).await?;
+        Account::create("My account", Money::ZERO, &conn)?;
+        Account::create("My account", Money::ZERO, &conn)?;
+        let account = Account::create("My account", Money::ZERO, &conn)?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;
@@ -252,7 +246,7 @@ mod test {
     #[sqlx::test]
     async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let conn = setup_test_db(pool.connect_options().get_filename()).await;
-        let account = Account::create("My account", Money::ZERO, &pool).await?;
+        let account = Account::create("My account", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&account.id)
             .create(&pool)
@@ -273,7 +267,7 @@ mod test {
     #[sqlx::test]
     async fn delete_account_with_income(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
         let conn = setup_test_db(pool.connect_options().get_filename()).await;
-        let account = Account::create("My account", Money::ZERO, &pool).await?;
+        let account = Account::create("My account", Money::ZERO, &conn)?;
         Transaction::income()
             .account_id(&account.id)
             .create(&pool)

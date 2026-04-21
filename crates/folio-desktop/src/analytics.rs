@@ -78,15 +78,16 @@ pub async fn analytics(pool: &SqlitePool) -> crate::Result<Vec<Analytic>> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::Money;
+    use crate::{setup_test_db, Money};
     use chrono::NaiveDate;
 
     use crate::service::{Account, Transaction};
 
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let c1 = Category::create("Expense", &pool).await?;
-        let a1 = Account::create("Expense", Money::ZERO, &pool).await?;
+        let a1 = Account::create("Expense", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
@@ -109,8 +110,9 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_analytics_in_current_month(pool: SqlitePool) -> crate::Result<()> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let c1 = Category::create("Expense", &pool).await?;
-        let a1 = Account::create("Expense", Money::ZERO, &pool).await?;
+        let a1 = Account::create("Expense", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
