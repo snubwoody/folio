@@ -73,7 +73,7 @@ impl Budget {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = Category::from_id(&record.category_id, pool).await?;
+        let category = Category::fetch(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
         let remaining = (total - total_spent).max(Money::ZERO);
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
@@ -96,7 +96,7 @@ impl Budget {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = Category::from_id(&record.category_id, pool).await?;
+        let category = Category::fetch(&record.category_id, pool).await?;
         let total_spent = Category::total_spent(&category.id, pool).await?;
         let remaining = total - total_spent;
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();

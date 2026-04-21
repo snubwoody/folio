@@ -29,7 +29,7 @@
 
 ## 1.4.0 - 15-02-2026
 
-- Every category must now have a budget, new categories will be have a corresponding budget created
+- Every category must now have a budget, new categories will have a corresponding budget created
   
 ### Improvements
 

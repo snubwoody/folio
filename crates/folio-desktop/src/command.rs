@@ -201,9 +201,8 @@ pub async fn fetch_transactions(state: tauri::State<'_, State>) -> Result<Vec<Tr
 }
 
 #[tauri::command]
-pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Category::delete(&id, &state.pool)
-        .await
+pub fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
+    Category::delete(&id, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -215,13 +214,12 @@ pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()
 }
 
 #[tauri::command]
-pub async fn edit_category(
+pub fn edit_category(
     state: tauri::State<'_, State>,
     id: String,
     title: String,
 ) -> Result<Category> {
-    Category::edit(&id, &title, &state.pool)
-        .await
+    Category::edit(&id, &title, &state.connection.lock().unwrap())
         .context("Failed to edit category")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -260,9 +258,8 @@ pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Accoun
 }
 
 #[tauri::command]
-pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
-    Category::fetch_all(&state.pool)
-        .await
+pub fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
+    Category::fetch_all(&state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -347,9 +344,8 @@ pub fn set_account_starting_balance(
 }
 
 #[tauri::command]
-pub async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
-    Category::create_income_stream(title, &state.pool)
-        .await
+pub fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
+    Category::create_income_stream(title, &state.connection.lock().unwrap())
         .context("Failed to create income stream")
         .inspect_err(|err| warn!("{}", err.report()))
 }

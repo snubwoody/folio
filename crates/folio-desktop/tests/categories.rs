@@ -49,9 +49,10 @@ async fn delete_category_group(pool: SqlitePool) -> Result<()> {
 
 #[sqlx::test]
 async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
     let category = Category::create("__", &pool).await?;
-    Category::delete(&category.id, &pool).await?;
-    let c = Category::from_id(&category.id, &pool).await?;
+    Category::delete(&category.id, &conn)?;
+    let c = Category::fetch(&category.id, &pool).await?;
     assert!(c.deleted_at.is_some());
     Ok(())
 }
@@ -81,24 +82,26 @@ async fn create_budget_after_category(pool: SqlitePool) -> Result<()> {
 
 #[sqlx::test]
 async fn edit_category(pool: SqlitePool) -> Result<()> {
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
     let category = Category::create("__", &pool).await?;
-    let category = Category::edit(&category.id, "__MINE__", &pool).await?;
+    let category = Category::edit(&category.id, "Go/jo", &conn)?;
 
     let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
         .fetch_one(&pool)
         .await?;
 
-    assert_eq!(record.title, "__MINE__");
+    assert_eq!(record.title, "Go/jo");
     Ok(())
 }
 
 #[sqlx::test]
 async fn fetch_categories_not_deleted(pool: SqlitePool) -> crate::Result<()> {
+    let conn = setup_test_db(pool.connect_options().get_filename()).await;
     let len1 = Category::fetch_categories(&pool).await?.len();
     Category::create("title", &pool).await?;
     let c = Category::create("title", &pool).await?;
-    Category::delete(&c.id, &pool).await?;
+    Category::delete(&c.id, &conn)?;
     let len2 = Category::fetch_categories(&pool).await?.len();
-    assert!(len1 + 1 == len2);
+    assert_eq!(len1 + 1, len2);
     Ok(())
 }
