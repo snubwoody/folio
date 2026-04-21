@@ -380,7 +380,7 @@ async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
     let conn = setup_test_db(pool.connect_options().get_filename()).await;
     let account = Account::create("__", Money::ZERO, &conn)?;
     let account2 = Account::create("__", Money::ZERO, &conn)?;
-    let category = Category::create("", &pool).await?;
+    let category = Category::create("", &conn)?;
     let transaction = Transaction::income()
         .amount(Money::MAX)
         .category(&category.id)

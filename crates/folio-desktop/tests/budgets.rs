@@ -5,8 +5,8 @@ use sqlx::SqlitePool;
 #[sqlx::test]
 async fn filter_deleted_budgets(pool: SqlitePool) -> Result<()> {
     let conn = setup_test_db(pool.connect_options().get_filename()).await;
-    let c = Category::create("", &pool).await?;
-    let result = Budget::from_category(&c.id, &pool).await;
+    let c = Category::create("", &conn)?;
+    let result = Budget::from_category(&c.id, &conn);
     assert!(result.is_ok());
     Category::delete(&c.id, &conn)?;
     let budgets = fetch_budgets(&pool).await?;

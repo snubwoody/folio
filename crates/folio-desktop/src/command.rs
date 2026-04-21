@@ -207,9 +207,8 @@ pub fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()>
 }
 
 #[tauri::command]
-pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
-    service::create_missing_budgets(&state.pool)
-        .await
+pub fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
+    service::create_missing_budgets(&state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -271,40 +270,36 @@ pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>
 }
 
 #[tauri::command]
-pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
-    Budget::from_category(&category_id, &state.pool)
-        .await
+pub fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
+    Budget::from_category(&category_id, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
-pub async fn create_budget(
+pub fn create_budget(
     amount: &str,
     category_id: &str,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::create(Money::from_str(amount)?, category_id, &state.pool)
-        .await
+    Budget::create(Money::from_str(amount)?, category_id, &state.connection.lock().unwrap())
         .context("Failed to create budget")
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
-pub async fn edit_budget(
+pub fn edit_budget(
     id: String,
     amount: Money,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::edit(&id, amount, &state.pool)
-        .await
+    Budget::edit(&id, amount, &state.connection.lock().unwrap())
         .context("Failed to edit budget")
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
-pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
-    Category::create(title, &state.pool)
-        .await
+pub fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
+    Category::create(title, &state.connection.lock().unwrap())
         .context("Failed to create category")
         .inspect_err(|err| warn!("{}", err.report()))
 }

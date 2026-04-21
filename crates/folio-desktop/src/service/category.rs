@@ -37,20 +37,10 @@ impl Category {
     /// will be created as well. To only create a category use [`create_raw`].
     ///
     /// [`create_raw`]: Category::create_raw
-    pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let now = Utc::now().timestamp();
-        let record: db::Category =
-            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
-                .bind(title)
-                .bind(now)
-                .fetch_one(pool)
-                .await?;
-
-        tracing::info!(id=?record.id,"Created new category");
-
-        Budget::create(Money::ZERO, &record.id, pool).await?;
-
-        Category::fetch(&record.id, pool).await
+    pub fn create(title: &str, conn: &Connection) -> crate::Result<Self> {
+        let category = Category::create_raw(title,conn)?;
+        Budget::create(Money::ZERO, &category.id, conn)?;
+        Ok(category)
     }
 
     pub fn create_income_stream(title: &str, conn: &Connection) -> crate::Result<Self> {
@@ -66,56 +56,21 @@ impl Category {
     }
 
     /// Creates a category without creating a budget.
-    pub async fn create_raw(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
+    pub fn create_raw(title: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO categories(title,created_at) VALUES(?1,?2) RETURNING *")?;
         let now = Utc::now().timestamp();
-        let record: db::Category =
-            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
-                .bind(title)
-                .bind(now)
-                .fetch_one(pool)
-                .await?;
+        let category = stmt.query_row(params![title,now],|row|Self::try_from(row))?;
 
-        tracing::info!(id=?record.id,"Created new category");
+        tracing::info!(id=?category.id,"Created new category");
 
-        // TODO: just use return value
-        Category::fetch(&record.id, pool).await
+        Ok(category)
     }
 
     /// Fetch the category from the database.
-    pub async fn fetch(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let record: db::Category = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
-            .bind(id)
-            .fetch_one(pool)
-            .await?;
-
-        //
-        // let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE id=$1")?;
-        // let a  = stmt.query_map([id],|row|{
-        //     dbg!(row);
-        //    Ok(Category{
-        //        id: row.get(0)?,
-        //        title: row.get(1)?,
-        //        created_at: None,
-        //        deleted_at: None,
-        //        is_income_stream: row.get(5)?,
-        //    })
-        // })?;
-
-        let created_at = record
-            .created_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-        let deleted_at = record
-            .deleted_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-
-        let category = Category {
-            id: record.id,
-            title: record.title,
-            created_at,
-            deleted_at,
-            is_income_stream: record.is_income_stream,
-        };
-
+    pub fn fetch(id: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE id=?")?;
+        let category = stmt.query_row([id],|row|Self::try_from(row))?;
         Ok(category)
     }
 
@@ -168,23 +123,7 @@ impl Category {
         }
         Ok(categories)
     }
-
-    // TODO: deprecate this
-    #[deprecated]
-    pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
-        let records: Vec<db::Category> = sqlx::query_as(
-            "SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false",
-        )
-        .fetch_all(pool)
-        .await?;
-
-        let mut categories = vec![];
-        for record in records {
-            let category = Self::fetch(&record.id, pool).await?;
-            categories.push(category);
-        }
-        Ok(categories)
-    }
+    
 }
 
 // TODO: test is_sorted
@@ -289,7 +228,7 @@ mod test {
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
         let conn = setup_test_db(pool.connect_options().get_filename()).await;
-        let category = Category::create("", &pool).await?;
+        let category = Category::create("", &conn)?;
         let account = Account::create("", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&account.id)
@@ -316,9 +255,9 @@ mod test {
         let rows = sqlx::query!("SELECT id FROM categories")
             .fetch_all(&pool)
             .await?;
-        Category::create("", &pool).await?;
-        Category::create("", &pool).await?;
-        Category::create("", &pool).await?;
+        Category::create("", &conn)?;
+        Category::create("", &conn)?;
+        Category::create("", &conn)?;
         let categories = Category::fetch_all(&conn)?;
         assert_eq!(categories.len(), rows.len() + 3);
         Ok(())
@@ -326,19 +265,21 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_category(pool: SqlitePool) -> crate::Result<()> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let record = sqlx::query!("INSERT INTO categories(title) VALUES('Rent') RETURNING id")
             .fetch_one(&pool)
             .await?;
 
-        let category = Category::fetch(&record.id, &pool).await?;
+        let category = Category::fetch(&record.id, &conn)?;
         assert_eq!(category.title, "Rent");
         Ok(())
     }
 
     #[sqlx::test]
     async fn create_category(pool: SqlitePool) -> crate::Result<()> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let now = Utc::now().timestamp();
-        let category = Category::create("Ent", &pool).await?;
+        let category = Category::create("Ent", &conn)?;
         let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
             .fetch_one(&pool)
             .await?;
