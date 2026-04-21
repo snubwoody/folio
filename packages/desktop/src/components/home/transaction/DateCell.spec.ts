@@ -26,7 +26,7 @@ test("Format date",async() => {
             };
             return transaction;
         }
-    });q
+    });
     const transaction: Transaction = {
         id: "1",
         amount: "10.00",
