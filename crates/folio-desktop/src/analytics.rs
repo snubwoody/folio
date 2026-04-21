@@ -78,28 +78,27 @@ pub async fn analytics(pool: &SqlitePool) -> crate::Result<Vec<Analytic>> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::Money;
+    use crate::{Money, setup_test_db};
     use chrono::NaiveDate;
 
     use crate::service::{Account, Transaction};
 
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
-        let c1 = Category::create("Expense", &pool).await?;
-        let a1 = Account::create("Expense", Money::ZERO, &pool).await?;
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
+        let c1 = Category::create("Expense", &conn)?;
+        let a1 = Account::create("Expense", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics.len(), 1);
@@ -109,22 +108,21 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_analytics_in_current_month(pool: SqlitePool) -> crate::Result<()> {
-        let c1 = Category::create("Expense", &pool).await?;
-        let a1 = Account::create("Expense", Money::ZERO, &pool).await?;
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
+        let c1 = Category::create("Expense", &conn)?;
+        let a1 = Account::create("Expense", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .date(NaiveDate::MIN)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics[0].total, Money::from_unscaled(100));

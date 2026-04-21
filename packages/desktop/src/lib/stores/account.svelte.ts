@@ -19,11 +19,6 @@ import { logger } from "../utils/logger";
 import type { Transaction } from "$lib/api/transaction";
 import { mockIPC } from "@tauri-apps/api/mocks";
 
-interface EditAccount{
-    name?: string
-    startingBalance?: string
-}
-
 export class AccountStore{
     #accounts: Account[] = $state([]);
     #accountMap: SvelteMap<string,Account> = $derived(new SvelteMap(this.accounts.map(a => [a.id,a])));
@@ -57,8 +52,16 @@ export class AccountStore{
         return account;
     }
 
-    async editAccount(id: string, opts: EditAccount) {
-        const account = await invoke<Account>("edit_account", { id, opts });
+    async setAccountName(id: string, name: string) {
+        const account = await invoke<Account>("set_account_name", { id, name });
+        const index = this.#accounts.findIndex(
+            (a) => a.id === account.id
+        );
+        this.#accounts[index] = account;
+    }
+
+    async setAccountStartingBalance(id: string, name: string) {
+        const account = await invoke<Account>("set_account_name", { id, name });
         const index = this.#accounts.findIndex(
             (a) => a.id === account.id
         );

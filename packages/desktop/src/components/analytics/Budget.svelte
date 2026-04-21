@@ -32,6 +32,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
         formatAmountWithoutSymbol(budget.amount)
     );
 
+    // FIXME: fetch from categories
     async function updateAmount(newAmount: string) {
         await appStore.editBudget(budget.id, newAmount);
         amount = parseFloat(newAmount);

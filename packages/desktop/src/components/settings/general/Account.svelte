@@ -36,7 +36,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     <div class="space-y-0.5">
         <InlineTextField
             value={account.name}
-            onChange={(value) => accountStore.editAccount(account.id, { name: value })}
+            onChange={(value) => accountStore.setAccountName(account.id,value)}
         />
         <div class="flex gap-0.5 items-center">
             <p class="text-sm">
@@ -45,7 +45,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <InlineTextField
                 class="text-sm"
                 value={amount}
-                onChange={(value) => accountStore.editAccount(account.id, { startingBalance: value })}
+                onChange={(value) => accountStore.setAccountStartingBalance(account.id,value)}
             />
         </div>
     </div>

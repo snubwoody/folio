@@ -9,6 +9,7 @@
 
     const total = $derived.by(() => {
         // TODO: test 0 accounts
+        // TODO: use account_balance command
         const t = accountStore.accounts.map(a => parseFloat(a.balance)).reduce((prev, current) => current + prev,0);
         return t.toString();
     });
