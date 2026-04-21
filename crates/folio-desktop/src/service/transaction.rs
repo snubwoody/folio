@@ -88,21 +88,26 @@ impl TransactionBuilder<Income> {
         self
     }
 
-    pub async fn create(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "INSERT INTO transactions(transaction_date,to_account_id,amount,note,category_id)
-                VALUES ($1,$2,$3,$4,$5)
-                RETURNING *",
-        )
-        .bind(self.transaction_date)
-        .bind(self.to_account_id.unwrap_or_default())
-        .bind(self.amount.inner())
-        .bind(self.note)
-        .bind(self.category_id)
-        .fetch_one(pool)
-        .await?;
-        info!(id=?row.id,"Created new income");
-        Ok(row)
+    pub fn create(self, conn: &Connection) -> crate::Result<Transaction> {
+        let mut stmt = conn.prepare_cached(
+            "\
+            INSERT INTO transactions(transaction_date,to_account_id,amount,note,category_id)\
+            VALUES(?1,?2,?3,?4,?5)\
+            RETURNING *
+            ",
+        )?;
+
+        let params = params![
+            self.transaction_date,
+            self.to_account_id.unwrap_or_default(),
+            self.amount.inner(),
+            self.note,
+            self.category_id,
+        ];
+        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
+
+        info!(id=?transaction.id,"Created new income");
+        Ok(transaction)
     }
 }
 

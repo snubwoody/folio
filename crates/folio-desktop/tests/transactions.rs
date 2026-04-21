@@ -11,13 +11,11 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
     let transaction = Transaction::income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
     let transaction2 = Transaction::income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -130,8 +128,7 @@ async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .account_id(&account.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -297,8 +294,7 @@ async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::income()
         .amount(Money::ZERO)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_account(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -334,8 +330,7 @@ async fn set_payee_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -373,8 +368,7 @@ async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
         .amount(Money::MAX)
         .category(&category.id)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -389,8 +383,7 @@ async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -444,8 +437,7 @@ async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
