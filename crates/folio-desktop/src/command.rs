@@ -254,8 +254,7 @@ pub fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Mon
 
 #[tauri::command]
 pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
-    Account::fetch_all(&state.pool)
-        .await
+    Account::fetch_all(&state.connection.lock().unwrap())
         .context("Failed to fetch accounts")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -333,7 +332,7 @@ pub fn set_account_name(
     id: String,
     name: String,
 ) -> Result<Account> {
-    Account::set_name(&id, &name,&state.connection.lock().unwrap())
+    Account::set_name(&id, &name, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -343,7 +342,7 @@ pub fn set_account_starting_balance(
     id: String,
     balance: Money,
 ) -> Result<Account> {
-    Account::set_starting_balance(&id, balance,&state.connection.lock().unwrap())
+    Account::set_starting_balance(&id, balance, &state.connection.lock().unwrap())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

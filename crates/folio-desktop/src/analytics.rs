@@ -78,7 +78,7 @@ pub async fn analytics(pool: &SqlitePool) -> crate::Result<Vec<Analytic>> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{setup_test_db, Money};
+    use crate::{Money, setup_test_db};
     use chrono::NaiveDate;
 
     use crate::service::{Account, Transaction};

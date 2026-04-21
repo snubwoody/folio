@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
-use folio_lib::{setup_test_db, Money};
 use folio_lib::service::{Account, Category, Transaction, TransactionType};
+use folio_lib::{Money, setup_test_db};
 use sqlx::{Row, SqlitePool};
 use std::str::FromStr;
 

@@ -15,13 +15,11 @@
 
 use crate::Money;
 use chrono::{DateTime, Utc};
-use rusqlite::{params, Connection};
-use serde::{Deserialize, Serialize};
-use sqlx::{Row, SqlitePool};
+use rusqlite::{Connection, params};
+use serde::Serialize;
 use tracing::info;
 
-
-#[derive(Debug, Serialize, Clone, PartialEq,PartialOrd,Default)]
+#[derive(Debug, Serialize, Clone, PartialEq, PartialOrd, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub id: String,
@@ -39,11 +37,12 @@ impl Account {
         starting_balance: Money,
         conn: &Connection,
     ) -> Result<Self, crate::Error> {
-        let mut stmt = conn
-            .prepare_cached("INSERT INTO accounts(name,starting_balance,created_at) VALUES(?1,?2,?3) RETURNING *")?;
+        let mut stmt = conn.prepare_cached(
+            "INSERT INTO accounts(name,starting_balance,created_at) VALUES(?1,?2,?3) RETURNING *",
+        )?;
         let now = Utc::now().timestamp();
         let balance = starting_balance.inner();
-        let account = stmt.query_row(params![name,balance,now],|row|Self::from_row(row))?;
+        let account = stmt.query_row(params![name, balance, now], Self::from_row)?;
         info!(id=?account.id,"Created new account");
         Ok(account)
     }
@@ -51,11 +50,15 @@ impl Account {
     /// Parses an [`Account`] from a sqlite [`Row`].
     ///
     /// [`Row`]: rusqlite::Row
-    fn from_row(row: &rusqlite::Row) -> rusqlite::Result<Self>{
-        let created_at = DateTime::from_timestamp(row.get(3)?,0);
+    fn from_row(row: &rusqlite::Row) -> rusqlite::Result<Self> {
+        let created_at = match row.get(3) {
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
+        };
+
         let starting_balance = Money::from_scaled(row.get(2)?);
         // FIXME: calculate balance
-        let account = Account{
+        let account = Account {
             id: row.get(0)?,
             name: row.get(1)?,
             balance: Money::ZERO,
@@ -67,58 +70,48 @@ impl Account {
     }
 
     /// Sets the account name.
-    pub fn set_name(id:&str,name:&str,conn: &Connection) -> crate::Result<Self>{
-        let mut stmt = conn
-            .prepare_cached("UPDATE accounts SET name=?1 WHERE id=?2 RETURNING *")?;
-        let account = stmt.query_row([name,id],Self::from_row)?;
+    pub fn set_name(id: &str, name: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt =
+            conn.prepare_cached("UPDATE accounts SET name=?1 WHERE id=?2 RETURNING *")?;
+        let account = stmt.query_row([name, id], Self::from_row)?;
         info!(id=?id,"Updated account name");
         Ok(account)
     }
 
     /// Sets the account starting balance.
-    pub fn set_starting_balance(id:&str,balance:Money,conn: &Connection) -> crate::Result<Self>{
-        let mut stmt = conn
-            .prepare_cached("UPDATE accounts SET starting_balance=?1 WHERE id=?2 RETURNING *")?;
-        let account = stmt.query_row(params![balance.inner(),id],Self::from_row)?;
+    pub fn set_starting_balance(
+        id: &str,
+        balance: Money,
+        conn: &Connection,
+    ) -> crate::Result<Self> {
+        let mut stmt =
+            conn.prepare_cached("UPDATE accounts SET starting_balance=?1 WHERE id=?2 RETURNING *")?;
+        let account = stmt.query_row(params![balance.inner(), id], Self::from_row)?;
         info!(id=?id,"Updated account starting balance");
         Ok(account)
     }
 
-    // TODO: rename to fetch
     /// Fetch the [`Account`] from the database.
-    pub async fn from_id(id: &str, pool: &sqlx::SqlitePool) -> Result<Self, crate::Error> {
-        let record = sqlx::query!("SELECT * FROM accounts WHERE id = $1", id)
-            .fetch_one(pool)
-            .await?;
-
-        let starting_balance = Money::from_scaled(record.starting_balance);
-        // FIXME:
-        // let balance = Self::calculate_balance(id, pool).await? + starting_balance;
-        let balance = Money::ZERO;
-        let created_at = record
-            .created_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-        Ok(Self {
-            id: record.id,
-            name: record.name,
-            starting_balance,
-            balance,
-            created_at,
-        })
+    pub fn fetch(id: &str, conn: &Connection) -> Result<Self, crate::Error> {
+        let mut stmt = conn.prepare_cached("SELECT * FROM accounts WHERE id=?")?;
+        let account = stmt.query_row([id], Self::from_row)?;
+        Ok(account)
     }
 
     /// Calculate the current account balance.
     pub fn calculate_balance(id: &str, conn: &Connection) -> Result<Money, crate::Error> {
-        let mut expense_stmt = conn
-            .prepare_cached("SELECT COALESCE(SUM(amount),0) FROM transactions WHERE from_account_id = ?1")?;
-        let mut income_stmt = conn
-            .prepare_cached("SELECT COALESCE(SUM(amount),0) FROM transactions WHERE to_account_id = ?1")?;
+        let mut expense_stmt = conn.prepare_cached(
+            "SELECT COALESCE(SUM(amount),0) FROM transactions WHERE from_account_id = ?1",
+        )?;
+        let mut income_stmt = conn.prepare_cached(
+            "SELECT COALESCE(SUM(amount),0) FROM transactions WHERE to_account_id = ?1",
+        )?;
 
-        let total_expenses = expense_stmt.query_row([id],|row|{
+        let total_expenses = expense_stmt.query_row([id], |row| {
             let amount: i64 = row.get(0)?;
             Ok(Money::from_scaled(amount))
         })?;
-        let total_income = income_stmt.query_row([id],|row|{
+        let total_income = income_stmt.query_row([id], |row| {
             let amount: i64 = row.get(0)?;
             Ok(Money::from_scaled(amount))
         })?;
@@ -126,25 +119,21 @@ impl Account {
         Ok(difference)
     }
 
-
     /// Delete an [`Account`].
     pub fn delete(id: &str, conn: &Connection) -> Result<(), crate::Error> {
-        conn.execute("DELETE FROM accounts WHERE id=$1",[id])?;
+        conn.execute("DELETE FROM accounts WHERE id=$1", [id])?;
         info!(id=?id,"Deleted account");
         Ok(())
     }
 
     /// Fetch all the accounts from the database.
-    pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Account>, crate::Error> {
-        // FIXME: don't fetch twice just remove balance field
-        let records = sqlx::query!("SELECT id FROM accounts")
-            .fetch_all(pool)
-            .await?;
-
+    pub fn fetch_all(conn: &Connection) -> Result<Vec<Account>, crate::Error> {
+        let mut stmt = conn.prepare_cached("SELECT * FROM accounts")?;
+        let rows = stmt.query_map([], Account::from_row)?;
         let mut accounts = vec![];
-        for record in records {
-            let account = Account::from_id(&record.id, pool).await?;
-            accounts.push(account);
+
+        for account in rows {
+            accounts.push(account?);
         }
 
         Ok(accounts)
@@ -156,6 +145,7 @@ mod test {
     use super::*;
     use crate::service::Transaction;
     use crate::setup_test_db;
+    use sqlx::SqlitePool;
 
     #[sqlx::test]
     async fn get_accounts(pool: SqlitePool) -> Result<(), crate::Error> {
@@ -164,7 +154,7 @@ mod test {
         Account::create("", Money::ZERO, &conn)?;
         Account::create("", Money::ZERO, &conn)?;
 
-        let accounts = Account::fetch_all(&pool).await?;
+        let accounts = Account::fetch_all(&conn)?;
         assert_eq!(accounts.len(), 3);
         Ok(())
     }
@@ -195,6 +185,7 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_account(pool: sqlx::SqlitePool) -> Result<(), crate::Error> {
+        let conn = setup_test_db(pool.connect_options().get_filename()).await;
         let amount = Money::from_f64(20.0);
         let amount = amount.inner();
         let record = sqlx::query!(
@@ -204,7 +195,7 @@ mod test {
         .fetch_one(&pool)
         .await?;
 
-        let account = Account::from_id(&record.id, &pool).await?;
+        let account = Account::fetch(&record.id, &conn)?;
         assert_eq!(account.starting_balance.inner(), 20_000_000);
         assert_eq!(account.name, "C3PO");
         Ok(())
@@ -235,7 +226,7 @@ mod test {
             .await?;
         assert_eq!(records.len(), 3);
 
-        Account::delete(&account.id,&conn)?;
+        Account::delete(&account.id, &conn)?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;

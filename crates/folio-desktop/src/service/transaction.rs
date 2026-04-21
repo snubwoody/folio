@@ -1,9 +1,9 @@
 use crate::{Error, Money};
 use chrono::{Local, NaiveDate};
+use rusqlite::{Connection, params_from_iter};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
 use std::marker::PhantomData;
-use rusqlite::{params_from_iter, Connection};
 use tracing::info;
 
 pub struct Expense;
@@ -313,18 +313,18 @@ impl Transaction {
             return Ok(());
         }
         let mut query = String::from("DELETE FROM transactions WHERE id IN ");
-        query.push_str("(");
-        for (index,_) in ids.iter().enumerate() {
+        query.push('(');
+        for (index, _) in ids.iter().enumerate() {
             if index == ids.len() - 1 {
-                query.push_str("?");
+                query.push('?');
                 continue;
             }
             query.push_str("?,");
         }
-        query.push_str(")");
+        query.push(')');
 
         let mut stmt = conn.prepare_cached(&query)?;
-        let params = params_from_iter(ids.into_iter().map(|id|id.as_ref()));
+        let params = params_from_iter(ids.iter().map(|id| id.as_ref()));
         stmt.execute(params)?;
 
         info!("Deleted {} transactions", ids.len());
