@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
-use rusqlite::{params, Connection, Row};
+use rusqlite::{Connection, Row, params};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, SqlitePool};
 
@@ -38,7 +38,7 @@ impl Category {
     ///
     /// [`create_raw`]: Category::create_raw
     pub fn create(title: &str, conn: &Connection) -> crate::Result<Self> {
-        let category = Category::create_raw(title,conn)?;
+        let category = Category::create_raw(title, conn)?;
         Budget::create(Money::ZERO, &category.id, conn)?;
         Ok(category)
     }
@@ -48,7 +48,7 @@ impl Category {
             .prepare_cached("INSERT INTO categories(title,created_at,is_income_stream) VALUES(?1,?2,true) RETURNING *")?;
 
         let now = Utc::now().timestamp();
-        let category = stmt.query_row(params![title,now],|row|Self::try_from(row))?;
+        let category = stmt.query_row(params![title, now], |row| Self::try_from(row))?;
 
         tracing::info!(id=?category.id,"Created new income stream");
 
@@ -60,7 +60,7 @@ impl Category {
         let mut stmt = conn
             .prepare_cached("INSERT INTO categories(title,created_at) VALUES(?1,?2) RETURNING *")?;
         let now = Utc::now().timestamp();
-        let category = stmt.query_row(params![title,now],|row|Self::try_from(row))?;
+        let category = stmt.query_row(params![title, now], |row| Self::try_from(row))?;
 
         tracing::info!(id=?category.id,"Created new category");
 
@@ -70,15 +70,15 @@ impl Category {
     /// Fetch the category from the database.
     pub fn fetch(id: &str, conn: &Connection) -> crate::Result<Self> {
         let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE id=?")?;
-        let category = stmt.query_row([id],|row|Self::try_from(row))?;
+        let category = stmt.query_row([id], |row| Self::try_from(row))?;
         Ok(category)
     }
 
     /// Edit a category.
     pub fn edit(id: &str, title: &str, conn: &Connection) -> crate::Result<Self> {
-        let mut stmt = conn
-            .prepare_cached("UPDATE categories SET title=?1 WHERE id=?2 RETURNING *")?;
-        let category = stmt.query_row([title,id],|row|Self::try_from(row))?;
+        let mut stmt =
+            conn.prepare_cached("UPDATE categories SET title=?1 WHERE id=?2 RETURNING *")?;
+        let category = stmt.query_row([title, id], |row| Self::try_from(row))?;
         Ok(category)
     }
 
@@ -86,7 +86,7 @@ impl Category {
     pub fn delete(id: &str, conn: &Connection) -> crate::Result<()> {
         let mut stmt = conn.prepare_cached("UPDATE categories SET deleted_at=?2 WHERE id=?1")?;
         let now = Utc::now().timestamp();
-        stmt.execute(params![id,now])?;
+        stmt.execute(params![id, now])?;
 
         Ok(())
     }
@@ -114,27 +114,25 @@ impl Category {
 
     /// Fetches all the categories from the database
     pub fn fetch_all(conn: &Connection) -> Result<Vec<Self>, crate::Error> {
-        let mut stmt = conn
-            .prepare_cached("SELECT * FROM categories WHERE deleted_at IS NULL")?;
-        let rows = stmt.query_map([],|row|Self::try_from(row))?;
+        let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE deleted_at IS NULL")?;
+        let rows = stmt.query_map([], |row| Self::try_from(row))?;
         let mut categories = vec![];
-        for row in rows{
+        for row in rows {
             categories.push(row?)
         }
         Ok(categories)
     }
-    
 }
 
 // TODO: test is_sorted
 // TODO: add default "No group" in UI for categories without a group
-#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone,Default)]
+#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct CategoryGroup {
     pub id: String,
     pub title: String,
     pub sort_order: i64,
-    pub created_at: DateTime<Utc>
+    pub created_at: DateTime<Utc>,
 }
 
 // TODO: ops
@@ -144,26 +142,25 @@ pub struct CategoryGroup {
 impl CategoryGroup {
     /// Fetch a category group from the database.
     pub fn get(id: &str, conn: &Connection) -> crate::Result<Self> {
-        let mut stmt = conn
-            .prepare_cached("SELECT * FROM category_groups WHERE id=?")?;
-        let group = stmt.query_row([id],|row|Self::try_from(row))?;
+        let mut stmt = conn.prepare_cached("SELECT * FROM category_groups WHERE id=?")?;
+        let group = stmt.query_row([id], |row| Self::try_from(row))?;
         Ok(group)
     }
 
     /// Create a new category group.
     pub fn create(title: &str, conn: &Connection) -> crate::Result<Self> {
-        let mut stmt = conn
-            .prepare_cached("INSERT INTO category_groups(title) VALUES (?) RETURNING *")?;
-        let group = stmt.query_row([title],|row|Self::try_from(row))?;
+        let mut stmt =
+            conn.prepare_cached("INSERT INTO category_groups(title) VALUES (?) RETURNING *")?;
+        let group = stmt.query_row([title], |row| Self::try_from(row))?;
         Ok(group)
     }
 
     /// Update the title of the category group.
     pub fn set_title(id: &str, title: &str, conn: &Connection) -> crate::Result<Self> {
-        let mut stmt = conn
-            .prepare_cached("UPDATE category_groups SET title=?1 WHERE id=?2 RETURNING *")?;
+        let mut stmt =
+            conn.prepare_cached("UPDATE category_groups SET title=?1 WHERE id=?2 RETURNING *")?;
 
-        let category_group = stmt.query_row([title,id],|row|Self::try_from(row))?;
+        let category_group = stmt.query_row([title, id], |row| Self::try_from(row))?;
         Ok(category_group)
     }
 
@@ -176,43 +173,42 @@ impl CategoryGroup {
     }
 }
 
-impl<'a> TryFrom<&Row<'a>> for Category{
+impl<'a> TryFrom<&Row<'a>> for Category {
     type Error = rusqlite::Error;
 
     fn try_from(row: &Row) -> Result<Self, Self::Error> {
         let created_at = match row.get(2) {
-            Ok(timestamp) => DateTime::from_timestamp(timestamp,0),
-            Err(_) => None
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
         };
 
         let deleted_at = match row.get(3) {
-            Ok(timestamp) => DateTime::from_timestamp(timestamp,0),
-            Err(_) => None
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
         };
 
-        let category = Self{
+        let category = Self {
             id: row.get(0)?,
             title: row.get(1)?,
             created_at,
             deleted_at,
-            is_income_stream: row.get(4)?
+            is_income_stream: row.get(4)?,
         };
 
         Ok(category)
     }
 }
 
-impl<'a> TryFrom<&Row<'a>> for CategoryGroup{
+impl<'a> TryFrom<&Row<'a>> for CategoryGroup {
     type Error = rusqlite::Error;
 
     fn try_from(row: &Row) -> Result<Self, Self::Error> {
-        let created_at = DateTime::from_timestamp(row.get(3)?, 0)
-            .unwrap_or_default();
-        let group = Self{
+        let created_at = DateTime::from_timestamp(row.get(3)?, 0).unwrap_or_default();
+        let group = Self {
             id: row.get(0)?,
             title: row.get(1)?,
             sort_order: row.get(2)?,
-            created_at
+            created_at,
         };
 
         Ok(group)
@@ -234,15 +230,13 @@ mod test {
             .account_id(&account.id)
             .amount(Money::from_unscaled(100))
             .category(&category.id)
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(20))
             .category(&category.id)
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         let total = Category::total_spent(&category.id, &pool).await?;
         assert_eq!(total, Money::from_unscaled(120));

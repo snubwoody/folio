@@ -36,13 +36,11 @@ async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result
     let transaction = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
     let transaction2 = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -86,8 +84,7 @@ async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .account_id(&account.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -105,8 +102,7 @@ async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let expense = Transaction::expense()
         .account_id(&account.id)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     let expense = Transaction::edit(&expense.id)
         .amount(Money::from_f64(10.0))
@@ -170,13 +166,11 @@ async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()>
     let t1 = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
     let t2 = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 2);
     Transaction::delete(&[&t1.id, &t2.id], &conn)?;
@@ -192,8 +186,7 @@ async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
     Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::delete::<String>(&[], &conn)?;
     let length = Transaction::fetch_all(&pool).await?.len();
@@ -208,13 +201,11 @@ async fn delete_only_affected_transactions(pool: SqlitePool) -> folio_lib::Resul
     let t1 = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
     Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 2);
     Transaction::delete(&[&t1.id], &conn)?;
@@ -251,8 +242,7 @@ async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -273,8 +263,7 @@ async fn set_payee_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_payee(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -291,8 +280,7 @@ async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::expense()
         .amount(Money::ZERO)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_account(&transaction.id, &account2.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -435,8 +423,7 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;

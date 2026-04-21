@@ -92,15 +92,13 @@ mod test {
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics.len(), 1);
@@ -118,15 +116,13 @@ mod test {
             .category(&c1.id)
             .date(NaiveDate::MIN)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics[0].total, Money::from_unscaled(100));

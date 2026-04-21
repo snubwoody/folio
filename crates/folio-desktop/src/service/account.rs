@@ -166,13 +166,11 @@ mod test {
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(20))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(20))
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
         Transaction::income()
             .account_id(&account.id)
             .amount(Money::from_unscaled(50))
@@ -240,8 +238,7 @@ mod test {
         let account = Account::create("My account", Money::ZERO, &conn)?;
         Transaction::expense()
             .account_id(&account.id)
-            .create(&pool)
-            .await?;
+            .create(&conn)?;
         let records = sqlx::query!("SELECT * FROM accounts")
             .fetch_all(&pool)
             .await?;

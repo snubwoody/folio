@@ -144,8 +144,8 @@ pub async fn create_expense(
         .amount(amount)
         .account_id(&account)
         .date(date)
-        .create(&state.pool)
-        .await
+        .create(&state.connection.lock().unwrap())
+        .context("Failed to create expense")
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -281,17 +281,17 @@ pub fn create_budget(
     category_id: &str,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::create(Money::from_str(amount)?, category_id, &state.connection.lock().unwrap())
-        .context("Failed to create budget")
-        .inspect_err(|err| warn!("{}", err.report()))
+    Budget::create(
+        Money::from_str(amount)?,
+        category_id,
+        &state.connection.lock().unwrap(),
+    )
+    .context("Failed to create budget")
+    .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
-pub fn edit_budget(
-    id: String,
-    amount: Money,
-    state: tauri::State<'_, State>,
-) -> Result<Budget> {
+pub fn edit_budget(id: String, amount: Money, state: tauri::State<'_, State>) -> Result<Budget> {
     Budget::edit(&id, amount, &state.connection.lock().unwrap())
         .context("Failed to edit budget")
         .inspect_err(|err| warn!("{}", err.report()))

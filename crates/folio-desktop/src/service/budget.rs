@@ -14,15 +14,15 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use chrono::{DateTime, Utc};
-use rusqlite::{params, Connection};
+use rusqlite::{Connection, params};
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::{debug, info, warn};
 
-use crate::{Money, db, service::Category, setup_test_db};
 use crate::error::ErrorExt;
+use crate::{Money, db, service::Category, setup_test_db};
 
-#[derive(Debug, Clone, Serialize, Deserialize,Default)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
     pub id: String,
@@ -43,64 +43,46 @@ impl Budget {
         let mut stmt = conn
             .prepare_cached("INSERT INTO budgets(amount,category_id) VALUES (?1,?2) RETURNING *")?;
 
-        let budget = stmt.query_row(params![amount.inner(),category_id],|row|Self::try_from(row))?;
+        let budget = stmt.query_row(params![amount.inner(), category_id], |row| {
+            Self::try_from(row)
+        })?;
 
         info!(category_id=?category_id,id=?budget.id,"Created new budget");
         Ok(budget)
     }
 
     pub fn edit(id: &str, amount: Money, conn: &Connection) -> crate::Result<Self> {
-        let mut stmt = conn
-            .prepare_cached("UPDATE budgets SET amount = ?2 WHERE id = ?1 RETURNING *")?;
+        let mut stmt =
+            conn.prepare_cached("UPDATE budgets SET amount = ?2 WHERE id = ?1 RETURNING *")?;
 
-        let budget = stmt.query_row(params![id,amount.inner()],|row|Self::try_from(row))?;
+        let budget = stmt.query_row(params![id, amount.inner()], |row| Self::try_from(row))?;
         info!(id = id, "Updated budget");
         Ok(budget)
     }
 
-    pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        // TODO: remove this type
-        // FIXME
-        let conn = setup_test_db(pool.connect_options().get_filename()).await;
-        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
-            .bind(id)
-            .fetch_one(pool)
-            .await?;
-
-        let total = Money::new(record.amount);
-        let category = Category::fetch(&record.category_id, &conn)?;
-        let total_spent = Category::total_spent(&category.id, pool).await?;
-        let remaining = (total - total_spent).max(Money::ZERO);
-        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
-
-        Ok(Self {
-            id: record.id,
-            amount: total,
-            category_id: record.category_id,
-            total_spent,
-            remaining,
-            created_at,
-        })
+    /// Fetch a budget from the database
+    pub fn fetch(id: &str, conn: &Connection) -> crate::Result<Self> {
+        let mut stmt = conn.prepare_cached("SELECT * FROM budgets WHERE id=?")?;
+        let budget = stmt.query_row([id], |row| Self::try_from(row))?;
+        Ok(budget)
     }
 
     /// Fetches the budget with the corresponding `category_id`.
     pub fn from_category(category_id: &str, conn: &Connection) -> crate::Result<Self> {
-        let mut stmt = conn
-            .prepare_cached("SELECT * FROM budgets WHERE category_id=?1")?;
+        let mut stmt = conn.prepare_cached("SELECT * FROM budgets WHERE category_id=?1")?;
 
-        let budget = stmt.query_row([category_id],|row|Self::try_from(row))?;
+        let budget = stmt.query_row([category_id], |row| Self::try_from(row))?;
         Ok(budget)
     }
 }
 
-impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget{
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
     type Error = rusqlite::Error;
 
     fn try_from(value: &rusqlite::Row) -> Result<Self, Self::Error> {
-        let created_at = DateTime::from_timestamp(value.get(3)?,0)
-            .unwrap_or_default();
+        let created_at = DateTime::from_timestamp(value.get(3)?, 0).unwrap_or_default();
 
-        let budget = Self{
+        let budget = Self {
             id: value.get(0)?,
             category_id: value.get(1)?,
             amount: Money::from_scaled(value.get(2)?),
@@ -115,7 +97,7 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget{
 
 pub fn create_missing_budgets(conn: &Connection) -> crate::Result<()> {
     let categories = Category::fetch_all(conn)?;
-    let categories = categories.iter().filter(|c|!c.is_income_stream);
+    let categories = categories.iter().filter(|c| !c.is_income_stream);
 
     // let budgets = fetch_budgets(pool).await?;
     // FIXME
@@ -141,8 +123,10 @@ pub fn create_missing_budgets(conn: &Connection) -> crate::Result<()> {
     }
 
     for c in filtered {
-        if let Err(err) = Budget::create(Money::ZERO, &c.id, conn).context("Failed to create budget") {
-            warn!("{}",err.report());
+        if let Err(err) =
+            Budget::create(Money::ZERO, &c.id, conn).context("Failed to create budget")
+        {
+            warn!("{}", err.report());
         }
     }
 
@@ -157,7 +141,7 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
         .await?;
 
     let categories = Category::fetch_all(&conn)?;
-    let mut categories = categories.iter().filter(|c|!c.is_income_stream);
+    let mut categories = categories.iter().filter(|c| !c.is_income_stream);
 
     let mut budgets = vec![];
     for record in records {
@@ -167,7 +151,7 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
         if !categories.any(|c| c.id == category_id) {
             continue;
         }
-        let budget = Budget::from_id(&id, pool).await?;
+        let budget = Budget::fetch(&id, &conn)?;
         budgets.push(budget);
     }
     Ok(budgets)
@@ -175,8 +159,8 @@ pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
 
 #[cfg(test)]
 mod test {
-    use crate::setup_test_db;
     use super::*;
+    use crate::setup_test_db;
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {

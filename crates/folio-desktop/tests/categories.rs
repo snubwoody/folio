@@ -29,7 +29,7 @@ async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
     let row = CategoryGroup::create("Wants", &conn)?;
     let new_group = CategoryGroup::set_title(&row.id, "Needs", &conn)?;
     let group = CategoryGroup::get(&row.id, &conn)?;
-    assert_eq!(group.title,new_group.title);
+    assert_eq!(group.title, new_group.title);
     Ok(())
 }
 
