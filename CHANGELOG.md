@@ -1,13 +1,15 @@
 # Folio Changelog
 
-## (unreleased)
+## 2.2.0 - 21-04-2026
 
 - Added a date field to the calendar.
-  - The date field will try it's best to parse the value, if no value can be parsed then it will set to the current date 
+  - The date field can be used to enter speech-like dates such as "Jan 5".
+  - The date field will try it's best to parse the value, if no value can be parsed then it will set to the current date.
 - Fixed errors with budget state.
-- Changed date formatting to use British locale.
-- Added a new collapsible sidebar with improved UI and UX. 
-  - The new sidebar has a list of all the accounts, as well as a button for creating accounts.
+- Added a new and improved sidebar.
+  - The sidebar contains a list of the accounts, as well as account balances.
+  - It also shows the total balance across all accounts.
+  - It also has a button for creating new accounts.
 
 ## 2.1.1 - 08-04-2026
 
