@@ -1,7 +1,7 @@
-use folio_lib::service::{Account, EditAccount,Transaction,AccountService};
+use folio_lib::service::{EditAccount,Transaction,AccountService};
 use folio_lib::{Money, Result};
 use sqlx::SqlitePool;
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 
 #[sqlx::test]
 async fn edit_account(pool: SqlitePool) -> Result<()> {

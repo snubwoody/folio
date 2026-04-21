@@ -236,12 +236,13 @@ impl CategoryGroup {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::service::{Account, Transaction};
+    use crate::service::{AccountService, Transaction};
 
     #[sqlx::test]
     async fn total_spent(pool: SqlitePool) -> crate::Result<()> {
+        let account_service = AccountService::new(pool.clone());
         let category = Category::create("", &pool).await?;
-        let account = Account::create("", Money::ZERO, &pool).await?;
+        let account = account_service.create_account("", Money::ZERO,).await?;
         Transaction::expense()
             .account_id(&account.id)
             .amount(Money::from_unscaled(100))
