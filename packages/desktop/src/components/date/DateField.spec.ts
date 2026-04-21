@@ -1,6 +1,6 @@
 import { expect, test, beforeEach } from "vitest";
 import { render } from "vitest-browser-svelte";
-import {parseDate, toCalendarDate} from "@internationalized/date";
+import { parseDate, toCalendarDate } from "@internationalized/date";
 import DateField from "./DateField.svelte";
 import { formatDate } from "$lib/utils/date";
 import { userEvent } from "vitest/browser";
