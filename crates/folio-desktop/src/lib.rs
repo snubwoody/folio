@@ -21,6 +21,7 @@ mod money;
 pub mod service;
 mod settings;
 
+use crate::service::AccountService;
 use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;
@@ -33,7 +34,6 @@ use tokio::sync::Mutex;
 use tracing::{error, info};
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
-use crate::service::AccountService;
 
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
@@ -106,7 +106,7 @@ pub async fn run() {
 pub struct State {
     pool: SqlitePool,
     settings: Arc<Mutex<Settings>>,
-    account_service: AccountService
+    account_service: AccountService,
 }
 
 impl State {
@@ -127,7 +127,7 @@ impl State {
         Ok(Self {
             pool,
             settings: Arc::new(Mutex::new(settings)),
-            account_service
+            account_service,
         })
     }
 }
