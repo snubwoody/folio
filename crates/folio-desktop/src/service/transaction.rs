@@ -1,6 +1,7 @@
+use indoc::indoc;
 use crate::{Error, Money};
 use chrono::{Local, NaiveDate};
-use rusqlite::{Connection, params_from_iter, Row, params};
+use rusqlite::{Connection, Row, params, params_from_iter};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
 use std::marker::PhantomData;
@@ -51,7 +52,6 @@ impl<T> TransactionBuilder<T> {
         self
     }
 
-
     // TODO: move to expense and transaction
     /// Sets the category
     pub fn category(mut self, id: &str) -> TransactionBuilder<T> {
@@ -84,7 +84,7 @@ impl TransactionBuilder<Transfer> {
             self.note,
             self.category_id,
         ];
-        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
+        let transaction = stmt.query_row(params, |row| Transaction::try_from(row))?;
         Ok(transaction)
     }
 }
@@ -111,7 +111,7 @@ impl TransactionBuilder<Income> {
             self.note,
             self.category_id,
         ];
-        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
+        let transaction = stmt.query_row(params, |row| Transaction::try_from(row))?;
 
         info!(id=?transaction.id,"Created new income");
         Ok(transaction)
@@ -141,7 +141,7 @@ impl TransactionBuilder<Expense> {
             self.note,
             self.category_id,
         ];
-        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
+        let transaction = stmt.query_row(params, |row| Transaction::try_from(row))?;
 
         info!(id=?transaction.id,"Created new expense");
         Ok(transaction)
@@ -200,31 +200,63 @@ impl EditBuilder {
         self
     }
 
-    pub async fn update(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "UPDATE transactions
-            SET amount = COALESCE($1,amount),
-                note = COALESCE($2,note),
-                transaction_date = COALESCE($3,transaction_date),
-                from_account_id = COALESCE($4,from_account_id),
-                to_account_id = COALESCE($5,to_account_id),
-                category_id = COALESCE($6,category_id)
-            WHERE id=$7
-            RETURNING *
-            ",
-        )
-        .bind(self.amount)
-        .bind(self.note)
-        .bind(self.transaction_date)
-        .bind(self.from_account_id)
-        .bind(self.to_account_id)
-        .bind(self.category_id)
-        .bind(&self.id)
-        .fetch_one(pool)
-        .await?;
+    pub fn update(self, conn: &Connection) -> crate::Result<Transaction> {
+        let query = r#"
+            UPDATE transactions
+            SET
+                amount = COALESCE(?1,amount),
+                note = COALESCE(?2,note),
+                transaction_date = COALESCE(?3,transaction_date),
+                from_account_id = COALESCE(?4,from_account_id),
+                to_account_id = COALESCE(?5,to_account_id),
+                category_id = COALESCE(?6,category_id)
+            WHERE id=?7
+            RETURNING *"#;
 
-        info!(id = self.id, "Updated transaction");
-        Ok(row)
+        let query = include_str!("../../queries/edit_transactions.sql");
+
+        let query = indoc!{r#"
+            UPDATE transactions
+            SET
+                amount = COALESCE(?1,amount),
+                note = COALESCE(?2,note),
+                transaction_date = COALESCE(?3,transaction_date),
+                from_account_id = COALESCE(?4,from_account_id),
+                to_account_id = COALESCE(?5,to_account_id),
+                category_id = COALESCE(?6,category_id)
+            WHERE id=?7
+            RETURNING *"#
+        };
+
+        let mut stmt = conn
+            .prepare_cached(query)?;
+
+        let mut stmt2 = conn.prepare_cached(
+            "UPDATE transactions\
+            SET amount = COALESCE(?1,amount),\
+                note = COALESCE(?2,note),\
+                transaction_date = COALESCE(?3,transaction_date),\
+                from_account_id = COALESCE(?4,from_account_id),\
+                to_account_id = COALESCE(?5,to_account_id),\
+                category_id = COALESCE(?6,category_id)\
+            WHERE id=?7\
+            RETURNING *
+        ",
+        )?;
+
+        let params = params![
+            self.amount.map(|a| a.inner()),
+            self.note,
+            self.transaction_date,
+            self.from_account_id,
+            self.to_account_id,
+            self.category_id,
+            self.id
+        ];
+        let transaction = stmt.query_row(params, |row| Transaction::try_from(row))?;
+
+        info!(id = transaction.id, "Updated transaction");
+        Ok(transaction)
     }
 }
 
@@ -417,21 +449,21 @@ impl Transaction {
     }
 }
 
-impl<'a> TryFrom<&rusqlite::Row<'a>> for Transaction{
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Transaction {
     type Error = rusqlite::Error;
 
     fn try_from(row: &Row) -> Result<Self, Self::Error> {
-        let date:String = row.get(4)?;
+        let date: String = row.get(4)?;
 
-        let transaction = Self{
+        let transaction = Self {
             id: row.get(0)?,
             amount: Money::from_scaled(row.get(1)?),
             from_account_id: row.get(2).ok(),
             to_account_id: row.get(3).ok(),
-            transaction_date: NaiveDate::parse_from_str(&date,"%Y-%m-%d").unwrap_or_default(),
+            transaction_date: NaiveDate::parse_from_str(&date, "%Y-%m-%d").unwrap_or_default(),
             category_id: row.get(5).ok(),
             created_at: row.get(6)?,
-            note: row.get(7).ok()
+            note: row.get(7).ok(),
         };
         Ok(transaction)
     }

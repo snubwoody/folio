@@ -17,6 +17,7 @@ use crate::Money;
 use chrono::{DateTime, Utc};
 use rusqlite::{Connection, params};
 use serde::Serialize;
+use sqlx::Connection;
 use tracing::info;
 
 #[derive(Debug, Serialize, Clone, PartialEq, PartialOrd, Default)]

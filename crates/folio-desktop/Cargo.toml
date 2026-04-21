@@ -40,6 +40,7 @@ tauri-plugin-updater.workspace = true
 rusqlite.workspace = true
 tauri-plugin-prevent-default.workspace = true
 tauri-plugin-process = "2"
+indoc = "2.0.7"
 
 [package.metadata.packager]
 product-name = "Folio"
