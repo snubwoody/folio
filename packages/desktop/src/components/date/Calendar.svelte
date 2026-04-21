@@ -97,12 +97,3 @@
     {/snippet}
 </Calendar.Root>
 
-<style>
-    .date-field{
-        padding: 8px;
-        background: var(--color-neutral-25);
-        border: 1px solid var(--color-neutral-100);
-        border-radius: var(--radius-sm);
-        width: 100%;
-    }
-</style>

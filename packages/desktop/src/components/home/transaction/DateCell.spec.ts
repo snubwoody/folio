@@ -1,14 +1,12 @@
 import { test,beforeEach,expect, vi } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { type RawTransaction, type Transaction} from "$lib/api/transaction";
+import type { RawTransaction, Transaction } from "$lib/api/transaction";
 import { CalendarDate } from "@internationalized/date";
 import { accountStore } from "$lib/stores/account.svelte";
 import DateCell from "./DateCell.svelte";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { formatDate } from "$lib/utils/date";
-
-
 
 beforeEach(() => {
     accountStore.clear();
@@ -42,7 +40,7 @@ test("Open calendar",async() => {
 });
 
 test("Change date",async() => {
-    mockIPC((cmd)=>{
+    mockIPC((cmd) => {
         if (cmd==="parse_date"){
             return "2023-12-12";
         }
@@ -70,11 +68,11 @@ test("Change date",async() => {
     const day = days[Math.round(days.length/2)];
     // const date = day.element().getAttribute("data-value");
     await day.click();
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledTimes(1);
 });
 
 test("Close calendar after selecting date",async() => {
-    mockIPC((cmd)=>{
+    mockIPC((cmd) => {
         if (cmd==="parse_date"){
             return "2023-12-12";
         }

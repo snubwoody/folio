@@ -16,8 +16,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import {type DateValue, getLocalTimeZone, toCalendarDate, today} from "@internationalized/date";
-    import {formatDate, parseDate} from "$lib/utils/date";
+    import { type DateValue, getLocalTimeZone, toCalendarDate, today } from "@internationalized/date";
+    import { formatDate, parseDate } from "$lib/utils/date";
 
     type DateFn = (date: DateValue) => void;
 
@@ -42,15 +42,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     // TODO: if i update value it might cause a circular dependency
     const updateDate = async(val:string) => {
         const date = await parseDate(val);
-        dateString = formatDate(toCalendarDate(date))
+        dateString = formatDate(toCalendarDate(date));
         value = date;
         onDateChange?.(value);
-    }
+    };
 
     const handleKeyPress = (event: KeyboardEvent) => {
-        if (event.key !== "Enter") return
+        if (event.key !== "Enter") return;
         (event.target as HTMLElement).blur();
-    }
+    };
 </script>
 
 <input
