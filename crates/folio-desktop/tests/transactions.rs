@@ -146,8 +146,7 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .accounts(&a1.id, &a2.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -312,8 +311,7 @@ async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::transfer()
         .amount(Money::ZERO)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_account(&transaction.id, &account3.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -348,8 +346,7 @@ async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::transfer()
         .amount(Money::MAX)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     Transaction::set_payee(&transaction.id, &account3.id, &pool).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
@@ -401,8 +398,7 @@ async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     let transaction = Transaction::transfer()
         .amount(Money::MAX)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&conn)?;
 
     let result = Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await;
     assert!(result.is_err());

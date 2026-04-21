@@ -51,6 +51,9 @@ impl<T> TransactionBuilder<T> {
         self
     }
 
+
+    // TODO: move to expense and transaction
+    /// Sets the category
     pub fn category(mut self, id: &str) -> TransactionBuilder<T> {
         self.category_id = Some(id.to_owned());
         self
@@ -64,21 +67,25 @@ impl TransactionBuilder<Transfer> {
         self
     }
 
-    pub async fn create(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "INSERT INTO transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id)
-                VALUES ($1,$2,$3,$4,$5,$6)
-                RETURNING *"
-        )
-            .bind(self.transaction_date)
-            .bind(self.from_account_id.unwrap_or_default())
-            .bind(self.to_account_id.unwrap_or_default())
-            .bind(self.amount.inner())
-            .bind(self.note)
-            .bind(self.category_id)
-            .fetch_one(pool)
-            .await?;
-        Ok(row)
+    pub fn create(self, conn: &Connection) -> crate::Result<Transaction> {
+        let mut stmt = conn.prepare_cached(
+            "\
+            INSERT INTO transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id)\
+            VALUES(?1,?2,?3,?4,?5,?6)\
+            RETURNING *
+            ",
+        )?;
+
+        let params = params![
+            self.transaction_date,
+            self.from_account_id.unwrap_or_default(),
+            self.to_account_id.unwrap_or_default(),
+            self.amount.inner(),
+            self.note,
+            self.category_id,
+        ];
+        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
+        Ok(transaction)
     }
 }
 
