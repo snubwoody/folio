@@ -3,8 +3,8 @@
 ## 2.2.0 - 21-04-2026
 
 - Added a date field to the calendar.
-  - The date field can be used to enter speech-like dates such as "Jan 5".
-  - The date field will try it's best to parse the value, if no value can be parsed then it will set to the current date.
+  - The date field can be used to enter "speech-like" dates such as "Jan 5".
+  - If the value cannot be parsed, then it will be set to the current date.
 - Fixed errors with budget state.
 - Added a new and improved sidebar.
   - The sidebar contains a list of the accounts, as well as account balances.
