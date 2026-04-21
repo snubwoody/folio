@@ -81,12 +81,15 @@ mod test {
     use crate::Money;
     use chrono::NaiveDate;
 
-    use crate::service::{Account, Transaction};
+    use crate::service::{AccountService, Transaction};
 
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
+        let account_service = AccountService::new(pool.clone());
         let c1 = Category::create("Expense", &pool).await?;
-        let a1 = Account::create("Expense", Money::ZERO, &pool).await?;
+        let a1 = account_service
+            .create_account("Expense", Money::ZERO)
+            .await?;
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)
@@ -109,8 +112,11 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_analytics_in_current_month(pool: SqlitePool) -> crate::Result<()> {
+        let account_service = AccountService::new(pool.clone());
         let c1 = Category::create("Expense", &pool).await?;
-        let a1 = Account::create("Expense", Money::ZERO, &pool).await?;
+        let a1 = account_service
+            .create_account("Expense", Money::ZERO)
+            .await?;
         Transaction::expense()
             .account_id(&a1.id)
             .category(&c1.id)

@@ -21,6 +21,7 @@ mod money;
 pub mod service;
 mod settings;
 
+use crate::service::AccountService;
 use crate::settings::Settings;
 pub use error::{Error, Result};
 pub use money::Money;
@@ -105,6 +106,7 @@ pub async fn run() {
 pub struct State {
     pool: SqlitePool,
     settings: Arc<Mutex<Settings>>,
+    account_service: AccountService,
 }
 
 impl State {
@@ -112,6 +114,7 @@ impl State {
         let pool = init_database().await?;
         tracing::info!("Initialised database pool");
 
+        let account_service = AccountService::new(pool.clone());
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
         // FIXME: return error
@@ -124,6 +127,7 @@ impl State {
         Ok(Self {
             pool,
             settings: Arc::new(Mutex::new(settings)),
+            account_service,
         })
     }
 }

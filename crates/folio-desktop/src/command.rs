@@ -239,21 +239,27 @@ pub async fn create_account(
     name: &str,
     starting_balance: Money,
 ) -> Result<Account> {
-    Account::create(name, starting_balance, &state.pool)
+    state
+        .account_service
+        .create_account(name, starting_balance)
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
-    Account::calculate_balance(&id, &state.pool)
+    state
+        .account_service
+        .calculate_balance(&id)
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
-    Account::fetch_all(&state.pool)
+    state
+        .account_service
+        .fetch_all()
         .await
         .context("Failed to fetch accounts")
         .inspect_err(|err| warn!("{}", err.report()))
@@ -314,7 +320,9 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
 
 #[tauri::command]
 pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
-    Account::delete(&id, &state.pool)
+    state
+        .account_service
+        .delete_account(&id)
         .await
         .context("Failed to delete account")
         .inspect_err(|err| warn!("{}", err.report()))
@@ -334,7 +342,9 @@ pub async fn edit_account(
     id: String,
     opts: EditAccount,
 ) -> Result<Account> {
-    Account::edit(&id, opts, &state.pool)
+    state
+        .account_service
+        .edit_account(&id, opts)
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
