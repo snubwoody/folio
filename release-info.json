@@ -1,19 +1,19 @@
 {
-  "version": "v2.1.1",
-  "notes": "## What's changed\r\n\r\n- Fixed janky UI when editing transactions",
-  "pub_date": "2026-04-08T21:10:59Z",
+  "version": "v2.2.0",
+  "notes": "## What's new\r\n\r\n- Added a date field to the calendar.\r\n  - The date field can be used to enter \"speech-like\" dates such as \"Jan 5\".\r\n  - If the value cannot be parsed, then it will be set to the current date.\r\n- Fixed errors with budget state.\r\n- Added a new and improved sidebar.\r\n  - The sidebar contains a list of the accounts, as well as account balances.\r\n  - It also shows the total balance across all accounts.\r\n  - It also has a button for creating new accounts.",
+  "pub_date": "2026-04-21T22:38:56Z",
   "platforms": {
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTVBtOHRqZVJSa01VZGxBRVpQamZqUWlMZUVVdjA4dE9WQ0RpTkN3OUtybHV2ZUNmVmNuZFkvSkQ4eStKUWhlVDZBdlAwenFRK05zMkZub0tDc2dHN3dRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgxODIxCWZpbGU6Rm9saW9fMi4xLjFfYW1kNjQuQXBwSW1hZ2UKbW9ZTlZ5QVFLMkFPcnNDQ3Q4RVlialdmbzJwQ21XaUZWL1lnc25DRDEvUndVbXdidHlHbGV2dzJRZGFSVnBuNHh1MFlkV3EwMmE5OCs5VDRVK3MwQmc9PQo=",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio_2.1.1_amd64.AppImage"
-    },
-    "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUk1dmZhS0tXRXYwbzVVa28vMHU4UFlObmptSHVha3dSK3hrOWQ0TDB1MExqVlZTZVM2b2liMmVYVHBlNHhJcmJYaUFMMEMybXBtVkNsSkpEaWxTNkFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgyMTM3CWZpbGU6Rm9saW9fMi4xLjFfeDY0LXNldHVwLmV4ZQpuRUZ3dmtXbGVndlBYOFM4NGRGREpsdmxpL2tMbEN3VU5malJ0TjhxMlQzS2xYWU9kUnM0bmxMcGtqS2lLYmVwWG0vSG5oVG53VjZnOWpEcWVkUkFCUT09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio_2.1.1_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUpETEFoN256T3RWNGtxMWVDT0FSbzNUQndWWFQvenlkSlZRbysveFlObUhqU2lUQ3k3YUU4dnRyd1dxMkQ4ZVpIdS9YbUdydEhJYmNMa2IwVG9YMkFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODEwNjUyCWZpbGU6Rm9saW9fMi4yLjBfYW1kNjQuQXBwSW1hZ2UKN2tCVzNxckpzWUV4Y09kSzd4WEllL3dEYlBXYXBkSVpCakgraHhBWU14VDREbnFwQ0xsVW0zU2V2TU1EUERwTTlLLy9tSnZzTklRL01TZ1EwZU1KQkE9PQo=",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.2.0/Folio_2.2.0_amd64.AppImage"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUZUR0NpSTFhM1UyUVIwTXEydTFnbW90RnhaUTl6UjRYcHdIbEE4VmJQcXRxS05jbkFoV0xhaTNJMVY1M0dpRnZXVlJKajVqblgyQ0xmdTZ1eXFQL0FRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc1NjgyNDQ0CWZpbGU6Rm9saW8uYXBwLnRhci5negowQkRWRnhxVlJweXdhS2R5eTdML0J0dVNIRVk1MlArcGgzTGNHUFZzYlMzdmhoaEZ0TmQweWlGTkpmSWFGNXREdnJud3NnZG1sODJBKzEvV3owVm9CUT09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.1.1/Folio.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUZIUktyK0JQRTUxTm4ybTl2QVYyWnhkZm9EdUJZazRPUElhNkNrTS9ENnE2TEVFUTNnZDZ0N29Nb2dLeTlSV1doV3JIQWM1UGJwWDFaSjE5Nms1aFFRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODEwOTY2CWZpbGU6Rm9saW8uYXBwLnRhci5negoydTVGNTZJZVl1ejdGeS92a0hLMHNnRHZSY2s2a3pSRVpJaCtuT0FMYno3TzhPdUYrUlYwK0tudFhOaWpxSUFKSlpEMk13dW9ycURpMG9mRkt1K3JDUT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.2.0/Folio.app.tar.gz"
+    },
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTU9sRy9ha3lZMUpnK0hpSzJWZDJlN3JnODQ0Qk1lSkRYanFTd2llWDYyaktyN1BMemFTQ0V0ZEpRSWRJVzBpTXNUQnNydE5ESDdieGQxeFg5TW0rRFFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODEwNTI5CWZpbGU6Rm9saW9fMi4yLjBfeDY0LXNldHVwLmV4ZQpZTS80U3dQRWxPN0xFRGJzSHpIc3hPeCtYVkIzMko3bTdQL0REYU85RjM1RTNJUWQ4UTVmSjZralNmU241b0UrNElGYndmT200Wm9tc1k5cVZFOHlEQT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.2.0/Folio_2.2.0_x64-setup.exe"
     }
   }
 }
