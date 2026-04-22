@@ -19,6 +19,19 @@ use sqlx::{FromRow, SqlitePool};
 
 use crate::{Money, db, service::Budget};
 
+/// Service struct for managing categories and category groups.
+#[derive(Clone)]
+struct CategoryService {
+    pool: SqlitePool
+}
+
+impl CategoryService{
+    /// Creates a new category service.
+    pub fn new(pool: SqlitePool) -> Self{
+        Self{pool}
+    }
+}
+
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
