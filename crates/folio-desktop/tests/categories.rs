@@ -1,6 +1,34 @@
+use chrono::Utc;
 use folio_lib::Result;
-use folio_lib::service::{Budget, Category, CategoryGroup, create_missing_budgets};
+use folio_lib::service::{Budget, Category, CategoryGroup, CategoryService, create_missing_budgets};
 use sqlx::SqlitePool;
+
+#[sqlx::test]
+async fn create_category(pool: SqlitePool) -> folio_lib::Result<()> {
+    let service = CategoryService::new(pool.clone());
+    let now = Utc::now().timestamp();
+    let category = service.create_category("Ent").await?;
+    let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
+        .fetch_one(&pool)
+        .await?;
+
+    assert!(record.created_at.unwrap() >= now);
+    assert_eq!(record.title, "Ent");
+    assert!(!record.is_income_stream.unwrap());
+    Ok(())
+}
+
+#[sqlx::test]
+async fn fetch_category(pool: SqlitePool) -> folio_lib::Result<()> {
+    let service = CategoryService::new(pool.clone());
+    let record = sqlx::query!("INSERT INTO categories(title) VALUES('Rent') RETURNING id")
+        .fetch_one(&pool)
+        .await?;
+
+    let category = service.fetch_category(&record.id).await?;
+    assert_eq!(category.title, "Rent");
+    Ok(())
+}
 
 #[sqlx::test]
 async fn get_category_group(pool: SqlitePool) -> Result<()> {

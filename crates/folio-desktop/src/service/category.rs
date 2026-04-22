@@ -21,18 +21,155 @@ use crate::{Money, db, service::Budget};
 
 /// Service struct for managing categories and category groups.
 #[derive(Clone)]
-struct CategoryService {
+pub struct CategoryService {
     pool: SqlitePool
 }
 
 impl CategoryService{
     /// Creates a new category service.
     pub fn new(pool: SqlitePool) -> Self{
-        Self{pool}
+        Self { pool }
+    }
+
+    /// Create a new category, a corresponding budget pointing to this category
+    /// will be created as well. To only create a category use [`create_raw`].
+    ///
+    /// [`create_raw`]: CategoryService::create_raw
+    pub async fn create_category(&self,title: &str) -> crate::Result<Category> {
+        let category = self.create_category_raw(title).await?;
+        tracing::info!(id=?category.id,"Created new category");
+        Budget::create(Money::ZERO, &category.id, &self.pool).await?;
+
+        Ok(category)
+    }
+
+    /// Creates a category without creating a budget.
+    pub async fn create_category_raw(&self,title: &str) -> crate::Result<Category> {
+        let now = Utc::now().timestamp();
+        let record: db::Category =
+            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
+                .bind(title)
+                .bind(now)
+                .fetch_one(&self.pool)
+                .await?;
+
+        self.fetch_category(&record.id).await
+    }
+
+    /// Creates a new income stream.
+    pub async fn create_income_stream(&self,title: &str) -> crate::Result<Category> {
+        let now = Utc::now().timestamp();
+        let record: db::Category =
+            sqlx::query_as("INSERT INTO categories(title,created_at,is_income_stream) VALUES($1,$2,true) RETURNING *")
+                .bind(title)
+                .bind(now)
+                .fetch_one(&self.pool)
+                .await?;
+
+        tracing::info!(id=?record.id,"Created new income stream");
+        self.fetch_category(&record.id).await
+    }
+
+
+    /// Fetch a [`Category`] from the database.
+    pub async fn fetch_category(&self,id: &str,) -> crate::Result<Category> {
+        let record: db::Category  = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let created_at = record
+            .created_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
+        let deleted_at = record
+            .deleted_at
+            .and_then(|t| DateTime::from_timestamp(t, 0));
+
+        let category = Category {
+            id: record.id,
+            title: record.title,
+            created_at,
+            deleted_at,
+            is_income_stream: record.is_income_stream,
+        };
+
+        Ok(category)
+    }
+
+    pub async fn edit(&self,id: &str, title: &str) -> crate::Result<Category> {
+        sqlx::query("UPDATE categories SET title=$1 WHERE id=$2")
+            .bind(title)
+            .bind(id)
+            .execute(&self.pool)
+            .await?;
+
+        self.fetch_category(id).await
+    }
+
+    /// Delete an account from the database.
+    pub async fn delete(&self,id: &str) -> crate::Result<()> {
+        let now = Utc::now().timestamp();
+        sqlx::query("UPDATE categories SET deleted_at=$2 WHERE id=$1")
+            .bind(id)
+            .bind(now)
+            .execute(&self.pool)
+            .await?;
+
+        Ok(())
+    }
+
+    /// Get the total amount spent in the month for the [`Category`].
+    pub async fn total_spent(&self,id: &str) -> crate::Result<Money> {
+        let now = Local::now();
+        let mut total = Money::ZERO;
+        let transactions: Vec<Transaction> =
+            sqlx::query_as("SELECT * FROM transactions WHERE category_id = $1")
+                .bind(id)
+                .fetch_all(&self.pool)
+                .await?;
+
+        for transaction in transactions {
+            let date = transaction.transaction_date;
+            if date.year() != now.year() || date.month() != now.month() {
+                continue;
+            }
+            total += transaction.amount;
+        }
+        Ok(total)
+    }
+
+    /// Fetches all the categories from the database
+    pub async fn fetch_all_categories(&self) -> Result<Vec<Category>, crate::Error> {
+        let records: Vec<db::Category> =
+            sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
+                .fetch_all(&self.pool)
+                .await?;
+
+        let mut categories = vec![];
+        for record in records {
+            let category = self.fetch_category(&record.id).await?;
+            categories.push(category);
+        }
+        Ok(categories)
+    }
+
+    pub async fn fetch_categories_only(&self) -> Result<Vec<Category>, crate::Error> {
+        let records: Vec<db::Category> = sqlx::query_as(
+            "SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false",
+        )
+            .fetch_all(&self.pool)
+            .await?;
+
+        let mut categories = vec![];
+        for record in records {
+            let category = self.fetch_category(&record.id).await?;
+            categories.push(category);
+        }
+        Ok(categories)
     }
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd,Eq,Ord, FromRow,Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
     pub id: String,
@@ -49,6 +186,7 @@ impl Category {
     /// will be created as well. To only create a category use [`create_raw`].
     ///
     /// [`create_raw`]: Category::create_raw
+    #[deprecated]
     pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
         let record: db::Category =
@@ -65,6 +203,7 @@ impl Category {
         Category::from_id(&record.id, pool).await
     }
 
+    #[deprecated]
     pub async fn create_income_stream(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
         let record: db::Category =
@@ -80,6 +219,7 @@ impl Category {
     }
 
     /// Creates a category without creating a budget.
+    #[deprecated]
     pub async fn create_raw(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let now = Utc::now().timestamp();
         let record: db::Category =
@@ -94,6 +234,7 @@ impl Category {
         Category::from_id(&record.id, pool).await
     }
 
+    #[deprecated]
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let record: db::Category = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
             .bind(id)
@@ -118,6 +259,7 @@ impl Category {
         Ok(category)
     }
 
+    #[deprecated]
     pub async fn edit(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
         sqlx::query("UPDATE categories SET title=$1 WHERE id=$2")
             .bind(title)
@@ -128,6 +270,7 @@ impl Category {
         Self::from_id(id, pool).await
     }
 
+    #[deprecated]
     pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
         let now = Utc::now().timestamp();
         sqlx::query("UPDATE categories SET deleted_at=$2 WHERE id=$1")
@@ -140,6 +283,7 @@ impl Category {
     }
 
     /// Get the total amount spent in the month for the [`Category`].
+    #[deprecated]
     pub async fn total_spent(id: &str, pool: &SqlitePool) -> crate::Result<Money> {
         let now = Local::now();
         let mut total = Money::ZERO;
@@ -160,6 +304,7 @@ impl Category {
     }
 
     /// Fetches all the categories from the database
+    #[deprecated]
     pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
         let records: Vec<db::Category> =
             sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
@@ -174,6 +319,7 @@ impl Category {
         Ok(categories)
     }
 
+    #[deprecated]
     pub async fn fetch_categories(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
         let records: Vec<db::Category> = sqlx::query_as(
             "SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false",
