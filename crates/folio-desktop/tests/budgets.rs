@@ -1,5 +1,5 @@
 use folio_lib::Result;
-use folio_lib::service::{Budget, Category, CategoryService, fetch_budgets};
+use folio_lib::service::{Budget, CategoryService, fetch_budgets};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
