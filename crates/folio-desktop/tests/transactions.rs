@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 use folio_lib::Money;
-use folio_lib::service::{AccountService, Category, Transaction, TransactionType};
+use folio_lib::service::{AccountService, CategoryService, Transaction, TransactionType};
 use sqlx::{Row, SqlitePool};
 use std::str::FromStr;
 
@@ -377,10 +377,11 @@ async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
 
 #[sqlx::test]
 async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
+    let service = CategoryService::new(pool.clone());
     let account_service = AccountService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let account2 = account_service.create_account("__", Money::ZERO).await?;
-    let category = Category::create("", &pool).await?;
+    let category = service.create_category("").await?;
     let transaction = Transaction::income()
         .amount(Money::MAX)
         .category(&category.id)

@@ -18,6 +18,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::{debug, info, warn};
 
+use crate::service::CategoryService;
 use crate::{Money, db, service::Category};
 
 // TODO: soft delete categories
@@ -67,14 +68,15 @@ impl Budget {
     }
 
     pub async fn from_id(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let service = CategoryService::new(pool.clone());
         let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
             .bind(id)
             .fetch_one(pool)
             .await?;
 
         let total = Money::new(record.amount);
-        let category = Category::from_id(&record.category_id, pool).await?;
-        let total_spent = Category::total_spent(&category.id, pool).await?;
+        let category = service.fetch_category(&record.category_id).await?;
+        let total_spent = service.total_spent(&category.id).await?;
         let remaining = (total - total_spent).max(Money::ZERO);
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
@@ -90,14 +92,15 @@ impl Budget {
 
     /// Fetches the budget with the corresponding `category_id`.
     pub async fn from_category(category_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
+        let service = CategoryService::new(pool.clone());
         let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE category_id=$1")
             .bind(category_id)
             .fetch_one(pool)
             .await?;
 
         let total = Money::new(record.amount);
-        let category = Category::from_id(&record.category_id, pool).await?;
-        let total_spent = Category::total_spent(&category.id, pool).await?;
+        let category = service.fetch_category(&record.category_id).await?;
+        let total_spent = service.total_spent(&category.id).await?;
         let remaining = total - total_spent;
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
@@ -113,7 +116,8 @@ impl Budget {
 }
 
 pub async fn create_missing_budgets(pool: &SqlitePool) -> crate::Result<()> {
-    let categories = Category::fetch_categories(pool).await?;
+    let service = CategoryService::new(pool.clone());
+    let categories = service.fetch_categories_only().await?;
     let budgets = fetch_budgets(pool).await?;
 
     let mut filtered = vec![];
@@ -146,11 +150,12 @@ pub async fn create_missing_budgets(pool: &SqlitePool) -> crate::Result<()> {
 }
 
 pub async fn fetch_budgets(pool: &SqlitePool) -> crate::Result<Vec<Budget>> {
+    let service = CategoryService::new(pool.clone());
     let records = sqlx::query("SELECT id,category_id FROM budgets")
         .fetch_all(pool)
         .await?;
 
-    let categories = Category::fetch_categories(pool).await?;
+    let categories = service.fetch_categories_only().await?;
 
     let mut budgets = vec![];
     for record in records {
@@ -172,8 +177,9 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
+        let service = CategoryService::new(pool.clone());
         let len = super::fetch_budgets(&pool).await?.len();
-        Category::create("", &pool).await?;
+        service.create_category("").await?;
         let budgets = super::fetch_budgets(&pool).await?;
         assert!(budgets.len() == len + 1);
         Ok(())
@@ -181,7 +187,8 @@ mod test {
 
     #[sqlx::test]
     async fn edit_budget(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("MINE__", &pool).await?;
+        let service = CategoryService::new(pool.clone());
+        let category = service.create_category("MINE__").await?;
         let budget = Budget::from_category(&category.id, &pool).await?;
         Budget::edit(&budget.id, Money::from_f64(244.00), &pool).await?;
         let b = Budget::from_category(&category.id, &pool).await?;
@@ -192,7 +199,8 @@ mod test {
 
     #[sqlx::test]
     async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("__", &pool).await?;
+        let service = CategoryService::new(pool.clone());
+        let category = service.create_category("__").await?;
         let budget = Budget::from_category(&category.id, &pool).await?;
         assert_eq!(budget.amount, Money::ZERO);
         Ok(())
@@ -200,7 +208,8 @@ mod test {
 
     #[sqlx::test]
     async fn remaining_caps_at_zero(pool: SqlitePool) -> crate::Result<()> {
-        let category = Category::create("__", &pool).await?;
+        let service = CategoryService::new(pool.clone());
+        let category = service.create_category("__").await?;
         let budget = Budget::from_category(&category.id, &pool).await?;
         assert_eq!(budget.amount, Money::ZERO);
         Ok(())
