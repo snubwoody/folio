@@ -20,6 +20,10 @@
             <Landmark/>
             <p>Transactions</p>
         </a>
+        <a href="/transaction" class="page-link" data-selected={page.route.id === "/transactions"}>
+            <Landmark/>
+            <p>Transactions V2</p>
+        </a>
         <a href="/analytics" class="page-link" data-selected={page.route.id === "/analytics"}>
             <ChartNoAxesCombined/>
             <p>Spending</p>
