@@ -150,7 +150,7 @@ UAH	Ukrainian hryvnia	₴	2
 UGX	Ugandan shilling	USh	0
 USD	United States dollar	$	2
 USN	United States dollar (next day)	$	2
-UYI	Uruguay Peso en Unidades Indexadas (URUIURUI)	¤	0
+UYI	Uruguay Peso en Unidades Indexadas (URUIURUI)	$U	0
 UYU	Uruguayan peso	$U	2
 UYW	Unidad previsional	¤	4
 UZS	Uzbekistan som	¤	2
@@ -162,10 +162,9 @@ WST	Samoan tala	WS$	2
 XAF	CFA franc BEAC	FCFA	0
 XCD	East Caribbean dollar	$	2
 XOF	CFA franc BCEAO	CFA	0
-XPD	Palladium (one troy ounce)	¤
 XPF	CFP franc (franc Pacifique)	₣	0
 YER	Yemeni rial	ر.ي	2
 ZAR	South African rand	R	2
 ZMW	Zambian kwacha	K	2
-ZWL	Zimbabwean dollar	¤	2
+ZWL	Zimbabwean dollar	$	2
 ZWG	Zimbabwe Gold	¤	2
