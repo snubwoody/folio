@@ -22,7 +22,8 @@ use std::{
     str::FromStr,
 };
 
-/// A type that stores money with 6 digits after the decimal point.
+/// A monetary value stored as an integer with the last 6 digits used for decimal places.
+/// [`Money`] is for storing values, while [`Currency`] is for storing currency information.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Money(i64);
 

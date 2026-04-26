@@ -18,6 +18,7 @@ mod date;
 pub mod db;
 pub mod error;
 mod money;
+mod currency;
 pub mod service;
 mod settings;
 
