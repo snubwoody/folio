@@ -2,8 +2,9 @@ import { expect, test, describe, beforeEach } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { accountStore, mockCreateAccount } from "$lib/stores/account.svelte";
 import Sidebar from "./Sidebar.svelte";
-import { mockIPC } from "@tauri-apps/api/mocks";
+import {clearMocks, mockIPC} from "@tauri-apps/api/mocks";
 import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
+import type {Currency} from "$lib/types";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
@@ -13,17 +14,34 @@ mockIPC((cmd) => {
         return;
     }
     if (cmd === "currencies") {
-        return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
+        const currencies: Currency[] = [
+            {
+                code:"AUD",
+                name: ""
+            },
+            {
+                code:"ZMW",
+                name: ""
+            },
+            {
+                code:"CAD",
+                name: ""
+            },
+            {
+                code:"USD",
+                name: ""
+            }
+        ];
+        return currencies;
     }
 });
 
 beforeEach(() => {
     accountStore.clear();
-    settingsStore.reset();
-    // clearMocks();
+    // settingsStore.reset();
 });
 
-describe("Navigation Panel",() => {
+describe("Sidebar",() => {
     test("has navigation links",async() => {
         const screen = await render(Sidebar);
         const transactionsLink = screen.getByRole("link",{ name:"Transactions" });
@@ -83,7 +101,7 @@ describe("Navigation Panel",() => {
         const screen = await render(Sidebar);
 
         await expect.element(screen.getByText("Account 1")).toBeVisible();
-        await expect.element(screen.getByText("$20.00")).toBeVisible();
+        await expect.element(screen.getByText("K20.00")).toBeVisible();
         expect(screen.getByRole("listitem").all()).toHaveLength(2);
     });
 
@@ -94,6 +112,6 @@ describe("Navigation Panel",() => {
         const screen = await render(Sidebar);
 
         await expect.element(screen.getByText("Accounts")).toBeVisible();
-        await expect.element(screen.getByText("$520.00")).toBeVisible();
+        await expect.element(screen.getByText("K520.00")).toBeVisible();
     });
 });

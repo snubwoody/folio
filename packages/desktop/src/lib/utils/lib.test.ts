@@ -1,10 +1,15 @@
-import type { Account } from "$lib/types";
-import { describe, expect, test } from "vitest";
+import type {Account, Currency} from "$lib/types";
+import {beforeEach, describe, expect, test} from "vitest";
 import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import type { Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { parseMoney } from "$lib/utils/money";
+import {formatMoney, parseMoney} from "$lib/utils/money";
+import {settingsStore} from "$lib/stores/settings.svelte";
+
+beforeEach(()=>{
+    settingsStore.reset();
+});
 
 describe("AccountStore",() => {
     test("create a new account",async() => {
@@ -47,6 +52,28 @@ test("Account balance",() => {
     expect(balance).toBe(20);
 });
 
+test("Format money using local symbol",async ()=>{
+    mockIPC((cmd)=>{
+        if (cmd === "settings"){
+            return { currencyCode: "ZMW", sidebarOpen: true };
+        }
+        if (cmd === "active_currency"){
+            const currency: Currency = {
+                name: "",
+                code: "",
+                symbol: "R",
+                precision: 2
+            };
+            return currency;
+        }
+    });
+
+    await settingsStore.load();
+
+    const display = formatMoney("20.00");
+    expect(display).toBe("R20.00");
+});
+
 describe("Parse money", () => {
     test("plain number",() => {
         const money = parseMoney("224");
@@ -82,5 +109,4 @@ describe("Parse money", () => {
         const money = parseMoney("wkkrwr");
         expect(money).not.toBeDefined();
     });
-
 });

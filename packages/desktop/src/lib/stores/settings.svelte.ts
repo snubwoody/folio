@@ -77,7 +77,25 @@ export function mockSettings(){
             return { currencyCode: "ZMW" };
         }
         if (cmd === "currencies") {
-            return ["AED", "CAD", "ZAR", "ZMW", "TSH"];
+            const currencies: Currency[] = [
+                {
+                    code:"AUD",
+                    name: ""
+                },
+                {
+                    code:"ZMW",
+                    name: ""
+                },
+                {
+                    code:"CAD",
+                    name: ""
+                },
+                {
+                    code:"USD",
+                    name: ""
+                }
+            ];
+            return currencies;
         }
         if (cmd === "set_currency_code") {
             return;
