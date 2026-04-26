@@ -14,11 +14,11 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
+mod currency;
 mod date;
 pub mod db;
 pub mod error;
 mod money;
-mod currency;
 pub mod service;
 mod settings;
 

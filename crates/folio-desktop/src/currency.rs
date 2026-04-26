@@ -12,6 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+#![allow(unused)]
 
 // TODO: document removed currencies, check if settings will be parsed
 // Removed currencies:
@@ -28,7 +29,7 @@
 // - XAG - Silver
 // - XAU - Gold
 
-pub struct Currency{
+pub struct Currency {
     name: String,
     /// The ISO 4217 currency code.
     code: String,
@@ -38,29 +39,26 @@ pub struct Currency{
     /// so for example `USD`, `CAD` and `AUD` are all `$` as opposed to `US$`, `CA$` and `AU$`.
     symbol: Option<String>,
     /// The number of digits after the decimal.
-    precision: Option<u8>
+    precision: Option<u8>,
 }
 
 // TODO: add constants, use macro
-impl Currency{
-    fn new(name: &str){
-
-    }
+impl Currency {
     /// Returns the name of the currency, e.g. "South African Rand".
-    pub fn name(&self) -> &str{
+    pub fn name(&self) -> &str {
         &self.name
     }
 
     /// Returns the ISO 4217 currency code, e.g. "ZAR".
-    pub fn code(&self) -> &str{
+    pub fn code(&self) -> &str {
         &self.code
     }
 
     /// Returns the local symbol of the currency. If there is no symbol, it will return the currency code.
-    pub fn symbol(&self) -> &str{
+    pub fn symbol(&self) -> &str {
         match &self.symbol {
-            Some(symbol) => &symbol,
-            None => &self.code
+            Some(symbol) => symbol,
+            None => &self.code,
         }
     }
 

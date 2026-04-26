@@ -18,14 +18,14 @@ use std::fmt::{Display, Formatter};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-/// Error extension trait that provides extra context for errors.
+/// Extension trait that provides extra context for errors.
 pub trait ErrorExt<T, E> {
     /// Wrap the error value with additional context.
     fn context<C>(self, context: C) -> std::result::Result<T, Error>
     where
         C: Display + Send + Sync + 'static;
 
-    /// Wrap the error value with additional context that is evaluated lazily
+    /// Wrap the error value with additional context that is evaluated lazily,
     /// only once an error does occur.
     fn with_context<C, F>(self, f: F) -> std::result::Result<T, Error>
     where
@@ -111,13 +111,13 @@ impl Display for Error {
 
 impl std::error::Error for Error {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
-        // Type masturbation indeed
         self.source
             .as_deref()
             .map(|e| e as &(dyn std::error::Error + 'static))
     }
 }
 
+/// Generates `From` impl blocks for external errors.
 macro_rules! from_error {
     ($($t:ty => $message:expr),+) => {
         $(
