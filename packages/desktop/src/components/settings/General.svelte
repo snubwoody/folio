@@ -20,8 +20,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Account from "./general/Account.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { getCurrencies } from "$lib/utils/money";
+    import type {Currency} from "$lib/types";
 
-    let currencies: string[] = $state([]);
+    // TODO: test this
+    let currencies: Currency[] = $state([]);
     $effect(() => {
         getCurrencies()
             .then((c) => {
@@ -40,12 +42,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             <p class="text-text-muted text-sm">The ISO currency code</p>
         </div>
         <SelectMenu
-            class="w-full max-w-12"
-            defaultValue={settingsStore.settings.currencyCode}
+            class="w-fit"
             items={currencies}
-            onChange={(c) => settingsStore.setCurrencyCode(c)}
+            onChange={(c) => settingsStore.setCurrencyCode(c.code)}
             toOption={(item) => {
-                return { label: item,value: item };
+                return { label: `${item.name} - ${item.symbol ?? item.code}`,value: item.code };
             }}
         />
     </div>

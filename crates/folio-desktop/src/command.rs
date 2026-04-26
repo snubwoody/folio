@@ -16,12 +16,8 @@
 use crate::analytics::Analytic;
 use crate::error::ErrorExt;
 use crate::settings::Settings;
-use crate::{
-    Money, Result, State, analytics,
-    service::{self, *},
-};
+use crate::{Money, Result, State, analytics, service::{self, *}, Currency};
 use chrono::NaiveDate;
-use iso_currency::{Currency, IntoEnumIterator};
 use std::str::FromStr;
 use tauri::{Builder, Wry};
 use tracing::{debug, error, info, warn};
@@ -39,6 +35,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         parse_date,
         delete_transactions,
         create_category,
+        active_currency,
         fetch_accounts,
         edit_account,
         delete_account,
@@ -98,6 +95,12 @@ pub async fn settings(state: tauri::State<'_, State>) -> Result<Settings> {
 }
 
 #[tauri::command]
+pub async fn active_currency(state: tauri::State<'_, State>) -> Result<Currency> {
+    let settings = state.settings.lock().await.clone();
+    Currency::from_str(settings.currency_code())
+}
+
+#[tauri::command]
 pub async fn set_currency_code(state: tauri::State<'_, State>, currency_code: &str) -> Result<()> {
     let mut settings = state.settings.lock().await;
     settings
@@ -129,7 +132,7 @@ pub async fn set_transaction_payee(
 
 #[tauri::command]
 pub fn currencies() -> Vec<Currency> {
-    Currency::iter().collect()
+    Currency::ALL_CURRENCIES.into_iter().collect()
 }
 
 #[tauri::command]

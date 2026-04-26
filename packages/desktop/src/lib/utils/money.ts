@@ -1,5 +1,6 @@
 import { settingsStore } from "$lib/stores/settings.svelte";
 import { invoke } from "@tauri-apps/api/core";
+import type {Currency} from "$lib/types";
 
 export interface MoneyFormatOpts {
     /** Truncate large values */
@@ -8,6 +9,7 @@ export interface MoneyFormatOpts {
 }
 
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
+    // Change this
     const currency = opts?.currency ?? settingsStore.settings.currencyCode;
     let notation:
         | "compact"
@@ -79,9 +81,7 @@ export function parseMoney(value: string): string | undefined {
 
 /**
  * Fetches a list of all the supported currencies.
- *
- * @returns A list of currency strings
  */
 export async function getCurrencies() {
-    return await invoke("currencies") as string[];
+    return await invoke<Currency[]>("currencies");
 }
