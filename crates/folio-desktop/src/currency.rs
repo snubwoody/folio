@@ -14,9 +14,9 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #![allow(unused)]
 
-use std::fmt::Display;
 use crate::Error;
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 use std::string::ToString;
 
 macro_rules! generate_currencies {
@@ -101,7 +101,7 @@ impl Currency {
     }
 }
 
-impl Display for Currency{
+impl Display for Currency {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.code.to_owned())
     }

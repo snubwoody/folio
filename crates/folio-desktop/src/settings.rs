@@ -1,11 +1,10 @@
+use crate::Currency;
 use crate::error::ErrorExt;
 use serde::{Deserialize, Serialize};
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
-use serde_json::Value;
 use tracing::info;
-use crate::Currency;
 
 // Serde doesn't allow constant values like `true`
 const fn default_true() -> bool {
@@ -35,7 +34,7 @@ impl Settings {
             Ok(mut settings) => {
                 settings.path = path.as_ref().to_path_buf();
 
-                if let Err(_) = Currency::from_str(&settings.currency_code){
+                if Currency::from_str(&settings.currency_code).is_err() {
                     settings.currency_code = Currency::ZMW.to_string()
                 }
 
@@ -62,9 +61,7 @@ impl Settings {
     }
 
     pub fn set_currency_code(&mut self, currency_code: &str) -> crate::Result<()> {
-        if let Err(err) = Currency::from_str(currency_code){
-            return Err(err)
-        }
+        Currency::from_str(currency_code)?;
         self.currency_code = currency_code.to_string();
         self.write()?;
         info!(currency=?currency_code,"Set currency code");
