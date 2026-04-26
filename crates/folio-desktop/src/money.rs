@@ -24,6 +24,8 @@ use std::{
 
 /// A monetary value stored as an integer with the last 6 digits used for decimal places.
 /// [`Money`] is for storing values, while [`Currency`] is for storing currency information.
+///
+/// [`Currency`]: super::Currency;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct Money(i64);
 

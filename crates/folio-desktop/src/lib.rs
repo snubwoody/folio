@@ -24,6 +24,7 @@ mod settings;
 
 use crate::service::{AccountService, CategoryService};
 use crate::settings::Settings;
+pub use currency::Currency;
 pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;
