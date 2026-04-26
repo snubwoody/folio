@@ -38,6 +38,7 @@ mockIPC((cmd) => {
 
 beforeEach(() => {
     accountStore.clear();
+    settingsStore.reset();
 });
 
 describe("Sidebar",() => {
@@ -92,7 +93,6 @@ describe("Sidebar",() => {
         await expect.element(spendingLink).not.toBeInTheDocument();
     });
 
-    // TODO: maybe test reactivity
     test("account list", async () => {
         mockCreateAccount();
         await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
