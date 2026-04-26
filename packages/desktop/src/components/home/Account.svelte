@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { settingsStore } from "$lib/stores/settings.svelte";
     import type { Account } from "$lib/types";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountBalance } from "$lib/stores/account.svelte";

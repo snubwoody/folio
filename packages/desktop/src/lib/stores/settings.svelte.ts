@@ -18,11 +18,11 @@ import type {
 } from "../types";
 import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
-import type {Currency} from "$lib/types";
+import type { Currency } from "$lib/types";
 
 export class SettingsStore{
     #settings: Settings = $state({ currencyCode: "ZMW", sidebarOpen: true });
-    #currency: Currency = $state({name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW"});
+    #currency: Currency = $state({ name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW" });
 
     get settings():Settings {
         return this.#settings;
@@ -41,7 +41,7 @@ export class SettingsStore{
      */
     reset(){
         this.#settings = { currencyCode: "ZMW", sidebarOpen: true };
-        this.#currency = {name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW"};
+        this.#currency = { name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW" };
     }
 
     async setCurrencyCode(currency: string) {

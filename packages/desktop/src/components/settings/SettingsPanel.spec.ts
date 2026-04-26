@@ -4,7 +4,7 @@ import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { accountStore } from "$lib/stores/account.svelte";
 import { categoryStore } from "$lib/stores/categories.svelte";
-import type {Category, Currency} from "$lib/types";
+import type { Category, Currency } from "$lib/types";
 
 beforeEach(() => {
     categoryStore.clear();

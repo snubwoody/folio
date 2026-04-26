@@ -20,7 +20,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import Account from "./general/Account.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { getCurrencies } from "$lib/utils/money";
-    import type {Currency} from "$lib/types";
+    import type { Currency } from "$lib/types";
 
     // TODO: test this
     let currencies: Currency[] = $state([]);
