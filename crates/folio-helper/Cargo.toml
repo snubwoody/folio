@@ -1,5 +1,5 @@
 [package]
-name = "folio-updater"
+name = "folio-helper"
 version.workspace = true
 edition.workspace = true
 

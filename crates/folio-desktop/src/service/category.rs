@@ -34,7 +34,7 @@ impl CategoryService {
     /// Create a new category, a corresponding budget pointing to this category
     /// will be created as well. To only create a category use [`create_raw`].
     ///
-    /// [`create_raw`]: CategoryService::create_raw
+    /// [`create_raw`]: CategoryService::create_category_raw
     pub async fn create_category(&self, title: &str) -> crate::Result<Category> {
         let category = self.create_category_raw(title).await?;
         tracing::info!(id=?category.id,"Created new category");

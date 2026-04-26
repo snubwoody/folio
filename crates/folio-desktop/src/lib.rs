@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod analytics;
 pub mod command;
+mod currency;
 mod date;
 pub mod db;
 pub mod error;
@@ -23,6 +24,7 @@ mod settings;
 
 use crate::service::{AccountService, CategoryService};
 use crate::settings::Settings;
+pub use currency::Currency;
 pub use error::{Error, Result};
 pub use money::Money;
 use sqlx::SqlitePool;

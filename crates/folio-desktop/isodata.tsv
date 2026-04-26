@@ -1,0 +1,170 @@
+code	name	symbol	precision
+AED	United Arab Emirates dirham	د.إ	2
+AFN	Afghan afghani	؋	2
+ALL	Albanian lek	L	2
+AMD	Armenian dram	֏	2
+XCG	Caribean guilder	ƒ	2
+AOA	Angolan kwanza	Kz	2
+ARS	Argentine peso	$	2
+AUD	Australian dollar	$	2
+AWG	Aruban florin	ƒ	2
+AZN	Azerbaijani manat	₼	2
+BAM	Bosnia and Herzegovina convertible mark	KM	2
+BBD	Barbados dollar	Bds$	2
+BDT	Bangladeshi taka	৳	2
+BGN	Bulgarian lev	лв.	2
+BHD	Bahraini dinar	.د.ب	3
+BIF	Burundian franc	FBu	0
+BMD	Bermudian dollar	$	2
+BND	Brunei dollar	B$	2
+BOB	Boliviano	Bs.	2
+BOV	Bolivian Mvdol	¤	2
+BRL	Brazilian real	R$	2
+BSD	Bahamian dollar	$	2
+BTN	Bhutanese ngultrum	Nu.	2
+BWP	Botswana pula	P	2
+BYN	Belarusian ruble	Br	2
+BZD	Belize dollar	$	2
+CAD	Canadian dollar	$	2
+CDF	Congolese franc	₣	2
+CHE	WIR Euro	¤	2
+CHF	Swiss franc	₣	2
+CHW	WIR Franc	¤	2
+CLF	Unidad de Fomento	¤	4
+CLP	Chilean peso	$	0
+CNY	Renminbi (Chinese) yuan	¥	2
+COP	Colombian peso	$	2
+COU	Unidad de Valor Real (UVR)	¤	2
+CRC	Costa Rican colon	₡	2
+CUC	Cuban convertible peso	$	2
+CUP	Cuban peso	₱	2
+CVE	Cape Verdean escudo	Esc	2
+CZK	Czech koruna	Kč	2
+DJF	Djiboutian franc	₣	0
+DKK	Danish krone	kr	2
+DOP	Dominican peso	RD$	2
+DZD	Algerian dinar	دج	2
+EGP	Egyptian pound	£	2
+ERN	Eritrean nakfa	Nfk	2
+ETB	Ethiopian birr	Br	2
+EUR	Euro	€	2
+FJD	Fiji dollar	FJ$	2
+FKP	Falkland Islands pound	£	2
+GBP	Pound sterling	£	2
+GEL	Georgian lari	ლ	2
+GHS	Ghanaian cedi	GH₵	2
+GIP	Gibraltar pound	£	2
+GMD	Gambian dalasi	D	2
+GNF	Guinean franc	₣	0
+GTQ	Guatemalan quetzal	Q	2
+GYD	Guyanese dollar	G$	2
+HKD	Hong Kong dollar	HK$	2
+HNL	Honduran lempira	L	2
+HRK	Croatian kuna	kn	2
+HTG	Haitian gourde	G	2
+HUF	Hungarian forint	Ft	2
+IDR	Indonesian rupiah	Rp	2
+ILS	Israeli new shekel	₪	2
+INR	Indian rupee	₹	2
+IQD	Iraqi dinar	د.ع	3
+IRR	Iranian rial	﷼	2
+ISK	Icelandic króna	kr	0
+JMD	Jamaican dollar	$	2
+JOD	Jordanian dinar	JD	3
+JPY	Japanese yen	¥	0
+KES	Kenyan shilling	Ksh	2
+KGS	Kyrgyzstani som	С̲	2
+KHR	Cambodian riel	៛	2
+KMF	Comoro franc	₣	0
+KPW	North Korean won	₩	2
+KRW	South Korean won	₩	0
+KWD	Kuwaiti dinar	د.ك	3
+KYD	Cayman Islands dollar	$	2
+KZT	Kazakhstani tenge	₸	2
+LAK	Lao kip	₭	2
+LBP	Lebanese pound	LL	2
+LKR	Sri Lankan rupee	₨	2
+LRD	Liberian dollar	L$	2
+LSL	Lesotho loti	M	2
+LYD	Libyan dinar	ل.د	3
+MAD	Moroccan dirham	د.م.	2
+MDL	Moldovan leu	¤	2
+MGA	Malagasy ariary	Ar	2
+MKD	Macedonian denar	ден	2
+MMK	Myanmar kyat	K	2
+MNT	Mongolian tögrög	₮	2
+MOP	Macanese pataca	MOP$	2
+MRU	Mauritanian ouguiya	UM	2
+MUR	Mauritian rupee	₨	2
+MVR	Maldivian rufiyaa	Rf.	2
+MWK	Malawian kwacha	K	2
+MXN	Mexican peso	$	2
+MXV	Mexican Unidad de Inversion (UDI)	¤	2
+MYR	Malaysian ringgit	RM	2
+MZN	Mozambican metical	MT	2
+NAD	Namibian dollar	N$	2
+NGN	Nigerian naira	₦	2
+NIO	Nicaraguan córdoba	C$	2
+NOK	Norwegian krone	kr	2
+NPR	Nepalese rupee	₨	2
+NZD	New Zealand dollar	$	2
+OMR	Omani rial	ر.ع.	3
+PAB	Panamanian balboa	B/.	2
+PEN	Peruvian sol	S/	2
+PGK	Papua New Guinean kina	K	2
+PHP	Philippine peso	₱	2
+PKR	Pakistani rupee	₨	2
+PLN	Polish złoty	zł	2
+PYG	Paraguayan guaraní	₲	0
+QAR	Qatari riyal	ر.ق	2
+RON	Romanian leu	L	2
+RSD	Serbian dinar	дин	2
+RUB	Russian ruble	₽	2
+RWF	Rwandan franc	FRw	0
+SAR	Saudi riyal	ر.س	2
+SBD	Solomon Islands dollar	S$	2
+SCR	Seychelles rupee	SRe	2
+SDG	Sudanese pound	¤	2
+SEK	Swedish krona/kronor	kr	2
+SGD	Singapore dollar	S$	2
+SHP	Saint Helena pound	£	2
+SLE	Sierra Leonean leone	Le	2
+SLL	Sierra Leonean leone	Le	2
+SOS	Somali shilling	Sh.So.	2
+SRD	Surinamese dollar	$	2
+SSP	South Sudanese pound	¤	2
+STN	São Tomé and Príncipe dobra	Db	2
+SVC	Salvadoran colón	¤	2
+SYP	Syrian pound	LS	2
+SZL	Swazi lilangeni	E	2
+THB	Thai baht	฿	2
+TJS	Tajikistani somoni	¤	2
+TMT	Turkmenistan manat	¤	2
+TND	Tunisian dinar	د.ت	3
+TOP	Tongan paʻanga	T$	2
+TRY	Turkish lira	₺	2
+TTD	Trinidad and Tobago dollar	$	2
+TWD	New Taiwan dollar	NT$	2
+TZS	Tanzanian shilling	Tsh	2
+UAH	Ukrainian hryvnia	₴	2
+UGX	Ugandan shilling	USh	0
+USD	United States dollar	$	2
+USN	United States dollar (next day)	$	2
+UYI	Uruguay Peso en Unidades Indexadas (URUIURUI)	$U	0
+UYU	Uruguayan peso	$U	2
+UYW	Unidad previsional	¤	4
+UZS	Uzbekistan som	¤	2
+VED	Venezuelan bolívar soberano	Bs.	2
+VES	Venezuelan bolívar soberano	Bs.	2
+VND	Vietnamese đồng	₫	0
+VUV	Vanuatu vatu	VT	0
+WST	Samoan tala	WS$	2
+XAF	CFA franc BEAC	FCFA	0
+XCD	East Caribbean dollar	$	2
+XOF	CFA franc BCEAO	CFA	0
+XPF	CFP franc (franc Pacifique)	₣	0
+YER	Yemeni rial	ر.ي	2
+ZAR	South African rand	R	2
+ZMW	Zambian kwacha	K	2
+ZWL	Zimbabwean dollar	$	2
+ZWG	Zimbabwe Gold	¤	2
