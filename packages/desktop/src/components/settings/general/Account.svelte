@@ -21,7 +21,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { Account } from "$lib/types";
     import InlineTextField from "$components/InlineTextField.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import { formatAmountWithoutSymbol, getCurrencySymbol } from "$lib/utils/money";
+    import { formatAmountWithoutSymbol } from "$lib/utils/money";
 
     interface Props{
         account: Account
@@ -29,7 +29,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { account }:Props = $props();
     const amount = $derived.by(() => formatAmountWithoutSymbol(account.startingBalance));
-    const symbol = getCurrencySymbol(settingsStore.settings.currencyCode);
+    const symbol = settingsStore.currencySymbol;
 </script>
 
 <li class="flex items-center justify-between">

@@ -9,13 +9,11 @@ export interface MoneyFormatOpts {
 }
 
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
-    // FIXME: use default in transactions
     const currency = opts?.currency ?? settingsStore.currency.symbol ?? settingsStore.currency.code;
 
     const raw = formatAmountWithoutSymbol(amount,opts);
 
     // The browser automatically formats RTL for certain languages
-    // TODO: test this
     return `${currency}${raw}`;
 }
 
@@ -47,16 +45,6 @@ export function formatAmountWithoutSymbol(
         .filter((part) => part.type !== "currency")
         .map((part) => part.value)
         .join("");
-}
-
-export function getCurrencySymbol(currencyCode: string = "USD"): string {
-    const formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currencyCode
-    });
-    const parts = formatter.formatToParts(1);
-    const currencyPart = parts.find((part) => part.type === "currency");
-    return currencyPart?.value ?? currencyCode;
 }
 
 /**

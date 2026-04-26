@@ -4,7 +4,7 @@ import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import type { Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { getCurrencySymbol, parseMoney } from "$lib/utils/money";
+import { parseMoney } from "$lib/utils/money";
 
 describe("AccountStore",() => {
     test("create a new account",async() => {
@@ -47,12 +47,7 @@ test("Account balance",() => {
     expect(balance).toBe(20);
 });
 
-test("Get currency symbol",() => {
-    expect(getCurrencySymbol("USD")).toBe("$");
-    expect(getCurrencySymbol("ZAR")).toBe("ZAR");
-});
-
-describe("Format money", () => {
+describe("Parse money", () => {
     test("plain number",() => {
         const money = parseMoney("224");
         expect(money).toBe("224");

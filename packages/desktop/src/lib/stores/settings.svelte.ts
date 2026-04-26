@@ -32,6 +32,10 @@ export class SettingsStore{
         return this.#currency;
     }
 
+    get currencySymbol():string{
+        return this.#currency.symbol ?? this.#currency.code;
+    }
+
     /**
      * Resets to default settings.
      */
