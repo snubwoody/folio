@@ -98,10 +98,10 @@ pub async fn settings(state: tauri::State<'_, State>) -> Result<Settings> {
 }
 
 #[tauri::command]
-pub async fn set_currency_code(state: tauri::State<'_, State>, currency: Currency) -> Result<()> {
+pub async fn set_currency_code(state: tauri::State<'_, State>, currency_code: &str) -> Result<()> {
     let mut settings = state.settings.lock().await;
     settings
-        .set_currency_code(currency)
+        .set_currency_code(currency_code)
         .inspect_err(|err| warn!("{}", err.report()))?;
     Ok(())
 }

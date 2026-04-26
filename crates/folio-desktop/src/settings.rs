@@ -1,9 +1,11 @@
 use crate::error::ErrorExt;
-use iso_currency::Currency;
 use serde::{Deserialize, Serialize};
 use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
+use serde_json::Value;
 use tracing::info;
+use crate::Currency;
 
 // Serde doesn't allow constant values like `true`
 const fn default_true() -> bool {
@@ -15,7 +17,7 @@ const fn default_true() -> bool {
 pub struct Settings {
     #[serde(skip)]
     path: PathBuf,
-    currency_code: Currency,
+    currency_code: String,
     #[serde(default = "default_true")]
     sidebar_open: bool,
 }
@@ -33,6 +35,10 @@ impl Settings {
             Ok(mut settings) => {
                 settings.path = path.as_ref().to_path_buf();
 
+                if let Err(_) = Currency::from_str(&settings.currency_code){
+                    settings.currency_code = Currency::ZMW.to_string()
+                }
+
                 // Make sure new settings fields are saved
                 settings.write()?;
                 info!("Loaded settings from {:?}", path.as_ref());
@@ -45,7 +51,7 @@ impl Settings {
     fn init(path: impl AsRef<Path>) -> crate::Result<Self> {
         let settings = Settings {
             path: path.as_ref().to_path_buf(),
-            currency_code: Currency::USD,
+            currency_code: Currency::ZMW.code().to_string(),
             sidebar_open: true,
         };
 
@@ -55,10 +61,13 @@ impl Settings {
         Ok(settings)
     }
 
-    pub fn set_currency_code(&mut self, currency: Currency) -> crate::Result<()> {
-        self.currency_code = currency;
+    pub fn set_currency_code(&mut self, currency_code: &str) -> crate::Result<()> {
+        if let Err(err) = Currency::from_str(currency_code){
+            return Err(err)
+        }
+        self.currency_code = currency_code.to_string();
         self.write()?;
-        info!(currency=?currency,"Set currency code");
+        info!(currency=?currency_code,"Set currency code");
         Ok(())
     }
 
@@ -70,8 +79,8 @@ impl Settings {
         Ok(())
     }
 
-    pub fn currency_code(&self) -> Currency {
-        self.currency_code
+    pub fn currency_code(&self) -> &str {
+        &self.currency_code
     }
 
     fn write(&self) -> crate::Result<()> {
@@ -99,18 +108,18 @@ mod test {
         File::create(&path)?;
         let settings = Settings {
             path: path.to_path_buf(),
-            currency_code: Currency::AED,
+            currency_code: Currency::AED.to_string(),
             sidebar_open: false,
         };
         settings.write()?;
         let settings = Settings {
             path: path.to_path_buf(),
-            currency_code: Currency::AED,
+            currency_code: Currency::AED.to_string(),
             sidebar_open: true,
         };
         settings.write()?;
         let settings: Settings = serde_json::from_str(&fs::read_to_string(&path)?)?;
-        assert_eq!(settings.currency_code, Currency::AED);
+        assert_eq!(settings.currency_code, Currency::AED.to_string());
         Ok(())
     }
 
@@ -121,7 +130,7 @@ mod test {
         Settings::init(&path)?;
         let file = File::open(&path)?;
         let settings: Settings = serde_json::from_reader(file)?;
-        assert_eq!(settings.currency_code, Currency::USD);
+        assert_eq!(settings.currency_code, Currency::ZMW.to_string());
         Ok(())
     }
 
@@ -136,7 +145,7 @@ mod test {
         });
         serde_json::to_writer(file, &json)?;
         let settings: Settings = Settings::open(&path)?;
-        assert_eq!(settings.currency_code, Currency::XOF);
+        assert_eq!(settings.currency_code, Currency::XOF.to_string());
         assert!(!settings.sidebar_open);
         assert_eq!(settings.path, path);
         Ok(())
@@ -149,7 +158,20 @@ mod test {
         let file = File::create(&path)?;
         serde_json::to_writer(file, &json! ({"currencyCode":"XOF"}))?;
         let settings: Settings = Settings::open(&path)?;
-        assert_eq!(settings.currency_code, Currency::XOF);
+        assert_eq!(settings.currency_code, Currency::XOF.to_string());
+        assert!(settings.sidebar_open);
+        assert_eq!(settings.path, path);
+        Ok(())
+    }
+
+    #[test]
+    fn parse_invalid_currency_code() -> crate::Result<()> {
+        let dir = tempdir()?;
+        let path = dir.path().join("settings.json");
+        let file = File::create(&path)?;
+        serde_json::to_writer(file, &json! ({"currencyCode":"Not a currency"}))?;
+        let settings: Settings = Settings::open(&path)?;
+        assert_eq!(settings.currency_code, Currency::ZMW.to_string());
         assert!(settings.sidebar_open);
         assert_eq!(settings.path, path);
         Ok(())
@@ -162,12 +184,12 @@ mod test {
         File::create(&path)?;
         let settings = Settings {
             path: path.clone(),
-            currency_code: Currency::ZMW,
+            currency_code: Currency::ZMW.to_string(),
             sidebar_open: false,
         };
         settings.write()?;
         let settings = Settings::open(&path)?;
-        assert_eq!(settings.currency_code, Currency::ZMW);
+        assert_eq!(settings.currency_code, Currency::ZMW.to_string());
         assert!(!settings.sidebar_open);
         Ok(())
     }
@@ -178,7 +200,18 @@ mod test {
         let path = dir.path().join("settings.json");
         let settings: Settings = Settings::open(&path)?;
         assert!(fs::exists(&path)?);
-        assert_eq!(settings.currency_code, Currency::USD);
+        assert_eq!(settings.currency_code, Currency::ZMW.to_string());
+        assert_eq!(settings.path, path);
+        Ok(())
+    }
+
+    #[test]
+    fn save_currency_code() -> crate::Result<()> {
+        let dir = tempdir()?;
+        let path = dir.path().join("settings.json");
+        let settings: Settings = Settings::open(&path)?;
+        assert!(fs::exists(&path)?);
+        assert_eq!(settings.currency_code, "ZMW");
         assert_eq!(settings.path, path);
         Ok(())
     }
