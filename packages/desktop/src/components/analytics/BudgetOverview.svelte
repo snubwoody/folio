@@ -17,7 +17,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { appStore } from "$lib/state.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
     import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
     import { transactionType } from "$lib/api/transaction";
     import { formatMoney } from "$lib/utils/money";
@@ -45,18 +44,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <section class="flex items-center justify-between">
     <div>
         <h5>Monthly budget</h5>
-        <h3>{formatMoney(totalBudget.toString(),{ compact: true,currency: settingsStore.settings.currencyCode })}</h3>
+        <h3>{formatMoney(totalBudget.toString(),{ compact: true })}</h3>
     </div>
     <div>
         <h5>Expenses</h5>
-        <h3>{formatMoney(totalExpenses.toString(),{ compact: true,currency: settingsStore.settings.currencyCode })}</h3>
+        <h3>{formatMoney(totalExpenses.toString(),{ compact: true })}</h3>
         {#if totalIncome > 0 && totalExpenses > 0}
             <p class="text-sm">{percentage.toFixed(0)}% of income</p>
         {/if}
     </div>
     <div>
         <h5>Income</h5>
-        <h3>{formatMoney(totalIncome.toString(),{ compact: true,currency: settingsStore.settings.currencyCode })}</h3>
+        <h3>{formatMoney(totalIncome.toString(),{ compact: true })}</h3>
     </div>
 </section>
 

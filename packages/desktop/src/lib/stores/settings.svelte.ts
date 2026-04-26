@@ -18,25 +18,38 @@ import type {
 } from "../types";
 import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
+import type { Currency } from "$lib/types";
 
 export class SettingsStore{
-    #settings: Settings = $state({ currencyCode: "USD", sidebarOpen: true });
+    #settings: Settings = $state({ currencyCode: "ZMW", sidebarOpen: true });
+    #currency: Currency = $state({ name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW" });
 
     get settings():Settings {
         return this.#settings;
+    }
+
+    get currency():Currency {
+        return this.#currency;
+    }
+
+    get currencySymbol():string{
+        return this.#currency.symbol ?? this.#currency.code;
     }
 
     /**
      * Resets to default settings.
      */
     reset(){
-        this.#settings = { currencyCode: "USD", sidebarOpen: true };
+        this.#settings = { currencyCode: "ZMW", sidebarOpen: true };
+        this.#currency = { name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW" };
     }
 
     async setCurrencyCode(currency: string) {
         try{
-            await invoke("set_currency_code", { currency });
+            // TODO: test this
+            await invoke("set_currency_code", { currencyCode: currency });
             this.#settings.currencyCode = currency;
+            this.#currency = await invoke<Currency>("active_currency");
         }catch (e) {
             console.error(e);
         }
@@ -53,6 +66,7 @@ export class SettingsStore{
 
     async load(){
         this.#settings = await invoke<Settings>("settings");
+        this.#currency = await invoke<Currency>("active_currency");
         logger.debug("Loaded settings from backend");
     }
 }
@@ -60,10 +74,28 @@ export class SettingsStore{
 export function mockSettings(){
     mockIPC((cmd) => {
         if (cmd === "settings") {
-            return { currencyCode: "USD" };
+            return { currencyCode: "ZMW" };
         }
         if (cmd === "currencies") {
-            return ["USD", "CAD", "ZAR", "ZMW", "TSH"];
+            const currencies: Currency[] = [
+                {
+                    code:"AUD",
+                    name: ""
+                },
+                {
+                    code:"ZMW",
+                    name: ""
+                },
+                {
+                    code:"CAD",
+                    name: ""
+                },
+                {
+                    code:"USD",
+                    name: ""
+                }
+            ];
+            return currencies;
         }
         if (cmd === "set_currency_code") {
             return;

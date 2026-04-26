@@ -14,24 +14,9 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 #![allow(unused)]
 
-// TODO: document removed currencies, check if settings will be parsed
-// Removed currencies:
-// - XPT - Platinum
-// - XTS - Code reserved for testing
-// - XSU - Unified System for Regional Compensation (SUCRE)
-// - XXX - No currency
-// - XDR - Special drawing rights
-// - XBB - European Composite Unit
-// - XBB - European Monetary Unit
-// - XBC - European Unit of Account 9
-// - XBD - European Unit of Account 17
-// - XUA - Africa Development Bank unit of account
-// - XAG - Silver
-// - XPD - Palladium
-// - XAU - Gold
-
 use crate::Error;
 use serde::{Deserialize, Serialize};
+use std::fmt::Display;
 use std::string::ToString;
 
 macro_rules! generate_currencies {
@@ -39,7 +24,7 @@ macro_rules! generate_currencies {
         impl Currency{
             $(
                 #[doc = $name]
-                pub const $code: Currency = Currency::new(stringify!($code),$name,$symbol,$precision);
+                pub const $code: Currency = Currency::new($name,stringify!($code),$symbol,$precision);
             )+
 
             /// All the supported currencies.
@@ -113,6 +98,12 @@ impl Currency {
     /// currency has subunits.
     pub fn precision(&self) -> Option<u8> {
         self.precision
+    }
+}
+
+impl Display for Currency {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.code.to_owned())
     }
 }
 

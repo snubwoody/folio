@@ -113,10 +113,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         color: var(--color-text-body);
     }
 
+    button{
+        text-wrap: nowrap;
+    }
+
     button[aria-expanded='true'] {
         :global(.select-btn-icon){
             rotate: 90deg;
         }
+    }
+
+    :global([data-melt-select-content]){
+        min-width: var(--melt-invoker-width) !important;
+        width: fit-content !important;
     }
 
     li {
@@ -124,6 +133,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         padding: 8px;
         transition: all 250ms;
         cursor: pointer;
+        text-wrap: wrap;
+        max-width: 200px;
 
         &:hover {
             background-color: var(--color-neutral-50);

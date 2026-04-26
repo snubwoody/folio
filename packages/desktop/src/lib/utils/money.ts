@@ -1,5 +1,6 @@
 import { settingsStore } from "$lib/stores/settings.svelte";
 import { invoke } from "@tauri-apps/api/core";
+import type { Currency } from "$lib/types";
 
 export interface MoneyFormatOpts {
     /** Truncate large values */
@@ -8,23 +9,12 @@ export interface MoneyFormatOpts {
 }
 
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
-    const currency = opts?.currency ?? settingsStore.settings.currencyCode;
-    let notation:
-        | "compact"
-        | "standard"
-        | "scientific"
-        | "engineering"
-        | undefined;
-    if (opts?.compact) {
-        notation = "compact";
-    }
+    const currency = opts?.currency ?? settingsStore.currency.symbol ?? settingsStore.currency.code;
 
-    const formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        notation
-    });
-    return formatter.format(parseFloat(amount));
+    const raw = formatAmountWithoutSymbol(amount,opts);
+
+    // The browser automatically formats RTL for certain languages
+    return `${currency}${raw}`;
 }
 
 // FIXME: join with above
@@ -57,16 +47,6 @@ export function formatAmountWithoutSymbol(
         .join("");
 }
 
-export function getCurrencySymbol(currencyCode: string = "USD"): string {
-    const formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: currencyCode
-    });
-    const parts = formatter.formatToParts(1);
-    const currencyPart = parts.find((part) => part.type === "currency");
-    return currencyPart?.value ?? currencyCode;
-}
-
 /**
  * Parse money input from the user
  */
@@ -79,9 +59,7 @@ export function parseMoney(value: string): string | undefined {
 
 /**
  * Fetches a list of all the supported currencies.
- *
- * @returns A list of currency strings
  */
 export async function getCurrencies() {
-    return await invoke("currencies") as string[];
+    return await invoke<Currency[]>("currencies");
 }

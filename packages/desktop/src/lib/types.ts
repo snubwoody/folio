@@ -1,5 +1,12 @@
 // Global types
 
+export type Currency = {
+    code: string;
+    name: string;
+    precision?: number;
+    symbol?: string;
+};
+
 export type Category = {
     id: string;
     title: string;

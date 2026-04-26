@@ -1,5 +1,23 @@
 # Folio Changelog
 
+## (unreleased)
+
+- Display local currency symbols.
+- Removed currencies:
+  - XPT: Platinum
+  - XTS: Code reserved for testing
+  - XSU: Unified System for Regional Compensation (SUCRE)
+  - XXX: No currency
+  - XDR: Special drawing rights
+  - XBB: European Composite Unit
+  - XBB: European Monetary Unit
+  - XBC: European Unit of Account 9
+  - XBD: European Unit of Account 17
+  - XUA: Africa Development Bank unit of account
+  - XAG: Silver
+  - XPD: Palladium
+  - XAU: Gold
+
 ## 2.2.0 - 21-04-2026
 
 - Added a date field to the calendar.
