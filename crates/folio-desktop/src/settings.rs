@@ -5,7 +5,7 @@ use std::fs::{File, OpenOptions};
 use std::path::{Path, PathBuf};
 use tracing::info;
 
-// Serde doesn't allow constant values e.g. true
+// Serde doesn't allow constant values like `true`
 const fn default_true() -> bool {
     true
 }

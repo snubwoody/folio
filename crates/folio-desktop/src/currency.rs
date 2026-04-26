@@ -105,7 +105,7 @@ impl Currency {
     pub fn symbol(&self) -> &str {
         match &self.symbol {
             Some(symbol) => symbol,
-            None => &self.code,
+            None => self.code,
         }
     }
 
