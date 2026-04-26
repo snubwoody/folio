@@ -30,15 +30,9 @@ export default defineConfig({
     },
     test: {
         exclude: ["e2e", "node_modules", ".vercel", "dist"],
-        coverage: {
-            enabled: true,
-            provider: "v8",
-            include: ["src/**/*.svelte","src/**/*.ts"],
-            exclude: ["src/**/*.spec.ts","src/**/*.test.ts"]
-        },
         // eslint-disable-next-line no-undef
         reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
-        // .test.ts are for unit tests, .spec.ts are for browser tests
+        // *.test.ts are for unit tests, *.spec.ts are for browser tests
         projects: [
             {
                 extends: true,
@@ -63,7 +57,8 @@ export default defineConfig({
                             port: 4040
                         },
                         instances: [
-                            { browser: "chromium" }
+                            { browser: "chromium" },
+                            { browser: "webkit" }
                         ]
                     }
                 }
