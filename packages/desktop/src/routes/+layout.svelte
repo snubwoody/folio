@@ -68,7 +68,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             categoryStore.load(),
             settingsStore.load()
         ]);
-        checkForUpdate();
+        await checkForUpdate();
         transactionStore.sort();
     });
 </script>

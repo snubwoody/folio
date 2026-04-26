@@ -9,24 +9,14 @@ export interface MoneyFormatOpts {
 }
 
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
-    // Change this
-    const currency = opts?.currency ?? settingsStore.settings.currencyCode;
-    let notation:
-        | "compact"
-        | "standard"
-        | "scientific"
-        | "engineering"
-        | undefined;
-    if (opts?.compact) {
-        notation = "compact";
-    }
+    // FIXME: use default in transactions
+    const currency = opts?.currency ?? settingsStore.currency.symbol ?? settingsStore.currency.code;
 
-    const formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency,
-        notation
-    });
-    return formatter.format(parseFloat(amount));
+    const raw = formatAmountWithoutSymbol(amount,opts);
+
+    // The browser automatically formats RTL for certain languages
+    // TODO: test this
+    return `${currency}${raw}`;
 }
 
 // FIXME: join with above

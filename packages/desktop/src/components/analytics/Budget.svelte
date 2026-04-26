@@ -56,7 +56,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
         </div>
     </div>
 </div>
-<MoneyCell symbol={getCurrencySymbol(settingsStore.settings.currencyCode)} amount={formattedAmount} onUpdate={updateAmount} />
+<MoneyCell symbol={settingsStore.currency.symbol ?? settingsStore.currency.code} amount={formattedAmount} onUpdate={updateAmount} />
 <p>
     {formatMoney(leftToSpend.toString())}
 </p>

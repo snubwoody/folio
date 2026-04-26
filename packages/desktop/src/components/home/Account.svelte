@@ -15,5 +15,5 @@
 
 <li class="shadow-purple-sm p-2 rounded-md">
 	<p>{account.name}</p>
-	<h6>{formatMoney(balance.toString(),{ currency: settingsStore.settings.currencyCode })}</h6>
+	<h6>{formatMoney(balance.toString())}</h6>
 </li>

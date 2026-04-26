@@ -26,7 +26,7 @@
     // TODO: make the row a form
     let note = $derived(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
-    const currencySymbol = $derived(getCurrencySymbol(settingsStore.settings.currencyCode));
+    const currencySymbol = $derived(settingsStore.currency.symbol ?? settingsStore.currency.code);
     const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
     // TODO: test this
     // FIXME: popup width for select without a selected option
