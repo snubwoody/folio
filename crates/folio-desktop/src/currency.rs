@@ -13,6 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+// TODO: document removed currencies, check if settings will be parsed
+// Removed currencies:
+// - XPT - Platinum
+// - XTS - Code reserved for testing
+// - XSU - Unified System for Regional Compensation (SUCRE)
+// - XXX - No currency
+// - XDR - Special drawing rights
+// - XBB - European Composite Unit
+// - XBB - European Monetary Unit
+// - XBC - European Unit of Account 9
+// - XBD - European Unit of Account 17
+// - XUA - Africa Development Bank unit of account
+// - XAG - Silver
+// - XAU - Gold
 
 pub struct Currency{
     name: String,
