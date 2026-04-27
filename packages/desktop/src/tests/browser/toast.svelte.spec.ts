@@ -1,5 +1,5 @@
-import ToastGroup from "$components/popups/ToastGroup.svelte";
-import ToastComponent from "$components/popups/Toast.svelte";
+import ToastGroup from "$components/alerts/ToastGroup.svelte";
+import ToastComponent from "$components/alerts/Toast.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { toastStore,addToast,type Toast } from "$lib/stores/toast.svelte";

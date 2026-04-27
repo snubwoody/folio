@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { toastStore } from "$lib/stores/toast.svelte";
-    import Toast from "$components/popups/Toast.svelte";
+    import Toast from "$components/alerts/Toast.svelte";
     // TODO: close toast on esc
 </script>
 

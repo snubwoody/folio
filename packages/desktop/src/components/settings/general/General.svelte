@@ -46,6 +46,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <SelectMenu
             class="w-fit"
             items={currencies}
+            defaultValue={settingsStore.currency}
             onChange={(c) => settingsStore.setCurrencyCode(c.code)}
             toOption={(item) => {
                 return { label: `${item.name} - ${item.symbol ?? item.code}`,value: item.code };

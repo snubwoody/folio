@@ -3,11 +3,22 @@
     import {onMount} from "svelte";
     import {getVersion} from "@tauri-apps/api/app";
     import {Button, IconButton, TextButton} from "$components/button";
+    import {checkForUpdate,installUpdate} from "$lib/utils/update";
+    import type {Update} from "@tauri-apps/plugin-updater";
+    import { MessageBar } from "$components/alerts";
 
     let version = $state("");
     onMount(async()=>{
         version = await getVersion();
     })
+
+    // TODO: omit check for update if not updatable, include in dev?
+    let updatePending = $state(false);
+    let update = $state<Update | null>(null)
+    export const checkUpdate = async () => {
+        updatePending = false;
+        update = await checkForUpdate();
+    }
 </script>
 
 <section class="space-y-2.5">
@@ -21,16 +32,18 @@
                 Read the changelog
             </a>
         </div>
-        <Button>Check for updates</Button>
+        <Button onclick={checkUpdate}>Check for updates</Button>
     </div>
-    <div class="message-bar">
-        <Info class="text-text-primary"/>
-        <p class="w-full">A new update is available</p>
-        <TextButton theme="primary" class="w-fit shrink-0">Download & Install</TextButton>
-        <IconButton variant="ghost">
-            <X/>
-        </IconButton>
-    </div>
+    <MessageBar message="No update found"/>
+    <MessageBar message="A new update is available">
+        {#if updatePending}
+            <p>Checking for update...</p>
+        {:else}
+            <TextButton theme="primary" class="w-fit shrink-0">
+                Download & Install
+            </TextButton>
+        {/if}
+    </MessageBar>
 </section>
 
 <style>
