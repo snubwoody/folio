@@ -7,7 +7,7 @@
         message: string,
         children?:Snippet,
         open?: boolean
-    }
+    };
 
     let {
         message,

@@ -29,7 +29,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { account }:Props = $props();
     const amount = $derived.by(() => formatAmountWithoutSymbol(account.startingBalance));
-    const symbol = settingsStore.currencySymbol;
 </script>
 
 <li class="flex items-center justify-between">

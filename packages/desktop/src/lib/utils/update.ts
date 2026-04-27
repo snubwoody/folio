@@ -3,7 +3,6 @@ import { relaunch } from "@tauri-apps/plugin-process";
 import { logger } from "$lib/utils/logger";
 import { BundleType, getBundleType } from "@tauri-apps/api/app";
 
-
 /**
  * Downloads and installs the latest update. The app will be closed and relaunched after the update has been
  * installed.
@@ -22,6 +21,7 @@ export async function checkForUpdate(): Promise<Update | null>{
     logger.info("Checking for update...");
     // FIXME: check if it was distributed via the store, IS_EXTERNAL_DIST
     // TODO: save distribution information
+    // FIXME: save DIST_UPDATE_MESSAGE
     const bundleType = await getBundleType();
     const updatableBundles = [BundleType.AppImage,BundleType.Nsis,BundleType.App];
     if (!updatableBundles.includes(bundleType)){

@@ -26,8 +26,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import {checkForUpdate, installUpdate} from "$lib/utils/update";
-    import {addToast} from "$lib/stores/toast.svelte";
+    import { checkForUpdate, installUpdate } from "$lib/utils/update";
+    import { addToast } from "$lib/stores/toast.svelte";
 
     const { children } = $props();
 

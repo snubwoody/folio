@@ -1,1 +1,1 @@
-export {default as MessageBar} from "./MessageBar.svelte";
+export { default as MessageBar } from "./MessageBar.svelte";
