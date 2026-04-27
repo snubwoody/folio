@@ -2,6 +2,7 @@
 
 ## (unreleased)
 
+- Added version information to settings panel.
 - Display local currency symbols.
 - Removed currencies:
   - XPT: Platinum

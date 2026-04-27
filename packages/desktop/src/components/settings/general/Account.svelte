@@ -20,7 +20,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { Trash2 } from "@lucide/svelte";
     import type { Account } from "$lib/types";
     import InlineTextField from "$components/InlineTextField.svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
 
     interface Props{
