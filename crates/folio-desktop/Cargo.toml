@@ -34,7 +34,6 @@ tracing-appender.workspace = true
 tracing.workspace = true
 directories.workspace = true
 tauri-plugin-os.workspace = true
-iso_currency.workspace = true
 sqlx.workspace = true
 tauri-plugin-updater.workspace = true
 tauri-plugin-prevent-default.workspace = true

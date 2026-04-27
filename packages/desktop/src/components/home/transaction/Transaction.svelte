@@ -36,10 +36,10 @@
 </script>
 
 <TableRow data-selected={selected}>
-    <TableCell class="checkbox-cell">
         <input
             checked={tableStore.isSelected(transaction.id)}
             type="checkbox" name="" id=""
+            class="w-fit"
             onclick={(e) => {
                 if (!e.isTrusted) return;
                 if(e.currentTarget.checked){
@@ -49,7 +49,6 @@
                 tableStore.deselect(transaction.id);
             }}
         >
-    </TableCell>
     <DateCell {transaction}/>
     <AccountCell {transaction}/>
     {#if transType === "Transfer"}

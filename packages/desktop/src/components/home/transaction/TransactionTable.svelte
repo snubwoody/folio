@@ -13,17 +13,15 @@
 </script>
 <Table>
     <TableHeader>
-        <TableCell class="checkbox-cell focus-within:bg-white">
-            <input type="checkbox" checked={selected} name="selected" id="row-checkbox"
-                   onclick={(e) => {
-                       if(e.currentTarget.checked){
-                           tableStore.toggleSelectAll();
-                           return;
-                       }
-                       tableStore.toggleSelectAll();
-                   }}
-            >
-        </TableCell>
+        <input type="checkbox" checked={selected} class="w-fit" name="selected" id="row-checkbox"
+           onclick={(e) => {
+               if(e.currentTarget.checked){
+                   tableStore.toggleSelectAll();
+                   return;
+               }
+               tableStore.toggleSelectAll();
+           }}
+        >
         <TableCell>Date</TableCell>
         <TableCell>Account</TableCell>
         <TableCell>Payee</TableCell>
