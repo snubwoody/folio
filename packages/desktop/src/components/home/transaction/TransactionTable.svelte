@@ -3,7 +3,7 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import Transaction from "./Transaction.svelte";
     import { Table, TableCell, TableHeader } from "$components/table";
-    import {Checkbox} from "$components/select";
+    import { Checkbox } from "$components/select";
 
     interface Props {
         tableStore: TableStore
@@ -13,11 +13,11 @@
     let selected = $derived(tableStore.allRowsSelected);
     const select = (checked: boolean) => {
         if (checked){
-            tableStore.selectAll()
+            tableStore.selectAll();
             return;
         }
         tableStore.deselectAll();
-    }
+    };
 </script>
 <Table>
     <TableHeader>

@@ -1,11 +1,11 @@
 <script lang="ts">
     import { Checkbox } from "bits-ui";
-    import { Check } from "@lucide/svelte"
+    import { Check } from "@lucide/svelte";
 
     type Props = {
         onChecked?: (value: boolean) => void,
         checked?: boolean
-    }
+    };
 
     let {
         onChecked,
@@ -16,7 +16,7 @@
 <Checkbox.Root bind:checked onCheckedChange={onChecked} class="checkbox">
     {#snippet children({ checked })}
         {#if checked}
-            <Check size="12" strokeWidth="2"/>
+            <Check size="12" strokeWidth="3"/>
         {/if}
     {/snippet}
 </Checkbox.Root>

@@ -11,7 +11,7 @@
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { TableRow } from "$components/table";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
-    import {Checkbox} from "$components/select";
+    import { Checkbox } from "$components/select";
 
     interface Props{
         transaction: Transaction
@@ -41,7 +41,7 @@
             return;
         }
         tableStore.deselect(transaction.id);
-    }
+    };
     let checked = $derived(tableStore.isSelected(transaction.id));
 </script>
 
