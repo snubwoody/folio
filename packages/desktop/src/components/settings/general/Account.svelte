@@ -40,7 +40,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         />
         <div class="flex gap-0.5 items-center">
             <p class="text-sm">
-                Starting balance: {symbol}
+                Starting balance
             </p>
             <InlineTextField
                 class="text-sm"

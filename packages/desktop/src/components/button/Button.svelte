@@ -21,7 +21,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     type Size = "small" | "medium";
 
     interface Props extends HTMLButtonAttributes{
+        /**
+         * Sets the button style.
+         */
         variant?: Variant,
+        /**
+         * Sets size of the button.
+         */
         size?: Size,
         children: Snippet
     }

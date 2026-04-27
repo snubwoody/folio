@@ -16,7 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import IncomeStreams from "./IncomeStreams.svelte";
-    import General from "./General.svelte";
+    import General from "./general/General.svelte";
     import Categories from "./Categories.svelte";
     import MenuItem from "./MenuItem.svelte";
     let selectedIndex = $state(0);
