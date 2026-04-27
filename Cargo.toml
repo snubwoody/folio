@@ -27,7 +27,6 @@ cargo_metadata = "0.23.1"
 regex = "1.12.3"
 tracing = "0.1.41"
 directories = "6.0.0"
-iso_currency = { version = "0.5.3", features = ["with-serde", "iterator"] }
 anyhow = "1.0.100"
 reqwest = {version = "0.12.24",features = ["json","native-tls","blocking"]}
 dotenvy = "0.15.7"
