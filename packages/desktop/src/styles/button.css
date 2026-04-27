@@ -19,8 +19,8 @@ button{
         border-radius: var(--radius-sm);
 
         svg{
-            width: 16px;
-            height: 16px;
+            width: var(--text-body);
+            height: var(--text-body);
         }
     }
 
@@ -30,8 +30,8 @@ button{
         border-radius: var(--radius-md);
         
         svg{
-            width: 16px;
-            height: 16px;
+            width: var(--text-body);
+            height: var(--text-body);
         }
     }
     
