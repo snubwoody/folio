@@ -10,7 +10,6 @@
         grid-template-columns: subgrid;
         border-bottom: 1px solid var(--color-neutral-50);
         padding-inline: 12px;
-        column-gap: 12px;
     }
 
     .data-header{
@@ -21,19 +20,25 @@
 
     .data-row[data-selected="true"] {
         background: var(--color-purple-50);
+        outline: 2px solid var(--color-purple-500);
+        outline-offset: -1px;
     }
 
     .data-cell{
-        /* display: flex; */
         vertical-align: middle;
         white-space: nowrap;
         padding-block: 8px;
         width: 100%;
-        grid-template-columns: subgrid;
+        border-right: 1px solid var(--color-neutral-50);
+        padding-inline: 12px;
+
+        /** TODO: exclude last child */
 
         &:focus-within{
             background: var(--color-purple-50);
             border-color: var(--color-purple-500);
+            outline: 2px solid var(--color-purple-500);
+            outline-offset: -1px;
         }
     }
 
