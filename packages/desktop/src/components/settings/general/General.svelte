@@ -17,12 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import SelectMenu from "$components/SelectMenu.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
-    import Account from "./general/Account.svelte";
+    import Account from "./Account.svelte";
+    import VersionInfo from "./VersionInfo.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { getCurrencies } from "$lib/utils/money";
     import type { Currency } from "$lib/types";
 
-    // TODO: test this
     let currencies: Currency[] = $state([]);
     $effect(() => {
         getCurrencies()
@@ -36,7 +36,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <div class="space-y-2">
-    <div class="flex items-center justify-between w-full">
+    <VersionInfo/>
+    <div class="w-full h-px bg-neutral-50"></div>
+    <section class="flex items-center justify-between w-full">
         <div class="space-y-0.5">
             <p>Currency code</p>
             <p class="text-text-muted text-sm">The ISO currency code</p>
@@ -44,12 +46,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         <SelectMenu
             class="w-fit"
             items={currencies}
+            defaultValue={settingsStore.currency}
             onChange={(c) => settingsStore.setCurrencyCode(c.code)}
             toOption={(item) => {
                 return { label: `${item.name} - ${item.symbol ?? item.code}`,value: item.code };
             }}
         />
-    </div>
+    </section>
     <div class="w-full h-px bg-neutral-50"></div>
     <section class="space-y-1">
         <h6>Accounts</h6>

@@ -101,6 +101,10 @@
         align-items: center;
         padding-block: 12px;
 
+        :global([data-expanded="true"]) &{
+            padding-inline: 12px;
+        }
+
         :global([data-expanded="false"]) &{
             flex-direction: column-reverse;
         }

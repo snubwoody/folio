@@ -17,7 +17,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import Sidebar from "$components/sidebar/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
-    import ToastGroup from "$components/popups/ToastGroup.svelte";
+    import ToastGroup from "$components/alerts/ToastGroup.svelte";
     import "$styles/global.css";
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
@@ -26,27 +26,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import { check, type Update } from "@tauri-apps/plugin-updater";
-    import { relaunch } from "@tauri-apps/plugin-process";
+    import { checkForUpdate, installUpdate } from "$lib/utils/update";
     import { addToast } from "$lib/stores/toast.svelte";
-    import { logger } from "$lib/utils/logger";
-    import { BundleType, getBundleType } from "@tauri-apps/api/app";
 
     const { children } = $props();
 
-    async function installUpdate(update: Update){
-        logger.info(`Downloading new update (${update.version})`);
-        await update.downloadAndInstall().catch(err => logger.error(`Failed to install new update: ${err.message}`));
-        logger.info(`Installed update (${update.version}), relaunching app...`);
-        await relaunch();
-    }
-
-    async function checkForUpdate(){
-        const bundleType = await getBundleType();
-        const updatableBundles = [BundleType.AppImage,BundleType.Nsis,BundleType.App];
-        if (!updatableBundles.includes(bundleType)) return;
-
-        const update = await check();
+    async function updateApp(){
+        const update = await checkForUpdate();
         if (update){
             addToast({
                 title: "A new update is available",
@@ -66,9 +52,9 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             transactionStore.load(),
             accountStore.load(),
             categoryStore.load(),
-            settingsStore.load()
+            settingsStore.load(),
+            updateApp()
         ]);
-        await checkForUpdate();
         transactionStore.sort();
     });
 </script>

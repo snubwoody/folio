@@ -20,7 +20,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { Trash2 } from "@lucide/svelte";
     import type { Account } from "$lib/types";
     import InlineTextField from "$components/InlineTextField.svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
 
     interface Props{
@@ -29,7 +28,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { account }:Props = $props();
     const amount = $derived.by(() => formatAmountWithoutSymbol(account.startingBalance));
-    const symbol = settingsStore.currencySymbol;
 </script>
 
 <li class="flex items-center justify-between">
@@ -40,7 +38,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         />
         <div class="flex gap-0.5 items-center">
             <p class="text-sm">
-                Starting balance: {symbol}
+                Starting balance
             </p>
             <InlineTextField
                 class="text-sm"
