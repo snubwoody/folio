@@ -18,7 +18,7 @@ jobs:
         os: [windows-latest,macos-latest,ubuntu-latest]
     runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: extractions/setup-just@v3
       - name: Setup nu
         uses: hustcer/setup-nu@v3
@@ -44,7 +44,7 @@ jobs:
           path: ~/.cargo/bin
       - uses: taiki-e/install-action@nextest
       - name: Install cargo packager
-        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true'}}
+        if: ${{steps.cache-cargo-bin.outputs.cache-hit != 'true' && matrix.os == 'Linux'}}
         run: cargo install cargo-packager --force
       - name: Install tauri cli
         run: cargo binstall tauri-cli -y --force
