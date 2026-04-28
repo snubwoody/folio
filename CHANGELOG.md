@@ -2,6 +2,7 @@
 
 ## (unreleased)
 
+- Improved checkbox UI
 - Added vertical borders to transaction table.
 - Added version information to settings panel.
 - Display local currency symbols.

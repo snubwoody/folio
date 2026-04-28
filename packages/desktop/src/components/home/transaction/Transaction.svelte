@@ -11,6 +11,7 @@
     import { settingsStore } from "$lib/stores/settings.svelte";
     import { TableRow } from "$components/table";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
+    import { Checkbox } from "$components/select";
 
     interface Props{
         transaction: Transaction
@@ -33,22 +34,19 @@
     // FIXME: only update payee if the function succeeds
     // TODO: add style for selected items
     // FIXME: make calendar and popup fit cells
+
+    const select = (checked: boolean) => {
+        if (checked){
+            tableStore.select(transaction.id);
+            return;
+        }
+        tableStore.deselect(transaction.id);
+    };
+    let checked = $derived(tableStore.isSelected(transaction.id));
 </script>
 
 <TableRow data-selected={selected}>
-        <input
-            checked={tableStore.isSelected(transaction.id)}
-            type="checkbox" name="" id=""
-            class="w-fit"
-            onclick={(e) => {
-                if (!e.isTrusted) return;
-                if(e.currentTarget.checked){
-                    tableStore.select(transaction.id);
-                    return;
-                }
-                tableStore.deselect(transaction.id);
-            }}
-        >
+    <Checkbox bind:checked onChecked={select}/>
     <DateCell {transaction}/>
     <AccountCell {transaction}/>
     {#if transType === "Transfer"}

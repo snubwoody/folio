@@ -44,6 +44,15 @@ export class TableStore{
         }
     }
 
+    selectAll(){
+        this.#allRowsSelected = true;
+    }
+
+    deselectAll(){
+        this.#allRowsSelected = false;
+        this.#selectedRows.clear();
+    }
+
     clear() {
         this.#allRowsSelected = false;
         this.#selectedRows.clear();
