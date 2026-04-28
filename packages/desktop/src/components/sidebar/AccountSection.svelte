@@ -5,11 +5,16 @@
     import { accountStore } from "$lib/stores/account.svelte";
     import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
     import TextField from "$components/TextField.svelte";
+    import Account from "./Account.svelte";
     import { formatMoney } from "$lib/utils/money";
 
+    // TODO: get account balance
     const total = $derived.by(() => {
         // TODO: test 0 accounts
-        const t = accountStore.accounts.map(a => parseFloat(a.balance)).reduce((prev, current) => current + prev,0);
+        const t = accountStore
+            .accounts
+            .map(a => parseFloat(a.balance))
+            .reduce((prev, current) => current + prev,0);
         return t.toString();
     });
 
@@ -18,6 +23,8 @@
     let name = $state("My account");
     let popoverOpen = $state(false);
 	let startingBalance = $state("0.00");
+
+
 
 	async function createAccount() {
 	    popoverOpen = false;
@@ -34,10 +41,7 @@
         {#each accountStore.accounts as account (account.id)}
             <!--TODO: add title-->
             <!--FIXME: use accountBalance method-->
-            <li>
-                <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
-                <p>{formatMoney(account.balance)}</p>
-            </li>
+            <Account {account}/>
         {/each}
     </ul>
     <Popover bind:open={popoverOpen}>
