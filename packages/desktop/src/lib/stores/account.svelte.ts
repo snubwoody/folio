@@ -96,7 +96,7 @@ export class AccountStore{
 export const accountStore = new AccountStore();
 
 /**
- * Calculates the account balance
+ * Calculates the account balance.
  *
  * @param accountId The id of the account
  * @param transactions The list of transactions

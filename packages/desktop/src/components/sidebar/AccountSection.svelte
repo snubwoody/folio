@@ -2,29 +2,28 @@
 <script>
     import { Plus } from "@lucide/svelte";
     import { Button } from "$components/button";
-    import { accountStore } from "$lib/stores/account.svelte";
+    import {accountBalance, accountStore} from "$lib/stores/account.svelte";
     import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
     import TextField from "$components/TextField.svelte";
     import Account from "./Account.svelte";
     import { formatMoney } from "$lib/utils/money";
+    import {transactionStore} from "$lib/stores/transaction.svelte.js";
 
     // TODO: get account balance
     const total = $derived.by(() => {
         // TODO: test 0 accounts
+        const transactions = transactionStore.transactions;
         const t = accountStore
             .accounts
-            .map(a => parseFloat(a.balance))
+            .map(a => accountBalance(a.id,transactions))
             .reduce((prev, current) => current + prev,0);
         return t.toString();
     });
 
     // TODO: test that account balance changes when handling transactions
-    // TODO: change icon based on open state
     let name = $state("My account");
     let popoverOpen = $state(false);
 	let startingBalance = $state("0.00");
-
-
 
 	async function createAccount() {
 	    popoverOpen = false;

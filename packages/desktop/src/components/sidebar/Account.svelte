@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { accountStore } from "$lib/stores/account.svelte";
+    import { accountBalance } from "$lib/stores/account.svelte";
     import { formatMoney } from "$lib/utils/money";
     import type { Account } from "$lib/types";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
 
     type Props = {
         account: Account
@@ -9,18 +10,17 @@
 
     const { account }: Props = $props();
 
-
     // TODO: test that account balance changes when handling transactions
     // TODO: change icon based on open state
-    let name = $state("My account");
-    let startingBalance = $state("0.00");
+    const balance = $derived(accountBalance(account.id,transactionStore.transactions));
 </script>
 
-<!--FIXME: use accountBalance method-->
-<li>
-    <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
-    <p>{formatMoney(account.balance)}</p>
-</li>
+{#key transactionStore.transactions}
+    <li>
+        <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
+        <p>{formatMoney(balance.toString())}</p>
+    </li>
+{/key}
 
 <style>
     li{
