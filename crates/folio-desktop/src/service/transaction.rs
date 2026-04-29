@@ -405,6 +405,7 @@ impl Transaction {
         TransactionType::Transfer
     }
 
+    #[deprecated]
     /// Set the transaction account i.e. the `from_account_id` column for expenses and transfers, and the
     /// `to_account_id` for incomes.
     pub async fn set_account(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
@@ -424,6 +425,7 @@ impl Transaction {
         Self::fetch(id, pool).await
     }
 
+    #[deprecated]
     /// Set the payee field of a transaction, turning the transaction into a transfer.
     pub async fn set_payee(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
         let transaction = Transaction::fetch(id, pool).await?;
@@ -447,7 +449,7 @@ impl Transaction {
         Self::fetch(id, pool).await
     }
 
-    // TODO: add duplicate method
+    #[deprecated]
     /// Deletes all the transactions with the corresponding ids
     pub async fn delete<S: AsRef<str>>(ids: &[S], pool: &SqlitePool) -> crate::Result<()> {
         if ids.is_empty() {
@@ -467,6 +469,7 @@ impl Transaction {
         Ok(())
     }
 
+    #[deprecated]
     pub async fn set_outflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
         let transaction = Self::fetch(id, pool).await?;
         let mut query = QueryBuilder::new("UPDATE transactions ");
@@ -488,6 +491,7 @@ impl Transaction {
         Self::fetch(id, pool).await
     }
 
+    #[deprecated]
     pub async fn set_inflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
         let transaction = Self::fetch(id, pool).await?;
 
@@ -515,6 +519,7 @@ impl Transaction {
         Self::fetch(id, pool).await
     }
 
+    #[deprecated]
     /// Fetches the transaction from the database with a matching `id`. If the matching row
     /// is not found an error will be returned.
     pub async fn fetch(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
@@ -526,6 +531,7 @@ impl Transaction {
         Ok(transaction)
     }
 
+    #[deprecated]
     /// Fetch all the transactions from the database.
     pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
         let rows: Vec<Self> = sqlx::query_as("SELECT * from transactions")
