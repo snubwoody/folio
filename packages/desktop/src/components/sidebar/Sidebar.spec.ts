@@ -5,9 +5,9 @@ import Sidebar from "./Sidebar.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
 import type { Currency } from "$lib/types";
-import {transactionStore} from "$lib/stores/transaction.svelte";
-import type {Transaction} from "$lib/api/transaction";
-import {CalendarDate} from "@internationalized/date";
+import { transactionStore } from "$lib/stores/transaction.svelte";
+import type { Transaction } from "$lib/api/transaction";
+import { CalendarDate } from "@internationalized/date";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
@@ -141,7 +141,7 @@ describe("Sidebar",() => {
 
     test("reactive account total", async () => {
         mockCreateAccount();
-        const a1 = await accountStore.createAccount({ name: "Account 1"});
+        const a1 = await accountStore.createAccount({ name: "Account 1" });
         const expense: Transaction = {
             id: "1",
             toAccountId: a1.id,

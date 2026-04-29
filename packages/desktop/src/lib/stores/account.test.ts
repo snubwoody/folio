@@ -1,12 +1,12 @@
-import {test,expect} from "vitest";
-import type {Transaction} from "$lib/api/transaction";
-import {CalendarDate} from "@internationalized/date";
-import {mockCreateAccount, accountBalance, accountStore} from "$lib/stores/account.svelte";
-import {transactionStore} from "$lib/stores/transaction.svelte";
+import { test,expect } from "vitest";
+import type { Transaction } from "$lib/api/transaction";
+import { CalendarDate } from "@internationalized/date";
+import { mockCreateAccount, accountBalance, accountStore } from "$lib/stores/account.svelte";
+import { transactionStore } from "$lib/stores/transaction.svelte";
 
-test("Calculate account balance",async ()=>{
+test("Calculate account balance",async () => {
     mockCreateAccount();
-    const account = await accountStore.createTestAccount({name:"",});
+    const account = await accountStore.createTestAccount({ name:"" });
 
     const expense: Transaction = {
         id: "1",
@@ -19,9 +19,9 @@ test("Calculate account balance",async ()=>{
     expect(balance).toEqual(-500);
 });
 
-test("Include starting balance in account balance",async ()=>{
+test("Include starting balance in account balance",async () => {
     mockCreateAccount();
-    const account = await accountStore.createTestAccount({name:"",startingBalance:"1500.00"});
+    const account = await accountStore.createTestAccount({ name:"",startingBalance:"1500.00" });
 
     const expense: Transaction = {
         id: "1",

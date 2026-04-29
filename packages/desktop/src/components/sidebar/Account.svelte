@@ -6,7 +6,7 @@
 
     type Props = {
         account: Account
-    }
+    };
 
     const { account }: Props = $props();
 
