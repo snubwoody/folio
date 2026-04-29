@@ -318,6 +318,49 @@ impl TransactionService{
         info!(id = id, "Updated transaction");
         self.fetch(id).await
     }
+
+    /// Set the transaction account i.e. the `from_account_id` column for expenses and transfers, and the
+    /// `to_account_id` for incomes.
+    pub async fn set_account(&self,id: &str, account_id: &str) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
+        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+
+        match transaction.transaction_type() {
+            TransactionType::Income => query_builder.push("SET to_account_id = "),
+            _ => query_builder.push("SET from_account_id = "),
+        };
+
+        query_builder.push_bind(account_id);
+
+        let query = query_builder.push("WHERE id = ").push_bind(id).build();
+        query.execute(&self.pool).await?;
+        info!(id = id, "Set transaction account");
+        self.fetch(id).await
+    }
+
+    /// Set the payee field of a transaction, turning the transaction into a transfer.
+    pub async fn set_payee(&self,id: &str, account_id: &str) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
+        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+        query_builder
+            .push("SET to_account_id = ")
+            .push_bind(account_id);
+
+        if transaction.transaction_type() == TransactionType::Income {
+            query_builder
+                .push(", from_account_id = ")
+                .push_bind(transaction.to_account_id.unwrap_or_default());
+        }
+        let query = query_builder
+            .push(",category_id = NULL ")
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build();
+        query.execute(&self.pool).await?;
+        info!(id = id, "Set transaction payee");
+        self.fetch(id).await
+    }
+
 }
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
