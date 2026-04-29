@@ -2,19 +2,23 @@
 <script>
     import { Plus } from "@lucide/svelte";
     import { Button } from "$components/button";
-    import { accountStore } from "$lib/stores/account.svelte";
+    import { accountBalance, accountStore } from "$lib/stores/account.svelte";
     import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
     import TextField from "$components/TextField.svelte";
+    import Account from "./Account.svelte";
     import { formatMoney } from "$lib/utils/money";
+    import { transactionStore } from "$lib/stores/transaction.svelte.js";
 
+    // TODO: test 0 accounts
     const total = $derived.by(() => {
-        // TODO: test 0 accounts
-        const t = accountStore.accounts.map(a => parseFloat(a.balance)).reduce((prev, current) => current + prev,0);
+        const transactions = transactionStore.transactions;
+        const t = accountStore
+            .accounts
+            .map(a => accountBalance(a.id,transactions))
+            .reduce((prev, current) => current + prev,0);
         return t.toString();
     });
 
-    // TODO: test that account balance changes when handling transactions
-    // TODO: change icon based on open state
     let name = $state("My account");
     let popoverOpen = $state(false);
 	let startingBalance = $state("0.00");
@@ -26,18 +30,13 @@
 </script>
 
 <section class="account-section">
-    <div class="font-medium flex justify-between">
+    <header data-testid="account-section-header" class="font-medium flex justify-between">
         <h6 class="text-body">Accounts</h6>
         <p>{formatMoney(total)}</p>
-    </div>
+    </header>
     <ul class="account-list">
         {#each accountStore.accounts as account (account.id)}
-            <!--TODO: add title-->
-            <!--FIXME: use accountBalance method-->
-            <li>
-                <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
-                <p>{formatMoney(account.balance)}</p>
-            </li>
+            <Account {account}/>
         {/each}
     </ul>
     <Popover bind:open={popoverOpen}>
@@ -71,10 +70,5 @@
         gap: 12px;
         max-height: 350px;
         overflow-y: auto;
-    }
-
-    li{
-        display: flex;
-        justify-content: space-between;
     }
 </style>

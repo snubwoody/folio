@@ -70,12 +70,12 @@ export class AccountStore{
         this.#accounts = this.#accounts.filter(a => a.id !== id);
     }
 
-    async createTestAccount({ name }:{name:string}):Promise<Account>{
+    async createTestAccount({ name,startingBalance = "0.00" }:{name:string,startingBalance?:string}):Promise<Account>{
         const id = Math.random().toString(36).slice(2);
         const account: Account = {
             id,
             name,
-            startingBalance: "0.0",
+            startingBalance,
             balance: "0.0"
         };
         this.#accounts.push(account);
@@ -96,14 +96,14 @@ export class AccountStore{
 export const accountStore = new AccountStore();
 
 /**
- * Calculates the account balance
+ * Calculates the account balance.
  *
  * @param accountId The id of the account
  * @param transactions The list of transactions
  * @returns The account balance
  */
 export function accountBalance(accountId:string,transactions: Transaction[]): number{
-    let total = 0;
+    let total = parseFloat(accountStore.accountMap.get(accountId)?.startingBalance ?? "0.00");
     transactions
         .filter(t => t.toAccountId === accountId)
         .forEach(t => total += parseFloat(t.amount));
