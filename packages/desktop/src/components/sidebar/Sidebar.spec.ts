@@ -118,7 +118,6 @@ describe("Sidebar",() => {
     });
 
     test("reactive account balance", async () => {
-        // FIXME: include starting balance
         mockCreateAccount();
         const a1 = await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
         const expense: Transaction = {
@@ -130,9 +129,30 @@ describe("Sidebar",() => {
         transactionStore.addTestTransaction(expense);
         const screen = await render(Sidebar);
 
-        await expect.element(screen.getByText("Accounts")).toBeVisible();
-        await expect.element(screen.getByText("K520.00")).toBeVisible();
-        // TODO: test reactive accounts
-        const a2 = await accountStore.createAccount({ name: "Account 2",startingBalance: "500.00" });
+        await expect.element(screen.getByRole("listitem").getByText("K-480.00")).toBeVisible();
+        transactionStore.addTestTransaction({
+            id: "2",
+            toAccountId:a1.id,
+            amount: "1000.00",
+            date: new CalendarDate(2025,1,1)
+        });
+        await expect.element(screen.getByRole("listitem").getByText("K520.00")).toBeVisible();
+    });
+
+    test("reactive account total", async () => {
+        mockCreateAccount();
+        const a1 = await accountStore.createAccount({ name: "Account 1"});
+        const expense: Transaction = {
+            id: "1",
+            toAccountId: a1.id,
+            amount: "500.00",
+            date: new CalendarDate(2025,1,1)
+        };
+        transactionStore.addTestTransaction(expense);
+        const screen = await render(Sidebar);
+
+        await expect.element(screen.getByTestId("account-section-header").getByText("K500.00")).toBeVisible();
+        await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
+        await expect.element(screen.getByTestId("account-section-header").getByText("K520.00")).toBeVisible();
     });
 });

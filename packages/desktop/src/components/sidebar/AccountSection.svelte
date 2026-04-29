@@ -30,10 +30,10 @@
 </script>
 
 <section class="account-section">
-    <div class="font-medium flex justify-between">
+    <header data-testid="account-section-header" class="font-medium flex justify-between">
         <h6 class="text-body">Accounts</h6>
         <p>{formatMoney(total)}</p>
-    </div>
+    </header>
     <ul class="account-list">
         {#each accountStore.accounts as account (account.id)}
             <Account {account}/>

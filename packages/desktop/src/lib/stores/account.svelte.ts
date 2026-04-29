@@ -103,7 +103,6 @@ export const accountStore = new AccountStore();
  * @returns The account balance
  */
 export function accountBalance(accountId:string,transactions: Transaction[]): number{
-    // TODO: include starting balance
     let total = parseFloat(accountStore.accountMap.get(accountId)?.startingBalance ?? "0.00");
     transactions
         .filter(t => t.toAccountId === accountId)
