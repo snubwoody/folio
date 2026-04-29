@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 use folio_lib::Money;
-use folio_lib::service::{AccountService, CategoryService, Transaction, TransactionType};
+use folio_lib::service::{AccountService, CategoryService, Transaction, TransactionService, TransactionType};
 use sqlx::{Row, SqlitePool};
 use std::str::FromStr;
 
@@ -60,6 +60,7 @@ async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result
 #[sqlx::test]
 async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("", Money::ZERO).await?;
     let row = sqlx::query(
         "
@@ -72,7 +73,7 @@ async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     .await?;
 
     let id: String = row.get("id");
-    let transaction = Transaction::fetch(&id, &pool).await?;
+    let transaction = transaction_service.fetch(&id).await?;
     assert_eq!(transaction.amount, Money::from_scaled(10));
     Ok(())
 }
@@ -166,6 +167,7 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let t1 = Transaction::expense()
         .amount(Money::MAX)
@@ -179,7 +181,7 @@ async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()>
         .await?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 2);
-    Transaction::delete(&[&t1.id, &t2.id], &pool).await?;
+    transaction_service.delete_all(&[t1.id,t2.id]).await?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 0);
     Ok(())
@@ -188,6 +190,7 @@ async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()>
 #[sqlx::test]
 async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     Transaction::expense()
         .amount(Money::MAX)
@@ -195,7 +198,7 @@ async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    Transaction::delete::<String>(&[], &pool).await?;
+    transaction_service.delete_all::<String>(&[]).await?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 1);
     Ok(())
@@ -204,6 +207,7 @@ async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn delete_only_affected_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let t1 = Transaction::expense()
         .amount(Money::MAX)
@@ -217,7 +221,7 @@ async fn delete_only_affected_transactions(pool: SqlitePool) -> folio_lib::Resul
         .await?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 2);
-    Transaction::delete(&[&t1.id], &pool).await?;
+    transaction_service.delete_all(&[t1.id]).await?;
     let length = Transaction::fetch_all(&pool).await?.len();
     assert_eq!(length, 1);
     Ok(())

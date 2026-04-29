@@ -221,6 +221,57 @@ pub enum TransactionType {
     Transfer,
 }
 
+#[derive(Clone)]
+pub struct TransactionService {
+    pool: SqlitePool
+}
+
+impl TransactionService{
+    pub fn new (pool: SqlitePool) -> Self {
+        Self { pool }
+    }
+
+    /// Fetches the transaction from the database with a matching `id`. If the matching row
+    /// is not found an error will be returned.
+    pub async fn fetch(&self, id: &str) -> crate::Result<Transaction> {
+        let transaction: Transaction = sqlx::query_as("SELECT * FROM transactions WHERE id=$1")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(transaction)
+    }
+
+    /// Fetch all the transactions from the database.
+    pub async fn fetch_all(&self) -> Result<Vec<Transaction>, crate::Error> {
+        let rows: Vec<Transaction> = sqlx::query_as("SELECT * from transactions")
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(rows)
+    }
+
+
+    /// Deletes all the provided transactions.
+    pub async fn delete_all<S: AsRef<str>>(&self,ids: &[S],) -> crate::Result<()> {
+        if ids.is_empty() {
+            return Ok(());
+        }
+        let mut query = QueryBuilder::new("DELETE FROM transactions WHERE id IN ");
+        query.push("(");
+        let mut separated = query.separated(", ");
+        for id in ids {
+            separated.push_bind(id.as_ref());
+        }
+        separated.push_unseparated(")");
+
+        query.build().execute(&self.pool).await?;
+
+        info!("Deleted {} transactions", ids.len());
+        Ok(())
+    }
+}
+
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
