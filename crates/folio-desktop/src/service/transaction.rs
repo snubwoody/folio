@@ -270,6 +270,54 @@ impl TransactionService{
         info!("Deleted {} transactions", ids.len());
         Ok(())
     }
+
+    pub async fn set_outflow(&self,id: &str, amount: Money) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
+        let mut query = QueryBuilder::new("UPDATE transactions ");
+        query.push("SET amount = ").push_bind(amount);
+
+        // Setting outflow on an income changes it to an expense
+        if transaction.transaction_type() == TransactionType::Income {
+            query
+                .push(", to_account_id = NULL, from_account_id = ")
+                .push_bind(transaction.to_account_id.unwrap_or_default());
+        }
+        query
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build()
+            .execute(&self.pool)
+            .await?;
+        info!(id = id, "Updated transaction");
+        self.fetch(id).await
+    }
+
+    pub async fn set_inflow(&self,id: &str, amount: Money) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
+
+        if transaction.transaction_type() == TransactionType::Transfer {
+            return Err(Error::new("Cannot set inflow for a transfer"));
+        }
+
+        let mut query = QueryBuilder::new("UPDATE transactions ");
+        query.push("SET amount = ").push_bind(amount);
+
+        // Setting inflow on an expense changes it to an income
+        if transaction.transaction_type() == TransactionType::Expense {
+            query
+                .push(", from_account_id = NULL, to_account_id = ")
+                .push_bind(transaction.from_account_id.unwrap_or_default());
+        }
+
+        query
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build()
+            .execute(&self.pool)
+            .await?;
+        info!(id = id, "Updated transaction");
+        self.fetch(id).await
+    }
 }
 
 #[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]

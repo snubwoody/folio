@@ -7,6 +7,7 @@ use std::str::FromStr;
 #[sqlx::test]
 async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::income()
         .amount(Money::MAX)
@@ -19,7 +20,7 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
         .create(&pool)
         .await?;
 
-    Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     let t2 = Transaction::fetch(&transaction2.id, &pool).await?;
     assert_eq!(t2.amount, Money::MAX);
@@ -32,6 +33,7 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
 #[sqlx::test]
 async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::expense()
         .amount(Money::MAX)
@@ -44,7 +46,7 @@ async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result
         .create(&pool)
         .await?;
 
-    Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0)).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     let t2 = Transaction::fetch(&transaction2.id, &pool).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
@@ -250,6 +252,7 @@ fn transaction_type_expense() {
 
 #[sqlx::test]
 async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
+    let transaction_service = TransactionService::new(pool.clone());
     let account_service = AccountService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::expense()
@@ -258,7 +261,7 @@ async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0)).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
@@ -401,6 +404,7 @@ async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
 
 #[sqlx::test]
 async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
+    let transaction_service = TransactionService::new(pool.clone());
     let account_service = AccountService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::income()
@@ -409,7 +413,7 @@ async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
@@ -420,6 +424,7 @@ async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let account2 = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::transfer()
@@ -428,13 +433,14 @@ async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    let result = Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await;
+    let result = transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await;
     assert!(result.is_err());
     Ok(())
 }
 
 #[sqlx::test]
 async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
+    let transaction_service = TransactionService::new(pool.clone());
     let account_service = AccountService::new(pool.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::expense()
@@ -443,7 +449,7 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    Transaction::set_inflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
@@ -457,6 +463,7 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     // Setting outflow on an income should turn it into an expense
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = Transaction::income()
@@ -465,7 +472,7 @@ async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    Transaction::set_outflow(&transaction.id, Money::from_f64(10.0), &pool).await?;
+    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0)).await?;
     let t = Transaction::fetch(&transaction.id, &pool).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
