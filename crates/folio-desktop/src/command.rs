@@ -147,7 +147,9 @@ pub async fn create_expense(
     date: NaiveDate,
     account: String,
 ) -> Result<Transaction> {
-    Transaction::expense()
+    state
+        .transaction_service
+        .expense()
         .amount(amount)
         .account_id(&account)
         .date(date)

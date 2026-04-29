@@ -1,5 +1,5 @@
 use chrono::Utc;
-use folio_lib::service::{AccountService, EditAccount, Transaction};
+use folio_lib::service::{AccountService, EditAccount, TransactionService};
 use folio_lib::{Money, Result};
 use sqlx::SqlitePool;
 
@@ -79,17 +79,21 @@ async fn fetch_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
     let service = AccountService::new(pool.clone());
     let account = service.create_account("", Money::ZERO).await?;
-    Transaction::expense()
+    let transaction_service = TransactionService::new(pool.clone());
+    transaction_service
+        .expense()
         .account_id(&account.id)
         .amount(Money::from_unscaled(20))
         .create(&pool)
         .await?;
-    Transaction::expense()
+    transaction_service
+        .expense()
         .account_id(&account.id)
         .amount(Money::from_unscaled(20))
         .create(&pool)
         .await?;
-    Transaction::income()
+    transaction_service
+        .income()
         .account_id(&account.id)
         .amount(Money::from_unscaled(50))
         .create(&pool)
@@ -123,9 +127,11 @@ async fn delete_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = service.create_account("My account", Money::ZERO).await?;
 
-    Transaction::expense()
+    transaction_service
+        .expense()
         .account_id(&account.id)
         .create(&pool)
         .await?;
@@ -145,8 +151,10 @@ async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Resul
 #[sqlx::test]
 async fn delete_account_with_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone());
     let account = service.create_account("My account", Money::ZERO).await?;
-    Transaction::income()
+    transaction_service
+        .income()
         .account_id(&account.id)
         .create(&pool)
         .await?;

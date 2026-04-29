@@ -231,6 +231,22 @@ impl TransactionService {
         Self { pool }
     }
 
+    pub fn expense(&self) -> TransactionBuilder<Expense> {
+        Default::default()
+    }
+
+    pub fn transfer(&self) -> TransactionBuilder<Transfer> {
+        Default::default()
+    }
+
+    pub fn income(&self) -> TransactionBuilder<Income> {
+        Default::default()
+    }
+
+    pub fn edit(&self, id: &str) -> EditBuilder {
+        EditBuilder::new(id)
+    }
+
     /// Fetches the transaction from the database with a matching `id`. If the matching row
     /// is not found an error will be returned.
     pub async fn fetch(&self, id: &str) -> crate::Result<Transaction> {
@@ -375,22 +391,6 @@ pub struct Transaction {
 }
 
 impl Transaction {
-    pub fn expense() -> TransactionBuilder<Expense> {
-        Default::default()
-    }
-
-    pub fn transfer() -> TransactionBuilder<Transfer> {
-        Default::default()
-    }
-
-    pub fn income() -> TransactionBuilder<Income> {
-        Default::default()
-    }
-
-    pub fn edit(id: &str) -> EditBuilder {
-        EditBuilder::new(id)
-    }
-
     pub fn transaction_type(&self) -> TransactionType {
         if self.to_account_id.is_none() {
             return TransactionType::Expense;

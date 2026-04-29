@@ -81,24 +81,28 @@ mod test {
     use crate::Money;
     use chrono::NaiveDate;
 
-    use crate::service::{AccountService, CategoryService, Transaction};
+    use crate::service::{AccountService, CategoryService, TransactionService};
 
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
         let account_service = AccountService::new(pool.clone());
         let category_service = CategoryService::new(pool.clone());
+        let transaction_service = TransactionService::new(pool.clone());
         let c1 = category_service.create_category("Expense").await?;
+
         let a1 = account_service
             .create_account("Expense", Money::ZERO)
             .await?;
-        Transaction::expense()
+        transaction_service
+            .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
             .create(&pool)
             .await?;
 
-        Transaction::expense()
+        transaction_service
+            .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
@@ -115,11 +119,13 @@ mod test {
     async fn fetch_analytics_in_current_month(pool: SqlitePool) -> crate::Result<()> {
         let service = CategoryService::new(pool.clone());
         let account_service = AccountService::new(pool.clone());
+        let transaction_service = TransactionService::new(pool.clone());
         let c1 = service.create_category("Expense").await?;
         let a1 = account_service
             .create_account("Expense", Money::ZERO)
             .await?;
-        Transaction::expense()
+        transaction_service
+            .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .date(NaiveDate::MIN)
@@ -127,7 +133,8 @@ mod test {
             .create(&pool)
             .await?;
 
-        Transaction::expense()
+        transaction_service
+            .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
