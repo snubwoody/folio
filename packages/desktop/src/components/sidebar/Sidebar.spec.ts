@@ -5,6 +5,9 @@ import Sidebar from "./Sidebar.svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
 import type { Currency } from "$lib/types";
+import {transactionStore} from "$lib/stores/transaction.svelte";
+import type {Transaction} from "$lib/api/transaction";
+import {CalendarDate} from "@internationalized/date";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
@@ -112,5 +115,24 @@ describe("Sidebar",() => {
 
         await expect.element(screen.getByText("Accounts")).toBeVisible();
         await expect.element(screen.getByText("K520.00")).toBeVisible();
+    });
+
+    test("reactive account balance", async () => {
+        // FIXME: include starting balance
+        mockCreateAccount();
+        const a1 = await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
+        const expense: Transaction = {
+            id: "1",
+            fromAccountId: a1.id,
+            amount: "500.00",
+            date: new CalendarDate(2025,1,1)
+        };
+        transactionStore.addTestTransaction(expense);
+        const screen = await render(Sidebar);
+
+        await expect.element(screen.getByText("Accounts")).toBeVisible();
+        await expect.element(screen.getByText("K520.00")).toBeVisible();
+        // TODO: test reactive accounts
+        const a2 = await accountStore.createAccount({ name: "Account 2",startingBalance: "500.00" });
     });
 });

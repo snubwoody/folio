@@ -10,8 +10,6 @@
 
     const { account }: Props = $props();
 
-    // TODO: test that account balance changes when handling transactions
-    // TODO: change icon based on open state
     const balance = $derived(accountBalance(account.id,transactionStore.transactions));
 </script>
 

@@ -9,9 +9,8 @@
     import { formatMoney } from "$lib/utils/money";
     import {transactionStore} from "$lib/stores/transaction.svelte.js";
 
-    // TODO: get account balance
+    // TODO: test 0 accounts
     const total = $derived.by(() => {
-        // TODO: test 0 accounts
         const transactions = transactionStore.transactions;
         const t = accountStore
             .accounts
@@ -20,7 +19,6 @@
         return t.toString();
     });
 
-    // TODO: test that account balance changes when handling transactions
     let name = $state("My account");
     let popoverOpen = $state(false);
 	let startingBalance = $state("0.00");
@@ -38,8 +36,6 @@
     </div>
     <ul class="account-list">
         {#each accountStore.accounts as account (account.id)}
-            <!--TODO: add title-->
-            <!--FIXME: use accountBalance method-->
             <Account {account}/>
         {/each}
     </ul>
