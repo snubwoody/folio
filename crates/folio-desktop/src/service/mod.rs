@@ -20,4 +20,6 @@ mod transaction;
 pub use account::*;
 pub use budget::*;
 pub use category::*;
-pub use transaction::{EditBuilder, Transaction, TransactionBuilder, TransactionType,TransactionService};
+pub use transaction::{
+    EditBuilder, Transaction, TransactionBuilder, TransactionService, TransactionType,
+};

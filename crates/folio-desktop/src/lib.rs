@@ -103,7 +103,7 @@ impl State {
             settings: Arc::new(Mutex::new(settings)),
             account_service,
             category_service,
-            transaction_service
+            transaction_service,
         })
     }
 }

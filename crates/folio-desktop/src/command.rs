@@ -127,7 +127,9 @@ pub async fn set_transaction_payee(
     id: String,
     account_id: String,
 ) -> Result<Transaction> {
-    state.transaction_service.set_payee(&id,&account_id)
+    state
+        .transaction_service
+        .set_payee(&id, &account_id)
         .await
         .context("Failed to set transaction payee")
         .inspect_err(|err| warn!("{}", err.report()))
@@ -197,7 +199,8 @@ pub async fn set_transaction_account(
     account: String,
 ) -> Result<Transaction> {
     state
-        .transaction_service.set_account(&id, &account)
+        .transaction_service
+        .set_account(&id, &account)
         .await
         .context("Failed to set transaction account")
         .inspect_err(|err| warn!("{}", err.report()))

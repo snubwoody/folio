@@ -1,6 +1,8 @@
 use chrono::NaiveDate;
 use folio_lib::Money;
-use folio_lib::service::{AccountService, CategoryService, Transaction, TransactionService, TransactionType};
+use folio_lib::service::{
+    AccountService, CategoryService, Transaction, TransactionService, TransactionType,
+};
 use sqlx::{Row, SqlitePool};
 use std::str::FromStr;
 
@@ -20,7 +22,9 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
         .create(&pool)
         .await?;
 
-    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await?;
+    transaction_service
+        .set_inflow(&transaction.id, Money::from_f64(10.0))
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     let t2 = transaction_service.fetch(&transaction2.id).await?;
     assert_eq!(t2.amount, Money::MAX);
@@ -46,7 +50,9 @@ async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result
         .create(&pool)
         .await?;
 
-    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0)).await?;
+    transaction_service
+        .set_outflow(&transaction.id, Money::from_f64(10.0))
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     let t2 = transaction_service.fetch(&transaction2.id).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
@@ -183,7 +189,7 @@ async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()>
         .await?;
     let length = transaction_service.fetch_all().await?.len();
     assert_eq!(length, 2);
-    transaction_service.delete_all(&[t1.id,t2.id]).await?;
+    transaction_service.delete_all(&[t1.id, t2.id]).await?;
     let length = transaction_service.fetch_all().await?.len();
     assert_eq!(length, 0);
     Ok(())
@@ -261,7 +267,9 @@ async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0)).await?;
+    transaction_service
+        .set_outflow(&transaction.id, Money::from_f64(10.0))
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
@@ -284,7 +292,9 @@ async fn set_payee_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_payee(&transaction.id, &account2.id).await?;
+    transaction_service
+        .set_payee(&transaction.id, &account2.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.from_account_id.unwrap(), account.id);
     assert_eq!(t.to_account_id.unwrap(), account2.id);
@@ -303,7 +313,9 @@ async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_account(&transaction.id, &account2.id).await?;
+    transaction_service
+        .set_account(&transaction.id, &account2.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.from_account_id.unwrap(), account2.id);
     assert_eq!(t.to_account_id, None);
@@ -322,7 +334,9 @@ async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_account(&transaction.id, &account2.id).await?;
+    transaction_service
+        .set_account(&transaction.id, &account2.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.to_account_id.unwrap(), account2.id);
     assert_eq!(t.from_account_id, None);
@@ -342,7 +356,9 @@ async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_account(&transaction.id, &account3.id).await?;
+    transaction_service
+        .set_account(&transaction.id, &account3.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.from_account_id.unwrap(), account3.id);
     assert_eq!(t.to_account_id.unwrap(), account2.id);
@@ -362,7 +378,9 @@ async fn set_payee_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_payee(&transaction.id, &account2.id).await?;
+    transaction_service
+        .set_payee(&transaction.id, &account2.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.from_account_id.unwrap(), account.id);
     assert_eq!(t.to_account_id.unwrap(), account2.id);
@@ -382,7 +400,9 @@ async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_payee(&transaction.id, &account3.id).await?;
+    transaction_service
+        .set_payee(&transaction.id, &account3.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.from_account_id.unwrap(), account.id);
     assert_eq!(t.to_account_id.unwrap(), account3.id);
@@ -404,7 +424,9 @@ async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_payee(&transaction.id, &account2.id).await?;
+    transaction_service
+        .set_payee(&transaction.id, &account2.id)
+        .await?;
     let t = transaction_service.fetch(&transaction.id).await?;
     assert!(t.category_id.is_none());
     Ok(())
@@ -421,8 +443,10 @@ async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await?;
-    let t = Transaction::fetch(&transaction.id, &pool).await?;
+    transaction_service
+        .set_inflow(&transaction.id, Money::from_f64(10.0))
+        .await?;
+    let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
     assert!(t.from_account_id.is_none());
@@ -441,7 +465,9 @@ async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    let result = transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await;
+    let result = transaction_service
+        .set_inflow(&transaction.id, Money::from_f64(10.0))
+        .await;
     assert!(result.is_err());
     Ok(())
 }
@@ -457,8 +483,10 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0)).await?;
-    let t = Transaction::fetch(&transaction.id, &pool).await?;
+    transaction_service
+        .set_inflow(&transaction.id, Money::from_f64(10.0))
+        .await?;
+    let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
         t.to_account_id.unwrap(),
@@ -480,8 +508,10 @@ async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .create(&pool)
         .await?;
 
-    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0)).await?;
-    let t = Transaction::fetch(&transaction.id, &pool).await?;
+    transaction_service
+        .set_outflow(&transaction.id, Money::from_f64(10.0))
+        .await?;
+    let t = transaction_service.fetch(&transaction.id).await?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
         t.from_account_id.unwrap(),
