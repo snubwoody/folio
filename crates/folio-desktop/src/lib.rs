@@ -22,6 +22,7 @@ mod money;
 pub mod service;
 mod settings;
 
+use crate::error::ErrorExt;
 use crate::service::{AccountService, CategoryService};
 use crate::settings::Settings;
 pub use currency::Currency;
@@ -34,8 +35,6 @@ use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
 use tracing::{error, info};
-use tracing_appender::rolling::{RollingFileAppender, Rotation};
-use tracing_subscriber::{EnvFilter, fmt, layer::SubscriberExt, util::SubscriberInitExt};
 
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
@@ -52,40 +51,10 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub async fn run() {
-    #[cfg(debug_assertions)]
-    let log_dir = "logs";
-    #[cfg(not(debug_assertions))]
-    let log_dir = get_data_dir()
-        .expect("failed to get data directory")
-        .join("logs");
-
-    let file_appender = RollingFileAppender::builder()
-        .rotation(Rotation::DAILY)
-        .filename_prefix("folio")
-        .max_log_files(10)
-        .filename_suffix("log")
-        .build(log_dir)
-        .expect("Failed to setup logging");
-
-    // Keep guard in scope
-    let (file_writer, _guard) = tracing_appender::non_blocking(file_appender);
-
-    let std_io_layer = fmt::layer().with_writer(std::io::stdout);
-
-    let file_layer = fmt::layer()
-        .pretty()
-        .with_writer(file_writer)
-        .with_ansi(false);
-
-    tracing_subscriber::registry()
-        .with(EnvFilter::new("info,folio=debug"))
-        .with(std_io_layer)
-        .with(file_layer)
-        .try_init()
-        .unwrap();
-
-    let state = State::new().await.expect("Failed to initialise state");
+pub async fn run() -> Result<()> {
+    let state = State::new()
+        .await
+        .context("Failed to initialise app state")?;
 
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
@@ -100,8 +69,7 @@ pub async fn run() {
     let app = command::handlers(app);
 
     app.run(tauri::generate_context!())
-        .inspect_err(|err| tracing::error!("{err}"))
-        .expect("error while running application");
+        .context("Failed to launch app")
 }
 
 #[derive(Clone)]
