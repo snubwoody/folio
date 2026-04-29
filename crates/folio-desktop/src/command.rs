@@ -127,7 +127,9 @@ pub async fn set_transaction_payee(
     id: String,
     account_id: String,
 ) -> Result<Transaction> {
-    Transaction::set_payee(&id, &account_id, &state.pool)
+    state
+        .transaction_service
+        .set_payee(&id, &account_id)
         .await
         .context("Failed to set transaction payee")
         .inspect_err(|err| warn!("{}", err.report()))
@@ -145,7 +147,9 @@ pub async fn create_expense(
     date: NaiveDate,
     account: String,
 ) -> Result<Transaction> {
-    Transaction::expense()
+    state
+        .transaction_service
+        .expense()
         .amount(amount)
         .account_id(&account)
         .date(date)
@@ -170,7 +174,9 @@ pub async fn set_transaction_outflow(
     id: String,
     amount: Money,
 ) -> Result<Transaction> {
-    Transaction::set_outflow(&id, amount, &state.pool)
+    state
+        .transaction_service
+        .set_outflow(&id, amount)
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -181,7 +187,9 @@ pub async fn set_transaction_inflow(
     id: String,
     amount: Money,
 ) -> Result<Transaction> {
-    Transaction::set_inflow(&id, amount, &state.pool)
+    state
+        .transaction_service
+        .set_inflow(&id, amount)
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -192,7 +200,9 @@ pub async fn set_transaction_account(
     id: String,
     account: String,
 ) -> Result<Transaction> {
-    Transaction::set_account(&id, &account, &state.pool)
+    state
+        .transaction_service
+        .set_account(&id, &account)
         .await
         .context("Failed to set transaction account")
         .inspect_err(|err| warn!("{}", err.report()))
@@ -200,7 +210,9 @@ pub async fn set_transaction_account(
 
 #[tauri::command]
 pub async fn fetch_transactions(state: tauri::State<'_, State>) -> Result<Vec<Transaction>> {
-    Transaction::fetch_all(&state.pool)
+    state
+        .transaction_service
+        .fetch_all()
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -345,7 +357,9 @@ pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Resul
 
 #[tauri::command]
 pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
-    Transaction::delete(ids.as_slice(), &state.pool)
+    state
+        .transaction_service
+        .delete_all(ids.as_slice())
         .await
         .context("Failed to delete transactions")
         .inspect_err(|err| warn!("{}", err.report()))

@@ -221,93 +221,54 @@ pub enum TransactionType {
     Transfer,
 }
 
-#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
-#[serde(rename_all = "camelCase")]
-pub struct Transaction {
-    pub id: String,
-    pub amount: Money,
-    pub from_account_id: Option<String>,
-    pub to_account_id: Option<String>,
-    pub transaction_date: NaiveDate,
-    pub category_id: Option<String>,
-    pub created_at: i64,
-    pub note: Option<String>,
+#[derive(Clone)]
+pub struct TransactionService {
+    pool: SqlitePool,
 }
 
-impl Transaction {
-    pub fn expense() -> TransactionBuilder<Expense> {
+impl TransactionService {
+    pub fn new(pool: SqlitePool) -> Self {
+        Self { pool }
+    }
+
+    pub fn expense(&self) -> TransactionBuilder<Expense> {
         Default::default()
     }
 
-    pub fn transfer() -> TransactionBuilder<Transfer> {
+    pub fn transfer(&self) -> TransactionBuilder<Transfer> {
         Default::default()
     }
 
-    pub fn income() -> TransactionBuilder<Income> {
+    pub fn income(&self) -> TransactionBuilder<Income> {
         Default::default()
     }
 
-    pub fn edit(id: &str) -> EditBuilder {
+    pub fn edit(&self, id: &str) -> EditBuilder {
         EditBuilder::new(id)
     }
 
-    pub fn transaction_type(&self) -> TransactionType {
-        if self.to_account_id.is_none() {
-            return TransactionType::Expense;
-        }
+    /// Fetches the transaction from the database with a matching `id`. If the matching row
+    /// is not found an error will be returned.
+    pub async fn fetch(&self, id: &str) -> crate::Result<Transaction> {
+        let transaction: Transaction = sqlx::query_as("SELECT * FROM transactions WHERE id=$1")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await?;
 
-        if self.from_account_id.is_none() {
-            return TransactionType::Income;
-        }
-
-        TransactionType::Transfer
+        Ok(transaction)
     }
 
-    /// Set the transaction account i.e. the `from_account_id` column for expenses and transfers, and the
-    /// `to_account_id` for incomes.
-    pub async fn set_account(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let transaction = Transaction::fetch(id, pool).await?;
-        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+    /// Fetch all the transactions from the database.
+    pub async fn fetch_all(&self) -> Result<Vec<Transaction>, crate::Error> {
+        let rows: Vec<Transaction> = sqlx::query_as("SELECT * from transactions")
+            .fetch_all(&self.pool)
+            .await?;
 
-        match transaction.transaction_type() {
-            TransactionType::Income => query_builder.push("SET to_account_id = "),
-            _ => query_builder.push("SET from_account_id = "),
-        };
-
-        query_builder.push_bind(account_id);
-
-        let query = query_builder.push("WHERE id = ").push_bind(id).build();
-        query.execute(pool).await?;
-        info!(id = id, "Set transaction account");
-        Self::fetch(id, pool).await
+        Ok(rows)
     }
 
-    /// Set the payee field of a transaction, turning the transaction into a transfer.
-    pub async fn set_payee(id: &str, account_id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let transaction = Transaction::fetch(id, pool).await?;
-        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
-        query_builder
-            .push("SET to_account_id = ")
-            .push_bind(account_id);
-
-        if transaction.transaction_type() == TransactionType::Income {
-            query_builder
-                .push(", from_account_id = ")
-                .push_bind(transaction.to_account_id.unwrap_or_default());
-        }
-        let query = query_builder
-            .push(",category_id = NULL ")
-            .push("WHERE id = ")
-            .push_bind(id)
-            .build();
-        query.execute(pool).await?;
-        info!(id = id, "Set transaction payee");
-        Self::fetch(id, pool).await
-    }
-
-    // TODO: add duplicate method
-    /// Deletes all the transactions with the corresponding ids
-    pub async fn delete<S: AsRef<str>>(ids: &[S], pool: &SqlitePool) -> crate::Result<()> {
+    /// Deletes all the provided transactions.
+    pub async fn delete_all<S: AsRef<str>>(&self, ids: &[S]) -> crate::Result<()> {
         if ids.is_empty() {
             return Ok(());
         }
@@ -319,14 +280,14 @@ impl Transaction {
         }
         separated.push_unseparated(")");
 
-        query.build().execute(pool).await?;
+        query.build().execute(&self.pool).await?;
 
         info!("Deleted {} transactions", ids.len());
         Ok(())
     }
 
-    pub async fn set_outflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
-        let transaction = Self::fetch(id, pool).await?;
+    pub async fn set_outflow(&self, id: &str, amount: Money) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
         let mut query = QueryBuilder::new("UPDATE transactions ");
         query.push("SET amount = ").push_bind(amount);
 
@@ -340,14 +301,14 @@ impl Transaction {
             .push("WHERE id = ")
             .push_bind(id)
             .build()
-            .execute(pool)
+            .execute(&self.pool)
             .await?;
         info!(id = id, "Updated transaction");
-        Self::fetch(id, pool).await
+        self.fetch(id).await
     }
 
-    pub async fn set_inflow(id: &str, amount: Money, pool: &SqlitePool) -> crate::Result<Self> {
-        let transaction = Self::fetch(id, pool).await?;
+    pub async fn set_inflow(&self, id: &str, amount: Money) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
 
         if transaction.transaction_type() == TransactionType::Transfer {
             return Err(Error::new("Cannot set inflow for a transfer"));
@@ -367,30 +328,79 @@ impl Transaction {
             .push("WHERE id = ")
             .push_bind(id)
             .build()
-            .execute(pool)
+            .execute(&self.pool)
             .await?;
         info!(id = id, "Updated transaction");
-        Self::fetch(id, pool).await
+        self.fetch(id).await
     }
 
-    /// Fetches the transaction from the database with a matching `id`. If the matching row
-    /// is not found an error will be returned.
-    pub async fn fetch(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let transaction: Self = sqlx::query_as("SELECT * FROM transactions WHERE id=$1")
-            .bind(id)
-            .fetch_one(pool)
-            .await?;
+    /// Set the transaction account i.e. the `from_account_id` column for expenses and transfers, and the
+    /// `to_account_id` for incomes.
+    pub async fn set_account(&self, id: &str, account_id: &str) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
+        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
 
-        Ok(transaction)
+        match transaction.transaction_type() {
+            TransactionType::Income => query_builder.push("SET to_account_id = "),
+            _ => query_builder.push("SET from_account_id = "),
+        };
+
+        query_builder.push_bind(account_id);
+
+        let query = query_builder.push("WHERE id = ").push_bind(id).build();
+        query.execute(&self.pool).await?;
+        info!(id = id, "Set transaction account");
+        self.fetch(id).await
     }
 
-    /// Fetch all the transactions from the database.
-    pub async fn fetch_all(pool: &SqlitePool) -> Result<Vec<Self>, crate::Error> {
-        let rows: Vec<Self> = sqlx::query_as("SELECT * from transactions")
-            .fetch_all(pool)
-            .await?;
+    /// Set the payee field of a transaction, turning the transaction into a transfer.
+    pub async fn set_payee(&self, id: &str, account_id: &str) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id).await?;
+        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+        query_builder
+            .push("SET to_account_id = ")
+            .push_bind(account_id);
 
-        Ok(rows)
+        if transaction.transaction_type() == TransactionType::Income {
+            query_builder
+                .push(", from_account_id = ")
+                .push_bind(transaction.to_account_id.unwrap_or_default());
+        }
+        let query = query_builder
+            .push(",category_id = NULL ")
+            .push("WHERE id = ")
+            .push_bind(id)
+            .build();
+        query.execute(&self.pool).await?;
+        info!(id = id, "Set transaction payee");
+        self.fetch(id).await
+    }
+}
+
+#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct Transaction {
+    pub id: String,
+    pub amount: Money,
+    pub from_account_id: Option<String>,
+    pub to_account_id: Option<String>,
+    pub transaction_date: NaiveDate,
+    pub category_id: Option<String>,
+    pub created_at: i64,
+    pub note: Option<String>,
+}
+
+impl Transaction {
+    pub fn transaction_type(&self) -> TransactionType {
+        if self.to_account_id.is_none() {
+            return TransactionType::Expense;
+        }
+
+        if self.from_account_id.is_none() {
+            return TransactionType::Income;
+        }
+
+        TransactionType::Transfer
     }
 }
 
