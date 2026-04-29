@@ -23,7 +23,7 @@ pub mod service;
 mod settings;
 
 use crate::error::ErrorExt;
-use crate::service::{AccountService, CategoryService};
+use crate::service::{AccountService, CategoryService, TransactionService};
 use crate::settings::Settings;
 pub use currency::Currency;
 pub use error::{Error, Result};
@@ -77,20 +77,21 @@ pub struct State {
     pool: SqlitePool,
     settings: Arc<Mutex<Settings>>,
     account_service: AccountService,
+    transaction_service: TransactionService,
     category_service: CategoryService,
 }
 
 impl State {
     pub async fn new() -> Result<Self> {
         let pool = init_database().await?;
-        tracing::info!("Initialised database pool");
+        info!("Initialised database pool");
 
         let account_service = AccountService::new(pool.clone());
         let category_service = CategoryService::new(pool.clone());
+        let transaction_service = TransactionService::new(pool.clone());
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
-        // FIXME: return error
         #[cfg(not(debug_assertions))]
         let mut path = get_data_dir().expect("failed to get data directory");
 
@@ -102,6 +103,7 @@ impl State {
             settings: Arc::new(Mutex::new(settings)),
             account_service,
             category_service,
+            transaction_service
         })
     }
 }
@@ -134,14 +136,13 @@ pub async fn init_database() -> Result<SqlitePool> {
 
 /// Get the platform specific data directory.
 pub fn get_data_dir() -> Option<PathBuf> {
-    // TODO: add message at startup on fail
     let base_dirs = directories::BaseDirs::new()?;
     let data_dir = base_dirs.data_dir();
 
     #[cfg(any(windows, target_os = "macos"))]
     let app_name = "Folio";
 
-    // Trying to match linux conventions
+    // Trying to match Linux conventions
     #[cfg(target_os = "linux")]
     let app_name = "folio";
 
