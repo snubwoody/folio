@@ -1,0 +1,6 @@
+[package]
+name = "folio-migrate"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
