@@ -12,6 +12,7 @@
     import { TableRow } from "$components/table";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
     import { Checkbox } from "$components/select";
+    import MoneyField from "$components/MoneyField.svelte";
 
     interface Props{
         transaction: Transaction
@@ -80,6 +81,7 @@
     />
     <TableCell data-testid="outflow" class="flex gap-1 items-center">
         <!--TODO: kind of unnecessary-->
+        <MoneyField/>
         {#if transType !== "Income"}
             <p>
                 {currencySymbol}
