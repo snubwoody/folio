@@ -1508,6 +1508,10 @@ dependencies = [
 [[package]]
 name = "folio-migrate"
 version = "2.2.0"
+dependencies = [
+ "anyhow",
+ "regex",
+]
 
 [[package]]
 name = "foreign-types"
