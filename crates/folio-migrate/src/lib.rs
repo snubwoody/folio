@@ -3,51 +3,11 @@
 //! Migrations are stored as the version number in a `schema_migrations` table.
 use rusqlite::Connection;
 use std::fs;
+mod migrator;
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct Migration {
-    version: u64,
-    query: String,
-    kind: MigrationKind,
-}
-
-impl Migration {
-    /// Creates a new up migration.
-    pub fn up(query: &str, version: u64) -> Migration {
-        Migration {
-            version,
-            query: query.to_owned(),
-            kind: MigrationKind::Up,
-        }
-    }
-
-    /// Creates a new down migration.
-    pub fn down(query: &str, version: u64) -> Migration {
-        Migration {
-            version,
-            query: query.to_owned(),
-            kind: MigrationKind::Down,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub enum MigrationKind {
-    Up,
-    Down,
-}
-
-/// Creates the `schema_migrations` table if it does not exist.
-fn create_migrations_table(conn: &Connection) {
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS schema_migrations(version INT)",
-        (),
-    )
-    .expect("Failed to create schema_migrations table");
-}
-
+/// Opens an in memory sqlite database for testing.
 #[cfg(test)]
-pub fn test_db() -> Connection {
+pub(crate) fn test_db() -> Connection {
     let conn = Connection::open_in_memory().expect("Failed to open sqlite connection");
     conn
 }
@@ -82,35 +42,4 @@ pub fn load_migration() -> Vec<String> {
         }
     }
     blocks
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn run_migration() {
-        let conn = test_db();
-        migrate(&conn);
-    }
-
-    #[test]
-    fn init_migrations_table() {
-        let conn = test_db();
-        create_migrations_table(&conn);
-
-        conn.execute(
-            "INSERT INTO schema_migrations(version) VALUES($1)",
-            [29492424],
-        )
-        .unwrap();
-    }
-
-    #[test]
-    fn init_migrations_table_already_exists() {
-        let conn = test_db();
-        create_migrations_table(&conn);
-        create_migrations_table(&conn);
-        create_migrations_table(&conn);
-    }
 }
