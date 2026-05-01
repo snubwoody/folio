@@ -4,6 +4,39 @@
 use rusqlite::Connection;
 use std::fs;
 
+#[derive(Debug, Clone, PartialEq, PartialOrd)]
+pub struct Migration {
+    version: u64,
+    query: String,
+    kind: MigrationKind,
+}
+
+impl Migration {
+    /// Creates a new up migration.
+    pub fn up(query: &str, version: u64) -> Migration {
+        Migration {
+            version,
+            query: query.to_owned(),
+            kind: MigrationKind::Up,
+        }
+    }
+
+    /// Creates a new down migration.
+    pub fn down(query: &str, version: u64) -> Migration {
+        Migration {
+            version,
+            query: query.to_owned(),
+            kind: MigrationKind::Down,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub enum MigrationKind {
+    Up,
+    Down,
+}
+
 /// Creates the `schema_migrations` table if it does not exist.
 fn create_migrations_table(conn: &Connection) {
     conn.execute(
@@ -21,10 +54,8 @@ pub fn test_db() -> Connection {
 
 pub fn migrate(conn: &Connection) {
     let migrations = load_migration();
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS schema_migration(version INT)",
-        (),
-    );
+    let m = &migrations[0];
+    conn.execute(m, ()).expect("Failed to run migration");
 }
 
 pub fn load_migration() -> Vec<String> {
@@ -56,6 +87,12 @@ pub fn load_migration() -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn run_migration() {
+        let conn = test_db();
+        migrate(&conn);
+    }
 
     #[test]
     fn init_migrations_table() {
