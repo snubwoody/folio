@@ -16,6 +16,7 @@
         "@lucide/svelte": "^1.0.0",
         "@tauri-apps/plugin-process": "^2.3.1",
         "@tauri-apps/plugin-updater": "^2.10.0",
+        "echarts": "^6.0.0",
         "zod": "^4.3.6"
     },
     "devDependencies": {
