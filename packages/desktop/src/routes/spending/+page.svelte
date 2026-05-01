@@ -1,7 +1,7 @@
 <script lang="ts">
     import * as echarts from "echarts/core";
-    import  {PieChart,type PieSeriesOption} from "echarts/charts";
-    import {SVGRenderer} from "echarts/renderers";
+    import  { PieChart,type PieSeriesOption } from "echarts/charts";
+    import { SVGRenderer } from "echarts/renderers";
     import { LabelLayout, UniversalTransition } from 'echarts/features';
     import {
       TitleComponent,
@@ -19,10 +19,12 @@
       type LegendComponentOption,
       type DatasetComponentOption
     } from 'echarts/components';
-
     import type { 
       ComposeOption, 
     } from 'echarts/core';
+    import { transactionStore } from "$lib/stores/transaction.svelte";
+    import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
+    import { categoryStore } from "$lib/stores/categories.svelte";
     
     // Create an Option type with only the required components and charts via ComposeOption
     type ECOption = ComposeOption<
@@ -48,38 +50,51 @@
         TransformComponent,
     ])
 
+    const transaction = $derived(transactionStore.transactions
+        .filter(t => isSameMonth(t.date,today(getLocalTimeZone()))))
+
+
+    let analytics = $derived.by(()=>{
+        // TODO: extract this into function
+        let map = new Map<string,number>();
+        const transactions = transactionStore.transactions
+            .filter(t => isSameMonth(t.date,today(getLocalTimeZone())));        
+        for (const t of transactions){
+            if (!t.categoryId) continue;
+            // FIXME test this 
+            let category = categoryStore.categoryMap.get(t.categoryId)?.title!
+            let value = map.get(category);
+            if (value === undefined){
+                map.set(category,parseFloat(t.amount))
+                continue;
+            }
+            map.set(category, parseFloat(t.amount) + value)
+        }
+        return map;
+    });
+
+    console.log(analytics)
+
+    let legendData = $derived(analytics.keys().toArray())
+    let seriesData = $derived(
+        analytics.entries().map(([key,value]) => {return {name:key,value}}).toArray()
+    );
+    
     const option: ECOption = {
       legend: {
         orient: 'vertical',
         x: 'left',
-        data: ['A', 'B', 'C', 'D', 'E']
+        data: legendData
       },
       series: [
         {
           type: 'pie',
           radius: ['50%', '70%'],
           avoidLabelOverlap: false,
-          label: {
-            show: false,
-            position: 'center'
-          },
           labelLine: {
-            show: false
+            show: true
           },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: '30',
-              fontWeight: 'bold'
-            }
-          },
-          data: [
-            { value: 335, name: 'A' },
-            { value: 310, name: 'B' },
-            { value: 234, name: 'C' },
-            { value: 135, name: 'D' },
-            { value: 1548, name: 'E' }
-          ]
+          data: seriesData
         }
       ]
     };
@@ -88,17 +103,40 @@
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
         chart.setOption(option)
     });
+    // TODO test this, sidebar especially
 </script>
 
 <main>
-    hi
-    <div id="spending-pie-chart"></div>
+    <div class="chart-wrapper">
+        <div id="spending-pie-chart"></div>
+    </div>
+    <!-- <aside>
+        <div class="flex justify-between">
+            <p>Categories</p>
+            <p>Total spending</p>
+        </div>
+        <div>
+            <p>Groceries</p>
+        </div>
+    </aside> -->
 </main>
 
 <style>
+    main{
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+    .chart-wrapper{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
     #spending-pie-chart {
-        width: 500px;
-        height:  500px;
+        width: 100%;
+        max-width: 850px;
+        aspect-ratio: 1/1;
+        /*height:  500px;*/
     }
     
 </style>
