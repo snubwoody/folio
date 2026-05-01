@@ -24,6 +24,10 @@
             <ChartNoAxesCombined/>
             <p>Spending</p>
         </a>
+        <a href="/spending" class="page-link" data-selected={page.route.id === "/spending"}>
+            <ChartNoAxesCombined/>
+            <p>Spending</p>
+        </a>
     </div>
     <div class="h-[3px] w-full bg-neutral-100"></div>
     <AccountSection/>
