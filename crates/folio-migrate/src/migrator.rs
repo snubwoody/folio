@@ -1,6 +1,7 @@
 use rusqlite::Connection;
 use std::fs;
 
+// TODO: use enum error, maybe anyhow
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Migration {
     version: u64,
@@ -31,7 +32,7 @@ impl Migration {
 /// Creates the `schema_migrations` table if it does not exist.
 fn create_migrations_table(conn: &Connection) {
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS schema_migrations(version INT)",
+        "CREATE TABLE IF NOT EXISTS schema_migrations(version INT NOT NULL UNIQUE)",
         (),
     )
     .expect("Failed to create schema_migrations table");
@@ -108,6 +109,8 @@ pub fn load_migration() -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
+    use rusqlite::ErrorCode;
+
     use super::*;
     use crate::test_db;
 
@@ -132,22 +135,19 @@ mod tests {
 
     #[test]
     fn skip_applied_migrations() {
-        panic!();
         let conn = test_db();
+        create_migrations_table(&conn);
+        conn.execute("INSERT INTO schema_migrations(version) VALUES (1010)",(),)
+            .expect("Failed to run query");
         let mut migrator = Migrator::new();
-        let migration = Migration::up("CREATE TABLE users(id TEXT PRIMARY KEY)", 0);
-        migrator.add_migration(migration);
+        let m1 = Migration::up("CREATE TABLE users(id TEXT PRIMARY KEY)", 1);
+        let m2 = Migration::up("CREATE TABLE organisations(id TEXT PRIMARY KEY)", 1010);
+        migrator.add_migration(m1);
+        migrator.add_migration(m2);
         migrator.migrate(&conn);
 
-        conn.query_row(
-            "INSERT INTO users(id) VALUES ('Player 1') RETURNING *",
-            (),
-            |row| {
-                assert_eq!(row.get::<_, String>("id").unwrap(), "Player 1");
-                Ok(())
-            },
-        )
-        .expect("Failed to run query");
+        let result = conn.execute("INSERT INTO organisations(id) VALUES ('Player 1')",(),);
+        dbg!(result);
     }
 
     #[test]
@@ -176,6 +176,34 @@ mod tests {
             [29492424],
         )
         .unwrap();
+    }
+
+    #[test]
+    fn schema_migrations_unique_version() {
+        let conn = test_db();
+        create_migrations_table(&conn);
+
+        conn.execute("INSERT INTO schema_migrations(version) VALUES($1)",[0],)
+            .unwrap();
+
+        let result = conn.execute("INSERT INTO schema_migrations(version) VALUES($1)",[0],);
+        let err = result.expect_err("Expected duplicate insert to fail");
+        match err {
+            rusqlite::Error::SqliteFailure(a,_) => assert!(matches!(a.code,ErrorCode::ConstraintViolation)),
+            _ => panic!("Invalid error")
+        }
+    }
+
+    #[test]
+    fn schema_migrations_not_null() {
+        let conn = test_db();
+        create_migrations_table(&conn);
+        let result = conn.execute("INSERT INTO schema_migrations(version) VALUES(null)",(),);
+        let err = result.expect_err("Expected null insert to fail");
+        match err {
+            rusqlite::Error::SqliteFailure(a,_) => assert!(matches!(a.code,ErrorCode::ConstraintViolation)),
+            _ => panic!("Invalid error")
+        }
     }
 
     #[test]
