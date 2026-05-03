@@ -50,6 +50,21 @@ impl Migrator {
         }
     }
 
+    /// Returns a list of the applied migration versions.
+    pub fn applied_migrations(&self,conn: &Connection) -> Vec<u64>{
+        let mut stmt = conn.prepare_cached("SELECT version FROM schema_migrations")
+            .expect("Failed prepare query");
+        let mut versions = vec![];
+        let rows = stmt.query_map((), |row|{
+            row.get::<_,i64>(0)
+        }).expect("");
+
+        for row in rows{
+            versions.push(row.unwrap() as u64);
+        }
+        versions
+    }
+
     /// Adds a migration.
     pub fn add_migration(&mut self, migration: Migration) {
         self.migrations.push(migration);
@@ -61,8 +76,12 @@ impl Migrator {
 
     /// Run all the migrations.
     pub fn migrate(&self, conn: &Connection) {
+        let applied_migrations = self.applied_migrations(conn);
         create_migrations_table(&conn);
         for migration in &self.migrations {
+            if applied_migrations.contains(&migration.version){
+                continue;
+            }
             conn.execute(&migration.up, ())
                 .expect("Failed to run migration");
 
@@ -146,8 +165,9 @@ mod tests {
         migrator.add_migration(m2);
         migrator.migrate(&conn);
 
+        conn.execute("INSERT INTO users(id) VALUES ('Player 1')",(),).unwrap();
         let result = conn.execute("INSERT INTO organisations(id) VALUES ('Player 1')",(),);
-        dbg!(result);
+        assert!(result.is_err());
     }
 
     #[test]
@@ -176,6 +196,18 @@ mod tests {
             [29492424],
         )
         .unwrap();
+    }
+
+    #[test]
+    fn get_applied_migrations() {
+        let conn = test_db();
+        create_migrations_table(&conn);
+
+        conn.execute("INSERT INTO schema_migrations(version) VALUES (5),(10),(15),(20)",(),)
+            .unwrap();
+        let migrator = Migrator::new();
+        let migrations = migrator.applied_migrations(&conn);
+        assert_eq!(migrations,[5,10,15,20]);
     }
 
     #[test]
