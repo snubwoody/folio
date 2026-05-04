@@ -199,7 +199,7 @@ mod tests {
         let mut migrator = Migrator::new();
         migrator.load_from_file(path).unwrap();
         let migration = &migrator.migrations[0];
-        assert_eq!(migration.up, "CREATE TABLE schemas(name TEXT PRIMARY KEY);");
+        assert_eq!(migration.up, "CREATE TABLE schemas(name TEXT PRIMARY KEY);\n");
         assert_eq!(migration.down, "DROP TABLE schemas;")
     }
 
