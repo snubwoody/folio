@@ -1,11 +1,11 @@
 //! Folio migration toolkit.
 //!
 //! Migrations are stored as the version number in a `schema_migrations` table.
-mod migrator;
 mod error;
-pub use migrator::Migrator;
+mod migrator;
 pub use error::MigrateError;
 pub(crate) use error::Result;
+pub use migrator::Migrator;
 
 // TODO: add cli
 
