@@ -1,5 +1,5 @@
 use rusqlite::Connection;
-use std::{fs, io::Lines, iter::Peekable, str};
+use std::{fs::{self, File}, io::{Lines, Read}, iter::Peekable, path::Path, str};
 
 // TODO: use enum error, maybe anyhow
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -16,11 +16,6 @@ impl Migration {
             up: up.to_owned(),
             down: down.to_owned(),
         }
-    }
-
-    /// Parses a sql migration file.
-    fn parse(sql: &str){
-        
     }
 
     /// Creates a new up migration.
@@ -75,7 +70,17 @@ impl Migrator {
         self.migrations.push(migration);
     }
 
-    pub fn load_from_file() {}
+    pub fn load_from_file(&mut self, path: impl AsRef<Path>) {
+        path.as_ref().file_name().unwrap();
+        let buffer = fs::read_to_string(&path).unwrap();
+        let (up,down) = parse_migration(&buffer);
+        if up.is_none() || down.is_none(){
+            panic!("Missing up or down migration")
+        }
+
+        let migration = Migration::new(up.unwrap().as_str(), down.unwrap().as_str(), 000);
+        self.add_migration(migration);
+    }
     
     /// Loads migrations from a directory
     pub fn load_from_dir() {}
@@ -135,10 +140,26 @@ fn seek_block(iter: &mut Peekable<str::Lines>) -> String{
 
 #[cfg(test)]
 mod tests {
+    use std::env::temp_dir;
+
     use rusqlite::ErrorCode;
 
     use super::*;
     use crate::test_db;
+
+    #[test]
+    fn load_from_file(){
+        let dir = temp_dir();
+        let path = dir.join("000_migration.sql");
+        let sql = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
+        fs::write(&path, sql).unwrap();
+
+        let mut migrator = Migrator::new();
+        migrator.load_from_file(path);
+        let migration = &migrator.migrations[0];
+        assert_eq!(migration.up,"CREATE TABLE schemas(name TEXT PRIMARY KEY);");
+        assert_eq!(migration.down,"DROP TABLE schemas;")
+    }
 
     #[test]
     fn parse_up_migration(){

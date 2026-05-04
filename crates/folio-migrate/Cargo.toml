@@ -8,4 +8,5 @@ anyhow.workspace = true
 dotenvy.workspace = true
 regex.workspace = true
 rusqlite = { version = "=0.32.0", features = ["bundled"] }
+tempfile.workspace = true
 

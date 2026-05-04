@@ -4,6 +4,7 @@
 use rusqlite::Connection;
 use std::fs;
 mod migrator;
+pub use migrator::{Migrator};
 
 /// Opens an in memory sqlite database for testing.
 #[cfg(test)]
