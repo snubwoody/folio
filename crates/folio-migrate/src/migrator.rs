@@ -1,12 +1,12 @@
 use rusqlite::Connection;
 use tracing::info;
-use std::{fs::{self, File}, io::{Lines, Read}, iter::Peekable, path::Path, str};
+use std::{fs::{self}, iter::Peekable, path::Path, str};
 
 use crate::MigrateError;
 
 // TODO: change version to string
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
-pub struct Migration {
+struct Migration {
     version: u64,
     up: String,
     down: String,
@@ -69,8 +69,9 @@ impl Migrator {
     }
 
     /// Adds a migration.
-    pub fn add_migration(&mut self, migration: Migration) {
+    fn add_migration(&mut self, migration: Migration) -> &mut Self{
         self.migrations.push(migration);
+        self
     }
 
     /// Loads a migration from a file.
@@ -120,7 +121,7 @@ impl Migrator {
                 continue;
             }
 
-            conn.execute(&migration.up, ())?;
+            conn.execute_batch(&migration.up)?;
 
             conn.execute(
                 "INSERT INTO schema_migrations(version) VALUES(?)",
@@ -135,7 +136,7 @@ impl Migrator {
 }
 
 /// Parses a sql migration and returns the up and down migrations.
-pub fn parse_migration(sql: &str) -> (Option<String>,Option<String>) {
+fn parse_migration(sql: &str) -> (Option<String>,Option<String>) {
     let mut lines = sql.lines().peekable();
     let mut up = None;
     let mut down = None;
@@ -162,6 +163,7 @@ fn seek_block(iter: &mut Peekable<str::Lines>) -> String{
         }
 
         block.push_str(iter.next().unwrap());
+        block.push_str("\n");
     }
 
     block
@@ -236,7 +238,7 @@ mod tests {
         let mut migrator = Migrator::new();
         let migration = Migration::up("CREATE TABLE users(id TEXT PRIMARY KEY)", 0);
         migrator.add_migration(migration);
-        migrator.migrate(&conn).unwrap();
+        migrator.migrate(&conn)?;
 
         let row = conn.query_row(
             "INSERT INTO users(id) VALUES ('Player 1') RETURNING *",
@@ -341,5 +343,22 @@ mod tests {
         create_migrations_table(&conn).unwrap();
         create_migrations_table(&conn).unwrap();
         create_migrations_table(&conn).unwrap();
+    }
+
+    #[test]
+    fn alter_table()  -> crate::Result<()>{
+        let conn = test_db();
+        let m1 = Migration::up("CREATE TABLE users(id INT PRIMARY KEY)",0);
+        let m2 = Migration::up("ALTER TABLE users ADD COLUMN created_at INT",1);
+        let mut migrator = Migrator::new();
+        migrator
+            .add_migration(m1)
+            .add_migration(m2);
+        migrator.migrate(&conn)?;
+
+        let mut stmt = conn.prepare("INSERT INTO users(id,created_at) VALUES(0,0)")?;
+        stmt.execute(())?;
+
+        Ok(())
     }
 }
