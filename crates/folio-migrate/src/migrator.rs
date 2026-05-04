@@ -1,3 +1,4 @@
+use anyhow::{Ok, anyhow, bail};
 use rusqlite::Connection;
 use std::{fs::{self, File}, io::{Lines, Read}, iter::Peekable, path::Path, str};
 
@@ -30,12 +31,13 @@ impl Migration {
 }
 
 /// Creates the `schema_migrations` table if it does not exist.
-fn create_migrations_table(conn: &Connection) {
+fn create_migrations_table(conn: &Connection) -> anyhow::Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS schema_migrations(version INT PRIMARY KEY NOT NULL)",
         (),
-    )
-    .expect("Failed to create schema_migrations table");
+    )?;
+
+    Ok(())
 }
 
 /// Migration runner.
@@ -51,18 +53,17 @@ impl Migrator {
     }
 
     /// Returns a list of the applied migration versions.
-    pub fn applied_migrations(&self,conn: &Connection) -> Vec<u64>{
-        let mut stmt = conn.prepare_cached("SELECT version FROM schema_migrations")
-            .expect("Failed prepare query");
+    pub fn applied_migrations(&self,conn: &Connection) -> anyhow::Result<Vec<u64>>{
+        let mut stmt = conn.prepare_cached("SELECT version FROM schema_migrations")?;
         let mut versions = vec![];
         let rows = stmt.query_map((), |row|{
             row.get::<_,i64>(0)
-        }).expect("");
+        })?;
 
         for row in rows{
-            versions.push(row.unwrap() as u64);
+            versions.push(row? as u64);
         }
-        versions
+        Ok(versions)
     }
 
     /// Adds a migration.
@@ -70,29 +71,44 @@ impl Migrator {
         self.migrations.push(migration);
     }
 
-    pub fn load_from_file(&mut self, path: impl AsRef<Path>) {
-        let file_name = path.as_ref().file_name().unwrap();
-        let split = file_name.to_str().unwrap().split("_").collect::<Vec<_>>();
-        let version = split[0].parse::<u64>().unwrap();
-        let buffer = fs::read_to_string(&path).unwrap();
+    /// Loads a migration from a file.
+    pub fn load_from_file(&mut self, path: impl AsRef<Path>) -> anyhow::Result<()> {
+        let file_name = path.as_ref()
+            .file_name()
+            .ok_or(anyhow!("Failed to read file name"))?;
+        let split = file_name.to_str()
+            .ok_or(anyhow!("Failed to read file name"))?
+            .split("_")
+            .collect::<Vec<_>>();
+        let version = split[0].parse::<u64>()?;
+        let buffer = fs::read_to_string(&path)?;
         let (up,down) = parse_migration(&buffer);
-        if up.is_none() || down.is_none(){
-            panic!("Missing up or down migration")
+        if down.is_none(){
+            bail!("Missing down migration")
+        }
+
+        if up.is_none(){
+            bail!("Missing up migration")
         }
 
         let migration = Migration::new(up.unwrap().as_str(), down.unwrap().as_str(), version);
         self.add_migration(migration);
+        Ok(())
     }
     
     /// Loads migrations from a directory
-    pub fn load_from_dir(&mut self, path: impl AsRef<Path>) {
-        
+    pub fn load_from_dir(&mut self, path: impl AsRef<Path>) -> anyhow::Result<()> {
+        for entry in fs::read_dir(path)?{
+            let entry = entry?;
+            self.load_from_file(entry.path())?;
+        }
+        Ok(())
     }
 
     /// Run all the migrations.
-    pub fn migrate(&self, conn: &Connection) {
-        create_migrations_table(&conn);
-        let applied_migrations = self.applied_migrations(conn);
+    pub fn migrate(&self, conn: &Connection) -> anyhow::Result<()> {
+        create_migrations_table(&conn)?;
+        let applied_migrations = self.applied_migrations(conn)?;
         for migration in &self.migrations {
             if applied_migrations.contains(&migration.version){
                 continue;
@@ -103,9 +119,10 @@ impl Migrator {
             conn.execute(
                 "INSERT INTO schema_migrations(version) VALUES(?)",
                 [migration.version],
-            )
-            .expect("Failed to record migration");
+            )?;
         }
+
+        Ok(())
     }
 }
 
@@ -144,36 +161,55 @@ fn seek_block(iter: &mut Peekable<str::Lines>) -> String{
 
 #[cfg(test)]
 mod tests {
-    use std::env::temp_dir;
-
     use rusqlite::ErrorCode;
 
     use super::*;
     use crate::test_db;
 
     #[test]
-    fn load_from_file(){
-        let dir = temp_dir();
-        let path = dir.join("000_migration.sql");
+    fn load_migration_from_file(){
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("000_migration.sql");
         let sql = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
         fs::write(&path, sql).unwrap();
 
         let mut migrator = Migrator::new();
-        migrator.load_from_file(path);
+        migrator.load_from_file(path).unwrap();
         let migration = &migrator.migrations[0];
         assert_eq!(migration.up,"CREATE TABLE schemas(name TEXT PRIMARY KEY);");
         assert_eq!(migration.down,"DROP TABLE schemas;")
     }
 
     #[test]
+    fn load_migrations_from_dir(){
+        let dir = tempfile::tempdir().unwrap();
+        let p1 = dir.path().join("2024_migration.sql");
+        let p2 = dir.path().join("240_migration.sql");
+        let sql1 = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
+        let sql2 = "--migrate:up\nCREATE TABLE users(id TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE users;";
+        fs::write(&p1, sql1).unwrap();
+        fs::write(&p2, sql2).unwrap();
+
+        let mut migrator = Migrator::new();
+        migrator.load_from_dir(dir.path()).unwrap();
+        let m1 = &migrator.migrations[0];
+        assert_eq!(m1.up,"CREATE TABLE schemas(name TEXT PRIMARY KEY);");
+        assert_eq!(m1.down,"DROP TABLE schemas;");
+
+        let m2 = &migrator.migrations[1];
+        assert_eq!(m2.up,"CREATE TABLE users(id TEXT PRIMARY KEY);");
+        assert_eq!(m2.down,"DROP TABLE users;")
+    }
+
+    #[test]
     fn parse_file_name_as_version(){
-        let dir = temp_dir();
-        let path = dir.join("2026_migration.sql");
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("2026_migration.sql");
         let sql = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
         fs::write(&path, sql).unwrap();
 
         let mut migrator = Migrator::new();
-        migrator.load_from_file(path);
+        migrator.load_from_file(path).unwrap();
         let migration = &migrator.migrations[0];
         assert_eq!(migration.version,2026);
     }
@@ -187,28 +223,29 @@ mod tests {
     }
 
     #[test]
-    fn run_migration() {
+    fn run_migration() -> anyhow::Result<()> {
         let conn = test_db();
         let mut migrator = Migrator::new();
         let migration = Migration::up("CREATE TABLE users(id TEXT PRIMARY KEY)", 0);
         migrator.add_migration(migration);
-        migrator.migrate(&conn);
+        migrator.migrate(&conn).unwrap();
 
-        conn.query_row(
+        let row = conn.query_row(
             "INSERT INTO users(id) VALUES ('Player 1') RETURNING *",
             (),
             |row| {
-                assert_eq!(row.get::<_, String>("id").unwrap(), "Player 1");
-                Ok(())
+                row.get::<_,String>(0)
             },
-        )
-        .expect("Failed to run query");
+        )?;
+
+        assert_eq!(row,"Player 1");
+        Ok(())
     }
 
     #[test]
     fn skip_applied_migrations() {
         let conn = test_db();
-        create_migrations_table(&conn);
+        create_migrations_table(&conn).unwrap();
         conn.execute("INSERT INTO schema_migrations(version) VALUES (1010)",(),)
             .expect("Failed to run query");
         let mut migrator = Migrator::new();
@@ -216,7 +253,7 @@ mod tests {
         let m2 = Migration::up("CREATE TABLE organisations(id TEXT PRIMARY KEY)", 1010);
         migrator.add_migration(m1);
         migrator.add_migration(m2);
-        migrator.migrate(&conn);
+        migrator.migrate(&conn).unwrap();
 
         conn.execute("INSERT INTO users(id) VALUES ('Player 1')",(),).unwrap();
         let result = conn.execute("INSERT INTO organisations(id) VALUES ('Player 1')",(),);
@@ -229,20 +266,19 @@ mod tests {
         let mut migrator = Migrator::new();
         let migration = Migration::up("CREATE TABLE users(id TEXT PRIMARY KEY)", 100);
         migrator.add_migration(migration);
-        migrator.migrate(&conn);
+        migrator.migrate(&conn).unwrap();
 
-        conn.query_row("SELECT * FROM schema_migrations", (), |row| {
-            let version: u64 = row.get("version").unwrap();
-            assert_eq!(version, 100);
-            Ok(())
+        let version = conn.query_row("SELECT * FROM schema_migrations", (), |row| {
+            row.get::<_,u64>("version")
         })
-        .unwrap()
+            .unwrap();
+        assert_eq!(version, 100);
     }
 
     #[test]
     fn init_migrations_table() {
         let conn = test_db();
-        create_migrations_table(&conn);
+        create_migrations_table(&conn).unwrap();
 
         conn.execute(
             "INSERT INTO schema_migrations(version) VALUES($1)",
@@ -254,19 +290,19 @@ mod tests {
     #[test]
     fn get_applied_migrations() {
         let conn = test_db();
-        create_migrations_table(&conn);
+        create_migrations_table(&conn).unwrap();
 
         conn.execute("INSERT INTO schema_migrations(version) VALUES (5),(10),(15),(20)",(),)
             .unwrap();
         let migrator = Migrator::new();
-        let migrations = migrator.applied_migrations(&conn);
+        let migrations = migrator.applied_migrations(&conn).unwrap();
         assert_eq!(migrations,[5,10,15,20]);
     }
 
     #[test]
     fn schema_migrations_unique_version() {
         let conn = test_db();
-        create_migrations_table(&conn);
+        create_migrations_table(&conn).unwrap();
 
         conn.execute("INSERT INTO schema_migrations(version) VALUES($1)",[0],)
             .unwrap();
@@ -282,7 +318,7 @@ mod tests {
     #[test]
     fn schema_migrations_not_null() {
         let conn = test_db();
-        create_migrations_table(&conn);
+        create_migrations_table(&conn).unwrap();
         let result = conn.execute("INSERT INTO schema_migrations(version) VALUES(null)",(),);
         let err = result.expect_err("Expected null insert to fail");
         match err {
@@ -294,8 +330,8 @@ mod tests {
     #[test]
     fn init_migrations_table_already_exists() {
         let conn = test_db();
-        create_migrations_table(&conn);
-        create_migrations_table(&conn);
-        create_migrations_table(&conn);
+        create_migrations_table(&conn).unwrap();
+        create_migrations_table(&conn).unwrap();
+        create_migrations_table(&conn).unwrap();
     }
 }
