@@ -235,8 +235,8 @@ mod tests {
     fn parse_up_migration() {
         let sql = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
         let (up, down) = parse_migration(sql);
-        assert_eq!(up.unwrap(), "CREATE TABLE schemas(name TEXT PRIMARY KEY);");
-        assert_eq!(down.unwrap(), "DROP TABLE schemas;");
+        assert_eq!(up.unwrap(), "CREATE TABLE schemas(name TEXT PRIMARY KEY);\n");
+        assert_eq!(down.unwrap(), "DROP TABLE schemas;\n");
     }
 
     #[test]
