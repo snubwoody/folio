@@ -130,6 +130,8 @@ pub async fn init_database() -> Result<SqlitePool> {
     let conn = rusqlite::Connection::open(&path)
         .expect("Failed to open sqlite connection");
 
+    conn.execute("PRAGMA foreign_keys = ON",()).unwrap();
+
     let mut migrator = Migrator::new();
 
     migrator.load_from_dir("./m2")?;
