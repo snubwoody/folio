@@ -132,13 +132,8 @@ pub async fn init_database() -> Result<SqlitePool> {
 
     let mut migrator = Migrator::new();
 
-    migrator.load_from_dir("./m2").unwrap();
-    let result = migrator.migrate(&conn);
-
-    if let Err(err) = &result{
-        println!("{err}");
-    }
-    result.unwrap();
+    migrator.load_from_dir("./m2")?;
+    migrator.migrate(&conn)?;
 
     // sqlx::migrate!()
         // .run(&pool)

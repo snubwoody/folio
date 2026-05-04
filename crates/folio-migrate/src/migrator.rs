@@ -4,7 +4,7 @@ use std::{fs::{self, File}, io::{Lines, Read}, iter::Peekable, path::Path, str};
 
 use crate::MigrateError;
 
-// TODO: use enum error, maybe anyhow
+// TODO: change version to string
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub struct Migration {
     version: u64,
@@ -119,7 +119,7 @@ impl Migrator {
             if applied_migrations.contains(&migration.version){
                 continue;
             }
-            
+
             conn.execute(&migration.up, ())?;
 
             conn.execute(
