@@ -200,7 +200,7 @@ mod tests {
         migrator.load_from_file(path).unwrap();
         let migration = &migrator.migrations[0];
         assert_eq!(migration.up, "CREATE TABLE schemas(name TEXT PRIMARY KEY);\n");
-        assert_eq!(migration.down, "DROP TABLE schemas;")
+        assert_eq!(migration.down, "DROP TABLE schemas;\n")
     }
 
     #[test]
