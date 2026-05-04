@@ -71,19 +71,23 @@ impl Migrator {
     }
 
     pub fn load_from_file(&mut self, path: impl AsRef<Path>) {
-        path.as_ref().file_name().unwrap();
+        let file_name = path.as_ref().file_name().unwrap();
+        let split = file_name.to_str().unwrap().split("_").collect::<Vec<_>>();
+        let version = split[0].parse::<u64>().unwrap();
         let buffer = fs::read_to_string(&path).unwrap();
         let (up,down) = parse_migration(&buffer);
         if up.is_none() || down.is_none(){
             panic!("Missing up or down migration")
         }
 
-        let migration = Migration::new(up.unwrap().as_str(), down.unwrap().as_str(), 000);
+        let migration = Migration::new(up.unwrap().as_str(), down.unwrap().as_str(), version);
         self.add_migration(migration);
     }
     
     /// Loads migrations from a directory
-    pub fn load_from_dir() {}
+    pub fn load_from_dir(&mut self, path: impl AsRef<Path>) {
+        
+    }
 
     /// Run all the migrations.
     pub fn migrate(&self, conn: &Connection) {
@@ -159,6 +163,19 @@ mod tests {
         let migration = &migrator.migrations[0];
         assert_eq!(migration.up,"CREATE TABLE schemas(name TEXT PRIMARY KEY);");
         assert_eq!(migration.down,"DROP TABLE schemas;")
+    }
+
+    #[test]
+    fn parse_file_name_as_version(){
+        let dir = temp_dir();
+        let path = dir.join("2026_migration.sql");
+        let sql = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
+        fs::write(&path, sql).unwrap();
+
+        let mut migrator = Migrator::new();
+        migrator.load_from_file(path);
+        let migration = &migrator.migrations[0];
+        assert_eq!(migration.version,2026);
     }
 
     #[test]
