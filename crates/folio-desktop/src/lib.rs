@@ -35,7 +35,7 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
-use tracing::{error, info};
+use tracing::info;
 
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())
@@ -127,10 +127,9 @@ pub async fn init_database() -> Result<SqlitePool> {
     let pool = SqlitePool::connect_with(opts).await?;
     info!(path=?path,"Connected to sqlite database");
 
-    let conn = rusqlite::Connection::open(&path)
-        .expect("Failed to open sqlite connection");
+    let conn = rusqlite::Connection::open(&path).expect("Failed to open sqlite connection");
 
-    conn.execute("PRAGMA foreign_keys = ON",()).unwrap();
+    conn.execute("PRAGMA foreign_keys = ON", ()).unwrap();
 
     let mut migrator = Migrator::new();
 
@@ -138,9 +137,9 @@ pub async fn init_database() -> Result<SqlitePool> {
     migrator.migrate(&conn)?;
 
     // sqlx::migrate!()
-        // .run(&pool)
-        // .await
-        // .inspect_err(|err| error!("Failed to run migration: {err}"))?;
+    // .run(&pool)
+    // .await
+    // .inspect_err(|err| error!("Failed to run migration: {err}"))?;
 
     Ok(pool)
 }
