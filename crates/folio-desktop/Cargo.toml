@@ -3,7 +3,7 @@ name = "folio"
 version.workspace = true
 description = "A free, open source budgeting app"
 authors = ["Wakunguma Kalimukwa <wakunguma13@gmail.com>"]
-edition = "2024"
+edition.workspace = true
 publish = false
 
 [lib]
@@ -38,6 +38,9 @@ sqlx.workspace = true
 tauri-plugin-updater.workspace = true
 tauri-plugin-prevent-default.workspace = true
 tauri-plugin-process = "2"
+rusqlite.workspace = true
+anyhow.workspace = true
+folio-migrate = { version = "2.2.0", path = "../folio-migrate" }
 
 [package.metadata.packager]
 product-name = "Folio"

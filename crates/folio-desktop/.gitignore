@@ -15,4 +15,5 @@ microsoft.system.package.metadata
 
 # Local files
 /*.db*
+temp/
 settings.json
