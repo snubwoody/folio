@@ -2,7 +2,10 @@
 //!
 //! Migrations are stored as the version number in a `schema_migrations` table.
 mod migrator;
+mod error;
 pub use migrator::Migrator;
+pub use error::MigrateError;
+pub(crate) use error::Result;
 
 /// Opens an in memory sqlite database for testing.
 #[cfg(test)]

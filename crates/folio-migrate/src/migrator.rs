@@ -1,6 +1,8 @@
-use anyhow::{Ok, anyhow, bail};
 use rusqlite::Connection;
+use tracing::info;
 use std::{fs::{self, File}, io::{Lines, Read}, iter::Peekable, path::Path, str};
+
+use crate::MigrateError;
 
 // TODO: use enum error, maybe anyhow
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -31,7 +33,7 @@ impl Migration {
 }
 
 /// Creates the `schema_migrations` table if it does not exist.
-fn create_migrations_table(conn: &Connection) -> anyhow::Result<()> {
+fn create_migrations_table(conn: &Connection) -> crate::Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS schema_migrations(version INT PRIMARY KEY NOT NULL)",
         (),
@@ -53,7 +55,7 @@ impl Migrator {
     }
 
     /// Returns a list of the applied migration versions.
-    pub fn applied_migrations(&self,conn: &Connection) -> anyhow::Result<Vec<u64>>{
+    pub fn applied_migrations(&self,conn: &Connection) -> crate::Result<Vec<u64>>{
         let mut stmt = conn.prepare_cached("SELECT version FROM schema_migrations")?;
         let mut versions = vec![];
         let rows = stmt.query_map((), |row|{
@@ -72,23 +74,27 @@ impl Migrator {
     }
 
     /// Loads a migration from a file.
-    pub fn load_from_file(&mut self, path: impl AsRef<Path>) -> anyhow::Result<()> {
+    pub fn load_from_file(&mut self, path: impl AsRef<Path>) -> crate::Result<()> {
         let file_name = path.as_ref()
             .file_name()
-            .ok_or(anyhow!("Failed to read file name"))?;
+            .ok_or(MigrateError::invalid_migration("failed to read file name"))?;
         let split = file_name.to_str()
-            .ok_or(anyhow!("Failed to read file name"))?
+            .ok_or(MigrateError::invalid_migration("failed to read file name"))?
             .split("_")
             .collect::<Vec<_>>();
-        let version = split[0].parse::<u64>()?;
+        let version = split[0]
+            .parse::<u64>()
+            .map_err(|_|MigrateError::invalid_migration("failed to parse version"))?;
+        
         let buffer = fs::read_to_string(&path)?;
+        
         let (up,down) = parse_migration(&buffer);
         if down.is_none(){
-            bail!("Missing down migration")
+            return Err(MigrateError::invalid_migration("missing down migration"));
         }
 
         if up.is_none(){
-            bail!("Missing up migration")
+            return Err(MigrateError::invalid_migration("missing up migration"));
         }
 
         let migration = Migration::new(up.unwrap().as_str(), down.unwrap().as_str(), version);
@@ -97,7 +103,7 @@ impl Migrator {
     }
     
     /// Loads migrations from a directory
-    pub fn load_from_dir(&mut self, path: impl AsRef<Path>) -> anyhow::Result<()> {
+    pub fn load_from_dir(&mut self, path: impl AsRef<Path>) -> crate::Result<()> {
         for entry in fs::read_dir(path)?{
             let entry = entry?;
             self.load_from_file(entry.path())?;
@@ -106,20 +112,22 @@ impl Migrator {
     }
 
     /// Run all the migrations.
-    pub fn migrate(&self, conn: &Connection) -> anyhow::Result<()> {
+    pub fn migrate(&self, conn: &Connection) -> crate::Result<()> {
         create_migrations_table(&conn)?;
         let applied_migrations = self.applied_migrations(conn)?;
         for migration in &self.migrations {
             if applied_migrations.contains(&migration.version){
                 continue;
             }
-            conn.execute(&migration.up, ())
-                .expect("Failed to run migration");
+            
+            conn.execute(&migration.up, ())?;
 
             conn.execute(
                 "INSERT INTO schema_migrations(version) VALUES(?)",
                 [migration.version],
             )?;
+
+            info!("Applied migration {}",migration.version)
         }
 
         Ok(())
@@ -223,7 +231,7 @@ mod tests {
     }
 
     #[test]
-    fn run_migration() -> anyhow::Result<()> {
+    fn run_migration() -> crate::Result<()> {
         let conn = test_db();
         let mut migrator = Migrator::new();
         let migration = Migration::up("CREATE TABLE users(id TEXT PRIMARY KEY)", 0);

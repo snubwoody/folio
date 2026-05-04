@@ -16,6 +16,7 @@ tauri-plugin-prevent-default = "4"
 
 # Everything else
 serde = { version = "1.0", features = ["derive"] }
+rusqlite = { version = "=0.32.0", features = ["bundled"] }
 serde_json = "1.0"
 rust_decimal = { version = "1.39.0", features = ["macros"] }
 tokio = { version = "1.47.1", features = ["full"] }
