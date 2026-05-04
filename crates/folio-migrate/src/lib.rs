@@ -13,6 +13,6 @@ pub use migrator::Migrator;
 #[cfg(test)]
 pub(crate) fn test_db() -> rusqlite::Connection {
     use rusqlite::Connection;
-    let conn = Connection::open_in_memory().expect("Failed to open sqlite connection");
-    conn
+
+    Connection::open_in_memory().expect("Failed to open sqlite connection")
 }

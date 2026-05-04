@@ -54,6 +54,12 @@ pub struct Migrator {
     migrations: Vec<Migration>,
 }
 
+impl Default for Migrator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Migrator {
     pub fn new() -> Migrator {
         Migrator {
@@ -121,7 +127,7 @@ impl Migrator {
 
     /// Run all the migrations.
     pub fn migrate(&self, conn: &Connection) -> crate::Result<()> {
-        create_migrations_table(&conn)?;
+        create_migrations_table(conn)?;
         let applied_migrations = self.applied_migrations(conn)?;
         for migration in &self.migrations {
             if applied_migrations.contains(&migration.version) {
@@ -170,7 +176,7 @@ fn seek_block(iter: &mut Peekable<str::Lines>) -> String {
         }
 
         block.push_str(iter.next().unwrap());
-        block.push_str("\n");
+        block.push('\n');
     }
 
     block
