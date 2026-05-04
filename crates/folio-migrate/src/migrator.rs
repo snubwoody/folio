@@ -1,5 +1,5 @@
 use rusqlite::Connection;
-use std::fs;
+use std::{fs, io::Lines, iter::Peekable, str};
 
 // TODO: use enum error, maybe anyhow
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -18,6 +18,11 @@ impl Migration {
         }
     }
 
+    /// Parses a sql migration file.
+    fn parse(sql: &str){
+        
+    }
+
     /// Creates a new up migration.
     pub fn up(query: &str, version: u64) -> Migration {
         Migration::new(query, "", version)
@@ -32,7 +37,7 @@ impl Migration {
 /// Creates the `schema_migrations` table if it does not exist.
 fn create_migrations_table(conn: &Connection) {
     conn.execute(
-        "CREATE TABLE IF NOT EXISTS schema_migrations(version INT NOT NULL UNIQUE)",
+        "CREATE TABLE IF NOT EXISTS schema_migrations(version INT PRIMARY KEY NOT NULL)",
         (),
     )
     .expect("Failed to create schema_migrations table");
@@ -71,13 +76,14 @@ impl Migrator {
     }
 
     pub fn load_from_file() {}
+    
     /// Loads migrations from a directory
     pub fn load_from_dir() {}
 
     /// Run all the migrations.
     pub fn migrate(&self, conn: &Connection) {
-        let applied_migrations = self.applied_migrations(conn);
         create_migrations_table(&conn);
+        let applied_migrations = self.applied_migrations(conn);
         for migration in &self.migrations {
             if applied_migrations.contains(&migration.version){
                 continue;
@@ -94,36 +100,37 @@ impl Migrator {
     }
 }
 
-pub fn migrate(conn: &Connection) {
-    let migrations = load_migration();
-    let m = &migrations[0];
-    conn.execute(m, ()).expect("Failed to run migration");
-}
-
-pub fn load_migration() -> Vec<String> {
-    let path = "../folio-desktop/migrations/category_group_column.sql";
-    let data = fs::read_to_string(path).unwrap();
-    let mut in_block = false;
-    let mut blocks = vec![];
-    let mut block = String::new();
-    // TODO: seek until next block or EOF
-    for line in data.lines() {
-        let stripped_line = line.replace(" ", "");
-        if stripped_line == "--migrate:up" || stripped_line == "--migrate:down" {
-            if !in_block {
-                in_block = true;
-                continue;
-            }
-
-            blocks.push(block.clone());
-            in_block = false
+/// Parses a sql migration and returns the up and down migrations.
+pub fn parse_migration(sql: &str) -> (Option<String>,Option<String>) {
+    let mut lines = sql.lines().peekable();
+    let mut up = None;
+    let mut down = None;
+    
+    while let Some(line) = lines.next(){
+        let stripped = line.replace(" ", "");
+        if stripped == "--migrate:up"{
+            up = Some(seek_block(&mut lines));
         }
-
-        if in_block {
-            block.push_str(line)
+        if stripped == "--migrate:down"{
+            down = Some(seek_block(&mut lines));
         }
     }
-    blocks
+    
+    (up,down)
+}
+
+fn seek_block(iter: &mut Peekable<str::Lines>) -> String{
+    let mut block = String::new();
+    while let Some(line) = iter.peek(){
+        let stripped = line.replace(" ", "");
+        if stripped == "--migrate:up" || stripped == "--migrate:down"{
+            break;
+        }
+
+        block.push_str(iter.next().unwrap());
+    }
+
+    block
 }
 
 #[cfg(test)]
@@ -132,6 +139,14 @@ mod tests {
 
     use super::*;
     use crate::test_db;
+
+    #[test]
+    fn parse_up_migration(){
+        let sql = "--migrate:up\nCREATE TABLE schemas(name TEXT PRIMARY KEY);\n--migrate:down\nDROP TABLE schemas;";
+        let (up,down) = parse_migration(sql);
+        assert_eq!(up.unwrap(),"CREATE TABLE schemas(name TEXT PRIMARY KEY);");
+        assert_eq!(down.unwrap(),"DROP TABLE schemas;");
+    }
 
     #[test]
     fn run_migration() {
