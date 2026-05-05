@@ -6,12 +6,6 @@ import { SvelteMap } from "svelte/reactivity";
 import { spendingAnalytics } from "./analytics";
 
 // TODO: probably make a seperate PR: Extract analytics into spendingAnalytics function
-// TODO: test
-// - Transactions with no category
-// - Multiple categories
-// - Exclude incomes and transfers
-// - Exclude incomeStreams
-// 
 describe("spendingAnalytics", () => {
     test("get total spent in a single category", () => {
         const currentDate = today(getLocalTimeZone());
@@ -45,6 +39,127 @@ describe("spendingAnalytics", () => {
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
         expect(analytics[0].category).toStrictEqual(category);
         expect(analytics[0].total).toStrictEqual(250);
+    });
+    
+    test("empty transactions", () => {
+        const currentDate = today(getLocalTimeZone());
+        const category: Category = {
+            id: "C1",
+            title: "Groceries",
+            createdAt: "",
+            isIncomeStream: false
+        };
+    
+        const transactions: Transaction[] = [];
+    
+        const categoryMap = new SvelteMap<string, Category>();
+        categoryMap.set("C1", category);
+    
+        const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
+        expect(analytics).toHaveLength(0);
+    });
+    
+    test("empty categoryMap", () => {
+        const currentDate = today(getLocalTimeZone());
+        const category: Category = {
+            id: "C1",
+            title: "Groceries",
+            createdAt: "",
+            isIncomeStream: false
+        };
+
+        const transactions: Transaction[] = [
+            {
+                id: "A1",
+                categoryId: category.id,
+                fromAccountId: "A1",
+                amount: "200",
+                date: currentDate
+            },
+            {
+                id: "A2",
+                categoryId: category.id,
+                fromAccountId: "A1",
+                amount: "50",
+                date: currentDate
+            }
+        ];
+      
+        const categoryMap = new SvelteMap<string, Category>();
+    
+        const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
+        expect(analytics).toHaveLength(0);
+    });
+    
+    test("total amount is 0", () => {
+        const currentDate = today(getLocalTimeZone());
+        const category: Category = {
+            id: "C1",
+            title: "Groceries",
+            createdAt: "",
+            isIncomeStream: false
+        };
+    
+        const transactions: Transaction[] = [
+            {
+                id: "A1",
+                categoryId: category.id,
+                fromAccountId: "A1",
+                amount: "0",
+                date: currentDate
+            }
+        ];
+    
+        const categoryMap = new SvelteMap<string, Category>();
+        categoryMap.set("C1", category);
+    
+        const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
+        expect(analytics[0].total).toStrictEqual(0);
+        expect(analytics[0].percentage).toStrictEqual(0);
+    });
+    
+    test("include income streams", () => {
+        // Not sure whether income streams should be filterd out or kept.
+        // They may be filtered out in the future, which will break user analytics.
+        const currentDate = today(getLocalTimeZone());
+        const c1: Category = {
+            id: "C1",
+            title: "Groceries",
+            createdAt: "",
+            isIncomeStream: true
+        };
+
+        const c2: Category = {
+            id: "C2",
+            title: "Shopping",
+            createdAt: "",
+            isIncomeStream: false
+        };
+    
+        const transactions: Transaction[] = [
+            {
+                id: "A1",
+                categoryId: c1.id,
+                fromAccountId: "A1",
+                amount: "100",
+                date: currentDate
+            },
+            {
+                id: "A2",
+                categoryId: c2.id,
+                fromAccountId: "A1",
+                amount: "100",
+                date: currentDate
+            }
+        ];
+    
+        const categoryMap = new SvelteMap<string, Category>();
+        categoryMap.set("C1", c1);
+        categoryMap.set("C2", c2);
+    
+        const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
+        expect(analytics[0].total).toStrictEqual(100)
+        expect(analytics[0].percentage).toStrictEqual(0.5)
     });
     
     test("category percentage", () => {

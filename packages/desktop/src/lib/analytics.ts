@@ -53,10 +53,12 @@ export function spendingAnalytics(
         let category = categoryMap.get(categoryId);
         if (!category) continue;
 
+        // Prevent division by 0
+        const percentage = totalSpent === 0 ? 0 : total / totalSpent;
         const analytic: SpendingAnalytic = {
             category,
             total,
-            percentage: total / totalSpent
+            percentage
         };
 
         analytics.push(analytic)
