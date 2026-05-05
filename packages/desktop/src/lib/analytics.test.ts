@@ -5,7 +5,6 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { SvelteMap } from "svelte/reactivity";
 import { spendingAnalytics } from "./analytics";
 
-// TODO: probably make a seperate PR: Extract analytics into spendingAnalytics function
 describe("spendingAnalytics", () => {
     test("get total spent in a single category", () => {
         const currentDate = today(getLocalTimeZone());
