@@ -59,7 +59,10 @@
         for (const t of transactions){
             if (!t.categoryId) continue;
             // FIXME test this
-            let category = categoryStore.categoryMap.get(t.categoryId)?.title!;
+
+            let category = categoryStore.categoryMap.get(t.categoryId)?.title;
+            if (!category) continue;
+
             let value = map.get(category);
             if (value === undefined){
                 map.set(category,parseFloat(t.amount));
@@ -115,16 +118,19 @@
         width: 100%;
         height: 100%;
     }
+
     .chart-wrapper{
         display: flex;
         justify-content: center;
         width: 100%;
     }
+
     #spending-pie-chart {
         width: 100%;
         max-width: 850px;
         aspect-ratio: 1/1;
-        /*height:  500px;*/
+
+        /* height:  500px; */
     }
 
 </style>

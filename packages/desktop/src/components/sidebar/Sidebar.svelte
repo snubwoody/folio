@@ -17,22 +17,20 @@
 <aside id="nav-panel" data-testid="nav-panel" aria-label="Sidebar" data-expanded={expanded}>
     <div class="flex flex-col">
         <a href="/" class="page-link" data-selected={page.route.id === "/"}>
-            <Landmark/>
+            <Landmark aria-hidden="true"/>
             <p>Transactions</p>
         </a>
         <a href="/analytics" class="page-link" data-selected={page.route.id === "/analytics"}>
-            <ChartNoAxesCombined/>
+            <ChartNoAxesCombined aria-hidden="true"/>
             <p>Spending</p>
         </a>
         <a href="/spending" class="page-link" data-selected={page.route.id === "/spending"}>
-            <ChartNoAxesCombined/>
-            <p>Spending</p>
+            <ChartNoAxesCombined aria-hidden="true"/>
+            <p>Analytics</p>
         </a>
     </div>
     <div class="h-[3px] w-full bg-neutral-100"></div>
     <AccountSection/>
-    <!---TODO: check border-->
-    <!---TODO: change icon-->
     <div class="nav-panel-actions">
         <SettingsButton/>
         <IconButton
