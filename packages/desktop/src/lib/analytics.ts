@@ -14,7 +14,7 @@ export type SpendingAnalytic = {
      * A percentage of the total amount, ranging from 0-1.
      */
     percentage: number;
-}
+};
 /**
  * Returns a list of total spending per category.
  */
@@ -48,7 +48,7 @@ export function spendingAnalytics(
         map.set(categoryId, parseFloat(t.amount) + value);
     }
 
-    const analytics: SpendingAnalytic[] = []
+    const analytics: SpendingAnalytic[] = [];
     for (const [categoryId,total] of map.entries()) {
         let category = categoryMap.get(categoryId);
         if (!category) continue;
@@ -61,7 +61,7 @@ export function spendingAnalytics(
             percentage
         };
 
-        analytics.push(analytic)
+        analytics.push(analytic);
     }
 
     return analytics;

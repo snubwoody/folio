@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import type { Category } from "$lib/types"
+import type { Category } from "$lib/types";
 import type { Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { SvelteMap } from "svelte/reactivity";
@@ -14,7 +14,7 @@ describe("spendingAnalytics", () => {
             createdAt: "",
             isIncomeStream: false
         };
-    
+
         const transactions: Transaction[] = [
             {
                 id: "A1",
@@ -31,15 +31,15 @@ describe("spendingAnalytics", () => {
                 date: currentDate
             }
         ];
-    
+
         const categoryMap = new SvelteMap<string, Category>();
         categoryMap.set("C1", category);
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
         expect(analytics[0].category).toStrictEqual(category);
         expect(analytics[0].total).toStrictEqual(250);
     });
-    
+
     test("empty transactions", () => {
         const currentDate = today(getLocalTimeZone());
         const category: Category = {
@@ -48,16 +48,16 @@ describe("spendingAnalytics", () => {
             createdAt: "",
             isIncomeStream: false
         };
-    
+
         const transactions: Transaction[] = [];
-    
+
         const categoryMap = new SvelteMap<string, Category>();
         categoryMap.set("C1", category);
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
         expect(analytics).toHaveLength(0);
     });
-    
+
     test("empty categoryMap", () => {
         const currentDate = today(getLocalTimeZone());
         const category: Category = {
@@ -83,13 +83,13 @@ describe("spendingAnalytics", () => {
                 date: currentDate
             }
         ];
-      
+
         const categoryMap = new SvelteMap<string, Category>();
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
         expect(analytics).toHaveLength(0);
     });
-    
+
     test("total amount is 0", () => {
         const currentDate = today(getLocalTimeZone());
         const category: Category = {
@@ -98,7 +98,7 @@ describe("spendingAnalytics", () => {
             createdAt: "",
             isIncomeStream: false
         };
-    
+
         const transactions: Transaction[] = [
             {
                 id: "A1",
@@ -108,15 +108,15 @@ describe("spendingAnalytics", () => {
                 date: currentDate
             }
         ];
-    
+
         const categoryMap = new SvelteMap<string, Category>();
         categoryMap.set("C1", category);
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
         expect(analytics[0].total).toStrictEqual(0);
         expect(analytics[0].percentage).toStrictEqual(0);
     });
-    
+
     test("include income streams", () => {
         // Not sure whether income streams should be filterd out or kept.
         // They may be filtered out in the future, which will break user analytics.
@@ -134,7 +134,7 @@ describe("spendingAnalytics", () => {
             createdAt: "",
             isIncomeStream: false
         };
-    
+
         const transactions: Transaction[] = [
             {
                 id: "A1",
@@ -151,16 +151,16 @@ describe("spendingAnalytics", () => {
                 date: currentDate
             }
         ];
-    
+
         const categoryMap = new SvelteMap<string, Category>();
         categoryMap.set("C1", c1);
         categoryMap.set("C2", c2);
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
-        expect(analytics[0].total).toStrictEqual(100)
-        expect(analytics[0].percentage).toStrictEqual(0.5)
+        expect(analytics[0].total).toStrictEqual(100);
+        expect(analytics[0].percentage).toStrictEqual(0.5);
     });
-    
+
     test("category percentage", () => {
         const currentDate = today(getLocalTimeZone());
         const c1: Category = {
@@ -176,12 +176,12 @@ describe("spendingAnalytics", () => {
             createdAt: "",
             isIncomeStream: false
         };
-    
+
         const transactions: Transaction[] = [
             {
                 id: "A1",
                 categoryId: c1.id,
-                fromAccountId: "A1",                
+                fromAccountId: "A1",
                 amount: "100",
                 date: currentDate
             },
@@ -193,16 +193,16 @@ describe("spendingAnalytics", () => {
                 date: currentDate
             }
         ];
-    
+
         const categoryMap = new SvelteMap<string, Category>();
         categoryMap.set("C1", c1);
         categoryMap.set("C2", c2);
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
-        expect(analytics[0].percentage).toStrictEqual(0.5)
-        expect(analytics[1].percentage).toStrictEqual(0.5)
+        expect(analytics[0].percentage).toStrictEqual(0.5);
+        expect(analytics[1].percentage).toStrictEqual(0.5);
     });
-    
+
     test("exclude transactions without a category", () => {
         const currentDate = today(getLocalTimeZone());
         const category: Category = {
@@ -211,7 +211,7 @@ describe("spendingAnalytics", () => {
             createdAt: "",
             isIncomeStream: false
         };
-    
+
         const transactions: Transaction[] = [
             {
                 id: "A1",
@@ -232,7 +232,7 @@ describe("spendingAnalytics", () => {
         categoryMap.set("C1", category);
 
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
-        expect(analytics[0].total).toStrictEqual(50)
+        expect(analytics[0].total).toStrictEqual(50);
     });
 
     test("only include transactions in current month", () => {
@@ -259,12 +259,12 @@ describe("spendingAnalytics", () => {
                 date: currentDate
             }
         ];
-    
+
         const categoryMap = new SvelteMap<string, Category>();
         categoryMap.set("C1", category);
-    
+
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
-        expect(analytics[0].total).toStrictEqual(50)
+        expect(analytics[0].total).toStrictEqual(50);
     });
 
     test("exclude incomes and transfers", () => {
@@ -305,6 +305,6 @@ describe("spendingAnalytics", () => {
         categoryMap.set("C1", category);
 
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
-        expect(analytics[0].total).toStrictEqual(25)
+        expect(analytics[0].total).toStrictEqual(25);
     });
-})
+});

@@ -23,10 +23,9 @@
         ComposeOption
     } from "echarts/core";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
+    import { getLocalTimeZone, today } from "@internationalized/date";
     import { categoryStore } from "$lib/stores/categories.svelte";
-    import { SvelteMap } from "svelte/reactivity";
-    import {spendingAnalytics} from "$lib/analytics";
+    import { spendingAnalytics } from "$lib/analytics";
     import { onMount } from "svelte";
 
     // Create an Option type with only the required components and charts via ComposeOption
