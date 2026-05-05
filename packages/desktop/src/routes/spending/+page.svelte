@@ -23,9 +23,10 @@
         ComposeOption
     } from "echarts/core";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
+    import { getLocalTimeZone, today } from "@internationalized/date";
     import { categoryStore } from "$lib/stores/categories.svelte";
-    import { SvelteMap } from "svelte/reactivity";
+    import { spendingAnalytics } from "$lib/analytics";
+    import { onMount } from "svelte";
 
     // Create an Option type with only the required components and charts via ComposeOption
     type ECOption = ComposeOption<
@@ -51,33 +52,13 @@
         TransformComponent
     ]);
 
-    let analytics = $derived.by(() => {
-        // TODO: extract this into function
-        let map = new SvelteMap<string,number>();
-        const transactions = transactionStore.transactions
-            .filter(t => isSameMonth(t.date,today(getLocalTimeZone())));
-        for (const t of transactions){
-            if (!t.categoryId) continue;
-            // FIXME test this
+    let analytics = $derived.by(() => spendingAnalytics(transactionStore.transactions,categoryStore.categoryMap,{ month: today(getLocalTimeZone()) }));
 
-            let category = categoryStore.categoryMap.get(t.categoryId)?.title;
-            if (!category) continue;
-
-            let value = map.get(category);
-            if (value === undefined){
-                map.set(category,parseFloat(t.amount));
-                continue;
-            }
-            map.set(category, parseFloat(t.amount) + value);
-        }
-        return map;
-    });
-
-    let legendData = $derived(analytics.keys().toArray());
+    let legendData = $derived(analytics.map(a => a.category.title));
     let seriesData = $derived(
-        analytics.entries().map(([key,value]) => {
-            return { name:key,value };
-        }).toArray()
+        analytics.map(a => {
+            return { name:a.category.title,value: a.total };
+        })
     );
 
     const option: ECOption = $derived({
@@ -99,7 +80,8 @@
         ]
     });
 
-    $effect(() => {
+    // TODO: invert colours
+    onMount(() => {
         // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
         chart.setOption(option);
