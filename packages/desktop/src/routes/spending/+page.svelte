@@ -2,30 +2,30 @@
     import * as echarts from "echarts/core";
     import  { PieChart,type PieSeriesOption } from "echarts/charts";
     import { SVGRenderer } from "echarts/renderers";
-    import { LabelLayout, UniversalTransition } from 'echarts/features';
+    import { LabelLayout, UniversalTransition } from "echarts/features";
     import {
-      TitleComponent,
-      TooltipComponent,
-      GridComponent,
-      DatasetComponent,
-      TransformComponent
-    } from 'echarts/components';
+        TitleComponent,
+        TooltipComponent,
+        GridComponent,
+        DatasetComponent,
+        TransformComponent
+    } from "echarts/components";
     import {
-      // The component option types are defined with the ComponentOption suffix
-      type TitleComponentOption, 
-      type TooltipComponentOption,
-      type GridComponentOption,
-      LegendComponent,
-      type LegendComponentOption,
-      type DatasetComponentOption
-    } from 'echarts/components';
-    import type { 
-      ComposeOption, 
-    } from 'echarts/core';
+        // The component option types are defined with the ComponentOption suffix
+        type TitleComponentOption,
+        type TooltipComponentOption,
+        type GridComponentOption,
+        LegendComponent,
+        type LegendComponentOption,
+        type DatasetComponentOption
+    } from "echarts/components";
+    import type {
+        ComposeOption
+    } from "echarts/core";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
     import { categoryStore } from "$lib/stores/categories.svelte";
-    
+
     // Create an Option type with only the required components and charts via ComposeOption
     type ECOption = ComposeOption<
       | PieSeriesOption
@@ -47,78 +47,64 @@
         TooltipComponent,
         GridComponent,
         DatasetComponent,
-        TransformComponent,
-    ])
+        TransformComponent
+    ]);
 
-    const transaction = $derived(transactionStore.transactions
-        .filter(t => isSameMonth(t.date,today(getLocalTimeZone()))))
-
-
-    let analytics = $derived.by(()=>{
+    let analytics = $derived.by(() => {
         // TODO: extract this into function
         let map = new Map<string,number>();
         const transactions = transactionStore.transactions
-            .filter(t => isSameMonth(t.date,today(getLocalTimeZone())));        
+            .filter(t => isSameMonth(t.date,today(getLocalTimeZone())));
         for (const t of transactions){
             if (!t.categoryId) continue;
-            // FIXME test this 
-            let category = categoryStore.categoryMap.get(t.categoryId)?.title!
+            // FIXME test this
+            let category = categoryStore.categoryMap.get(t.categoryId)?.title!;
             let value = map.get(category);
             if (value === undefined){
-                map.set(category,parseFloat(t.amount))
+                map.set(category,parseFloat(t.amount));
                 continue;
             }
-            map.set(category, parseFloat(t.amount) + value)
+            map.set(category, parseFloat(t.amount) + value);
         }
         return map;
     });
 
-    console.log(analytics)
-
-    let legendData = $derived(analytics.keys().toArray())
+    let legendData = $derived(analytics.keys().toArray());
     let seriesData = $derived(
-        analytics.entries().map(([key,value]) => {return {name:key,value}}).toArray()
+        analytics.entries().map(([key,value]) => {
+            return { name:key,value };
+        }).toArray()
     );
-    
-    const option: ECOption = {
-      legend: {
-        orient: 'vertical',
-        x: 'left',
-        data: legendData
-      },
-      series: [
-        {
-          type: 'pie',
-          radius: ['50%', '70%'],
-          avoidLabelOverlap: false,
-          labelLine: {
-            show: true
-          },
-          data: seriesData
-        }
-      ]
-    };
 
-    $effect(()=>{
-        let chart = echarts.init(document.getElementById("spending-pie-chart"));
-        chart.setOption(option)
+    const option: ECOption = $derived({
+        legend: {
+            orient: "vertical",
+            x: "left",
+            data: legendData
+        },
+        series: [
+            {
+                type: "pie",
+                radius: ["50%", "70%"],
+                avoidLabelOverlap: false,
+                labelLine: {
+                    show: true
+                },
+                data: seriesData
+            }
+        ]
     });
-    // TODO test this, sidebar especially
+
+    $effect(() => {
+        let chart = echarts.init(document.getElementById("spending-pie-chart"));
+        chart.setOption(option);
+    });
 </script>
 
 <main>
     <div class="chart-wrapper">
         <div id="spending-pie-chart"></div>
     </div>
-    <!-- <aside>
-        <div class="flex justify-between">
-            <p>Categories</p>
-            <p>Total spending</p>
-        </div>
-        <div>
-            <p>Groceries</p>
-        </div>
-    </aside> -->
 </main>
 
 <style>
@@ -138,5 +124,5 @@
         aspect-ratio: 1/1;
         /*height:  500px;*/
     }
-    
+
 </style>
