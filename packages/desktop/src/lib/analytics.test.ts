@@ -26,16 +26,14 @@ describe("spendingAnalytics", () => {
             {
                 id: "A1",
                 categoryId: category.id,
-                toAccountId: undefined,
-                fromAccountId: undefined,
+                fromAccountId: "A1",
                 amount: "200",
                 date: currentDate
             },
             {
                 id: "A2",
                 categoryId: category.id,
-                toAccountId: undefined,
-                fromAccountId: undefined,
+                fromAccountId: "A1",
                 amount: "50",
                 date: currentDate
             }
@@ -45,7 +43,50 @@ describe("spendingAnalytics", () => {
         categoryMap.set("C1", category);
     
         const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
-        expect(analytics[0].total).toStrictEqual(250)
+        expect(analytics[0].category).toStrictEqual(category);
+        expect(analytics[0].total).toStrictEqual(250);
+    });
+    
+    test("category percentage", () => {
+        const currentDate = today(getLocalTimeZone());
+        const c1: Category = {
+            id: "C1",
+            title: "Groceries",
+            createdAt: "",
+            isIncomeStream: false
+        };
+
+        const c2: Category = {
+            id: "C2",
+            title: "Shopping",
+            createdAt: "",
+            isIncomeStream: false
+        };
+    
+        const transactions: Transaction[] = [
+            {
+                id: "A1",
+                categoryId: c1.id,
+                fromAccountId: "A1",                
+                amount: "100",
+                date: currentDate
+            },
+            {
+                id: "A2",
+                categoryId: c2.id,
+                fromAccountId: "A1",
+                amount: "100",
+                date: currentDate
+            }
+        ];
+    
+        const categoryMap = new SvelteMap<string, Category>();
+        categoryMap.set("C1", c1);
+        categoryMap.set("C2", c2);
+    
+        const analytics = spendingAnalytics(transactions, categoryMap, { month: currentDate });
+        expect(analytics[0].percentage).toStrictEqual(0.5)
+        expect(analytics[1].percentage).toStrictEqual(0.5)
     });
     
     test("exclude transactions without a category", () => {
@@ -61,15 +102,13 @@ describe("spendingAnalytics", () => {
             {
                 id: "A1",
                 amount: "500",
-                toAccountId: undefined,
-                fromAccountId: undefined,
+                fromAccountId: "A1",
                 date: currentDate
             },
             {
                 id: "A2",
                 categoryId: category.id,
-                toAccountId: undefined,
-                fromAccountId: undefined,
+                fromAccountId: "A1",
                 amount: "50",
                 date: currentDate
             }
@@ -95,15 +134,13 @@ describe("spendingAnalytics", () => {
             {
                 id: "A1",
                 amount: "500",
-                toAccountId: undefined,
-                fromAccountId: undefined,
+                fromAccountId: "A1",
                 date: currentDate.add({ months:1 })
             },
             {
                 id: "A2",
                 categoryId: category.id,
-                toAccountId: undefined,
-                fromAccountId: undefined,
+                fromAccountId: "A1",
                 amount: "50",
                 date: currentDate
             }

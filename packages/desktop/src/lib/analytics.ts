@@ -27,7 +27,7 @@ export function spendingAnalytics(
     let map = new SvelteMap<string,number>();
     const filteredTransactions = transactions
         .filter(t => t.categoryId !== undefined)
-        .filter(t => t.toAccountId === undefined) // Exclude incomes and transfers
+        .filter(t => t.toAccountId === undefined && t.fromAccountId !== undefined) // Exclude incomes and transfers
         .filter(t => isSameMonth(t.date,month));
 
     const totalSpent = filteredTransactions
