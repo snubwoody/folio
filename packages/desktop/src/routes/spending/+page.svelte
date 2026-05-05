@@ -25,6 +25,7 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
     import { categoryStore } from "$lib/stores/categories.svelte";
+    import { SvelteMap } from "svelte/reactivity";
 
     // Create an Option type with only the required components and charts via ComposeOption
     type ECOption = ComposeOption<
@@ -52,7 +53,7 @@
 
     let analytics = $derived.by(() => {
         // TODO: extract this into function
-        let map = new Map<string,number>();
+        let map = new SvelteMap<string,number>();
         const transactions = transactionStore.transactions
             .filter(t => isSameMonth(t.date,today(getLocalTimeZone())));
         for (const t of transactions){
@@ -96,6 +97,7 @@
     });
 
     $effect(() => {
+        // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
         chart.setOption(option);
     });
