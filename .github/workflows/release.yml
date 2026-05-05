@@ -5,8 +5,6 @@ env:
 on:
   workflow_dispatch:
   # Run test workflow on push for caching and to make sure it still works
-  pull_request:
-    branches: [main]
   push:
     branches: [main]
 concurrency:

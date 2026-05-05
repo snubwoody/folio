@@ -47,7 +47,6 @@ fn copy_executable(config: &Config, dest: impl AsRef<Path>) -> anyhow::Result<()
         .package_info
         .path
         .join(&config.application.executable);
-    dbg!(&exe_path);
     let exe = config.application.executable.file_name().unwrap();
     fs::copy(exe_path, dest.join(exe))?;
     Ok(())
