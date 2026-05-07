@@ -29,8 +29,8 @@ async fn main() {
     #[cfg(not(debug_assertions))]
     let log_dir = {
         folio_lib::get_data_dir()
-            .join("logs")
             .expect("failed to get data directory")
+            .join("logs")
     };
 
     let file_appender = RollingFileAppender::builder()
