@@ -85,7 +85,6 @@ impl Migrator {
         self
     }
 
-    /// Loads a migration from a file.
     pub fn load_from_file(&mut self, path: impl AsRef<Path>) -> crate::Result<()> {
         let file_name = path
             .as_ref()
