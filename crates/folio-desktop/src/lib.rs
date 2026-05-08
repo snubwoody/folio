@@ -90,7 +90,7 @@ impl State {
 
         let account_service = AccountService::new(pool.clone());
         let category_service = CategoryService::new(pool.clone(),connection.clone());
-        let transaction_service = TransactionService::new(pool.clone());
+        let transaction_service = TransactionService::new(pool.clone(),connection.clone());
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
@@ -137,7 +137,7 @@ pub async fn init_database() -> Result<(SqlitePool,SqliteConnection)> {
     conn.execute("PRAGMA foreign_keys = ON", ()).unwrap();
 
     let connection = SqliteConnection::open(&path)?;
-    let mut migrator = Migrator::new();
+    let mut migrator = folio_migrate::Migrator::new();
     Ok((pool,connection))
 }
 
@@ -157,18 +157,15 @@ pub fn get_data_dir() -> Option<PathBuf> {
 }
 
 /// Creates an in memory sqlite database for testing.
-#[cfg(test)]
-#[allow(unused)]
-fn create_test_db() -> crate::Result<rusqlite::Connection>{
-    let conn = rusqlite::Connection::open_in_memory()?;
-    conn.execute("PRAGMA foreign_keys = ON", ())?;
-
-    let mut migrator = Migrator::new();
+ #[cfg(test)]
+pub fn create_test_db() -> crate::Result<SqliteConnection>{
+    let connection = SqliteConnection::in_memory()?;
+    let mut migrator = folio_migrate::Migrator::new();
 
     migrator.load_from_dir("./m2")?;
-    migrator.migrate(&conn)?;
+    migrator.migrate(&connection.get())?;
 
-    Ok(conn)
+    Ok(connection)
 }
 
 /// A thread safe, clonable connection to a Sqlite database.
@@ -182,6 +179,17 @@ impl SqliteConnection{
     pub fn open(path: impl AsRef<Path>) -> crate::Result<Self>{
         // TODO: use WAL journal mode
         let conn = rusqlite::Connection::open(&path)?;
+
+        conn.execute("PRAGMA foreign_keys = ON", ())?;
+
+        Ok(Self{
+            connection: Arc::new(std::sync::Mutex::new(conn))
+        })
+    }
+
+    pub fn in_memory() -> crate::Result<Self>{
+        // TODO: use WAL journal mode
+        let conn = rusqlite::Connection::open_in_memory()?;
 
         conn.execute("PRAGMA foreign_keys = ON", ())?;
 

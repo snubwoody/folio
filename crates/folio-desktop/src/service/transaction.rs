@@ -1,4 +1,4 @@
-use crate::{Error, Money};
+use crate::{Error, Money, SqliteConnection};
 use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
@@ -224,12 +224,12 @@ pub enum TransactionType {
 #[derive(Clone)]
 pub struct TransactionService {
     pool: SqlitePool,
-
+    connection: SqliteConnection
 }
 
 impl TransactionService {
-    pub fn new(pool: SqlitePool) -> Self {
-        Self { pool }
+    pub fn new(pool: SqlitePool,connection: SqliteConnection) -> Self {
+        Self { pool,connection }
     }
 
     pub fn expense(&self) -> TransactionBuilder<Expense> {
@@ -260,12 +260,19 @@ impl TransactionService {
     }
 
     /// Fetch all the transactions from the database.
-    pub async fn fetch_all(&self) -> Result<Vec<Transaction>, crate::Error> {
-        let rows: Vec<Transaction> = sqlx::query_as("SELECT * from transactions")
-            .fetch_all(&self.pool)
-            .await?;
+    pub fn fetch_all(&self) -> Result<Vec<Transaction>, crate::Error> {
+        let connection  = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from transactions")?;
+        let r = stmt.query_map((),|row|{
+            dbg!(&row);
+            Ok(())
+        })?;
+        
+        // let rows: Vec<Transaction> = sqlx::query_as("SELECT * from transactions")
+        //     .fetch_all(&self.pool)
+        //     .await?;
 
-        Ok(rows)
+        Ok(vec![])
     }
 
     /// Deletes all the provided transactions.

@@ -206,11 +206,10 @@ pub async fn set_transaction_account(
 }
 
 #[tauri::command]
-pub async fn fetch_transactions(state: tauri::State<'_, State>) -> Result<Vec<Transaction>> {
+pub fn fetch_transactions(state: tauri::State<'_, State>) -> Result<Vec<Transaction>> {
     state
         .transaction_service
         .fetch_all()
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

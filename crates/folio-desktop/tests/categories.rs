@@ -1,16 +1,23 @@
 use chrono::Utc;
-use folio_lib::service::{AccountService, CategoryGroup, CategoryService, TransactionService};
-use folio_lib::{Money, Result, SqliteConnection};
+use folio_lib::service::{
+     AccountService, Budget, CategoryGroup, CategoryService, TransactionService,
+     create_missing_budgets,
+ };
+use folio_lib::{create_test_db, Money, Result,SqliteConnection};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
 async fn total_spent(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
+    // let connection = create_test_db()?;
+
     let category_service = CategoryService::new(pool.clone(),connection);
+    let account_service = AccountService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone(),connection.clone());
+
     let category = category_service.create_category("").await?;
     let account = account_service.create_account("", Money::ZERO).await?;
+
     transaction_service
         .expense()
         .account_id(&account.id)

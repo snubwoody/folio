@@ -1,6 +1,6 @@
 use chrono::Utc;
 use folio_lib::service::{AccountService, EditAccount, TransactionService};
-use folio_lib::{Money, Result};
+use folio_lib::{create_test_db, Money, Result};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
@@ -77,9 +77,10 @@ async fn fetch_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 
 #[sqlx::test]
 async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let service = AccountService::new(pool.clone());
     let account = service.create_account("", Money::ZERO).await?;
-    let transaction_service = TransactionService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone(),connection.clone());
     transaction_service
         .expense()
         .account_id(&account.id)
@@ -126,8 +127,9 @@ async fn delete_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 
 #[sqlx::test]
 async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone(),connection.clone());
     let account = service.create_account("My account", Money::ZERO).await?;
 
     transaction_service
@@ -150,8 +152,9 @@ async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Resul
 
 #[sqlx::test]
 async fn delete_account_with_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
+    let transaction_service = TransactionService::new(pool.clone(),connection.clone());
     let account = service.create_account("My account", Money::ZERO).await?;
     transaction_service
         .income()
