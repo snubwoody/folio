@@ -1,14 +1,14 @@
 <script lang="ts">
-    import { type SpendingAnalytic } from "$lib/analytics";
+    import type { SpendingAnalytic } from "$lib/analytics";
     import { formatMoney } from "$lib/utils/money";
 
     type Props = {
         analytics: SpendingAnalytic[]
-    }
+    };
 
     const {
         analytics = $bindable([])
-    }: Props = $props()
+    }: Props = $props();
 </script>
 
 <aside>
