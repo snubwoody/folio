@@ -37,9 +37,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<TableCell>
-    <div class="flex">
-        <p>{symbol}</p>
-        <input bind:value={currentAmount} onblur={updateAmount} class="outline-none">
-    </div>
-</TableCell>
+<div class="flex">
+    <p>{symbol}</p>
+    <input bind:value={currentAmount} onblur={updateAmount} class="outline-none">
+</div>

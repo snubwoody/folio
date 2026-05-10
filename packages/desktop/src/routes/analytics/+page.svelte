@@ -119,7 +119,7 @@
     <section>
         <header class="flex items-center justify-between">
             <h6>Spending breakdown</h6>
-            <div class="flex items-center">
+            <div class="flex items-center gap-0.5">
                 <IconButton variant="ghost" onclick={() => month = month.subtract({ months: 1 })}>
                     <ChevronLeft/>
                 </IconButton>
@@ -159,8 +159,5 @@
         width: 100%;
         max-width: 850px;
         aspect-ratio: 1/1;
-
-        /* height:  500px; */
     }
-
 </style>
