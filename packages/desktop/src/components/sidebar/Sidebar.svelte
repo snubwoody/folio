@@ -20,11 +20,11 @@
             <Landmark aria-hidden="true"/>
             <p>Transactions</p>
         </a>
-        <a href="/analytics" class="page-link" data-selected={page.route.id === "/analytics"}>
+        <a href="/spending" class="page-link" data-selected={page.route.id === "/spending"}>
             <ChartNoAxesCombined aria-hidden="true"/>
             <p>Spending</p>
         </a>
-        <a href="/spending" class="page-link" data-selected={page.route.id === "/spending"}>
+        <a href="/analytics" class="page-link" data-selected={page.route.id === "/analytics"}>
             <ChartNoAxesCombined aria-hidden="true"/>
             <p>Analytics</p>
         </a>
