@@ -29,7 +29,7 @@
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { spendingAnalytics } from "$lib/analytics";
     import { onMount } from "svelte";
-    import CategorySidebar from "$components/CategorySidebar.svelte";
+    import CategorySidebar from "$components/analytics/CategorySidebar.svelte";
     import {IconButton} from "$components/button";
 
     // Create an Option type with only the required components and charts via ComposeOption
