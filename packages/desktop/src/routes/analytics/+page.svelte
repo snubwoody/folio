@@ -26,10 +26,9 @@
     import { getLocalTimeZone, today } from "@internationalized/date";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { spendingAnalytics } from "$lib/analytics";
-    import { onMount } from "svelte";
     import CategorySidebar from "$components/analytics/CategorySidebar.svelte";
-    import {IconButton} from "$components/button";
-    import {ChevronLeft,ChevronRight} from "@lucide/svelte";
+    import { IconButton } from "$components/button";
+    import { ChevronLeft,ChevronRight } from "@lucide/svelte";
 
     type ECOption = ComposeOption<
         | PieSeriesOption
@@ -109,11 +108,11 @@
         year:"numeric"
     });
 
-    $effect(()=>{
+    $effect(() => {
         // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
         chart.setOption(option);
-    })
+    });
 </script>
 
 <main>
@@ -121,11 +120,11 @@
         <header class="flex items-center justify-between">
             <h6>Spending breakdown</h6>
             <div class="flex items-center">
-                <IconButton variant="ghost" onclick={() => month = month.subtract({months: 1})}>
+                <IconButton variant="ghost" onclick={() => month = month.subtract({ months: 1 })}>
                     <ChevronLeft/>
                 </IconButton>
                 <p>{formatter.format(month.toDate(getLocalTimeZone()))}</p>
-                <IconButton variant="ghost" onclick={() => month = month.add({months: 1})}>
+                <IconButton variant="ghost" onclick={() => month = month.add({ months: 1 })}>
                     <ChevronRight/>
                 </IconButton>
             </div>

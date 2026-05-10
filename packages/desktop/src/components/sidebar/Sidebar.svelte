@@ -58,7 +58,6 @@
 		flex-direction: column;
         gap: 24px;
         padding-top: 12px;
-		background-color: var(--color-neutral-25);
         border-right: 1px solid var(--color-neutral-100);
         transition: all 250ms;
         background: white;
