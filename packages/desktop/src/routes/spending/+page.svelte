@@ -59,10 +59,46 @@
 
     let analytics = $derived.by(() => spendingAnalytics(transactionStore.transactions,categoryStore.categoryMap,{ month: today(getLocalTimeZone()) }));
 
+    // TODO: disable start animation
     let legendData = $derived(analytics.map(a => a.category.title));
+    // const colors = [
+    //     "#7ccf00", // Lime green 500
+    //     "#9ae600", // Lime green 400
+    //     "#bbf451", // Lime green 300
+    //     "#5ea500", // Lime green 600
+    //     "#497d00", // Lime green 700
+    // ];
+
+    const colors = [
+         "#C3B9F8", // Purple 200
+         "#5B28D4", // Purple 600
+         "#7048E9", // Purple 500
+         "#A796F4", // Purple 300
+         "#896FEF", // Purple 400
+         "#471EA9", // Purple 700
+         "#EEECFD", // Purple 50
+         "#E0DCFB", // Purple 100
+         "#31137A", // Purple 800
+         "#1D084F", // Purple 900
+         "#110434", // Purple 950
+    ];
+
+    // const colors = [
+    //     "#00a6f4", // Sky blue 500
+    //     "#00bc7d", // Emerald green 500
+    //     "#8e51ff", // Violet 500
+    //     "#00bcff", // Sky blue 400
+    //     "#5ee9b5", // Emerald green 300
+    // ];
     let seriesData = $derived(
-        analytics.map(a => {
-            return { name:a.category.title,value: a.total };
+        analytics.map((a,i) => {
+            const index = i % colors.length;
+            console.log(index);
+            const itemStyle = {
+                borderRadius: 12,
+                color: colors[index]
+            }
+            return { name: a.category.title, value: a.total, itemStyle };
         })
     );
 
@@ -72,17 +108,23 @@
         },
         legend: {
             show: false,
-            orient: "vertical",
-            x: "left",
-            data: legendData
         },
         series: [
             {
                 type: "pie",
                 radius: ["50%", "70%"],
+                padAngle: 0.5,
                 avoidLabelOverlap: false,
                 labelLine: {
-                    show: true
+                    show: false,
+                    position: "center",
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }
                 },
                 data: seriesData
             }
@@ -90,6 +132,7 @@
     });
 
     // TODO: show category on hover
+    // TODO: check empty chart
     onMount(() => {
         // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
