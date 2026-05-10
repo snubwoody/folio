@@ -17,7 +17,9 @@
         type GridComponentOption,
         LegendComponent,
         type LegendComponentOption,
-        type DatasetComponentOption
+        type DatasetComponentOption,
+        AriaComponent,
+        type AriaComponentOption
     } from "echarts/components";
     import type {
         ComposeOption
@@ -37,6 +39,7 @@
       | TooltipComponentOption
       | GridComponentOption
       | DatasetComponentOption
+        | AriaComponentOption
     >;
 
     // Only import certain parts to reduce bundle size
@@ -49,6 +52,7 @@
         TitleComponent,
         TooltipComponent,
         GridComponent,
+        AriaComponent,
         DatasetComponent,
         TransformComponent
     ]);
@@ -63,6 +67,9 @@
     );
 
     const option: ECOption = $derived({
+        aria: {
+            enabled: true
+        },
         legend: {
             orient: "vertical",
             x: "left",
@@ -81,7 +88,7 @@
         ]
     });
 
-    // TODO: invert colours
+    // TODO: show category on hover
     onMount(() => {
         // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
