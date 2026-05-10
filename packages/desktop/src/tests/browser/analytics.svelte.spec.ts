@@ -1,5 +1,5 @@
 import { appStore } from "$lib/state.svelte";
-import BudgetOverview from "../../components/analytics/BudgetOverview.svelte";
+import BudgetOverview from "$components/spending/BudgetOverview.svelte";
 import { beforeEach, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { formatMoney } from "$lib/utils/money";

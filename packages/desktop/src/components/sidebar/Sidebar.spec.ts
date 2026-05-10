@@ -49,11 +49,14 @@ describe("Sidebar",() => {
         const screen = await render(Sidebar);
         const transactionsLink = screen.getByRole("link",{ name:"Transactions" });
         const spendingLink = screen.getByRole("link",{ name:"Spending" });
+        const analyticsLink = screen.getByRole("link",{ name:"Analytics" });
 
         await expect.element(transactionsLink).toBeVisible();
         await expect.element(spendingLink).toBeVisible();
+        await expect.element(analyticsLink).toBeVisible();
         await expect.element(transactionsLink).toHaveAttribute("href","/");
-        await expect.element(spendingLink).toHaveAttribute("href","/analytics");
+        await expect.element(spendingLink).toHaveAttribute("href","/spending");
+        await expect.element(analyticsLink).toHaveAttribute("href","/analytics");
     });
 
     test("open settings panel", async () => {
