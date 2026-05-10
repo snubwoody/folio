@@ -60,23 +60,13 @@
     let analytics = $derived.by(() => spendingAnalytics(transactionStore.transactions,categoryStore.categoryMap,{ month: today(getLocalTimeZone()) }));
 
     // TODO: disable start animation
-    let legendData = $derived(analytics.map(a => a.category.title));
-    const colors = [
-        "#7ccf00", // Lime green 500
-        "#9ae600", // Lime green 400
-        "#bbf451", // Lime green 300
-        "#5ea500", // Lime green 600
-        "#497d00", // Lime green 700
-    ];
-
-
 
     let seriesData = $derived(
         analytics.map(a => {
             const itemStyle = {
                 borderRadius: 12,
                 color: a.color
-            }
+            };
             return { name: a.category.title, value: a.total, itemStyle };
         })
     );
@@ -86,7 +76,7 @@
             enabled: true
         },
         legend: {
-            show: false,
+            show: false
         },
         series: [
             {
@@ -95,16 +85,16 @@
                 padAngle: 0.5,
                 avoidLabelOverlap: false,
                 labelLine: {
-                    show: false,
-                    position: "center",
+                    show: true,
+                    position: "center"
                 },
-                emphasis: {
-                    label: {
-                        show: true,
-                        fontSize: 16,
-                        fontWeight: 'bold'
-                    }
-                },
+                // emphasis: {
+                //     label: {
+                //         show: true,
+                //         fontSize: 16,
+                //         fontWeight: 'bold'
+                //     }
+                // },
                 data: seriesData
             }
         ]
