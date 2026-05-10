@@ -2,6 +2,8 @@
 
 ## (unreleased)
 
+- Improved analytics
+  - Add new pie chart which breaks down spending by category
 - Improved checkbox UI
 - Added vertical borders to transaction table.
 - Added version information to settings panel.

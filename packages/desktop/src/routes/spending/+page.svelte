@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as echarts from "echarts/core";
-    import  { PieChart,type PieSeriesOption } from "echarts/charts";
+    import  { PieChart, type PieSeriesOption } from "echarts/charts";
     import { SVGRenderer } from "echarts/renderers";
     import { LabelLayout, UniversalTransition } from "echarts/features";
     import {
@@ -27,6 +27,7 @@
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { spendingAnalytics } from "$lib/analytics";
     import { onMount } from "svelte";
+    import CategorySidebar from "$components/CategorySidebar.svelte";
 
     // Create an Option type with only the required components and charts via ComposeOption
     type ECOption = ComposeOption<
@@ -92,6 +93,7 @@
     <div class="chart-wrapper">
         <div id="spending-pie-chart"></div>
     </div>
+    <CategorySidebar bind:analytics/>
 </main>
 
 <style>
@@ -99,6 +101,7 @@
         display: flex;
         width: 100%;
         height: 100%;
+        background: var(--color-neutral-25);
     }
 
     .chart-wrapper{
