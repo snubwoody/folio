@@ -71,6 +71,7 @@
             enabled: true
         },
         legend: {
+            show: false,
             orient: "vertical",
             x: "left",
             data: legendData
