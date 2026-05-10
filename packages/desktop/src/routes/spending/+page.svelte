@@ -30,6 +30,7 @@
     import { spendingAnalytics } from "$lib/analytics";
     import { onMount } from "svelte";
     import CategorySidebar from "$components/CategorySidebar.svelte";
+    import {IconButton} from "$components/button";
 
     // Create an Option type with only the required components and charts via ComposeOption
     type ECOption = ComposeOption<
@@ -60,6 +61,7 @@
     let analytics = $derived.by(() => spendingAnalytics(transactionStore.transactions,categoryStore.categoryMap,{ month: today(getLocalTimeZone()) }));
 
     // TODO: disable start animation
+    // TODO: use filled pie chart
 
     let seriesData = $derived(
         analytics.map(a => {
@@ -110,9 +112,19 @@
 </script>
 
 <main>
-    <div class="chart-wrapper">
-        <div id="spending-pie-chart"></div>
-    </div>
+    <section>
+        <header>
+            <h5>Spending breakdown</h5>
+            <div>
+                <IconButton>
+
+                </IconButton>
+            </div>
+        </header>
+        <div class="chart-wrapper">
+            <div id="spending-pie-chart"></div>
+        </div>
+    </section>
     <CategorySidebar bind:analytics/>
 </main>
 
@@ -122,6 +134,11 @@
         width: 100%;
         height: 100%;
         background: var(--color-neutral-25);
+    }
+
+    section {
+        width: 100%;
+        padding: 20px;
     }
 
     .chart-wrapper{
