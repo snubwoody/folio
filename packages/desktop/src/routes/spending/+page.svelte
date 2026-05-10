@@ -17,7 +17,9 @@
         type GridComponentOption,
         LegendComponent,
         type LegendComponentOption,
-        type DatasetComponentOption
+        type DatasetComponentOption,
+        AriaComponent,
+        type AriaComponentOption
     } from "echarts/components";
     import type {
         ComposeOption
@@ -37,6 +39,7 @@
       | TooltipComponentOption
       | GridComponentOption
       | DatasetComponentOption
+        | AriaComponentOption
     >;
 
     // Only import certain parts to reduce bundle size
@@ -49,39 +52,56 @@
         TitleComponent,
         TooltipComponent,
         GridComponent,
+        AriaComponent,
         DatasetComponent,
         TransformComponent
     ]);
 
     let analytics = $derived.by(() => spendingAnalytics(transactionStore.transactions,categoryStore.categoryMap,{ month: today(getLocalTimeZone()) }));
 
-    let legendData = $derived(analytics.map(a => a.category.title));
+    // TODO: disable start animation
+
     let seriesData = $derived(
         analytics.map(a => {
-            return { name:a.category.title,value: a.total };
+            const itemStyle = {
+                borderRadius: 12,
+                color: a.color
+            };
+            return { name: a.category.title, value: a.total, itemStyle };
         })
     );
 
     const option: ECOption = $derived({
+        aria: {
+            enabled: true
+        },
         legend: {
-            orient: "vertical",
-            x: "left",
-            data: legendData
+            show: false
         },
         series: [
             {
                 type: "pie",
                 radius: ["50%", "70%"],
+                padAngle: 0.5,
                 avoidLabelOverlap: false,
                 labelLine: {
-                    show: true
+                    show: true,
+                    position: "center"
                 },
+                // emphasis: {
+                //     label: {
+                //         show: true,
+                //         fontSize: 16,
+                //         fontWeight: 'bold'
+                //     }
+                // },
                 data: seriesData
             }
         ]
     });
 
-    // TODO: invert colours
+    // TODO: show category on hover
+    // TODO: check empty chart
     onMount(() => {
         // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));

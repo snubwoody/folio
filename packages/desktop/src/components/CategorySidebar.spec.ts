@@ -24,7 +24,8 @@ describe("Category Sidebar", () => {
             {
                 category,
                 total: 100,
-                percentage: 0.1
+                percentage: 0.1,
+                color: "#000"
             }
         ];
         const screen = await render(CategorySidebar, { analytics });
