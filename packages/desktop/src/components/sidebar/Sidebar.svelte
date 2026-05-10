@@ -61,6 +61,7 @@
 		background-color: var(--color-neutral-25);
         border-right: 1px solid var(--color-neutral-100);
         transition: all 250ms;
+        background: white;
 
         &:global([data-expanded="false"]){
             width: fit-content;
