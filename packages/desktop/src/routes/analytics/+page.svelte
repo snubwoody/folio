@@ -104,6 +104,11 @@
     // TODO: show category on hover
     // TODO: check empty chart
 
+    const formatter = new Intl.DateTimeFormat("en-GB",{
+        month: "short",
+        year:"numeric"
+    });
+
     $effect(()=>{
         // eslint-disable-next-line no-undef
         let chart = echarts.init(document.getElementById("spending-pie-chart"));
@@ -119,7 +124,7 @@
                 <IconButton variant="ghost" onclick={() => month = month.subtract({months: 1})}>
                     <ChevronLeft/>
                 </IconButton>
-                <p>May 2026</p>
+                <p>{formatter.format(month.toDate(getLocalTimeZone()))}</p>
                 <IconButton variant="ghost" onclick={() => month = month.add({months: 1})}>
                     <ChevronRight/>
                 </IconButton>
