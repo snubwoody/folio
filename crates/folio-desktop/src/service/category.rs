@@ -12,11 +12,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-use crate::service::Transaction;
+use crate::service::{fetch_budgets, Transaction};
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, SqlitePool};
-
+use sqlx::{FromRow, Row, SqlitePool};
+use tracing::{debug, info, warn};
 use crate::{Money, db, service::Budget};
 
 /// Service struct for managing categories and category groups.
@@ -166,10 +166,141 @@ impl CategoryService {
         }
         Ok(categories)
     }
+
+    pub async fn create_budget(
+        &self,
+        amount: Money,
+        category_id: &str,
+    ) -> crate::Result<Budget> {
+        let amount = amount.inner();
+        let record: db::Budget =
+            sqlx::query_as("INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING *")
+                .bind(amount)
+                .bind(category_id)
+                .fetch_one(&self.pool)
+                .await?;
+
+        let budget = self.fetch_budget(&record.id,).await?;
+
+        info!(category_id=?category_id,id=?budget.id,"Created new budget");
+        Ok(budget)
+    }
+
+    pub async fn edit_budget(&self,id: &str, amount: Money) -> crate::Result<Budget> {
+        let amount = amount.inner();
+        sqlx::query("UPDATE budgets SET amount = $1 WHERE id=$2")
+            .bind(amount)
+            .bind(id)
+            .execute(&self.pool)
+            .await?;
+
+        info!(id = id, "Updated budget");
+
+        self.fetch_budget(id).await
+    }
+
+    pub async fn fetch_budget(&self, id: &str,) -> crate::Result<Budget> {
+        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
+            .bind(id)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let total = Money::new(record.amount);
+        let category = self.fetch_category(&record.category_id).await?;
+        let total_spent = self.total_spent(&category.id).await?;
+        let remaining = (total - total_spent).max(Money::ZERO);
+        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
+
+        Ok(Budget{
+            id: record.id,
+            amount: total,
+            category,
+            total_spent,
+            remaining,
+            created_at,
+        })
+    }
+
+    /// Fetches the budget with the corresponding `category_id`.
+    pub async fn fetch_budget_from_category(&self,category_id: &str) -> crate::Result<Budget> {
+        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE category_id=$1")
+            .bind(category_id)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let total = Money::new(record.amount);
+        let category = self.fetch_category(&record.category_id).await?;
+        let total_spent = self.total_spent(&category.id).await?;
+        let remaining = total - total_spent;
+        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
+
+        Ok(Budget {
+            id: record.id,
+            amount: total,
+            category,
+            total_spent,
+            remaining,
+            created_at,
+        })
+    }
+
+    pub async fn create_missing_budgets(&self) -> crate::Result<()> {
+        let categories = self.fetch_categories_only().await?;
+        let budgets = fetch_budgets(&self.pool).await?;
+
+        let mut filtered = vec![];
+        for c in categories {
+            let mut contains = false;
+            for b in &budgets {
+                if b.category.id == c.id {
+                    contains = true;
+                    break;
+                }
+            }
+            if !contains {
+                filtered.push(c);
+            }
+        }
+
+        let len = filtered.len();
+        if len != 0 {
+            debug!("Found {len} categories without budgets")
+        }
+
+        for c in filtered {
+            let result = Budget::create(Money::ZERO, &c.id, &self.pool).await;
+            if let Err(err) = result {
+                warn!("Failed to create budget: {err}")
+            }
+        }
+
+        Ok(())
+    }
+
+    pub async fn fetch_budgets(&self) -> crate::Result<Vec<Budget>> {
+        let records = sqlx::query("SELECT id,category_id FROM budgets")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let categories = self.fetch_categories_only().await?;
+
+        let mut budgets = vec![];
+        for record in records {
+            let id: String = record.get("id");
+            let category_id: String = record.get("category_id");
+            // Filter budgets with a deleted category
+            if !categories.iter().any(|c| c.id == category_id) {
+                continue;
+            }
+            let budget = Budget::from_id(&id, &self.pool).await?;
+            budgets.push(budget);
+        }
+        Ok(budgets)
+    }
 }
 
 #[derive(
-    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, FromRow, Hash,
+    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd,FromRow,
 )]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
