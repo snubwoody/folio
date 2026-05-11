@@ -30,6 +30,26 @@ pub struct Budget {
     pub created_at: DateTime<Utc>,
 }
 
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
+    type Error = rusqlite::Error;
+
+    fn try_from(value: &rusqlite::Row) -> Result<Self, Self::Error> {
+        let created_at = DateTime::from_timestamp(value.get(3)?, 0).unwrap_or_default();
+
+        let budget = Self {
+            id: value.get(0)?,
+            category_id: value.get(1)?,
+            amount: Money::from_scaled(value.get(2)?),
+            total_spent: Default::default(), // FIXME: remove/deprecate
+            created_at,
+            remaining: Default::default(), // FIXME: remove/deprecate
+            category: Default::default(),
+        };
+
+        Ok(budget)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
