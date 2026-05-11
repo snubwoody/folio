@@ -66,7 +66,7 @@ let category_service = CategoryService::new(pool.clone(),connection);
 #[sqlx::test]
 async fn create_category(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(),connection);
     let now = Utc::now().timestamp();
     let category = service.create_category("Ent").await?;
     let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)

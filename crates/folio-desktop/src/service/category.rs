@@ -364,3 +364,46 @@ impl CategoryGroup {
         Ok(())
     }
 }
+
+
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Category {
+    type Error = rusqlite::Error;
+
+    fn try_from(row: &rusqlite::Row) -> Result<Self, Self::Error> {
+        let created_at = match row.get(2) {
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
+        };
+
+        let deleted_at = match row.get(3) {
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
+        };
+
+        let category = Self {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            created_at,
+            deleted_at,
+            is_income_stream: row.get(4)?,
+        };
+
+        Ok(category)
+    }
+}
+
+impl<'a> TryFrom<&rusqlite::Row<'a>> for CategoryGroup {
+    type Error = rusqlite::Error;
+
+    fn try_from(row: &rusqlite::Row) -> Result<Self, Self::Error> {
+        // let created_at = DateTime::from_timestamp(row.get(3)?, 0).unwrap_or_default();
+        let group = Self {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            sort_order: row.get(2)?,
+            created_at:row.get(3)?
+        };
+
+        Ok(group)
+    }
+}
