@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
 use chrono::{DateTime, Datelike, Local, Utc};
+use rusqlite::params;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row, SqlitePool};
 use tracing::{debug, info, warn};
@@ -37,7 +38,7 @@ impl CategoryService {
     ///
     /// [`create_raw`]: CategoryService::create_category_raw
     pub async fn create_category(&self, title: &str) -> crate::Result<Category> {
-        let category = self.create_category_raw(title).await?;
+        let category = self.create_category_raw(title)?;
         info!(id=?category.id,"Created new category");
         self.create_budget(Money::ZERO, &category.id).await?;
 
@@ -45,75 +46,52 @@ impl CategoryService {
     }
 
     /// Creates a category without creating a budget.
-    pub async fn create_category_raw(&self, title: &str) -> crate::Result<Category> {
+    pub fn create_category_raw(&self, title: &str) -> crate::Result<Category> {
+        let conn = self.connection.get();
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO categories(title,created_at) VALUES(?1,?2) RETURNING *")?;
         let now = Utc::now().timestamp();
-        let record: db::Category =
-            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
-                .bind(title)
-                .bind(now)
-                .fetch_one(&self.pool)
-                .await?;
+        let category = stmt.query_row(params![title, now], |row| Category::try_from(row))?;
 
-        self.fetch_category(&record.id).await
-    }
-
-    /// Creates a new income stream.
-    pub async fn create_income_stream(&self, title: &str) -> crate::Result<Category> {
-        let now = Utc::now().timestamp();
-        let record: db::Category =
-            sqlx::query_as("INSERT INTO categories(title,created_at,is_income_stream) VALUES($1,$2,true) RETURNING *")
-                .bind(title)
-                .bind(now)
-                .fetch_one(&self.pool)
-                .await?;
-
-        tracing::info!(id=?record.id,"Created new income stream");
-        self.fetch_category(&record.id).await
-    }
-
-    /// Fetch a [`Category`] from the database.
-    pub async fn fetch_category(&self, id: &str) -> crate::Result<Category> {
-        let record: db::Category = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
-            .bind(id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        let created_at = record
-            .created_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-        let deleted_at = record
-            .deleted_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-
-        let category = Category {
-            id: record.id,
-            title: record.title,
-            created_at,
-            deleted_at,
-            is_income_stream: record.is_income_stream,
-        };
-
+        info!(id=?category.id,"Created new category");
         Ok(category)
     }
 
-    pub async fn edit_category(&self, id: &str, title: &str) -> crate::Result<Category> {
-        sqlx::query("UPDATE categories SET title=$1 WHERE id=$2")
-            .bind(title)
-            .bind(id)
-            .execute(&self.pool)
-            .await?;
+    /// Creates a new income stream.
+    pub fn create_income_stream(&self, title: &str) -> crate::Result<Category> {
+        let conn = self.connection.get();
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO categories(title,created_at,is_income_stream) VALUES(?1,?2,true) RETURNING *")?;
 
-        self.fetch_category(id).await
+        let now = Utc::now().timestamp();
+        let category = stmt.query_row(params![title, now], |row| Category::try_from(row))?;
+
+        info!(id=?category.id,"Created new income stream");
+        Ok(category)
+    }
+
+    /// Fetch a [`Category`] from the database.
+    pub fn fetch_category(&self, id: &str) -> crate::Result<Category> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("SELECT * FROM categories WHERE id=?")?;
+        let category = stmt.query_row([id], |row| Category::try_from(row))?;
+        Ok(category)
+    }
+
+    pub fn edit_category(&self, id: &str, title: &str) -> crate::Result<Category> {
+        let connection = self.connection.get();
+        let mut stmt =
+            connection.prepare_cached("UPDATE categories SET title=?1 WHERE id=?2 RETURNING *")?;
+        let category = stmt.query_row([title, id], |row| Category::try_from(row))?;
+        Ok(category)
     }
 
     /// Delete an account from the database.
-    pub async fn delete_category(&self, id: &str) -> crate::Result<()> {
+    pub fn delete_category(&self, id: &str) -> crate::Result<()> {
+        let conn = self.connection.get();
+        let mut stmt = conn.prepare_cached("UPDATE categories SET deleted_at=?2 WHERE id=?1")?;
         let now = Utc::now().timestamp();
-        sqlx::query("UPDATE categories SET deleted_at=$2 WHERE id=$1")
-            .bind(id)
-            .bind(now)
-            .execute(&self.pool)
-            .await?;
+        stmt.execute(params![id, now])?;
 
         Ok(())
     }
@@ -147,7 +125,7 @@ impl CategoryService {
 
         let mut categories = vec![];
         for record in records {
-            let category = self.fetch_category(&record.id).await?;
+            let category = self.fetch_category(&record.id)?;
             categories.push(category);
         }
         Ok(categories)
@@ -162,7 +140,7 @@ impl CategoryService {
 
         let mut categories = vec![];
         for record in records {
-            let category = self.fetch_category(&record.id).await?;
+            let category = self.fetch_category(&record.id)?;
             categories.push(category);
         }
         Ok(categories)
@@ -203,7 +181,7 @@ impl CategoryService {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = self.fetch_category(&record.category_id).await?;
+        let category = self.fetch_category(&record.category_id)?;
         let total_spent = self.total_spent(&category.id).await?;
         let remaining = (total - total_spent).max(Money::ZERO);
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
@@ -226,7 +204,7 @@ impl CategoryService {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = self.fetch_category(&record.category_id).await?;
+        let category = self.fetch_category(&record.category_id)?;
         let total_spent = self.total_spent(&category.id).await?;
         let remaining = total - total_spent;
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();

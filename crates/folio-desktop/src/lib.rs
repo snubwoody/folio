@@ -161,6 +161,7 @@ pub fn get_data_dir() -> Option<PathBuf> {
 
 /// Creates an in memory sqlite database for testing.
 #[cfg(test)]
+#[allow(unused)]
 fn create_test_db() -> crate::Result<rusqlite::Connection>{
     let conn = rusqlite::Connection::open_in_memory()?;
     conn.execute("PRAGMA foreign_keys = ON", ())?;
@@ -173,6 +174,7 @@ fn create_test_db() -> crate::Result<rusqlite::Connection>{
     Ok(conn)
 }
 
+/// A thread safe, clonable connection to a Sqlite database.
 #[derive(Clone)]
 pub struct SqliteConnection{
     connection: Arc<std::sync::Mutex<rusqlite::Connection>>

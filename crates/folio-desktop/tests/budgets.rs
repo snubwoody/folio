@@ -9,7 +9,7 @@ async fn filter_deleted_budgets(pool: SqlitePool) -> Result<()> {
     let c = service.create_category("").await?;
     let result = service.fetch_budget_from_category(&c.id).await;
     assert!(result.is_ok());
-    service.delete_category(&c.id).await?;
+    service.delete_category(&c.id)?;
     let budgets = service.fetch_budgets().await?;
     assert!(budgets.is_empty());
     Ok(())
