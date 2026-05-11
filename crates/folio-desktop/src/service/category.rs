@@ -209,7 +209,7 @@ impl CategoryService {
         Ok(Budget {
             id: record.id,
             amount: total,
-            category,
+            category_id: record.category_id,
             total_spent,
             created_at,
         })
@@ -230,7 +230,7 @@ impl CategoryService {
         Ok(Budget {
             id: record.id,
             amount: total,
-            category,
+            category_id: record.category_id,
             total_spent,
             created_at,
         })
@@ -244,7 +244,7 @@ impl CategoryService {
         for c in categories {
             let mut contains = false;
             for b in &budgets {
-                if b.category.id == c.id {
+                if b.category_id == c.id {
                     contains = true;
                     break;
                 }

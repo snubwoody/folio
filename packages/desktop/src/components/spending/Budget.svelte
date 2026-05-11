@@ -11,6 +11,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     import { totalSpent } from "$lib/api/category";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { getLocalTimeZone, today } from "@internationalized/date";
+    import {categoryStore} from "$lib/stores/categories.svelte";
 
     type Props = {
         budget: Budget;
@@ -21,9 +22,10 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     // TODO: create a budget for every category
     // FIXME: overspent error
     // FIXME: add a budget_amount field to categories
-    const total = $derived(totalSpent(budget.category.id,transactionStore.transactions,today(getLocalTimeZone())));
+    const total = $derived(totalSpent(budget.categoryId,transactionStore.transactions,today(getLocalTimeZone())));
     let amount = $derived(parseFloat(budget.amount));
     let leftToSpend = $derived(Math.max(amount-total,0));
+    const category = $derived(categoryStore.categoryMap.get(budget.categoryId));
 
     /// Max 1 to prevent NaN and mess up the bar width
     let percentage = $derived(Math.min(Math.round((total / Math.max(amount,1)) * 100),100));
@@ -40,7 +42,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 
 <div class="flex flex-col relative gap-1.5 max-w-[600px]">
     <div class="flex items-center justify-between">
-        <p>{budget.category?.title ?? " "}</p>
+        <p>{category?.title ?? " "}</p>
         {#if total === amount && amount > 0}
             <p>Fully spent</p>
         {:else if total > amount}

@@ -32,7 +32,7 @@ export type Budget = {
     id: string;
     amount: string;
     totalSpent: string;
-    category: Category;
+    categoryId: string;
 };
 
 export type Settings = {
