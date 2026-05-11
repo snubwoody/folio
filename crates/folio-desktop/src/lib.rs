@@ -90,7 +90,7 @@ impl State {
         info!("Initialised database pool");
 
         let account_service = AccountService::new(pool.clone());
-        let category_service = CategoryService::new(pool.clone());
+        let category_service = CategoryService::new(pool.clone(),connection.clone());
         let transaction_service = TransactionService::new(pool.clone());
 
         #[cfg(debug_assertions)]

@@ -13,22 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
-use crate::{Money, db, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row, SqlitePool};
 use tracing::{debug, info, warn};
+use crate::{Money, db, service::Budget, SqliteConnection};
 
 /// Service struct for managing categories and category groups.
 #[derive(Clone)]
 pub struct CategoryService {
     pool: SqlitePool,
+    connection: SqliteConnection
 }
 
 impl CategoryService {
     /// Creates a new category service.
-    pub fn new(pool: SqlitePool) -> Self {
-        Self { pool }
+    pub fn new(pool: SqlitePool,connection: SqliteConnection) -> Self {
+        Self { pool,connection }
     }
 
     /// Create a new category, a corresponding budget pointing to this category
