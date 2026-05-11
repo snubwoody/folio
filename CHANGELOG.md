@@ -8,8 +8,8 @@
 - Improved checkbox UI
 - Added vertical borders to transaction table.
 - Added version information to settings panel.
-- Display local currency symbols.
-- Removed currencies:
+- Money is now displayed with the local currency symbol, e.g. `$` instead of `CA$`
+- Removed support for the following currencies:
   - XPT: Platinum
   - XTS: Code reserved for testing
   - XSU: Unified System for Regional Compensation (SUCRE)

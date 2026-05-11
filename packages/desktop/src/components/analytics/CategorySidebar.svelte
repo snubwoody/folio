@@ -13,8 +13,8 @@
 
 <aside>
     <div class="header">
-        <p class="text-base font-medium">Categories</p>
-        <p class="text-base font-medium">Total spent</p>
+        <h6 class="text-body font-medium">Categories</h6>
+        <h6 class="text-body font-medium">Total spent</h6>
     </div>
     <ul class="space-y-5 overflow-auto h-full">
         {#each analytics as analytic (analytic.category.id)}
