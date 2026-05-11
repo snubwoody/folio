@@ -16,10 +16,7 @@
 use crate::analytics::Analytic;
 use crate::error::ErrorExt;
 use crate::settings::Settings;
-use crate::{
-    Currency, Money, Result, State, analytics,
-    service::{self, *},
-};
+use crate::{Currency, Money, Result, State, analytics, service::*};
 use chrono::NaiveDate;
 use std::str::FromStr;
 use tauri::{Builder, Wry};
@@ -229,7 +226,9 @@ pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Resu
 
 #[tauri::command]
 pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
-    service::create_missing_budgets(&state.pool)
+    state
+        .category_service
+        .create_missing_budgets()
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -299,14 +298,18 @@ pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Cate
 
 #[tauri::command]
 pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
-    service::fetch_budgets(&state.pool)
+    state
+        .category_service
+        .fetch_budgets()
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
 #[tauri::command]
 pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
-    Budget::from_category(&category_id, &state.pool)
+    state
+        .category_service
+        .fetch_budget_from_category(&category_id)
         .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -317,7 +320,9 @@ pub async fn create_budget(
     category_id: &str,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::create(Money::from_str(amount)?, category_id, &state.pool)
+    state
+        .category_service
+        .create_budget(Money::from_str(amount)?, category_id)
         .await
         .context("Failed to create budget")
         .inspect_err(|err| warn!("{}", err.report()))
@@ -329,7 +334,9 @@ pub async fn edit_budget(
     amount: Money,
     state: tauri::State<'_, State>,
 ) -> Result<Budget> {
-    Budget::edit(&id, amount, &state.pool)
+    state
+        .category_service
+        .edit_budget(&id, amount)
         .await
         .context("Failed to edit budget")
         .inspect_err(|err| warn!("{}", err.report()))
