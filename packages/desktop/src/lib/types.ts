@@ -32,7 +32,6 @@ export type Budget = {
     id: string;
     amount: string;
     totalSpent: string;
-    remaining: string;
     category: Category;
 };
 

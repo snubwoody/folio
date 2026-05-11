@@ -24,7 +24,6 @@ pub struct Budget {
     pub id: String,
     pub amount: Money,
     pub total_spent: Money,
-    pub remaining: Money,
     pub category: Category,
     pub created_at: DateTime<Utc>,
 }
