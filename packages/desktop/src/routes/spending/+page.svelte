@@ -15,27 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import BudgetOverview from "$components/spending/BudgetOverview.svelte";
     import BudgetSection from "$components/spending/BudgetSection.svelte";
-    import IncomeAnalytics from "$components/spending/IncomeAnalytics.svelte";
-    import SpendingAnalytics from "$components/spending/SpendingAnalytics.svelte";
 </script>
 
-<main class="space-y-5 px-4 py-7 overflow-y-auto w-full">
-    <BudgetOverview/>
-    <div class="divider"></div>
-    <IncomeAnalytics/>
-    <div class="divider"></div>
-    <SpendingAnalytics/>
-    <div class="divider"></div>
+<main class="space-y-5 p-4 overflow-y-auto w-full">
     <BudgetSection/>
 </main>
 
-<style>
-    .divider{
-        width: 100%;
-        height: 1px;
-        border-radius: var(--radius-sm);
-        background-color: var(--color-neutral-50);
-    }
-</style>

@@ -15,7 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { TableCell } from "$components/table";
     import { parseMoney } from "$lib/utils/money";
 
     type Props = {
@@ -37,9 +36,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     }
 </script>
 
-<TableCell>
-    <div class="flex">
-        <p>{symbol}</p>
-        <input bind:value={currentAmount} onblur={updateAmount} class="outline-none">
-    </div>
-</TableCell>
+<div class="flex">
+    <p>{symbol}</p>
+    <input bind:value={currentAmount} onblur={updateAmount} class="outline-none">
+</div>
