@@ -9,16 +9,16 @@ import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
     globalIgnores([
-        "**/node_modules",
+        "**/node_modules/",
         "**/dist",
         "**/build",
         "**/coverage",
-        "**/.svelte-kit",
+        "**/.svelte-kit/**",
         "**/.astro",
         "**/.vscode",
         "**/.github",
         "**/.idea",
-        "**/target"
+        "**/target/**"
     ]),
     js.configs.recommended,
     tseslint.configs.recommended,

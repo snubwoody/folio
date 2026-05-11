@@ -11,7 +11,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     import { totalSpent } from "$lib/api/category";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { getLocalTimeZone, today } from "@internationalized/date";
-    import {categoryStore} from "$lib/stores/categories.svelte";
+    import { categoryStore } from "$lib/stores/categories.svelte";
 
     type Props = {
         budget: Budget;
