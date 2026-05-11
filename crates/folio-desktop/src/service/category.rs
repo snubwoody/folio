@@ -202,17 +202,12 @@ impl CategoryService {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = self.fetch_category(&record.category_id).await?;
-        let total_spent = self.total_spent(&category.id).await?;
-        let remaining = (total - total_spent).max(Money::ZERO);
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
         Ok(Budget {
             id: record.id,
             amount: total,
-            category,
-            total_spent,
-            remaining,
+            category_id: record.category_id,
             created_at,
         })
     }
@@ -225,17 +220,12 @@ impl CategoryService {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = self.fetch_category(&record.category_id).await?;
-        let total_spent = self.total_spent(&category.id).await?;
-        let remaining = total - total_spent;
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
         Ok(Budget {
             id: record.id,
             amount: total,
-            category,
-            total_spent,
-            remaining,
+            category_id: record.category_id,
             created_at,
         })
     }
@@ -248,7 +238,7 @@ impl CategoryService {
         for c in categories {
             let mut contains = false;
             for b in &budgets {
-                if b.category.id == c.id {
+                if b.category_id == c.id {
                     contains = true;
                     break;
                 }
