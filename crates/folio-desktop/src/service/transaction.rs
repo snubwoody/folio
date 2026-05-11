@@ -3,6 +3,7 @@ use chrono::{Local, NaiveDate};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
 use std::marker::PhantomData;
+use rusqlite::Row;
 use tracing::info;
 
 pub struct Expense;
@@ -409,6 +410,26 @@ impl Transaction {
         }
 
         TransactionType::Transfer
+    }
+}
+
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Transaction {
+    type Error = rusqlite::Error;
+
+    fn try_from(row: &Row) -> Result<Self, Self::Error> {
+        let date: String = row.get(4)?;
+
+        let transaction = Self {
+            id: row.get(0)?,
+            amount: Money::from_scaled(row.get(1)?),
+            from_account_id: row.get(2).ok(),
+            to_account_id: row.get(3).ok(),
+            transaction_date: NaiveDate::parse_from_str(&date, "%Y-%m-%d").unwrap_or_default(),
+            category_id: row.get(5).ok(),
+            created_at: row.get(6)?,
+            note: row.get(7).ok(),
+        };
+        Ok(transaction)
     }
 }
 
