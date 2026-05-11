@@ -16,14 +16,13 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::{Money, service::Category};
+use crate::Money;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
     pub id: String,
     pub amount: Money,
-    pub total_spent: Money,
     pub category_id: String,
     pub created_at: DateTime<Utc>,
 }

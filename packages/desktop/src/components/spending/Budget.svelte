@@ -18,16 +18,13 @@ Copyright (C) 2025 Wakunguma Kalimukwa
     };
 
     const { budget }: Props = $props();
-    // TODO: store as number
-    // TODO: create a budget for every category
-    // FIXME: overspent error
-    // FIXME: add a budget_amount field to categories
+
     const total = $derived(totalSpent(budget.categoryId,transactionStore.transactions,today(getLocalTimeZone())));
     let amount = $derived(parseFloat(budget.amount));
     let leftToSpend = $derived(Math.max(amount-total,0));
     const category = $derived(categoryStore.categoryMap.get(budget.categoryId));
 
-    /// Max 1 to prevent NaN and mess up the bar width
+    /// Max 1 to prevent NaN which messes with the bar width
     let percentage = $derived(Math.min(Math.round((total / Math.max(amount,1)) * 100),100));
 
     const formattedAmount = $derived.by(() =>
@@ -49,7 +46,7 @@ Copyright (C) 2025 Wakunguma Kalimukwa
             {@const excess = total -amount}
             Overspent by {formatMoney(excess.toString())}
         {:else}
-            Spent {formatMoney(budget.totalSpent)} of {formatMoney(budget.amount)}
+            Spent {formatMoney(total.toString())} of {formatMoney(budget.amount)}
         {/if}
     </div>
     <div>

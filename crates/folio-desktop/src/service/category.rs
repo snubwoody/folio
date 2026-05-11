@@ -202,15 +202,12 @@ impl CategoryService {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = self.fetch_category(&record.category_id).await?;
-        let total_spent = self.total_spent(&category.id).await?;
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
         Ok(Budget {
             id: record.id,
             amount: total,
             category_id: record.category_id,
-            total_spent,
             created_at,
         })
     }
@@ -223,15 +220,12 @@ impl CategoryService {
             .await?;
 
         let total = Money::new(record.amount);
-        let category = self.fetch_category(&record.category_id).await?;
-        let total_spent = self.total_spent(&category.id).await?;
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
         Ok(Budget {
             id: record.id,
             amount: total,
             category_id: record.category_id,
-            total_spent,
             created_at,
         })
     }
