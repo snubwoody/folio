@@ -28,11 +28,11 @@ use crate::settings::Settings;
 pub use currency::Currency;
 pub use error::{Error, Result};
 pub use money::Money;
+use rusqlite::Connection;
 use sqlx::SqlitePool;
 use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, MutexGuard};
-use rusqlite::Connection;
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
 use tracing::{error, info};
@@ -80,17 +80,17 @@ pub struct State {
     account_service: AccountService,
     transaction_service: TransactionService,
     category_service: CategoryService,
-    connection: SqliteConnection
+    connection: SqliteConnection,
 }
 
 impl State {
     pub async fn new() -> Result<Self> {
-        let (pool,connection) = init_database().await?;
+        let (pool, connection) = init_database().await?;
         info!("Initialised database pool");
 
         let account_service = AccountService::new(pool.clone());
-        let category_service = CategoryService::new(pool.clone(),connection.clone());
-        let transaction_service = TransactionService::new(pool.clone(),connection.clone());
+        let category_service = CategoryService::new(pool.clone(), connection.clone());
+        let transaction_service = TransactionService::new(pool.clone(), connection.clone());
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
@@ -106,12 +106,12 @@ impl State {
             account_service,
             category_service,
             transaction_service,
-            connection
+            connection,
         })
     }
 }
 
-pub async fn init_database() -> Result<(SqlitePool,SqliteConnection)> {
+pub async fn init_database() -> Result<(SqlitePool, SqliteConnection)> {
     #[cfg(not(debug_assertions))]
     let path = {
         let data_dir = get_data_dir().unwrap();
@@ -138,7 +138,7 @@ pub async fn init_database() -> Result<(SqlitePool,SqliteConnection)> {
 
     let connection = SqliteConnection::open(&path)?;
     let mut migrator = folio_migrate::Migrator::new();
-    Ok((pool,connection))
+    Ok((pool, connection))
 }
 
 /// Get the platform specific data directory.
@@ -157,8 +157,7 @@ pub fn get_data_dir() -> Option<PathBuf> {
 }
 
 /// Creates an in memory sqlite database for testing.
- #[cfg(test)]
-pub fn create_test_db() -> crate::Result<SqliteConnection>{
+pub fn create_test_db() -> crate::Result<SqliteConnection> {
     let connection = SqliteConnection::in_memory()?;
     let mut migrator = folio_migrate::Migrator::new();
 
@@ -170,31 +169,31 @@ pub fn create_test_db() -> crate::Result<SqliteConnection>{
 
 /// A thread safe, clonable connection to a Sqlite database.
 #[derive(Clone)]
-pub struct SqliteConnection{
-    connection: Arc<std::sync::Mutex<rusqlite::Connection>>
+pub struct SqliteConnection {
+    connection: Arc<std::sync::Mutex<rusqlite::Connection>>,
 }
 
 // TODO: add in-memory
-impl SqliteConnection{
-    pub fn open(path: impl AsRef<Path>) -> crate::Result<Self>{
+impl SqliteConnection {
+    pub fn open(path: impl AsRef<Path>) -> crate::Result<Self> {
         // TODO: use WAL journal mode
         let conn = rusqlite::Connection::open(&path)?;
 
         conn.execute("PRAGMA foreign_keys = ON", ())?;
 
-        Ok(Self{
-            connection: Arc::new(std::sync::Mutex::new(conn))
+        Ok(Self {
+            connection: Arc::new(std::sync::Mutex::new(conn)),
         })
     }
 
-    pub fn in_memory() -> crate::Result<Self>{
+    pub fn in_memory() -> crate::Result<Self> {
         // TODO: use WAL journal mode
         let conn = rusqlite::Connection::open_in_memory()?;
 
         conn.execute("PRAGMA foreign_keys = ON", ())?;
 
-        Ok(Self{
-            connection: Arc::new(std::sync::Mutex::new(conn))
+        Ok(Self {
+            connection: Arc::new(std::sync::Mutex::new(conn)),
         })
     }
 

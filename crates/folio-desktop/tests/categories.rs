@@ -1,19 +1,18 @@
 use chrono::Utc;
 use folio_lib::service::{
-     AccountService, Budget, CategoryGroup, CategoryService, TransactionService,
-     create_missing_budgets,
- };
-use folio_lib::{create_test_db, Money, Result,SqliteConnection};
+    AccountService, Budget, CategoryGroup, CategoryService, TransactionService,
+};
+use folio_lib::{Money, Result, SqliteConnection, create_test_db};
 use sqlx::SqlitePool;
 
 #[sqlx::test]
 async fn total_spent(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    // let connection = create_test_db()?;
+    // let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
 
-    let category_service = CategoryService::new(pool.clone(),connection);
+    let category_service = CategoryService::new(pool.clone(), connection.clone());
     let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone(),connection.clone());
+    let transaction_service = TransactionService::new(pool.clone(), connection.clone());
 
     let category = category_service.create_category("").await?;
     let account = account_service.create_account("", Money::ZERO).await?;
@@ -42,7 +41,7 @@ async fn total_spent(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn get_categories(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-let category_service = CategoryService::new(pool.clone(),connection);
+    let category_service = CategoryService::new(pool.clone(), connection);
     let rows = sqlx::query!("SELECT id FROM categories")
         .fetch_all(&pool)
         .await?;
@@ -57,7 +56,7 @@ let category_service = CategoryService::new(pool.clone(),connection);
 #[sqlx::test]
 async fn create_income_stream(pool: SqlitePool) -> crate::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-let category_service = CategoryService::new(pool.clone(),connection);
+    let category_service = CategoryService::new(pool.clone(), connection);
     let now = Utc::now().timestamp();
     let category = category_service.create_income_stream("Ent")?;
     let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
@@ -73,7 +72,7 @@ let category_service = CategoryService::new(pool.clone(),connection);
 #[sqlx::test]
 async fn create_category(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let now = Utc::now().timestamp();
     let category = service.create_category("Ent").await?;
     let record = sqlx::query!("SELECT * FROM categories WHERE id=$1", category.id)
@@ -89,7 +88,7 @@ async fn create_category(pool: SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn fetch_category(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let record = sqlx::query!("INSERT INTO categories(title) VALUES('Rent') RETURNING id")
         .fetch_one(&pool)
         .await?;
@@ -143,7 +142,7 @@ async fn delete_category_group(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let category = service.create_category("__").await?;
     service.delete_category(&category.id)?;
     let c = service.fetch_category(&category.id)?;
@@ -154,7 +153,7 @@ async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn create_budgets_for_categories(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let c = service.create_category_raw("__")?;
     let result = service.fetch_budget_from_category(&c.id).await;
     assert!(result.is_err());
@@ -167,7 +166,7 @@ let service = CategoryService::new(pool.clone(),connection);
 #[sqlx::test]
 async fn create_budget_after_category(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let category = service.create_category("__").await?;
 
     let record = sqlx::query!("SELECT * FROM budgets WHERE category_id=$1", category.id)
@@ -181,7 +180,7 @@ let service = CategoryService::new(pool.clone(),connection);
 #[sqlx::test]
 async fn edit_category(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let category = service.create_category("__").await?;
     let category = service.edit_category(&category.id, "__MINE__")?;
 
@@ -196,7 +195,7 @@ async fn edit_category(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn fetch_categories_not_deleted(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = CategoryService::new(pool.clone(),connection);
+    let service = CategoryService::new(pool.clone(), connection);
     let len1 = service.fetch_categories().await?.len();
     service.create_category("title").await?;
     let c = service.create_category("title").await?;

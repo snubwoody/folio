@@ -127,7 +127,6 @@ pub async fn set_transaction_payee(
     state
         .transaction_service
         .set_payee(&id, &account_id)
-        .await
         .context("Failed to set transaction payee")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -174,7 +173,6 @@ pub async fn set_transaction_outflow(
     state
         .transaction_service
         .set_outflow(&id, amount)
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -187,7 +185,6 @@ pub async fn set_transaction_inflow(
     state
         .transaction_service
         .set_inflow(&id, amount)
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -200,7 +197,6 @@ pub async fn set_transaction_account(
     state
         .transaction_service
         .set_account(&id, &account)
-        .await
         .context("Failed to set transaction account")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -364,7 +360,6 @@ pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String
     state
         .transaction_service
         .delete_all(ids.as_slice())
-        .await
         .context("Failed to delete transactions")
         .inspect_err(|err| warn!("{}", err.report()))
 }

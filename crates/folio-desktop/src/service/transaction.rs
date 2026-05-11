@@ -1,9 +1,10 @@
 use crate::{Error, Money, SqliteConnection};
 use chrono::{Local, NaiveDate};
+use rusqlite::{Row, params};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, QueryBuilder, SqlitePool};
-use std::marker::PhantomData;
-use rusqlite::Row;
+use tracing_subscriber::fmt::format;
+use std::{fmt::Display, marker::PhantomData};
 use tracing::info;
 
 pub struct Expense;
@@ -225,12 +226,12 @@ pub enum TransactionType {
 #[derive(Clone)]
 pub struct TransactionService {
     pool: SqlitePool,
-    connection: SqliteConnection
+    connection: SqliteConnection,
 }
 
 impl TransactionService {
-    pub fn new(pool: SqlitePool,connection: SqliteConnection) -> Self {
-        Self { pool,connection }
+    pub fn new(pool: SqlitePool, connection: SqliteConnection) -> Self {
+        Self { pool, connection }
     }
 
     pub fn expense(&self) -> TransactionBuilder<Expense> {
@@ -251,138 +252,141 @@ impl TransactionService {
 
     /// Fetches the transaction from the database with a matching `id`. If the matching row
     /// is not found an error will be returned.
-    pub async fn fetch(&self, id: &str) -> crate::Result<Transaction> {
-        let transaction: Transaction = sqlx::query_as("SELECT * FROM transactions WHERE id=$1")
-            .bind(id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        Ok(transaction)
+    pub fn fetch(&self, id: &str) -> crate::Result<Transaction> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from transactions where id = ?")?;
+        let row = stmt.query_row([id], |row| Transaction::try_from(row))?;
+        Ok(row)
     }
 
     /// Fetch all the transactions from the database.
     pub fn fetch_all(&self) -> Result<Vec<Transaction>, crate::Error> {
-        let connection  = self.connection.get();
+        let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from transactions")?;
-        let r = stmt.query_map((),|row|{
-            dbg!(&row);
-            Ok(())
-        })?;
-        
-        // let rows: Vec<Transaction> = sqlx::query_as("SELECT * from transactions")
-        //     .fetch_all(&self.pool)
-        //     .await?;
-
-        Ok(vec![])
+        let rows = stmt.query_map((), |row| Transaction::try_from(row))?;
+        let mut transactions = Vec::new();
+        for row in rows {
+            transactions.push(row?)
+        }
+        Ok(transactions)
     }
 
     /// Deletes all the provided transactions.
-    pub async fn delete_all<S: AsRef<str>>(&self, ids: &[S]) -> crate::Result<()> {
+    pub fn delete_all<S: AsRef<str> + Display>(&self, ids: &[S]) -> crate::Result<()> {
         if ids.is_empty() {
             return Ok(());
         }
-        let mut query = QueryBuilder::new("DELETE FROM transactions WHERE id IN ");
-        query.push("(");
-        let mut separated = query.separated(", ");
-        for id in ids {
-            separated.push_bind(id.as_ref());
-        }
-        separated.push_unseparated(")");
+        let connection = self.connection.get();
+        let mut query = String::from("delete from transactions where id in (");
 
-        query.build().execute(&self.pool).await?;
+        for id in ids {
+            query.push_str(&format!("'{id}',"));
+        }
+
+        // Remove the last comma
+        query.pop();
+        query.push(')');
+        connection.execute(&query, ())?;
 
         info!("Deleted {} transactions", ids.len());
         Ok(())
     }
 
-    pub async fn set_outflow(&self, id: &str, amount: Money) -> crate::Result<Transaction> {
-        let transaction = self.fetch(id).await?;
-        let mut query = QueryBuilder::new("UPDATE transactions ");
-        query.push("SET amount = ").push_bind(amount);
+    pub fn set_outflow(&self, id: &str, amount: Money) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id)?;
+        let connection = self.connection.get();
 
-        // Setting outflow on an income changes it to an expense
+        let mut query = String::from("update transactions set amount = ?1");
         if transaction.transaction_type() == TransactionType::Income {
-            query
-                .push(", to_account_id = NULL, from_account_id = ")
-                .push_bind(transaction.to_account_id.unwrap_or_default());
+            let sql = format!(
+                ",to_account_id = NULL, from_account_id = '{}'",
+                transaction.to_account_id.unwrap_or_default()
+            );
+            query.push_str(&sql);
         }
-        query
-            .push("WHERE id = ")
-            .push_bind(id)
-            .build()
-            .execute(&self.pool)
-            .await?;
-        info!(id = id, "Updated transaction");
-        self.fetch(id).await
+        query.push_str(" where id = ?2 returning *");
+
+        let mut stmt = connection.prepare_cached(&query)?;
+        let row = stmt.query_row(params![amount.inner(), id], |row| {
+            Transaction::try_from(row)
+        })?;
+
+        info!(id = id, "Set transaction outflow");
+        Ok(row)
     }
 
-    pub async fn set_inflow(&self, id: &str, amount: Money) -> crate::Result<Transaction> {
-        let transaction = self.fetch(id).await?;
+    pub fn set_inflow(&self, id: &str, amount: Money) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id)?;
 
         if transaction.transaction_type() == TransactionType::Transfer {
             return Err(Error::new("Cannot set inflow for a transfer"));
         }
 
-        let mut query = QueryBuilder::new("UPDATE transactions ");
-        query.push("SET amount = ").push_bind(amount);
+        let connection = self.connection.get();
+
+        let mut query = String::from("update transactions set amount = ?1");
 
         // Setting inflow on an expense changes it to an income
         if transaction.transaction_type() == TransactionType::Expense {
-            query
-                .push(", from_account_id = NULL, to_account_id = ")
-                .push_bind(transaction.from_account_id.unwrap_or_default());
+            let sql = format!(
+                ",from_account_id = NULL, to_account_id = '{}'",
+                transaction.from_account_id.unwrap_or_default()
+            );
+            query.push_str(&sql);
         }
+        query.push_str(" where id = ?2 returning *");
 
-        query
-            .push("WHERE id = ")
-            .push_bind(id)
-            .build()
-            .execute(&self.pool)
-            .await?;
-        info!(id = id, "Updated transaction");
-        self.fetch(id).await
+        let mut stmt = connection.prepare_cached(&query)?;
+        let row = stmt.query_row(params![amount.inner(), id], |row| {
+            Transaction::try_from(row)
+        })?;
+
+        info!(id = id, "Set transaction inflow");
+        Ok(row)
     }
 
     /// Set the transaction account i.e. the `from_account_id` column for expenses and transfers, and the
     /// `to_account_id` for incomes.
-    pub async fn set_account(&self, id: &str, account_id: &str) -> crate::Result<Transaction> {
-        let transaction = self.fetch(id).await?;
-        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
+    pub fn set_account(&self, id: &str, account_id: &str) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id)?;
+        let connection = self.connection.get();
+        let mut query = String::from("update transactions ");
 
         match transaction.transaction_type() {
-            TransactionType::Income => query_builder.push("SET to_account_id = "),
-            _ => query_builder.push("SET from_account_id = "),
+            TransactionType::Income => query.push_str("set to_account_id = "),
+            _ => query.push_str("set from_account_id = "),
         };
 
-        query_builder.push_bind(account_id);
+        query.push_str(&format!("'{account_id}'"));
+        query.push_str(" where id = ? returning *");
 
-        let query = query_builder.push("WHERE id = ").push_bind(id).build();
-        query.execute(&self.pool).await?;
-        info!(id = id, "Set transaction account");
-        self.fetch(id).await
+        let mut stmt = connection.prepare_cached(&query)?;
+        let row = stmt.query_row([id], |row| Transaction::try_from(row))?;
+
+        info!(id = id, account = account_id, "Set transaction account");
+        Ok(row)
     }
 
     /// Set the payee field of a transaction, turning the transaction into a transfer.
-    pub async fn set_payee(&self, id: &str, account_id: &str) -> crate::Result<Transaction> {
-        let transaction = self.fetch(id).await?;
-        let mut query_builder = QueryBuilder::new("UPDATE transactions ");
-        query_builder
-            .push("SET to_account_id = ")
-            .push_bind(account_id);
+    pub fn set_payee(&self, id: &str, account_id: &str) -> crate::Result<Transaction> {
+        let transaction = self.fetch(id)?;
+
+        let connection = self.connection.get();
+        let mut query = String::from("update transactions set to_account_id = ?1");
 
         if transaction.transaction_type() == TransactionType::Income {
-            query_builder
-                .push(", from_account_id = ")
-                .push_bind(transaction.to_account_id.unwrap_or_default());
+            let sql = format!(", from_account_id = '{}'",transaction.to_account_id.unwrap_or_default());
+            query
+                .push_str(&sql);
         }
-        let query = query_builder
-            .push(",category_id = NULL ")
-            .push("WHERE id = ")
-            .push_bind(id)
-            .build();
-        query.execute(&self.pool).await?;
-        info!(id = id, "Set transaction payee");
-        self.fetch(id).await
+        query.push_str(",category_id = null where id = ?2 returning *");
+
+        let mut stmt = connection.prepare_cached(&query)?;
+        let row = stmt.query_row([account_id,id], |row| Transaction::try_from(row))?;
+        
+        info!(id = id, payee = account_id, "Set transaction payee");
+
+        Ok(row)
     }
 }
 
@@ -416,7 +420,7 @@ impl Transaction {
 impl<'a> TryFrom<&rusqlite::Row<'a>> for Transaction {
     type Error = rusqlite::Error;
 
-    fn try_from(row: &Row) -> Result<Self, Self::Error> {
+    fn try_from(row: &Row) -> std::result::Result<Self, Self::Error> {
         let date: String = row.get(4)?;
 
         let transaction = Self {

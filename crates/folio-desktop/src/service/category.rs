@@ -13,24 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
+use crate::{Money, SqliteConnection, db, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use rusqlite::params;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row, SqlitePool};
 use tracing::{debug, info, warn};
-use crate::{Money, db, service::Budget, SqliteConnection};
 
 /// Service struct for managing categories and category groups.
 #[derive(Clone)]
 pub struct CategoryService {
     pool: SqlitePool,
-    connection: SqliteConnection
+    connection: SqliteConnection,
 }
 
 impl CategoryService {
     /// Creates a new category service.
-    pub fn new(pool: SqlitePool,connection: SqliteConnection) -> Self {
-        Self { pool,connection }
+    pub fn new(pool: SqlitePool, connection: SqliteConnection) -> Self {
+        Self { pool, connection }
     }
 
     /// Create a new category, a corresponding budget pointing to this category
@@ -339,7 +339,6 @@ impl CategoryGroup {
     }
 }
 
-
 impl<'a> TryFrom<&rusqlite::Row<'a>> for Category {
     type Error = rusqlite::Error;
 
@@ -375,7 +374,7 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for CategoryGroup {
             id: row.get(0)?,
             title: row.get(1)?,
             sort_order: row.get(2)?,
-            created_at:row.get(3)?
+            created_at: row.get(3)?,
         };
 
         Ok(group)
