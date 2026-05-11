@@ -1,7 +1,6 @@
 use chrono::Utc;
 use folio_lib::service::{
     AccountService, Budget, CategoryGroup, CategoryService, TransactionService,
-    create_missing_budgets,
 };
 use folio_lib::{Money, Result};
 use sqlx::SqlitePool;
@@ -145,10 +144,10 @@ async fn soft_delete_category(pool: SqlitePool) -> Result<()> {
 async fn create_budgets_for_categories(pool: SqlitePool) -> Result<()> {
     let service = CategoryService::new(pool.clone());
     let c = service.create_category_raw("__").await?;
-    let result = Budget::from_category(&c.id, &pool).await;
+    let result = service.fetch_budget_from_category(&c.id).await;
     assert!(result.is_err());
-    create_missing_budgets(&pool).await?;
-    let result = Budget::from_category(&c.id, &pool).await;
+    service.create_missing_budgets().await?;
+    let result = service.fetch_budget_from_category(&c.id).await;
     assert!(result.is_ok());
     Ok(())
 }

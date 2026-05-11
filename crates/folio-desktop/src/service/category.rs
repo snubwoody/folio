@@ -12,12 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-use crate::service::{fetch_budgets, Transaction};
+use crate::service::{Transaction};
+use crate::{Money, db, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row, SqlitePool};
 use tracing::{debug, info, warn};
-use crate::{Money, db, service::Budget};
 
 /// Service struct for managing categories and category groups.
 #[derive(Clone)]
@@ -37,8 +37,8 @@ impl CategoryService {
     /// [`create_raw`]: CategoryService::create_category_raw
     pub async fn create_category(&self, title: &str) -> crate::Result<Category> {
         let category = self.create_category_raw(title).await?;
-        tracing::info!(id=?category.id,"Created new category");
-        Budget::create(Money::ZERO, &category.id, &self.pool).await?;
+        info!(id=?category.id,"Created new category");
+        self.create_budget(Money::ZERO, &category.id).await?;
 
         Ok(category)
     }
@@ -167,11 +167,7 @@ impl CategoryService {
         Ok(categories)
     }
 
-    pub async fn create_budget(
-        &self,
-        amount: Money,
-        category_id: &str,
-    ) -> crate::Result<Budget> {
+    pub async fn create_budget(&self, amount: Money, category_id: &str) -> crate::Result<Budget> {
         let amount = amount.inner();
         let record: db::Budget =
             sqlx::query_as("INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING *")
@@ -180,13 +176,13 @@ impl CategoryService {
                 .fetch_one(&self.pool)
                 .await?;
 
-        let budget = self.fetch_budget(&record.id,).await?;
+        let budget = self.fetch_budget(&record.id).await?;
 
         info!(category_id=?category_id,id=?budget.id,"Created new budget");
         Ok(budget)
     }
 
-    pub async fn edit_budget(&self,id: &str, amount: Money) -> crate::Result<Budget> {
+    pub async fn edit_budget(&self, id: &str, amount: Money) -> crate::Result<Budget> {
         let amount = amount.inner();
         sqlx::query("UPDATE budgets SET amount = $1 WHERE id=$2")
             .bind(amount)
@@ -199,7 +195,7 @@ impl CategoryService {
         self.fetch_budget(id).await
     }
 
-    pub async fn fetch_budget(&self, id: &str,) -> crate::Result<Budget> {
+    pub async fn fetch_budget(&self, id: &str) -> crate::Result<Budget> {
         let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
             .bind(id)
             .fetch_one(&self.pool)
@@ -211,7 +207,7 @@ impl CategoryService {
         let remaining = (total - total_spent).max(Money::ZERO);
         let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
 
-        Ok(Budget{
+        Ok(Budget {
             id: record.id,
             amount: total,
             category,
@@ -222,7 +218,7 @@ impl CategoryService {
     }
 
     /// Fetches the budget with the corresponding `category_id`.
-    pub async fn fetch_budget_from_category(&self,category_id: &str) -> crate::Result<Budget> {
+    pub async fn fetch_budget_from_category(&self, category_id: &str) -> crate::Result<Budget> {
         let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE category_id=$1")
             .bind(category_id)
             .fetch_one(&self.pool)
@@ -246,7 +242,7 @@ impl CategoryService {
 
     pub async fn create_missing_budgets(&self) -> crate::Result<()> {
         let categories = self.fetch_categories_only().await?;
-        let budgets = fetch_budgets(&self.pool).await?;
+        let budgets = self.fetch_budgets().await?;
 
         let mut filtered = vec![];
         for c in categories {
@@ -268,7 +264,7 @@ impl CategoryService {
         }
 
         for c in filtered {
-            let result = Budget::create(Money::ZERO, &c.id, &self.pool).await;
+            let result = self.create_budget(Money::ZERO, &c.id).await;
             if let Err(err) = result {
                 warn!("Failed to create budget: {err}")
             }
@@ -292,7 +288,7 @@ impl CategoryService {
             if !categories.iter().any(|c| c.id == category_id) {
                 continue;
             }
-            let budget = Budget::from_id(&id, &self.pool).await?;
+            let budget = self.fetch_budget(&id).await?;
             budgets.push(budget);
         }
         Ok(budgets)
@@ -300,7 +296,7 @@ impl CategoryService {
 }
 
 #[derive(
-    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd,FromRow,
+    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, FromRow, Eq, Ord, Hash,
 )]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
