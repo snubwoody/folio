@@ -1,7 +1,5 @@
 use chrono::Utc;
-use folio_lib::service::{
-    AccountService, Budget, CategoryGroup, CategoryService, TransactionService,
-};
+use folio_lib::service::{AccountService, CategoryGroup, CategoryService, TransactionService};
 use folio_lib::{Money, Result};
 use sqlx::SqlitePool;
 

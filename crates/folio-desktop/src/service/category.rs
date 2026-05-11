@@ -12,7 +12,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-use crate::service::{Transaction};
+use crate::service::Transaction;
 use crate::{Money, db, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use serde::{Deserialize, Serialize};

@@ -16,10 +16,7 @@
 use crate::analytics::Analytic;
 use crate::error::ErrorExt;
 use crate::settings::Settings;
-use crate::{
-    Currency, Money, Result, State, analytics,
-    service::{self, *},
-};
+use crate::{Currency, Money, Result, State, analytics, service::*};
 use chrono::NaiveDate;
 use std::str::FromStr;
 use tauri::{Builder, Wry};

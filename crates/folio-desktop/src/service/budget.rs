@@ -15,13 +15,9 @@
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::{Row, SqlitePool};
-use tracing::{debug, info, warn};
 
-use crate::service::CategoryService;
-use crate::{Money, db, service::Category};
+use crate::{Money, service::Category};
 
-// TODO: soft delete categories
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Budget {
@@ -36,6 +32,8 @@ pub struct Budget {
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::CategoryService;
+    use sqlx::SqlitePool;
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
@@ -43,7 +41,7 @@ mod test {
         let len = service.fetch_budgets().await?.len();
         service.create_category("").await?;
         let budgets = service.fetch_budgets().await?;
-        assert!(budgets.len() == len + 1);
+        assert_eq!(budgets.len(), len + 1);
         Ok(())
     }
 
