@@ -115,7 +115,7 @@
 </script>
 
 <main>
-    <section>
+    <section class="overflow-y-auto space-y-2">
         <header class="flex items-center justify-between">
             <h6>Spending breakdown</h6>
             <div class="flex items-center gap-0.5">

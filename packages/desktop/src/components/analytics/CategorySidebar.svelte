@@ -22,7 +22,11 @@
                 <div class="w-full space-y-0.5">
                     <p>{analytic.category.title}</p>
                     <div class="flex w-full gap-1 items-center">
-                        <div style:--width={`${analytic.percentage*100}%`} class="bg-surface-primary w-(--width) h-2 rounded-xs"></div>
+                        <div
+                            style:--width={`${analytic.percentage*100}%`}
+                            style:--color={analytic.color}
+                            class="bg-(--color) w-(--width) h-2 rounded-xs">
+                        </div>
                         <p>{Math.round(analytic.percentage * 100)}%</p>
                     </div>
                 </div>
