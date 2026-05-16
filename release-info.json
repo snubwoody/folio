@@ -1,19 +1,19 @@
 {
-  "version": "v2.2.0",
-  "notes": "## What's new\r\n\r\n- Added a date field to the calendar.\r\n  - The date field can be used to enter \"speech-like\" dates such as \"Jan 5\".\r\n  - If the value cannot be parsed, then it will be set to the current date.\r\n- Fixed errors with budget state.\r\n- Added a new and improved sidebar.\r\n  - The sidebar contains a list of the accounts, as well as account balances.\r\n  - It also shows the total balance across all accounts.\r\n  - It also has a button for creating new accounts.",
-  "pub_date": "2026-04-21T22:38:56Z",
+  "version": "v2.3.0",
+  "notes": "## Changes\r\n\r\n- Improved analytics\r\n  - Added new pie chart which breaks down spending by category\r\n  - Removed old income and spending graphs\r\n- Improved checkbox UI\r\n- Added vertical borders to transaction table\r\n- Added version information in settings panel\r\n- Money is now displayed with the local currency symbol, e.g. `$` instead of `CA$`\r\n- Removed support for the following currencies:\r\n  - XPT: Platinum\r\n  - XTS: Code reserved for testing\r\n  - XSU: Unified System for Regional Compensation (SUCRE)\r\n  - XXX: No currency\r\n  - XDR: Special drawing rights\r\n  - XBB: European Composite Unit\r\n  - XBB: European Monetary Unit\r\n  - XBC: European Unit of Account 9\r\n  - XBD: European Unit of Account 17\r\n  - XUA: Africa Development Bank unit of account\r\n  - XAG: Silver\r\n  - XPD: Palladium\r\n  - XAU: Gold\r\n",
+  "pub_date": "2026-05-16T06:15:03Z",
   "platforms": {
-    "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUpETEFoN256T3RWNGtxMWVDT0FSbzNUQndWWFQvenlkSlZRbysveFlObUhqU2lUQ3k3YUU4dnRyd1dxMkQ4ZVpIdS9YbUdydEhJYmNMa2IwVG9YMkFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODEwNjUyCWZpbGU6Rm9saW9fMi4yLjBfYW1kNjQuQXBwSW1hZ2UKN2tCVzNxckpzWUV4Y09kSzd4WEllL3dEYlBXYXBkSVpCakgraHhBWU14VDREbnFwQ0xsVW0zU2V2TU1EUERwTTlLLy9tSnZzTklRL01TZ1EwZU1KQkE9PQo=",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.2.0/Folio_2.2.0_amd64.AppImage"
-    },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUZIUktyK0JQRTUxTm4ybTl2QVYyWnhkZm9EdUJZazRPUElhNkNrTS9ENnE2TEVFUTNnZDZ0N29Nb2dLeTlSV1doV3JIQWM1UGJwWDFaSjE5Nms1aFFRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODEwOTY2CWZpbGU6Rm9saW8uYXBwLnRhci5negoydTVGNTZJZVl1ejdGeS92a0hLMHNnRHZSY2s2a3pSRVpJaCtuT0FMYno3TzhPdUYrUlYwK0tudFhOaWpxSUFKSlpEMk13dW9ycURpMG9mRkt1K3JDUT09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.2.0/Folio.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUwrZisrM1R6MHE3U2cxSDFsZ2d6MHE3eXpwTlJmWTE5L3FiS29HWCtlQTNjckVHZk1tczBzYXd5WmdQaEJkZmowdU4wRVZmMm8vanlpNjV5R0o5UHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMzY0CWZpbGU6Rm9saW8uYXBwLnRhci5negp6QURmWDB0SlVHUFZScFhmU0RHUnQ0T2l6dVh3RlZFRDBURkJMeHFSbkt5OWVIY2pRK3kxakU0V2psVHBRQVlNQVNTbW8waVp1ckNwVVNYWSs0cVlBQT09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio.app.tar.gz"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTU9sRy9ha3lZMUpnK0hpSzJWZDJlN3JnODQ0Qk1lSkRYanFTd2llWDYyaktyN1BMemFTQ0V0ZEpRSWRJVzBpTXNUQnNydE5ESDdieGQxeFg5TW0rRFFrPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODEwNTI5CWZpbGU6Rm9saW9fMi4yLjBfeDY0LXNldHVwLmV4ZQpZTS80U3dQRWxPN0xFRGJzSHpIc3hPeCtYVkIzMko3bTdQL0REYU85RjM1RTNJUWQ4UTVmSjZralNmU241b0UrNElGYndmT200Wm9tc1k5cVZFOHlEQT09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.2.0/Folio_2.2.0_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUluL05uSitMSW90V2hkbldBVGJyS21weTFjRnJUNHZaaGVhWVpTVUtWYkt1NEVzRnVaMk9nM3Jha3ZIcHNLT3pkR013UmVMOSt0bmFEYmMvNzFpb3dBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMzc3CWZpbGU6Rm9saW9fMi4zLjBfeDY0LXNldHVwLmV4ZQovbGhYaGl2L2dCQkxGdWhiWWR6N1NvSTM3NjRVNXNGd2plVkVHcjQ2c1N0amYzK2NhUDBPL2hTdVFteFBNQktvaEZaVkNadGdKOVc0UjdlRzBpbzdCZz09Cg==",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio_2.3.0_x64-setup.exe"
+    },
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUJzQms5blR3VmdBcE5CQW1vcGhUOWdVSDhBcFVjT0R3NkpGNklFcm9KVm9pUi9qQjlyUUhXU3daREFWWjdaUWkvbnVaU2JaMExoa0pFS2hTaHJWZGdzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMjI1CWZpbGU6Rm9saW9fMi4zLjBfYW1kNjQuQXBwSW1hZ2UKVjhldnFURzlRT2lsbmN1dHVPWkZ3bFVld1JwZ0xKQ2VVNmhyUmVFRFB2MUNXaUNVRE01aDRuelNMR0tYd290NkJKQUltK1NCUWZwRWJVa1hmRmRrRGc9PQo=",
+      "url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio_2.3.0_amd64.AppImage"
     }
   }
 }
