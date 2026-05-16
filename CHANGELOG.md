@@ -1,6 +1,6 @@
 # Folio Changelog
 
-## 2.3.0 - 15-05-2026
+## 2.3.0 - 16-05-2026
 
 - Improved analytics
   - Added new pie chart which breaks down spending by category
