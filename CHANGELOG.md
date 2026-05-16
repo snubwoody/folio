@@ -1,13 +1,13 @@
 # Folio Changelog
 
-## (unreleased)
+## 2.3.0 - 15-05-2026
 
 - Improved analytics
   - Added new pie chart which breaks down spending by category
   - Removed old income and spending graphs
 - Improved checkbox UI
-- Added vertical borders to transaction table.
-- Added version information to settings panel.
+- Added vertical borders to transaction table
+- Added version information in settings panel
 - Money is now displayed with the local currency symbol, e.g. `$` instead of `CA$`
 - Removed support for the following currencies:
   - XPT: Platinum
