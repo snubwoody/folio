@@ -2,7 +2,7 @@
 <script>
     import IconButton from "$components/button/IconButton.svelte";
     import SettingsButton from "$components/settings/SettingsButton.svelte";
-    import { Landmark,ChartNoAxesCombined,PanelRightOpen,PanelRightClose } from "@lucide/svelte";
+    import { Landmark, ChartNoAxesCombined, PanelRightOpen, PanelRightClose, Wallet } from "@lucide/svelte";
     import { page } from "$app/state";
     import AccountSection from "./AccountSection.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
@@ -21,7 +21,7 @@
             <p>Transactions</p>
         </a>
         <a href="/spending" class="page-link" data-selected={page.route.id === "/spending"}>
-            <ChartNoAxesCombined aria-hidden="true"/>
+            <Wallet aria-hidden="true"/>
             <p>Spending</p>
         </a>
         <a href="/analytics" class="page-link" data-selected={page.route.id === "/analytics"}>
