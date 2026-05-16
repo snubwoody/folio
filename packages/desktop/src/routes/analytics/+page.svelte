@@ -11,7 +11,6 @@
         TransformComponent
     } from "echarts/components";
     import {
-        // The component option types are defined with the ComponentOption suffix
         AriaComponent,
         LegendComponent,
         type TitleComponentOption,
@@ -81,7 +80,7 @@
         series: [
             {
                 type: "pie",
-                radius: ["50%", "70%"],
+                // radius: ["50%", "70%"],
                 padAngle: 0.5,
                 avoidLabelOverlap: false,
                 labelLine: {
@@ -116,7 +115,7 @@
 </script>
 
 <main>
-    <section>
+    <section class="overflow-y-auto space-y-2">
         <header class="flex items-center justify-between">
             <h6>Spending breakdown</h6>
             <div class="flex items-center gap-0.5">
