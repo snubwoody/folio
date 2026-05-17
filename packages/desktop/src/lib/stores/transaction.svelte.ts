@@ -14,6 +14,18 @@ import {
     type CreateTransactionOpts,
     setAccount
 } from "$lib/api/transaction";
+import {type CalendarDate, getLocalTimeZone, today} from "@internationalized/date";
+import {randomId} from "$lib/stores/toast.svelte";
+
+export type AddTestTransactionOps = {
+    id?: string,
+    fromAccountId?: string,
+    toAccountId?: string,
+    date?: CalendarDate,
+    amount?: string,
+    categoryId?: string,
+    note?: string,
+};
 
 export class TransactionStore {
     #transactions: Transaction[] = $state([]);
@@ -22,7 +34,17 @@ export class TransactionStore {
         return this.#transactions;
     }
 
-    addTestTransaction(transaction: Transaction){
+    addTestTransaction(opts: AddTestTransactionOps){
+        const id = opts.id ?? randomId();
+        const transaction: Transaction = {
+            id,
+            categoryId: opts.categoryId,
+            note: opts.note,
+            fromAccountId: opts.fromAccountId,
+            toAccountId: opts.toAccountId,
+            date: today(getLocalTimeZone()),
+            amount: opts.amount ?? "0"
+        };
         this.#transactions.push(transaction);
     }
 
