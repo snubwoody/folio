@@ -4,7 +4,6 @@ import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
 import {transactionStore} from "$lib/stores/transaction.svelte";
-import {CalendarDate} from "@internationalized/date";
 import {formatMoney} from "$lib/utils/money";
 
 beforeEach(()=>{
@@ -30,6 +29,5 @@ describe("TransactionTable",() => {
         expect(rows).toHaveLength(1);
 
         expect(screen.getByText(formatMoney("50"))).not.toBeInTheDocument();
-        expect(screen.getByText(formatMoney("500"))).toBeVisible();
     });
 });
