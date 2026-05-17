@@ -17,6 +17,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import AccountSection from "$components/home/AccountSection.svelte";
     import TransactionSection from "$components/home/transaction/TransactionSection.svelte";
+    import { type PageProps } from "./$types";
+
+    const { params }: PageProps = $props();
+
 </script>
 
 <main>
