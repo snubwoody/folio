@@ -24,7 +24,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 <main>
     <AccountInfo accountId={params.id}/>
-    <TransactionSection/>
+    <TransactionSection accountId={params.id}/>
 </main>
 
 <style>

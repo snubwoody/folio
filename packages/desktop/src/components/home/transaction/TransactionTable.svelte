@@ -6,10 +6,11 @@
     import { Checkbox } from "$components/select";
 
     interface Props {
-        tableStore: TableStore
+        tableStore: TableStore,
+        accountId?: string
     }
 
-    const { tableStore }: Props = $props();
+    const { tableStore,accountId }: Props = $props();
     let selected = $derived(tableStore.allRowsSelected);
     const select = (checked: boolean) => {
         if (checked){
@@ -20,11 +21,13 @@
     };
 </script>
 
-<Table length={8}>
+<Table length={accountId ? 7 : 8}>
     <TableHeader>
         <Checkbox bind:checked={selected} onChecked={select}/>
         <TableCell>Date</TableCell>
-        <TableCell>Account</TableCell>
+        {#if !accountId}
+            <TableCell>Account</TableCell>
+        {/if}
         <TableCell>Payee</TableCell>
         <TableCell>Note</TableCell>
         <TableCell>Category</TableCell>
@@ -32,7 +35,7 @@
         <TableCell>Inflow</TableCell>
     </TableHeader>
     {#each transactionStore.transactions as transaction (transaction.id)}
-        <Transaction {transaction} {tableStore}/>
+        <Transaction showAccount={accountId === undefined} {transaction} {tableStore}/>
     {/each}
 </Table>
 

@@ -15,10 +15,11 @@
 
     interface Props{
         transaction: Transaction
-        tableStore: TableStore
+        tableStore: TableStore,
+        showAccount: boolean
     }
 
-    const { transaction,tableStore }: Props = $props();
+    const { transaction,tableStore, showAccount = true }: Props = $props();
     const transType = $derived.by(() => {
         return transactionType(transaction);
     });
@@ -42,7 +43,9 @@
 <TableRow data-selected={selected}>
     <Checkbox bind:checked onChecked={select}/>
     <DateCell {transaction}/>
-    <AccountCell {transaction}/>
+    {#if showAccount}
+        <AccountCell {transaction}/>
+    {/if}
     {#if transType === "Transfer"}
         {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
         <SelectCell
