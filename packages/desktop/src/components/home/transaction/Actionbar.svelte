@@ -25,7 +25,6 @@
 
 {#if visible || tableStore.allRowsSelected}
     <div class="action-bar" transition:fly={{ y:200,duration: 250 }}>
-        <!---TODO: test this -->
         {#if tableStore.selectedRows.size === 1}
             <p>1 transaction</p>
         {:else if tableStore.allRowsSelected}

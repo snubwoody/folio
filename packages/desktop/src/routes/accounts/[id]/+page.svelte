@@ -15,16 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import AccountSection from "$components/home/AccountSection.svelte";
     import TransactionSection from "$components/home/transaction/TransactionSection.svelte";
     import { type PageProps } from "./$types";
+    import AccountInfo from "$components/AccountInfo.svelte";
 
     const { params }: PageProps = $props();
-
 </script>
 
 <main>
-    <AccountSection/>
+    <AccountInfo accountId={params.id}/>
     <TransactionSection/>
 </main>
 

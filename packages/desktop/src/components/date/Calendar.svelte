@@ -19,7 +19,6 @@
         value?: DateValue
     };
 
-    // TODO: default today
     let {
         value = $bindable(today(getLocalTimeZone())),
         onDateChange

@@ -30,7 +30,6 @@ struct Platform {
 /// Generates a `release-info.json` file containing information about the
 /// latest release.
 pub async fn release_info() -> anyhow::Result<()> {
-    // TODO: filter drafts
     let release = octocrab::instance()
         .repos("snubwoody", "folio")
         .releases()

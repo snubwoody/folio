@@ -60,7 +60,6 @@ pub struct Currency {
     precision: Option<u8>,
 }
 
-// TODO: add constants, use macro
 impl Currency {
     const fn new(
         name: &'static str,
