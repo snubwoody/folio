@@ -10,10 +10,9 @@ import { BundleType, getBundleType } from "@tauri-apps/api/app";
  * @param update The new update.
  */
 export async function installUpdate(update: Update){
-    logger.info(`Downloading new update (${update.version})`);
+    logger.info(`Installing new update (${update.version})...`);
     await update.downloadAndInstall()
         .catch(err => logger.error(`Failed to install new update: ${err.message}`));
-    logger.info(`Installed update (${update.version}), relaunching app...`);
     await relaunch();
 }
 

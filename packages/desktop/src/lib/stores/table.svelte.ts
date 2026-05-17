@@ -8,6 +8,9 @@ export class TableStore{
         return this.#selectedRows;
     }
 
+    /**
+     * Returns true if all the table rows are selected.
+     */
     get allRowsSelected():  boolean{
         return this.#allRowsSelected;
     }
@@ -28,7 +31,10 @@ export class TableStore{
         this.select(id);
     }
 
-    /// Selects a row
+    /**
+     * Select a row.
+     * @param id The id of the table row to select.
+     */
     select(id: string){
         this.#selectedRows.add(id);
     }

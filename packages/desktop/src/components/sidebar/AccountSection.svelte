@@ -9,7 +9,6 @@
     import { formatMoney } from "$lib/utils/money";
     import { transactionStore } from "$lib/stores/transaction.svelte.js";
 
-    // TODO: test 0 accounts
     const total = $derived.by(() => {
         const transactions = transactionStore.transactions;
         const t = accountStore

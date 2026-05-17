@@ -19,13 +19,13 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { Snippet } from "svelte";
 
     interface Props extends  HTMLAttributes<HTMLDivElement>{
-        children?: Snippet
+        children?: Snippet,
+        length: number
     }
 
-    const { children }:Props = $props();
-    // TODO: background color on hover?
+    const { children,length }:Props = $props();
 </script>
 
-<div class="data-table">
+<div style:--length={length - 1} class="data-table">
     {@render children?.()}
 </div>
