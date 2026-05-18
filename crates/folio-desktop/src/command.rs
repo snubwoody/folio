@@ -215,11 +215,10 @@ pub async fn fetch_transactions(state: tauri::State<'_, State>) -> Result<Vec<Tr
 }
 
 #[tauri::command]
-pub async fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
+pub fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()> {
     state
         .category_service
         .delete_category(&id)
-        .await
         .context("Failed to delete category")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -234,7 +233,7 @@ pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()
 }
 
 #[tauri::command]
-pub async fn edit_category(
+pub fn edit_category(
     state: tauri::State<'_, State>,
     id: String,
     title: String,
@@ -242,7 +241,6 @@ pub async fn edit_category(
     state
         .category_service
         .edit_category(&id, &title)
-        .await
         .context("Failed to edit category")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -386,11 +384,10 @@ pub async fn edit_account(
 }
 
 #[tauri::command]
-pub async fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
+pub fn create_income_stream(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
     state
         .category_service
         .create_income_stream(title)
-        .await
         .context("Failed to create income stream")
         .inspect_err(|err| warn!("{}", err.report()))
 }

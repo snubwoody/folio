@@ -139,7 +139,8 @@ from_error! {
     rust_decimal::Error => "rust_decimal error",
     reqwest::Error => "Request error",
     std::num::ParseFloatError => "Parse float error",
-    folio_migrate::MigrateError => "Migrate error"
+    folio_migrate::MigrateError => "Migrate error",
+    rusqlite::Error => "Rusqlite error"
 }
 
 impl Serialize for Error {

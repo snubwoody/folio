@@ -224,6 +224,7 @@ pub enum TransactionType {
 #[derive(Clone)]
 pub struct TransactionService {
     pool: SqlitePool,
+
 }
 
 impl TransactionService {

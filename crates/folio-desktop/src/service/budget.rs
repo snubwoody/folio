@@ -16,7 +16,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::Money;
+use crate::service::CategoryService;
+use crate::{Money, service::Category, SqliteConnection};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -27,6 +28,23 @@ pub struct Budget {
     pub created_at: DateTime<Utc>,
 }
 
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
+    type Error = rusqlite::Error;
+
+    fn try_from(value: &rusqlite::Row) -> Result<Self, Self::Error> {
+        let created_at = DateTime::from_timestamp(value.get(3)?, 0).unwrap_or_default();
+
+        let budget = Self {
+            id: value.get(0)?,
+            category_id: value.get(1)?,
+            amount: Money::from_scaled(value.get(2)?),
+            created_at,
+        };
+
+        Ok(budget)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -35,7 +53,8 @@ mod test {
 
     #[sqlx::test]
     async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
+        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+        let service = CategoryService::new(pool.clone(),connection);
         let len = service.fetch_budgets().await?.len();
         service.create_category("").await?;
         let budgets = service.fetch_budgets().await?;
@@ -45,7 +64,8 @@ mod test {
 
     #[sqlx::test]
     async fn edit_budget(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
+        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+        let service = CategoryService::new(pool.clone(),connection);
         let category = service.create_category("MINE__").await?;
         let budget = service.fetch_budget_from_category(&category.id).await?;
         service
@@ -59,7 +79,8 @@ mod test {
 
     #[sqlx::test]
     async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
+        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+        let service = CategoryService::new(pool.clone(),connection);
         let category = service.create_category("__").await?;
         let budget = service.fetch_budget_from_category(&category.id).await?;
         assert_eq!(budget.amount, Money::ZERO);
@@ -68,7 +89,8 @@ mod test {
 
     #[sqlx::test]
     async fn remaining_caps_at_zero(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
+        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+        let service = CategoryService::new(pool.clone(),connection);
         let category = service.create_category("__").await?;
         let budget = service.fetch_budget_from_category(&category.id).await?;
         assert_eq!(budget.amount, Money::ZERO);
