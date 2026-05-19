@@ -133,8 +133,7 @@ async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .from_account(&a2.id)
         .to_account(&a3.id)
         .note("Note__")
-        .update(&pool)
-        .await?;
+        .update(&connection.get())?;
 
     assert_eq!(expense.amount, Money::from_f64(10.0));
     assert_eq!(expense.transaction_date, date);

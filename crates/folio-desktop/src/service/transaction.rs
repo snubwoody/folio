@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::{Error, Money, SqliteConnection};
 use chrono::{Local, NaiveDate};
-use rusqlite::{Row, params};
+use rusqlite::{Row, params, Connection};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use std::{fmt::Display, marker::PhantomData};
@@ -196,31 +196,52 @@ impl EditBuilder {
         self
     }
 
-    pub async fn update(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "UPDATE transactions
-            SET amount = COALESCE($1,amount),
-                note = COALESCE($2,note),
-                transaction_date = COALESCE($3,transaction_date),
-                from_account_id = COALESCE($4,from_account_id),
-                to_account_id = COALESCE($5,to_account_id),
-                category_id = COALESCE($6,category_id)
-            WHERE id=$7
-            RETURNING *
-            ",
-        )
-        .bind(self.amount)
-        .bind(self.note)
-        .bind(self.transaction_date)
-        .bind(self.from_account_id)
-        .bind(self.to_account_id)
-        .bind(self.category_id)
-        .bind(&self.id)
-        .fetch_one(pool)
-        .await?;
+    pub fn update(self, connection: &Connection) -> crate::Result<Transaction> {
+        let mut query = String::from("update transactions ");
+        query.push_str("set amount = coalesce(?1,amount),");
+        query.push_str("note = coalesce(?2,note),");
+        query.push_str("transaction_date = coalesce(?3,transaction_date),");
+        query.push_str("from_account_id = coalesce(?4,from_account_id),");
+        query.push_str("to_account_id = coalesce(?5,to_account_id),");
+        query.push_str("category_id = coalesce(?6,category_id) ");
+        query.push_str("where id = ?7 returning *");
+
+        let mut stmt = connection.prepare_cached(&query)?;
+        let params = params![
+            self.amount.unwrap_or_default().inner(),
+            self.note,
+            self.transaction_date.unwrap_or_default().to_string(),
+            self.from_account_id,
+            self.to_account_id,
+            self.category_id,
+            self.id
+        ];
+        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
+
+        // let row: Transaction = sqlx::query_as(
+        //     "UPDATE transactions
+        //     SET amount = COALESCE($1,amount),
+        //         note = COALESCE($2,note),
+        //         transaction_date = COALESCE($3,transaction_date),
+        //         from_account_id = COALESCE($4,from_account_id),
+        //         to_account_id = COALESCE($5,to_account_id),
+        //         category_id = COALESCE($6,category_id)
+        //     WHERE id=$7
+        //     RETURNING *
+        //     ",
+        // )
+        // .bind(self.amount)
+        // .bind(self.note)
+        // .bind(self.transaction_date)
+        // .bind(self.from_account_id)
+        // .bind(self.to_account_id)
+        // .bind(self.category_id)
+        // .bind(&self.id)
+        // .fetch_one(pool)
+        // .await?;
 
         info!(id = self.id, "Updated transaction");
-        Ok(row)
+        Ok(transaction)
     }
 }
 

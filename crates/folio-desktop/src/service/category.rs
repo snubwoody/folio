@@ -17,7 +17,7 @@ use crate::{Money, SqliteConnection, db, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use rusqlite::params;
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, Row, SqlitePool};
+use sqlx::FromRow;
 use tracing::{debug, info, warn};
 
 /// Service struct for managing categories and category groups.

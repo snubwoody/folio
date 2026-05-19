@@ -60,9 +60,6 @@ impl Money {
     }
 
     pub fn from_f64(value: f64) -> Self {
-        // TODO: probable precision loss
-        // TODO: test overflow
-
         let scaled = (value * 10f64.powi(Self::SCALE as i32)).round() as i64;
         Self(scaled)
     }

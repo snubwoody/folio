@@ -159,8 +159,7 @@ pub async fn edit_transaction(
     state: tauri::State<'_, State>,
     data: EditBuilder,
 ) -> Result<Transaction> {
-    data.update(&state.pool)
-        .await
+    data.update(&state.connection.get())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
