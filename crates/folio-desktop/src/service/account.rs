@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::Money;
+use crate::{Money, SqliteConnection};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
@@ -57,12 +57,13 @@ impl EditAccount {
 #[derive(Clone)]
 pub struct AccountService {
     pool: SqlitePool,
+    connection: SqliteConnection
 }
 
 impl AccountService {
     /// Creates a new [`AccountService`]
-    pub fn new(pool: SqlitePool) -> Self {
-        Self { pool }
+    pub fn new(pool: SqlitePool,connection: SqliteConnection) -> Self {
+        Self { pool,connection }
     }
 
     /// Creates a new account.

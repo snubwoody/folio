@@ -86,7 +86,7 @@ mod test {
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
         let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-        let account_service = AccountService::new(pool.clone());
+        let account_service = AccountService::new(pool.clone(),connection.clone());
         let category_service = CategoryService::new(connection.clone());
         let transaction_service = TransactionService::new(connection.clone());
         let c1 = category_service.create_category("Expense")?;
@@ -118,7 +118,7 @@ mod test {
     async fn fetch_analytics_in_current_month(pool: SqlitePool) -> crate::Result<()> {
         let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
         let service = CategoryService::new(connection.clone());
-        let account_service = AccountService::new(pool.clone());
+        let account_service = AccountService::new(pool.clone(),connection.clone());
         let transaction_service = TransactionService::new(connection.clone());
         let c1 = service.create_category("Expense")?;
         let a1 = account_service

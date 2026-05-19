@@ -87,7 +87,7 @@ impl State {
         let (pool, connection) = init_database().await?;
         info!("Initialised database pool");
 
-        let account_service = AccountService::new(pool.clone());
+        let account_service = AccountService::new(pool.clone(),connection.clone());
         let category_service = CategoryService::new(connection.clone());
         let transaction_service = TransactionService::new(connection.clone());
 
@@ -156,7 +156,7 @@ pub fn get_data_dir() -> Option<PathBuf> {
 }
 
 /// Creates an in memory sqlite database for testing.
-pub fn create_test_db() -> crate::Result<SqliteConnection> {
+pub fn create_test_db() -> Result<SqliteConnection> {
     let connection = SqliteConnection::in_memory()?;
     let mut migrator = folio_migrate::Migrator::new();
 
