@@ -223,7 +223,6 @@ pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()
     state
         .category_service
         .create_missing_budgets()
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -285,7 +284,6 @@ pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Cate
     state
         .category_service
         .fetch_categories()
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -294,7 +292,6 @@ pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>
     state
         .category_service
         .fetch_budgets()
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -303,7 +300,6 @@ pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> 
     state
         .category_service
         .fetch_budget_from_category(&category_id)
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -316,7 +312,6 @@ pub async fn create_budget(
     state
         .category_service
         .create_budget(Money::from_str(amount)?, category_id)
-        .await
         .context("Failed to create budget")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -330,7 +325,6 @@ pub async fn edit_budget(
     state
         .category_service
         .edit_budget(&id, amount)
-        .await
         .context("Failed to edit budget")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -340,7 +334,6 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
     state
         .category_service
         .create_category(title)
-        .await
         .context("Failed to create category")
         .inspect_err(|err| warn!("{}", err.report()))
 }

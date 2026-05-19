@@ -439,13 +439,13 @@ async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = CategoryService::new(pool.clone(), connection.clone());
+    let service = CategoryService::new(connection.clone());
     let account_service = AccountService::new(pool.clone());
     let transaction_service = TransactionService::new(connection.clone());
 
     let account = account_service.create_account("__", Money::ZERO).await?;
     let account2 = account_service.create_account("__", Money::ZERO).await?;
-    let category = service.create_category("").await?;
+    let category = service.create_category("")?;
     let transaction = transaction_service
         .income()
         .amount(Money::MAX)
