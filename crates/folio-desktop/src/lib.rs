@@ -28,9 +28,8 @@ use crate::settings::Settings;
 pub use currency::Currency;
 pub use error::{Error, Result};
 pub use money::Money;
-use rusqlite::Connection;
 use sqlx::SqlitePool;
-use sqlx::sqlite::{SqliteConnectOptions, SqliteJournalMode};
+use sqlx::sqlite::SqliteConnectOptions;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, MutexGuard};
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
@@ -43,7 +42,7 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
         .resizable(true)
         .maximized(true);
 
-    // We use a custom title bar on Windows
+    // Use a custom title bar on Windows
     #[cfg(windows)]
     let builder = builder.decorations(false);
 
@@ -90,7 +89,7 @@ impl State {
 
         let account_service = AccountService::new(pool.clone());
         let category_service = CategoryService::new(pool.clone(), connection.clone());
-        let transaction_service = TransactionService::new(pool.clone(), connection.clone());
+        let transaction_service = TransactionService::new(connection.clone());
 
         #[cfg(debug_assertions)]
         let mut path = PathBuf::from(".");
@@ -137,7 +136,7 @@ pub async fn init_database() -> Result<(SqlitePool, SqliteConnection)> {
     conn.execute("PRAGMA foreign_keys = ON", ()).unwrap();
 
     let connection = SqliteConnection::open(&path)?;
-    let mut migrator = folio_migrate::Migrator::new();
+    let _migrator = folio_migrate::Migrator::new();
     Ok((pool, connection))
 }
 
@@ -198,7 +197,7 @@ impl SqliteConnection {
     }
 
     /// Returns a reference to the sqlite connection.
-    pub fn get(&self) -> MutexGuard<rusqlite::Connection> {
+    pub fn get(&self) -> MutexGuard<'_, rusqlite::Connection> {
         self.connection.lock().unwrap()
     }
 }

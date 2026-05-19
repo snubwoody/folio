@@ -2,8 +2,7 @@ use crate::{Error, Money, SqliteConnection};
 use chrono::{Local, NaiveDate};
 use rusqlite::{Row, params};
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, QueryBuilder, SqlitePool};
-use tracing_subscriber::fmt::format;
+use sqlx::FromRow;
 use std::{fmt::Display, marker::PhantomData};
 use tracing::info;
 
@@ -225,13 +224,12 @@ pub enum TransactionType {
 
 #[derive(Clone)]
 pub struct TransactionService {
-    pool: SqlitePool,
     connection: SqliteConnection,
 }
 
 impl TransactionService {
-    pub fn new(pool: SqlitePool, connection: SqliteConnection) -> Self {
-        Self { pool, connection }
+    pub fn new(connection: SqliteConnection) -> Self {
+        Self { connection }
     }
 
     pub fn expense(&self) -> TransactionBuilder<Expense> {
@@ -375,15 +373,17 @@ impl TransactionService {
         let mut query = String::from("update transactions set to_account_id = ?1");
 
         if transaction.transaction_type() == TransactionType::Income {
-            let sql = format!(", from_account_id = '{}'",transaction.to_account_id.unwrap_or_default());
-            query
-                .push_str(&sql);
+            let sql = format!(
+                ", from_account_id = '{}'",
+                transaction.to_account_id.unwrap_or_default()
+            );
+            query.push_str(&sql);
         }
         query.push_str(",category_id = null where id = ?2 returning *");
 
         let mut stmt = connection.prepare_cached(&query)?;
-        let row = stmt.query_row([account_id,id], |row| Transaction::try_from(row))?;
-        
+        let row = stmt.query_row([account_id, id], |row| Transaction::try_from(row))?;
+
         info!(id = id, payee = account_id, "Set transaction payee");
 
         Ok(row)

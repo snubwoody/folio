@@ -16,8 +16,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::service::CategoryService;
-use crate::{Money, SqliteConnection, service::Category};
+use crate::Money;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
