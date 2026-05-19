@@ -13,7 +13,7 @@ async fn total_spent(pool: SqlitePool) -> Result<()> {
     let transaction_service = TransactionService::new(connection.clone());
 
     let category = category_service.create_category("")?;
-    let account = account_service.create_account("", Money::ZERO).await?;
+    let account = account_service.create_account("Expense", Money::ZERO)?;
 
     transaction_service
         .expense()

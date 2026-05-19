@@ -254,7 +254,6 @@ pub async fn create_account(
     state
         .account_service
         .create_account(name, starting_balance)
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -263,7 +262,6 @@ pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Resu
     state
         .account_service
         .calculate_balance(&id)
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
@@ -272,7 +270,6 @@ pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Accoun
     state
         .account_service
         .fetch_all()
-        .await
         .context("Failed to fetch accounts")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -341,7 +338,6 @@ pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Resul
     state
         .account_service
         .delete_account(&id)
-        .await
         .context("Failed to delete account")
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -364,7 +360,6 @@ pub async fn edit_account(
     state
         .account_service
         .edit_account(&id, opts)
-        .await
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

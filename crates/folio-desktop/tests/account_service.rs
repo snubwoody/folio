@@ -8,13 +8,13 @@ async fn edit_account(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = AccountService::new(pool.clone(),connection.clone());
     let account = service
-        .create_account("My account", Money::from_unscaled(200))
-        .await?;
+        .create_account("My account", Money::from_unscaled(200))?;
+
     let opts = EditAccount::new()
         .name("XLPE")
         .starting_balance(Money::ZERO);
 
-    let account = service.edit_account(&account.id, opts).await?;
+    let account = service.edit_account(&account.id, opts)?;
     let record = sqlx::query!("SELECT * FROM accounts WHERE id=$1", account.id)
         .fetch_one(&pool)
         .await?;
@@ -29,11 +29,10 @@ async fn edit_account_keep_defaults(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = AccountService::new(pool.clone(),connection.clone());
     let account = service
-        .create_account("My account", Money::from_unscaled(200))
-        .await?;
+        .create_account("My account", Money::from_unscaled(200))?;
     let opts = EditAccount::new().starting_balance(Money::ZERO);
 
-    let account = service.edit_account(&account.id, opts).await?;
+    let account = service.edit_account(&account.id, opts)?;
     let record = sqlx::query!("SELECT * FROM accounts WHERE id=$1", account.id)
         .fetch_one(&pool)
         .await?;
@@ -49,8 +48,7 @@ async fn create_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let service = AccountService::new(pool.clone(),connection.clone());
     let now = Utc::now().timestamp();
     service
-        .create_account("My account", Money::from_unscaled(20))
-        .await?;
+        .create_account("My account", Money::from_unscaled(20))?;
     let account = sqlx::query!("SELECT * FROM accounts")
         .fetch_one(&pool)
         .await?;
@@ -73,7 +71,7 @@ async fn fetch_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     .fetch_one(&pool)
     .await?;
 
-    let account = service.fetch_account(&record.id).await?;
+    let account = service.fetch_account(&record.id)?;
     assert_eq!(account.starting_balance.inner(), 20_000_000);
     assert_eq!(account.name, "C3PO");
     Ok(())
@@ -83,7 +81,7 @@ async fn fetch_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = AccountService::new(pool.clone(),connection.clone());
-    let account = service.create_account("", Money::ZERO).await?;
+    let account = service.create_account("Expense", Money::ZERO)?;
     let transaction_service = TransactionService::new(connection.clone());
     transaction_service
         .expense()
@@ -100,7 +98,7 @@ async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
         .account_id(&account.id)
         .amount(Money::from_unscaled(50))
         .create(&connection.get())?;
-    let balance = service.calculate_balance(&account.id).await?;
+    let balance = service.calculate_balance(&account.id)?;
     assert_eq!(balance, Money::from_unscaled(10));
     Ok(())
 }
@@ -109,17 +107,17 @@ async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
 async fn delete_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = AccountService::new(pool.clone(),connection.clone());
-    service.create_account("My account", Money::ZERO).await?;
-    service.create_account("My account", Money::ZERO).await?;
+    service.create_account("My account", Money::ZERO)?;
+    service.create_account("My account", Money::ZERO)?;
 
-    let account = service.create_account("My account", Money::ZERO).await?;
+    let account = service.create_account("My account", Money::ZERO)?;
 
     let records = sqlx::query!("SELECT * FROM accounts")
         .fetch_all(&pool)
         .await?;
     assert_eq!(records.len(), 3);
 
-    service.delete_account(&account.id).await?;
+    service.delete_account(&account.id)?;
     let records = sqlx::query!("SELECT * FROM accounts")
         .fetch_all(&pool)
         .await?;
@@ -132,7 +130,7 @@ async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Resul
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = AccountService::new(pool.clone(),connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
-    let account = service.create_account("My account", Money::ZERO).await?;
+    let account = service.create_account("My account", Money::ZERO)?;
 
     transaction_service
         .expense()
@@ -143,7 +141,7 @@ async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Resul
         .await?;
     assert_eq!(records.len(), 1);
 
-    service.delete_account(&account.id).await?;
+    service.delete_account(&account.id)?;
     let records = sqlx::query!("SELECT * FROM accounts")
         .fetch_all(&pool)
         .await?;
@@ -156,7 +154,7 @@ async fn delete_account_with_income(pool: sqlx::SqlitePool) -> folio_lib::Result
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = AccountService::new(pool.clone(),connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
-    let account = service.create_account("My account", Money::ZERO).await?;
+    let account = service.create_account("My account", Money::ZERO)?;
     transaction_service
         .income()
         .account_id(&account.id)
@@ -166,7 +164,7 @@ async fn delete_account_with_income(pool: sqlx::SqlitePool) -> folio_lib::Result
         .await?;
     assert_eq!(records.len(), 1);
 
-    service.delete_account(&account.id).await?;
+    service.delete_account(&account.id)?;
     let records = sqlx::query!("SELECT * FROM accounts")
         .fetch_all(&pool)
         .await?;
