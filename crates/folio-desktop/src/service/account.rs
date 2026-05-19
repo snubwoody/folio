@@ -59,14 +59,13 @@ impl EditAccount {
 /// Service struct for creating, reading and editing accounts.
 #[derive(Clone)]
 pub struct AccountService {
-    pool: SqlitePool,
     connection: SqliteConnection
 }
 
 impl AccountService {
     /// Creates a new [`AccountService`]
-    pub fn new(pool: SqlitePool,connection: SqliteConnection) -> Self {
-        Self { pool,connection }
+    pub fn new(connection: SqliteConnection) -> Self {
+        Self { connection }
     }
 
     /// Creates a new account.

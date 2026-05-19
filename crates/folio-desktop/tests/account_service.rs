@@ -6,7 +6,7 @@ use sqlx::SqlitePool;
 #[sqlx::test]
 async fn edit_account(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let account = service
         .create_account("My account", Money::from_unscaled(200))?;
 
@@ -27,7 +27,7 @@ async fn edit_account(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn edit_account_keep_defaults(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let account = service
         .create_account("My account", Money::from_unscaled(200))?;
     let opts = EditAccount::new().starting_balance(Money::ZERO);
@@ -45,7 +45,7 @@ async fn edit_account_keep_defaults(pool: SqlitePool) -> Result<()> {
 #[sqlx::test]
 async fn create_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let now = Utc::now().timestamp();
     service
         .create_account("My account", Money::from_unscaled(20))?;
@@ -61,7 +61,7 @@ async fn create_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn fetch_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let amount = Money::from_f64(20.0);
     let amount = amount.inner();
     let record = sqlx::query!(
@@ -80,7 +80,7 @@ async fn fetch_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let account = service.create_account("Expense", Money::ZERO)?;
     let transaction_service = TransactionService::new(connection.clone());
     transaction_service
@@ -106,7 +106,7 @@ async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn delete_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     service.create_account("My account", Money::ZERO)?;
     service.create_account("My account", Money::ZERO)?;
 
@@ -128,7 +128,7 @@ async fn delete_account(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
 #[sqlx::test]
 async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = service.create_account("My account", Money::ZERO)?;
 
@@ -152,7 +152,7 @@ async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Resul
 #[sqlx::test]
 async fn delete_account_with_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-    let service = AccountService::new(pool.clone(),connection.clone());
+    let service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = service.create_account("My account", Money::ZERO)?;
     transaction_service

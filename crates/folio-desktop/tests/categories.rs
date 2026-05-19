@@ -9,7 +9,7 @@ async fn total_spent(pool: SqlitePool) -> Result<()> {
     // let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
 
     let category_service = CategoryService::new(connection.clone());
-    let account_service = AccountService::new(pool.clone(),connection.clone());
+    let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
 
     let category = category_service.create_category("")?;

@@ -87,7 +87,7 @@ impl State {
         let (pool, connection) = init_database().await?;
         info!("Initialised database pool");
 
-        let account_service = AccountService::new(pool.clone(),connection.clone());
+        let account_service = AccountService::new(connection.clone());
         let category_service = CategoryService::new(connection.clone());
         let transaction_service = TransactionService::new(connection.clone());
 
@@ -133,7 +133,7 @@ pub async fn init_database() -> Result<(SqlitePool, SqliteConnection)> {
         .await
         .inspect_err(|err| error!("Failed to run migration: {err}"))?;
     let conn = rusqlite::Connection::open(&path).expect("Failed to open sqlite connection");
-    conn.execute("PRAGMA foreign_keys = ON", ()).unwrap();
+    conn.execute("PRAGMA foreign_keys = ON", ())?;
 
     let connection = SqliteConnection::open(&path)?;
     let _migrator = folio_migrate::Migrator::new();
