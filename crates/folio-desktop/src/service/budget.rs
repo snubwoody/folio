@@ -47,12 +47,12 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{CategoryService, SqliteConnection};
+    use crate::{create_test_db, CategoryService, SqliteConnection};
     use sqlx::SqlitePool;
 
-    #[sqlx::test]
-    async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
-        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    #[test]
+    fn fetch_budgets() -> crate::Result<()> {
+        let connection = create_test_db()?;
         let service = CategoryService::new(connection);
         let len = service.fetch_budgets()?.len();
         service.create_category("")?;
@@ -61,9 +61,9 @@ mod test {
         Ok(())
     }
 
-    #[sqlx::test]
-    async fn edit_budget(pool: SqlitePool) -> crate::Result<()> {
-        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    #[test]
+    fn edit_budget() -> crate::Result<()> {
+        let connection = create_test_db()?;
         let service = CategoryService::new(connection);
         let category = service.create_category("MINE__")?;
         let budget = service.fetch_budget_from_category(&category.id)?;
@@ -74,9 +74,9 @@ mod test {
         Ok(())
     }
 
-    #[sqlx::test]
-    async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
-        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    #[test]
+    fn get_budget() -> crate::Result<()> {
+        let connection = create_test_db()?;
         let service = CategoryService::new(connection);
         let category = service.create_category("__")?;
         let budget = service.fetch_budget_from_category(&category.id)?;
@@ -84,9 +84,9 @@ mod test {
         Ok(())
     }
 
-    #[sqlx::test]
-    async fn remaining_caps_at_zero(pool: SqlitePool) -> crate::Result<()> {
-        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    #[test]
+    fn remaining_caps_at_zero() -> crate::Result<()> {
+        let connection = create_test_db()?;
         let service = CategoryService::new(connection);
         let category = service.create_category("__")?;
         let budget = service.fetch_budget_from_category(&category.id)?;

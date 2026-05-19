@@ -2,13 +2,13 @@ use chrono::NaiveDate;
 use folio_lib::service::{
     AccountService, CategoryService, Transaction, TransactionService, TransactionType,
 };
-use folio_lib::{Money, SqliteConnection};
+use folio_lib::{Money, SqliteConnection, create_test_db};
 use sqlx::{Row, SqlitePool};
 use std::str::FromStr;
 
-#[sqlx::test]
-async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_inflow_for_only_one_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -33,9 +33,9 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_outflow_for_only_one_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -63,31 +63,29 @@ async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result
     Ok(())
 }
 
-#[sqlx::test]
-async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn fetch_transaction() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("Expense", Money::ZERO)?;
-    let row = sqlx::query(
-        "
-        INSERT INTO transactions(amount,transaction_date,from_account_id)
-        VALUES (10,'2024-12-12',$1)
-        RETURNING id",
-    )
-    .bind(&account.id)
-    .fetch_one(&pool)
-    .await?;
 
-    let id: String = row.get("id");
-    let transaction = transaction_service.fetch(&id)?;
+    // Prevent mutex deadlock
+    let row = {
+        let conn = connection.get();
+        let mut stmt = conn
+            .prepare_cached("insert into transactions(amount,transaction_date,from_account_id) values(10,'2024-12-12',?) returning *")?;
+        stmt.query_row([account.id], |row| Transaction::try_from(row))?
+    };
+
+    let transaction = transaction_service.fetch(&row.id)?;
     assert_eq!(transaction.amount, Money::from_scaled(10));
     Ok(())
 }
 
-#[sqlx::test]
-async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn create_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("Expense", Money::ZERO)?;
@@ -105,9 +103,9 @@ async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn edit_transaction() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("Expense", Money::ZERO)?;
@@ -137,9 +135,9 @@ async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn create_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("Expense", Money::ZERO)?;
@@ -157,9 +155,9 @@ async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn create_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let a1 = account_service.create_account("Expense", Money::ZERO)?;
@@ -179,9 +177,9 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn delete_multiple_transactions() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -206,9 +204,9 @@ async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()>
     Ok(())
 }
 
-#[sqlx::test]
-async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn delete_empty_slice() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -224,9 +222,9 @@ async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn delete_only_affected_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn delete_only_affected_transactions() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -269,9 +267,9 @@ fn transaction_type_expense() {
     assert_eq!(transfer.transaction_type(), TransactionType::Transfer);
 }
 
-#[sqlx::test]
-async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_outflow_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let transaction_service = TransactionService::new(connection.clone());
     let account_service = AccountService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -292,9 +290,9 @@ async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_payee_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -312,9 +310,9 @@ async fn set_payee_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_account_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -332,9 +330,9 @@ async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_account_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -352,9 +350,9 @@ async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_account_for_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -373,9 +371,9 @@ async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_payee_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
 
@@ -394,9 +392,9 @@ async fn set_payee_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_payee_for_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -415,9 +413,9 @@ async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_payee_removes_category() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let service = CategoryService::new(connection.clone());
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
@@ -438,9 +436,9 @@ async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_inflow_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let transaction_service = TransactionService::new(connection.clone());
     let account_service = AccountService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -458,9 +456,9 @@ async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_inflow_for_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -476,9 +474,9 @@ async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_inflow_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let transaction_service = TransactionService::new(connection.clone());
     let account_service = AccountService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO)?;
@@ -499,9 +497,9 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn set_outflow_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
     let transaction_service = TransactionService::new(connection.clone());
     // Setting outflow on an income should turn it into an expense
@@ -523,9 +521,9 @@ async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn fetch_all(pool: SqlitePool) -> folio_lib::Result<()> {
-    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+#[test]
+fn fetch_all() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
     let account_service = AccountService::new(connection.clone());
 
     let transaction_service = TransactionService::new(connection.clone());

@@ -91,8 +91,7 @@ mod test {
         let transaction_service = TransactionService::new(connection.clone());
         let c1 = category_service.create_category("Expense")?;
 
-        let a1 = account_service
-            .create_account("Expense", Money::ZERO)?;
+        let a1 = account_service.create_account("Expense", Money::ZERO)?;
         transaction_service
             .expense()
             .account_id(&a1.id)
@@ -120,8 +119,7 @@ mod test {
         let account_service = AccountService::new(connection.clone());
         let transaction_service = TransactionService::new(connection.clone());
         let c1 = service.create_category("Expense")?;
-        let a1 = account_service
-            .create_account("Expense", Money::ZERO)?;
+        let a1 = account_service.create_account("Expense", Money::ZERO)?;
 
         transaction_service
             .expense()

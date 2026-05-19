@@ -83,14 +83,17 @@ impl TransactionBuilder<Transfer> {
         let mut stmt = connection
             .prepare_cached("insert into transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id) values(?1,?2,?3,?4,?5,?6) returning *")?;
 
-        let transaction = stmt.query_row(params![
-            self.transaction_date.to_string(),
-            self.from_account_id,
-            self.to_account_id,
-            self.amount.inner(),
-            self.note,
-            self.category_id
-        ],|row|Transaction::try_from(row))?;
+        let transaction = stmt.query_row(
+            params![
+                self.transaction_date.to_string(),
+                self.from_account_id,
+                self.to_account_id,
+                self.amount.inner(),
+                self.note,
+                self.category_id
+            ],
+            |row| Transaction::try_from(row),
+        )?;
 
         // let row: Transaction = sqlx::query_as(
         //     "INSERT INTO transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id)
@@ -105,7 +108,6 @@ impl TransactionBuilder<Transfer> {
         //     .bind(self.category_id)
         //     .fetch_one(pool)
         //     .await?;
-
 
         info!(id=?transaction.id,"Created new transfer");
         Ok(transaction)
@@ -122,14 +124,16 @@ impl TransactionBuilder<Income> {
         let mut stmt = connection
             .prepare_cached("insert into transactions(transaction_date,to_account_id,amount,note,category_id) values(?1,?2,?3,?4,?5) returning *")?;
 
-        let transaction = stmt.query_row(params![
-            self.transaction_date.to_string(),
-            self.to_account_id,
-            self.amount.inner(),
-            self.note,
-            self.category_id
-        ],|row|Transaction::try_from(row))?;
-
+        let transaction = stmt.query_row(
+            params![
+                self.transaction_date.to_string(),
+                self.to_account_id,
+                self.amount.inner(),
+                self.note,
+                self.category_id
+            ],
+            |row| Transaction::try_from(row),
+        )?;
 
         // let row: Transaction = sqlx::query_as(
         //     "INSERT INTO transactions(transaction_date,to_account_id,amount,note,category_id)
@@ -158,13 +162,16 @@ impl TransactionBuilder<Expense> {
         let mut stmt = connection
             .prepare_cached("insert into transactions(transaction_date,from_account_id,amount,note,category_id) values(?1,?2,?3,?4,?5) returning *")?;
 
-        let transaction = stmt.query_row(params![
-            self.transaction_date.to_string(),
-            self.from_account_id,
-            self.amount.inner(),
-            self.note,
-            self.category_id
-        ],|row|Transaction::try_from(row))?;
+        let transaction = stmt.query_row(
+            params![
+                self.transaction_date.to_string(),
+                self.from_account_id,
+                self.amount.inner(),
+                self.note,
+                self.category_id
+            ],
+            |row| Transaction::try_from(row),
+        )?;
 
         // let row: Transaction = sqlx::query_as(
         //     "INSERT INTO transactions(transaction_date,from_account_id,amount,note,category_id)

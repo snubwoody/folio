@@ -13,14 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use crate::service::Transaction;
 use crate::{Money, SqliteConnection};
-use chrono::{DateTime, NaiveDate, Utc};
 use chrono::Weekday::Mon;
+use chrono::{DateTime, NaiveDate, Utc};
 use rusqlite::params;
 use serde::{Deserialize, Serialize};
 use sqlx::{Row, SqlitePool};
 use tracing::info;
-use crate::service::Transaction;
 
 #[derive(Debug, Serialize, Clone, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -59,7 +59,7 @@ impl EditAccount {
 /// Service struct for creating, reading and editing accounts.
 #[derive(Clone)]
 pub struct AccountService {
-    connection: SqliteConnection
+    connection: SqliteConnection,
 }
 
 impl AccountService {
@@ -69,17 +69,14 @@ impl AccountService {
     }
 
     /// Creates a new account.
-    pub fn create_account(
-        &self,
-        name: &str,
-        starting_balance: Money,
-    ) -> crate::Result<Account> {
+    pub fn create_account(&self, name: &str, starting_balance: Money) -> crate::Result<Account> {
         let connection = self.connection.get();
         let now = Utc::now().timestamp();
         let balance = starting_balance.inner();
-        let mut stmt = connection
-            .prepare_cached("insert into accounts(name,starting_balance,created_at) values(?1,?2,?3) returning *")?;
-        let account = stmt.query_row(params![name,balance,now],|row|Account::try_from(row))?;
+        let mut stmt = connection.prepare_cached(
+            "insert into accounts(name,starting_balance,created_at) values(?1,?2,?3) returning *",
+        )?;
+        let account = stmt.query_row(params![name, balance, now], |row| Account::try_from(row))?;
 
         info!(id=?account.id,"Created new account");
         Ok(account)
@@ -92,7 +89,7 @@ impl AccountService {
     pub fn fetch_account(&self, id: &str) -> crate::Result<Account> {
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from accounts where id=?")?;
-        let account = stmt.query_row([id],|row|Account::try_from(row))?;
+        let account = stmt.query_row([id], |row| Account::try_from(row))?;
         Ok(account)
     }
 
@@ -100,7 +97,10 @@ impl AccountService {
         let connection = self.connection.get();
         let mut stmt = connection
             .prepare_cached("update accounts set name=coalesce(?1,name),starting_balance=coalesce(?2,starting_balance) where id=?3 returning *")?;
-        let account = stmt.query_row((opts.name,opts.starting_balance.map(|m|m.inner()),id),|row|Account::try_from(row))?;
+        let account = stmt.query_row(
+            (opts.name, opts.starting_balance.map(|m| m.inner()), id),
+            |row| Account::try_from(row),
+        )?;
 
         info!(id=?account.id,"Updated account");
         Ok(account)
@@ -109,8 +109,7 @@ impl AccountService {
     /// Deletes an [`Account`].
     pub fn delete_account(&self, id: &str) -> crate::Result<()> {
         let connection = self.connection.get();
-        let mut stmt = connection
-            .prepare_cached("delete from accounts where id=?")?;
+        let mut stmt = connection.prepare_cached("delete from accounts where id=?")?;
         stmt.execute([id])?;
 
         info!(id=?id,"Deleted account");
@@ -121,14 +120,14 @@ impl AccountService {
     /// the sum of all incomes.
     pub fn calculate_balance(&self, id: &str) -> Result<Money, crate::Error> {
         let connection = self.connection.get();
-        let expense_sql = "select coalesce(sum(amount),0) as total from transactions where from_account_id=?";
-        let income_sql = "select coalesce(sum(amount),0) as total from transactions where to_account_id=?";
+        let expense_sql =
+            "select coalesce(sum(amount),0) as total from transactions where from_account_id=?";
+        let income_sql =
+            "select coalesce(sum(amount),0) as total from transactions where to_account_id=?";
 
-        let total_expenses = connection
-            .query_row(expense_sql,[id],|row|row.get::<_,i64>(0))?;
+        let total_expenses = connection.query_row(expense_sql, [id], |row| row.get::<_, i64>(0))?;
 
-        let total_income = connection
-            .query_row(income_sql,[id],|row|row.get::<_,i64>(0))?;
+        let total_income = connection.query_row(income_sql, [id], |row| row.get::<_, i64>(0))?;
 
         let difference = total_income - total_expenses;
         Ok(Money::from_scaled(difference))
@@ -138,7 +137,7 @@ impl AccountService {
     pub fn fetch_all(&self) -> crate::Result<Vec<Account>> {
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from accounts")?;
-        let rows = stmt.query_map((),|row|Account::try_from(row))?;
+        let rows = stmt.query_map((), |row| Account::try_from(row))?;
 
         let mut accounts = vec![];
         for record in rows {
@@ -147,16 +146,16 @@ impl AccountService {
 
         Ok(accounts)
     }
-
 }
 
 impl<'a> TryFrom<&rusqlite::Row<'a>> for Account {
     type Error = rusqlite::Error;
 
     fn try_from(row: &rusqlite::Row) -> Result<Self, Self::Error> {
-        let created_at = row.get::<_,i64>("created_at")
+        let created_at = row
+            .get::<_, i64>("created_at")
             .ok()
-            .map(|t|DateTime::from_timestamp(t,0).unwrap_or_default());
+            .map(|t| DateTime::from_timestamp(t, 0).unwrap_or_default());
 
         let account = Self {
             id: row.get("id")?,
