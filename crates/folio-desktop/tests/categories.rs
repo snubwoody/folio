@@ -98,36 +98,45 @@ async fn fetch_category(pool: SqlitePool) -> folio_lib::Result<()> {
 
 #[sqlx::test]
 async fn get_category_group(pool: SqlitePool) -> Result<()> {
+    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    let service = CategoryService::new(connection);
+
     let row: CategoryGroup =
         sqlx::query_as("INSERT INTO category_groups(title) VALUES('Subscriptions') RETURNING *")
             .fetch_one(&pool)
             .await?;
-    let group = CategoryGroup::get(&row.id, &pool).await?;
+    let group = service.fetch_group(&row.id)?;
     assert_eq!(group.title, "Subscriptions");
     Ok(())
 }
 
 #[sqlx::test]
 async fn create_category_group(pool: SqlitePool) -> Result<()> {
-    let row = CategoryGroup::create("Wants", &pool).await?;
-    let group = CategoryGroup::get(&row.id, &pool).await?;
+    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    let service = CategoryService::new(connection);
+    let row = service.create_group("Wants")?;
+    let group = service.fetch_group(&row.id)?;
     assert_eq!(group.title, "Wants");
     Ok(())
 }
 
 #[sqlx::test]
 async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
-    let row = CategoryGroup::create("Wants", &pool).await?;
-    CategoryGroup::set_title(&row.id, "Needs", &pool).await?;
-    let group = CategoryGroup::get(&row.id, &pool).await?;
+    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    let service = CategoryService::new(connection);
+    let row = service.create_group("Wants")?;
+    let group = service.set_group_title(&row.id,"Needs")?;
     assert_eq!(group.title, "Needs");
     Ok(())
 }
 
 #[sqlx::test]
 async fn delete_category_group(pool: SqlitePool) -> Result<()> {
-    let row = CategoryGroup::create("Wants", &pool).await?;
-    CategoryGroup::delete(&row.id, &pool).await?;
+    let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
+    let service = CategoryService::new(connection);
+    let row = service.create_group("Wants")?;
+    service.delete_group(&row.id)?;
+
     let result = sqlx::query("SELECT * FROM category_groups WHERE id=$1")
         .bind(row.id)
         .fetch_optional(&pool)

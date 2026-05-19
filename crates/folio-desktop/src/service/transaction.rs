@@ -431,10 +431,10 @@ impl Transaction {
     }
 }
 
-impl<'a> TryFrom<&rusqlite::Row<'a>> for Transaction {
+impl<'a> TryFrom<&Row<'a>> for Transaction {
     type Error = rusqlite::Error;
 
-    fn try_from(row: &Row) -> std::result::Result<Self, Self::Error> {
+    fn try_from(row: &Row) -> Result<Self, Self::Error> {
         let date: String = row.get(4)?;
 
         let transaction = Self {

@@ -231,6 +231,38 @@ impl CategoryService {
         }
         Ok(budgets)
     }
+
+    /// Fetch a category group from the database.
+    pub fn fetch_group(&self,id: &str) -> crate::Result<CategoryGroup> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from category_groups where id = ?")?;
+        let group = stmt.query_row([id],|row|CategoryGroup::try_from(row))?;
+        Ok(group)
+    }
+
+    /// Create a new category group.
+    pub fn create_group(&self,title: &str) -> crate::Result<CategoryGroup> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("insert into category_groups(title) values(?) returning *")?;
+        let group = stmt.query_row([title],|row|CategoryGroup::try_from(row))?;
+        Ok(group)
+    }
+
+    /// Update the title of the category group.
+    pub fn set_group_title(&self,id: &str, title: &str) -> crate::Result<CategoryGroup> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("update category_groups set title=?1 where id=?2 returning *")?;
+        let group = stmt.query_row([title,id],|row|CategoryGroup::try_from(row))?;
+        Ok(group)
+    }
+
+    /// Delete a category group
+    pub fn delete_group(&self,id: &str,) -> crate::Result<()> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("delete from category_groups where id = ?")?;
+        stmt.execute([id])?;
+        Ok(())
+    }
 }
 
 #[derive(
@@ -254,52 +286,6 @@ pub struct CategoryGroup {
     pub title: String,
     pub sort_order: i64,
     pub created_at: i64,
-}
-
-// TODO: ops
-// - Add category
-// - Remove category
-// - Reorder
-impl CategoryGroup {
-    /// Fetch a category group from the database.
-    pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let group: CategoryGroup = sqlx::query_as("SELECT * FROM category_groups WHERE id = $1")
-            .bind(id)
-            .fetch_one(pool)
-            .await?;
-        Ok(group)
-    }
-
-    /// Create a new category group.
-    pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let row: Self = sqlx::query_as("INSERT INTO category_groups(title) VALUES($1) RETURNING *")
-            .bind(title)
-            .fetch_one(pool)
-            .await?;
-
-        Ok(row)
-    }
-
-    /// Update the title of the category group.
-    pub async fn set_title(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let row: Self =
-            sqlx::query_as("UPDATE category_groups SET title=$1 WHERE id=$2 RETURNING *")
-                .bind(title)
-                .bind(id)
-                .fetch_one(pool)
-                .await?;
-
-        Ok(row)
-    }
-
-    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query("DELETE FROM category_groups WHERE id=$1")
-            .bind(id)
-            .execute(pool)
-            .await?;
-
-        Ok(())
-    }
 }
 
 impl<'a> TryFrom<&rusqlite::Row<'a>> for Category {
