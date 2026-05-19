@@ -16,14 +16,12 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let transaction2 = transaction_service
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0))?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -39,20 +37,18 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
 async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(connection);
+    let transaction_service = TransactionService::new(connection.clone());
     let account = account_service.create_account("__", Money::ZERO).await?;
     let transaction = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let transaction2 = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0))?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -101,8 +97,7 @@ async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .account_id(&account.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -123,8 +118,7 @@ async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .account_id(&account.id)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let expense = transaction_service
         .edit(&expense.id)
@@ -155,8 +149,7 @@ async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .account_id(&account.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -177,8 +170,7 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .accounts(&a1.id, &a2.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -198,15 +190,13 @@ async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()>
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let t2 = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 2);
@@ -226,8 +216,7 @@ async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.delete_all::<String>(&[])?;
     let length = transaction_service.fetch_all()?.len();
@@ -245,14 +234,12 @@ async fn delete_only_affected_transactions(pool: SqlitePool) -> folio_lib::Resul
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 2);
     transaction_service.delete_all(&[t1.id])?;
@@ -292,8 +279,7 @@ async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0))?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -317,8 +303,7 @@ async fn set_payee_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_payee(&transaction.id, &account2.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -338,8 +323,7 @@ async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .amount(Money::ZERO)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_account(&transaction.id, &account2.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -359,8 +343,7 @@ async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .income()
         .amount(Money::ZERO)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_account(&transaction.id, &account2.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -381,8 +364,7 @@ async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .transfer()
         .amount(Money::ZERO)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_account(&transaction.id, &account3.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -403,8 +385,7 @@ async fn set_payee_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_payee(&transaction.id, &account2.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -425,8 +406,7 @@ async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .transfer()
         .amount(Money::MAX)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_payee(&transaction.id, &account3.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -450,8 +430,7 @@ async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
         .amount(Money::MAX)
         .category(&category.id)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_payee(&transaction.id, &account2.id)?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -469,8 +448,7 @@ async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0))?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -491,8 +469,7 @@ async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
         .transfer()
         .amount(Money::MAX)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let result = transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0));
     assert!(result.is_err());
@@ -509,8 +486,7 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0))?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -534,8 +510,7 @@ async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0))?;
     let t = transaction_service.fetch(&transaction.id)?;
@@ -560,8 +535,7 @@ async fn fetch_all(pool: SqlitePool) -> folio_lib::Result<()> {
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let t = transaction_service.fetch_all()?;
     assert_eq!(t.len(), 1);

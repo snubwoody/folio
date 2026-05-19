@@ -85,20 +85,17 @@ async fn calculate_account_balance(pool: SqlitePool) -> folio_lib::Result<()> {
         .expense()
         .account_id(&account.id)
         .amount(Money::from_unscaled(20))
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     transaction_service
         .expense()
         .account_id(&account.id)
         .amount(Money::from_unscaled(20))
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     transaction_service
         .income()
         .account_id(&account.id)
         .amount(Money::from_unscaled(50))
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let balance = service.calculate_balance(&account.id).await?;
     assert_eq!(balance, Money::from_unscaled(10));
     Ok(())
@@ -135,8 +132,7 @@ async fn delete_account_with_expense(pool: sqlx::SqlitePool) -> folio_lib::Resul
     transaction_service
         .expense()
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let records = sqlx::query!("SELECT * FROM accounts")
         .fetch_all(&pool)
         .await?;
@@ -159,8 +155,7 @@ async fn delete_account_with_income(pool: sqlx::SqlitePool) -> folio_lib::Result
     transaction_service
         .income()
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let records = sqlx::query!("SELECT * FROM accounts")
         .fetch_all(&pool)
         .await?;

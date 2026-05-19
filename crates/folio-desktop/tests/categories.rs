@@ -20,16 +20,14 @@ async fn total_spent(pool: SqlitePool) -> Result<()> {
         .account_id(&account.id)
         .amount(Money::from_unscaled(100))
         .category(&category.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     transaction_service
         .expense()
         .account_id(&account.id)
         .amount(Money::from_unscaled(20))
         .category(&category.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let total = category_service.total_spent(&category.id)?;
     assert_eq!(total, Money::from_unscaled(120));
@@ -125,7 +123,7 @@ async fn edit_category_group_title(pool: SqlitePool) -> Result<()> {
     let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
     let service = CategoryService::new(connection);
     let row = service.create_group("Wants")?;
-    let group = service.set_group_title(&row.id,"Needs")?;
+    let group = service.set_group_title(&row.id, "Needs")?;
     assert_eq!(group.title, "Needs");
     Ok(())
 }

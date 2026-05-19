@@ -149,8 +149,7 @@ pub async fn create_expense(
         .amount(amount)
         .account_id(&account)
         .date(date)
-        .create(&state.pool)
-        .await
+        .create(&state.connection.get())
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

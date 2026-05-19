@@ -14,7 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::{Error, Money, SqliteConnection};
 use chrono::{Local, NaiveDate};
-use rusqlite::{Row, params, Connection};
+use rusqlite::{Connection, Row, params};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use std::{fmt::Display, marker::PhantomData};
@@ -78,21 +78,37 @@ impl TransactionBuilder<Transfer> {
         self
     }
 
-    pub async fn create(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "INSERT INTO transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id)
-                VALUES ($1,$2,$3,$4,$5,$6)
-                RETURNING *"
-        )
-            .bind(self.transaction_date)
-            .bind(self.from_account_id.unwrap_or_default())
-            .bind(self.to_account_id.unwrap_or_default())
-            .bind(self.amount.inner())
-            .bind(self.note)
-            .bind(self.category_id)
-            .fetch_one(pool)
-            .await?;
-        Ok(row)
+    pub fn create(self, connection: &Connection) -> crate::Result<Transaction> {
+        // FIXME: remove category_id
+        let mut stmt = connection
+            .prepare_cached("insert into transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id) values(?1,?2,?3,?4,?5,?6) returning *")?;
+
+        let transaction = stmt.query_row(params![
+            self.transaction_date.to_string(),
+            self.from_account_id,
+            self.to_account_id,
+            self.amount.inner(),
+            self.note,
+            self.category_id
+        ],|row|Transaction::try_from(row))?;
+
+        // let row: Transaction = sqlx::query_as(
+        //     "INSERT INTO transactions(transaction_date,from_account_id,to_account_id,amount,note,category_id)
+        //         VALUES ($1,$2,$3,$4,$5,$6)
+        //         RETURNING *"
+        // )
+        //     .bind(self.transaction_date)
+        //     .bind(self.from_account_id.unwrap_or_default())
+        //     .bind(self.to_account_id.unwrap_or_default())
+        //     .bind(self.amount.inner())
+        //     .bind(self.note)
+        //     .bind(self.category_id)
+        //     .fetch_one(pool)
+        //     .await?;
+
+
+        info!(id=?transaction.id,"Created new transfer");
+        Ok(transaction)
     }
 }
 
@@ -102,21 +118,33 @@ impl TransactionBuilder<Income> {
         self
     }
 
-    pub async fn create(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "INSERT INTO transactions(transaction_date,to_account_id,amount,note,category_id)
-                VALUES ($1,$2,$3,$4,$5)
-                RETURNING *",
-        )
-        .bind(self.transaction_date)
-        .bind(self.to_account_id.unwrap_or_default())
-        .bind(self.amount.inner())
-        .bind(self.note)
-        .bind(self.category_id)
-        .fetch_one(pool)
-        .await?;
-        info!(id=?row.id,"Created new income");
-        Ok(row)
+    pub fn create(self, connection: &Connection) -> crate::Result<Transaction> {
+        let mut stmt = connection
+            .prepare_cached("insert into transactions(transaction_date,to_account_id,amount,note,category_id) values(?1,?2,?3,?4,?5) returning *")?;
+
+        let transaction = stmt.query_row(params![
+            self.transaction_date.to_string(),
+            self.to_account_id,
+            self.amount.inner(),
+            self.note,
+            self.category_id
+        ],|row|Transaction::try_from(row))?;
+
+
+        // let row: Transaction = sqlx::query_as(
+        //     "INSERT INTO transactions(transaction_date,to_account_id,amount,note,category_id)
+        //         VALUES ($1,$2,$3,$4,$5)
+        //         RETURNING *",
+        // )
+        // .bind(self.transaction_date)
+        // .bind(self.to_account_id.unwrap_or_default())
+        // .bind(self.amount.inner())
+        // .bind(self.note)
+        // .bind(self.category_id)
+        // .fetch_one(pool)
+        // .await?;
+        info!(id=?transaction.id,"Created new income");
+        Ok(transaction)
     }
 }
 
@@ -126,21 +154,32 @@ impl TransactionBuilder<Expense> {
         self
     }
 
-    pub async fn create(self, pool: &sqlx::SqlitePool) -> crate::Result<Transaction> {
-        let row: Transaction = sqlx::query_as(
-            "INSERT INTO transactions(transaction_date,from_account_id,amount,note,category_id)
-                VALUES ($1,$2,$3,$4,$5)
-                RETURNING *",
-        )
-        .bind(self.transaction_date)
-        .bind(self.from_account_id.unwrap_or_default())
-        .bind(self.amount.inner())
-        .bind(self.note)
-        .bind(self.category_id)
-        .fetch_one(pool)
-        .await?;
-        info!(id=?row.id,"Created new expense");
-        Ok(row)
+    pub fn create(self, connection: &Connection) -> crate::Result<Transaction> {
+        let mut stmt = connection
+            .prepare_cached("insert into transactions(transaction_date,from_account_id,amount,note,category_id) values(?1,?2,?3,?4,?5) returning *")?;
+
+        let transaction = stmt.query_row(params![
+            self.transaction_date.to_string(),
+            self.from_account_id,
+            self.amount.inner(),
+            self.note,
+            self.category_id
+        ],|row|Transaction::try_from(row))?;
+
+        // let row: Transaction = sqlx::query_as(
+        //     "INSERT INTO transactions(transaction_date,from_account_id,amount,note,category_id)
+        //         VALUES ($1,$2,$3,$4,$5)
+        //         RETURNING *",
+        // )
+        // .bind(self.transaction_date)
+        // .bind(self.from_account_id.unwrap_or_default())
+        // .bind(self.amount.inner())
+        // .bind(self.note)
+        // .bind(self.category_id)
+        // .fetch_one(pool)
+        // .await?;
+        info!(id=?transaction.id,"Created new expense");
+        Ok(transaction)
     }
 }
 
@@ -216,29 +255,7 @@ impl EditBuilder {
             self.category_id,
             self.id
         ];
-        let transaction = stmt.query_row(params,|row|Transaction::try_from(row))?;
-
-        // let row: Transaction = sqlx::query_as(
-        //     "UPDATE transactions
-        //     SET amount = COALESCE($1,amount),
-        //         note = COALESCE($2,note),
-        //         transaction_date = COALESCE($3,transaction_date),
-        //         from_account_id = COALESCE($4,from_account_id),
-        //         to_account_id = COALESCE($5,to_account_id),
-        //         category_id = COALESCE($6,category_id)
-        //     WHERE id=$7
-        //     RETURNING *
-        //     ",
-        // )
-        // .bind(self.amount)
-        // .bind(self.note)
-        // .bind(self.transaction_date)
-        // .bind(self.from_account_id)
-        // .bind(self.to_account_id)
-        // .bind(self.category_id)
-        // .bind(&self.id)
-        // .fetch_one(pool)
-        // .await?;
+        let transaction = stmt.query_row(params, |row| Transaction::try_from(row))?;
 
         info!(id = self.id, "Updated transaction");
         Ok(transaction)

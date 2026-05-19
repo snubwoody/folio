@@ -47,7 +47,7 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{CategoryService,SqliteConnection};
+    use crate::{CategoryService, SqliteConnection};
     use sqlx::SqlitePool;
 
     #[sqlx::test]
@@ -67,8 +67,7 @@ mod test {
         let service = CategoryService::new(connection);
         let category = service.create_category("MINE__")?;
         let budget = service.fetch_budget_from_category(&category.id)?;
-        service
-            .edit_budget(&budget.id, Money::from_f64(244.00))?;
+        service.edit_budget(&budget.id, Money::from_f64(244.00))?;
         let b = service.fetch_budget_from_category(&category.id)?;
 
         assert_eq!(b.amount, Money::from_f64(244.00));

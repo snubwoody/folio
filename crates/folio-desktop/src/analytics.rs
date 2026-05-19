@@ -86,7 +86,6 @@ mod test {
     #[sqlx::test]
     async fn fetch_analytics(pool: SqlitePool) -> crate::Result<()> {
         let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
-        // +        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
         let account_service = AccountService::new(pool.clone());
         let category_service = CategoryService::new(connection.clone());
         let transaction_service = TransactionService::new(connection.clone());
@@ -100,16 +99,14 @@ mod test {
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&connection.get())?;
 
         transaction_service
             .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&connection.get())?;
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics.len(), 1);
@@ -121,29 +118,27 @@ mod test {
     async fn fetch_analytics_in_current_month(pool: SqlitePool) -> crate::Result<()> {
         let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
         let service = CategoryService::new(connection.clone());
-        // +        let connection = SqliteConnection::open(pool.connect_options().get_filename())?;
         let account_service = AccountService::new(pool.clone());
         let transaction_service = TransactionService::new(connection.clone());
         let c1 = service.create_category("Expense")?;
         let a1 = account_service
             .create_account("Expense", Money::ZERO)
             .await?;
+        
         transaction_service
             .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .date(NaiveDate::MIN)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&connection.get())?;
 
         transaction_service
             .expense()
             .account_id(&a1.id)
             .category(&c1.id)
             .amount(Money::from_unscaled(100))
-            .create(&pool)
-            .await?;
+            .create(&connection.get())?;
 
         let analytics = analytics(&pool).await?;
         assert_eq!(analytics[0].total, Money::from_unscaled(100));

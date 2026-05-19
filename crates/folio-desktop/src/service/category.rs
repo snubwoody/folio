@@ -98,8 +98,9 @@ impl CategoryService {
     /// Get the total amount spent in the month for the [`Category`].
     pub fn total_spent(&self, id: &str) -> crate::Result<Money> {
         let connection = self.connection.get();
-        let mut stmt = connection.prepare_cached("select * from transactions where category_id = ?")?;
-        let transactions = stmt.query_map([id], |row|Transaction::try_from(row))?;
+        let mut stmt =
+            connection.prepare_cached("select * from transactions where category_id = ?")?;
+        let transactions = stmt.query_map([id], |row| Transaction::try_from(row))?;
 
         let now = Local::now();
         let mut total = Money::ZERO;
@@ -117,10 +118,10 @@ impl CategoryService {
     /// Fetches all the categories from the database
     pub fn fetch_categories(&self) -> Result<Vec<Category>, crate::Error> {
         let connection = self.connection.get();
-        let mut stmt = connection.prepare_cached("select * from categories where deleted_at is null")?;
+        let mut stmt =
+            connection.prepare_cached("select * from categories where deleted_at is null")?;
 
-        let rows= stmt
-            .query_map((), |row|Category::try_from(row))?;
+        let rows = stmt.query_map((), |row| Category::try_from(row))?;
 
         let mut categories = vec![];
         for row in rows {
@@ -131,12 +132,12 @@ impl CategoryService {
 
     pub fn fetch_categories_only(&self) -> Result<Vec<Category>, crate::Error> {
         let connection = self.connection.get();
-        let mut stmt = connection
-            .prepare_cached("select * from categories where deleted_at is null and is_income_stream is false")?;
+        let mut stmt = connection.prepare_cached(
+            "select * from categories where deleted_at is null and is_income_stream is false",
+        )?;
 
-        let rows = stmt
-            .query_map((), |row|Category::try_from(row))?;
-        
+        let rows = stmt.query_map((), |row| Category::try_from(row))?;
+
         let mut categories = vec![];
         for row in rows {
             categories.push(row?);
@@ -146,8 +147,11 @@ impl CategoryService {
 
     pub fn create_budget(&self, amount: Money, category_id: &str) -> crate::Result<Budget> {
         let connection = self.connection.get();
-        let mut stmt = connection.prepare_cached("insert into budgets(amount,category_id) values(?1,?2) returning *")?;
-        let row = stmt.query_row(params![amount.inner(),category_id], |row|Budget::try_from(row))?;
+        let mut stmt = connection
+            .prepare_cached("insert into budgets(amount,category_id) values(?1,?2) returning *")?;
+        let row = stmt.query_row(params![amount.inner(), category_id], |row| {
+            Budget::try_from(row)
+        })?;
         info!(category = ?category_id, id = ?row.id,"Created new budget");
         Ok(row)
     }
@@ -157,7 +161,7 @@ impl CategoryService {
         let mut stmt = connection
             .prepare_cached("update budgets set amount = ?1 where id = ?2 returning *")?;
 
-        let budget = stmt.query_row(params![amount.inner(),id], |row|Budget::try_from(row))?;
+        let budget = stmt.query_row(params![amount.inner(), id], |row| Budget::try_from(row))?;
 
         info!(id = id, "Updated budget");
         Ok(budget)
@@ -166,7 +170,7 @@ impl CategoryService {
     pub fn fetch_budget(&self, id: &str) -> crate::Result<Budget> {
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from budgets where id = ?")?;
-        let budget = stmt.query_row([id], |row|Budget::try_from(row))?;
+        let budget = stmt.query_row([id], |row| Budget::try_from(row))?;
         Ok(budget)
     }
 
@@ -174,7 +178,7 @@ impl CategoryService {
     pub fn fetch_budget_from_category(&self, category_id: &str) -> crate::Result<Budget> {
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from budgets where category_id = ?")?;
-        let budget = stmt.query_row([category_id], |row|Budget::try_from(row))?;
+        let budget = stmt.query_row([category_id], |row| Budget::try_from(row))?;
         Ok(budget)
     }
 
@@ -213,10 +217,10 @@ impl CategoryService {
 
     pub fn fetch_budgets(&self) -> crate::Result<Vec<Budget>> {
         let categories = self.fetch_categories_only()?;
-        
+
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from budgets")?;
-        let rows = stmt.query_map((),|row|Budget::try_from(row))?;
+        let rows = stmt.query_map((), |row| Budget::try_from(row))?;
 
         let mut budgets = vec![];
         for row in rows {
@@ -233,31 +237,33 @@ impl CategoryService {
     }
 
     /// Fetch a category group from the database.
-    pub fn fetch_group(&self,id: &str) -> crate::Result<CategoryGroup> {
+    pub fn fetch_group(&self, id: &str) -> crate::Result<CategoryGroup> {
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("select * from category_groups where id = ?")?;
-        let group = stmt.query_row([id],|row|CategoryGroup::try_from(row))?;
+        let group = stmt.query_row([id], |row| CategoryGroup::try_from(row))?;
         Ok(group)
     }
 
     /// Create a new category group.
-    pub fn create_group(&self,title: &str) -> crate::Result<CategoryGroup> {
+    pub fn create_group(&self, title: &str) -> crate::Result<CategoryGroup> {
         let connection = self.connection.get();
-        let mut stmt = connection.prepare_cached("insert into category_groups(title) values(?) returning *")?;
-        let group = stmt.query_row([title],|row|CategoryGroup::try_from(row))?;
+        let mut stmt = connection
+            .prepare_cached("insert into category_groups(title) values(?) returning *")?;
+        let group = stmt.query_row([title], |row| CategoryGroup::try_from(row))?;
         Ok(group)
     }
 
     /// Update the title of the category group.
-    pub fn set_group_title(&self,id: &str, title: &str) -> crate::Result<CategoryGroup> {
+    pub fn set_group_title(&self, id: &str, title: &str) -> crate::Result<CategoryGroup> {
         let connection = self.connection.get();
-        let mut stmt = connection.prepare_cached("update category_groups set title=?1 where id=?2 returning *")?;
-        let group = stmt.query_row([title,id],|row|CategoryGroup::try_from(row))?;
+        let mut stmt = connection
+            .prepare_cached("update category_groups set title=?1 where id=?2 returning *")?;
+        let group = stmt.query_row([title, id], |row| CategoryGroup::try_from(row))?;
         Ok(group)
     }
 
     /// Delete a category group
-    pub fn delete_group(&self,id: &str,) -> crate::Result<()> {
+    pub fn delete_group(&self, id: &str) -> crate::Result<()> {
         let connection = self.connection.get();
         let mut stmt = connection.prepare_cached("delete from category_groups where id = ?")?;
         stmt.execute([id])?;
