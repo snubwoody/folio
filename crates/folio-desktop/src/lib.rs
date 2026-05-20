@@ -27,13 +27,11 @@ use crate::settings::Settings;
 pub use currency::Currency;
 pub use error::{Error, Result};
 pub use money::Money;
-use sqlx::SqlitePool;
-use sqlx::sqlite::SqliteConnectOptions;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, MutexGuard};
 use tauri::{App, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::Mutex;
-use tracing::{error, info};
+use tracing::info;
 
 fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error>> {
     let builder = WebviewWindowBuilder::new(app, "main", WebviewUrl::default())

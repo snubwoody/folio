@@ -58,14 +58,14 @@ fn get_categories() -> Result<()> {
 fn create_income_stream() -> crate::Result<()> {
     let connection = create_test_db()?;
     let category_service = CategoryService::new(connection.clone());
-    let now = Utc::now();
+    let now = Utc::now().timestamp();
     let category = category_service.create_income_stream("Ent")?;
 
     let conn = connection.get();
     let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE id=?")?;
     let record = stmt.query_row([category.id], |row| Category::try_from(row))?;
 
-    assert!(record.created_at.unwrap() >= now);
+    assert!(record.created_at.unwrap().timestamp() >= now);
     assert_eq!(record.title, "Ent");
     assert!(record.is_income_stream);
     Ok(())
@@ -82,7 +82,7 @@ fn create_category() -> folio_lib::Result<()> {
     let mut stmt = conn.prepare_cached("SELECT * FROM categories WHERE id=?")?;
     let record = stmt.query_row([category.id], |row| Category::try_from(row))?;
 
-    assert!(record.created_at.unwrap() >= now);
+    assert!(record.created_at.unwrap().timestamp() >= now.timestamp());
     assert_eq!(record.title, "Ent");
     assert!(!record.is_income_stream);
     Ok(())
@@ -150,7 +150,8 @@ fn delete_category_group() -> Result<()> {
 
     let conn = connection.get();
     let mut stmt = conn.prepare_cached("select * from category_groups where id=?")?;
-    stmt.query_row([row.id], |row| Budget::try_from(row))?;
+    let result = stmt.query_row([row.id], |row| CategoryGroup::try_from(row));
+    assert!(result.is_err());
     Ok(())
 }
 

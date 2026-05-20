@@ -61,7 +61,7 @@ fn create_account() -> folio_lib::Result<()> {
         |row|Account::try_from(row)
     )?;
 
-    assert!(account.created_at.unwrap() >= now);
+    assert!(account.created_at.unwrap().timestamp() >= now.timestamp());
     assert_eq!(account.name, "My account");
     assert_eq!(account.starting_balance, Money::from_unscaled(20));
     Ok(())

@@ -117,7 +117,7 @@ pub async fn set_sidebar_state(state: tauri::State<'_, State>, open: bool) -> Re
 }
 
 #[tauri::command]
-pub async fn set_transaction_payee(
+pub fn set_transaction_payee(
     state: tauri::State<'_, State>,
     id: String,
     account_id: String,
@@ -135,7 +135,7 @@ pub fn currencies() -> Vec<Currency> {
 }
 
 #[tauri::command]
-pub async fn create_expense(
+pub fn create_expense(
     state: tauri::State<'_, State>,
     amount: Money,
     date: NaiveDate,
@@ -152,7 +152,7 @@ pub async fn create_expense(
 }
 
 #[tauri::command]
-pub async fn edit_transaction(
+pub fn edit_transaction(
     state: tauri::State<'_, State>,
     data: EditBuilder,
 ) -> Result<Transaction> {
@@ -161,7 +161,7 @@ pub async fn edit_transaction(
 }
 
 #[tauri::command]
-pub async fn set_transaction_outflow(
+pub fn set_transaction_outflow(
     state: tauri::State<'_, State>,
     id: String,
     amount: Money,
@@ -173,7 +173,7 @@ pub async fn set_transaction_outflow(
 }
 
 #[tauri::command]
-pub async fn set_transaction_inflow(
+pub fn set_transaction_inflow(
     state: tauri::State<'_, State>,
     id: String,
     amount: Money,
@@ -185,7 +185,7 @@ pub async fn set_transaction_inflow(
 }
 
 #[tauri::command]
-pub async fn set_transaction_account(
+pub fn set_transaction_account(
     state: tauri::State<'_, State>,
     id: String,
     account: String,
@@ -215,7 +215,7 @@ pub fn delete_category(state: tauri::State<'_, State>, id: String) -> Result<()>
 }
 
 #[tauri::command]
-pub async fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
+pub fn create_missing_budgets(state: tauri::State<'_, State>) -> Result<()> {
     state
         .category_service
         .create_missing_budgets()
@@ -236,7 +236,7 @@ pub fn edit_category(
 }
 
 #[tauri::command]
-pub async fn create_account(
+pub fn create_account(
     state: tauri::State<'_, State>,
     name: &str,
     starting_balance: Money,
@@ -248,7 +248,7 @@ pub async fn create_account(
 }
 
 #[tauri::command]
-pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
+pub fn account_balance(state: tauri::State<'_, State>, id: String) -> Result<Money> {
     state
         .account_service
         .calculate_balance(&id)
@@ -256,7 +256,7 @@ pub async fn account_balance(state: tauri::State<'_, State>, id: String) -> Resu
 }
 
 #[tauri::command]
-pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
+pub fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Account>> {
     state
         .account_service
         .fetch_all()
@@ -265,7 +265,7 @@ pub async fn fetch_accounts(state: tauri::State<'_, State>) -> Result<Vec<Accoun
 }
 
 #[tauri::command]
-pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
+pub fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>> {
     state
         .category_service
         .fetch_categories()
@@ -273,7 +273,7 @@ pub async fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Cate
 }
 
 #[tauri::command]
-pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
+pub fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>> {
     state
         .category_service
         .fetch_budgets()
@@ -281,7 +281,7 @@ pub async fn fetch_budgets(state: tauri::State<'_, State>) -> Result<Vec<Budget>
 }
 
 #[tauri::command]
-pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
+pub fn get_budget(category_id: String, state: tauri::State<'_, State>) -> Result<Budget> {
     state
         .category_service
         .fetch_budget_from_category(&category_id)
@@ -289,7 +289,7 @@ pub async fn get_budget(category_id: String, state: tauri::State<'_, State>) -> 
 }
 
 #[tauri::command]
-pub async fn create_budget(
+pub fn create_budget(
     amount: &str,
     category_id: &str,
     state: tauri::State<'_, State>,
@@ -302,7 +302,7 @@ pub async fn create_budget(
 }
 
 #[tauri::command]
-pub async fn edit_budget(
+pub fn edit_budget(
     id: String,
     amount: Money,
     state: tauri::State<'_, State>,
@@ -315,7 +315,7 @@ pub async fn edit_budget(
 }
 
 #[tauri::command]
-pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
+pub fn create_category(state: tauri::State<'_, State>, title: &str) -> Result<Category> {
     state
         .category_service
         .create_category(title)
@@ -324,7 +324,7 @@ pub async fn create_category(state: tauri::State<'_, State>, title: &str) -> Res
 }
 
 #[tauri::command]
-pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
+pub fn delete_account(state: tauri::State<'_, State>, id: String) -> Result<()> {
     state
         .account_service
         .delete_account(&id)
@@ -333,7 +333,7 @@ pub async fn delete_account(state: tauri::State<'_, State>, id: String) -> Resul
 }
 
 #[tauri::command]
-pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
+pub fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String>) -> Result<()> {
     state
         .transaction_service
         .delete_all(ids.as_slice())
@@ -342,7 +342,7 @@ pub async fn delete_transactions(state: tauri::State<'_, State>, ids: Vec<String
 }
 
 #[tauri::command]
-pub async fn edit_account(
+pub fn edit_account(
     state: tauri::State<'_, State>,
     id: String,
     opts: EditAccount,

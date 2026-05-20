@@ -298,22 +298,22 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for Category {
     type Error = rusqlite::Error;
 
     fn try_from(row: &rusqlite::Row) -> Result<Self, Self::Error> {
-        let created_at = match row.get(2) {
+        let created_at = match row.get("created_at") {
             Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
             Err(_) => None,
         };
 
-        let deleted_at = match row.get(3) {
+        let deleted_at = match row.get("deleted_at") {
             Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
             Err(_) => None,
         };
 
         let category = Self {
-            id: row.get(0)?,
-            title: row.get(1)?,
+            id: row.get("id")?,
+            title: row.get("title")?,
             created_at,
             deleted_at,
-            is_income_stream: row.get(4)?,
+            is_income_stream: row.get("is_income_stream")?,
         };
 
         Ok(category)
