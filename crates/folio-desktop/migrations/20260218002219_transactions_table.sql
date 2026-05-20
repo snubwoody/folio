@@ -1,3 +1,4 @@
+-- migrate:up
 CREATE TABLE transactions (
     id TEXT PRIMARY KEY NOT NULL DEFAULT (hex(randomBlob(8))),
     amount INT NOT NULL DEFAULT 0,
@@ -20,4 +21,4 @@ CREATE TABLE transactions (
     CHECK (from_account_id IS NOT NULL OR to_account_id IS NOT NULL)
 );
 
-
+-- migrate:down

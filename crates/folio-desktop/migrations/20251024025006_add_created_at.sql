@@ -1,4 +1,4 @@
--- Add migration script here
+-- migrate:up
 ALTER TABLE accounts
 ADD COLUMN created_at INT NULL;
 UPDATE accounts SET created_at = unixepoch('now') WHERE created_at IS NULL;
@@ -26,3 +26,4 @@ UPDATE incomes SET created_at = unixepoch('now') WHERE created_at IS NULL;
 ALTER TABLE budgets
 ADD COLUMN created_at INT NULL;
 UPDATE budgets SET created_at = unixepoch('now') WHERE created_at IS NULL;
+-- migrate:down

@@ -47,10 +47,8 @@ fn setup_app(app: &mut App) -> std::result::Result<(), Box<dyn std::error::Error
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub async fn run() -> Result<()> {
-    let state = State::new()
-        .await
-        .context("Failed to initialise app state")?;
+pub fn run() -> Result<()> {
+    let state = State::new().context("Failed to initialise app state")?;
 
     let app = tauri::Builder::default()
         .plugin(tauri_plugin_process::init())
@@ -78,8 +76,8 @@ pub struct State {
 }
 
 impl State {
-    pub async fn new() -> Result<Self> {
-        let connection = init_database().await?;
+    pub fn new() -> Result<Self> {
+        let connection = init_database()?;
         info!("Initialised database pool");
 
         let account_service = AccountService::new(connection.clone());
@@ -104,7 +102,7 @@ impl State {
     }
 }
 
-pub async fn init_database() -> Result<SqliteConnection> {
+pub fn init_database() -> Result<SqliteConnection> {
     #[cfg(not(debug_assertions))]
     let path = {
         let data_dir = get_data_dir().unwrap();
@@ -117,7 +115,7 @@ pub async fn init_database() -> Result<SqliteConnection> {
 
     let connection = SqliteConnection::open(&path)?;
     let mut migrator = folio_migrate::Migrator::new();
-    migrator.load_from_dir("./m2")?;
+    migrator.load_from_dir("./migrations")?;
     migrator.migrate(&connection.get())?;
 
     Ok(connection)
@@ -143,7 +141,7 @@ pub fn create_test_db() -> Result<SqliteConnection> {
     let connection = SqliteConnection::in_memory()?;
     let mut migrator = folio_migrate::Migrator::new();
 
-    migrator.load_from_dir("./m2")?;
+    migrator.load_from_dir("./migrations")?;
     migrator.migrate(&connection.get())?;
 
     Ok(connection)
@@ -155,7 +153,6 @@ pub struct SqliteConnection {
     connection: Arc<std::sync::Mutex<rusqlite::Connection>>,
 }
 
-// TODO: add in-memory
 impl SqliteConnection {
     pub fn open(path: impl AsRef<Path>) -> crate::Result<Self> {
         // TODO: use WAL journal mode

@@ -58,7 +58,7 @@ async fn main() {
         .try_init()
         .expect("Failed to setup logging");
 
-    if let Err(err) = folio_lib::run().await {
+    if let Err(err) = folio_lib::run() {
         error!("{}", err.report())
     }
 }

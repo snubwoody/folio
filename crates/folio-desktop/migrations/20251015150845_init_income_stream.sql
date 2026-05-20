@@ -1,4 +1,4 @@
--- Add migration script here
+-- migrate:up
 CREATE TABLE income_streams(
     id TEXT PRIMARY KEY NOT NULL DEFAULT (hex(randomBlob(8))),
     title TEXT NOT NULL DEFAULT 'Income'
@@ -11,3 +11,5 @@ VALUES
     ('Refund'),
     ('Other'),
     ('Donation');
+
+-- migrate:down
