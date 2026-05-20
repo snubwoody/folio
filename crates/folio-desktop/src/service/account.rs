@@ -13,13 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::service::Transaction;
 use crate::{Money, SqliteConnection};
-use chrono::Weekday::Mon;
-use chrono::{DateTime, NaiveDate, Utc};
+use chrono::{DateTime, Utc};
 use rusqlite::params;
 use serde::{Deserialize, Serialize};
-use sqlx::{Row, SqlitePool};
 use tracing::info;
 
 #[derive(Debug, Serialize, Clone, PartialEq)]

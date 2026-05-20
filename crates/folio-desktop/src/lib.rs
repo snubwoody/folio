@@ -15,7 +15,6 @@
 pub mod command;
 mod currency;
 mod date;
-pub mod db;
 pub mod error;
 mod money;
 pub mod service;

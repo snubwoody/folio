@@ -13,11 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
-use crate::{Money, SqliteConnection, db, service::Budget};
+use crate::{Money, SqliteConnection, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use rusqlite::params;
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
 use tracing::{debug, info, warn};
 
 /// Service struct for managing categories and category groups.
@@ -272,7 +271,7 @@ impl CategoryService {
 }
 
 #[derive(
-    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, FromRow, Eq, Ord, Hash,
+    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash,
 )]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
@@ -284,9 +283,7 @@ pub struct Category {
     pub is_income_stream: bool,
 }
 
-// TODO: test is_sorted
-// TODO: add default "No group" in UI for categories without a group
-#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
+#[derive(Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
 pub struct CategoryGroup {
     pub id: String,
     pub title: String,

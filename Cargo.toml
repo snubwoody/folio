@@ -39,11 +39,3 @@ toml = { version = "0.9.8", features = ["serde"] }
 zip = "6.0.0"
 clap = {version = "4.5.53",features = ["derive"]}
 
-[workspace.dependencies.sqlx]
-version = "0.8.6"
-features = [
-    "runtime-tokio",
-    "sqlite",
-    "chrono",
-    "migrate",
-]

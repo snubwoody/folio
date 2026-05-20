@@ -16,7 +16,6 @@ use crate::{Error, Money, SqliteConnection};
 use chrono::{Local, NaiveDate};
 use rusqlite::{Connection, Row, params};
 use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
 use std::{fmt::Display, marker::PhantomData};
 use tracing::info;
 
@@ -449,7 +448,7 @@ impl TransactionService {
     }
 }
 
-#[derive(FromRow, Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
+#[derive(Debug, Clone, PartialOrd, PartialEq, Serialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct Transaction {
     pub id: String,

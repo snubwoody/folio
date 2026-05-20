@@ -15,7 +15,6 @@
 
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::{Database, Decode, Encode, Sqlite, Type, sqlite::SqliteTypeInfo};
 use std::{
     fmt::Display,
     ops::{Add, AddAssign, Sub, SubAssign},
@@ -141,32 +140,7 @@ impl<'de> Deserialize<'de> for Money {
     }
 }
 
-impl Type<Sqlite> for Money {
-    fn type_info() -> SqliteTypeInfo {
-        <i64 as Type<Sqlite>>::type_info()
-    }
-}
 
-impl<'a> Encode<'a, Sqlite> for Money {
-    fn encode_by_ref(
-        &self,
-        buf: &mut <Sqlite as Database>::ArgumentBuffer<'a>,
-    ) -> Result<sqlx::encode::IsNull, sqlx::error::BoxDynError> {
-        <i64 as Encode<Sqlite>>::encode_by_ref(&self.0, buf)
-    }
-}
-
-impl<'r, DB: Database> Decode<'r, DB> for Money
-where
-    i64: Decode<'r, DB>,
-{
-    fn decode(
-        value: <DB as sqlx::Database>::ValueRef<'r>,
-    ) -> Result<Self, sqlx::error::BoxDynError> {
-        let value = <i64 as Decode<DB>>::decode(value)?;
-        Ok(Money(value))
-    }
-}
 
 #[cfg(test)]
 mod test {

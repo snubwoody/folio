@@ -34,12 +34,10 @@ tracing-appender.workspace = true
 tracing.workspace = true
 directories.workspace = true
 tauri-plugin-os.workspace = true
-sqlx.workspace = true
 tauri-plugin-updater.workspace = true
 tauri-plugin-prevent-default.workspace = true
 tauri-plugin-process = "2"
 rusqlite.workspace = true
-anyhow.workspace = true
 folio-migrate = { version = "2.2.0", path = "../folio-migrate" }
 
 [package.metadata.packager]
