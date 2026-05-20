@@ -2,8 +2,7 @@ use chrono::NaiveDate;
 use folio_lib::service::{
     AccountService, CategoryService, Transaction, TransactionService, TransactionType,
 };
-use folio_lib::{Money, SqliteConnection, create_test_db};
-use sqlx::{Row, SqlitePool};
+use folio_lib::{Money, create_test_db};
 use std::str::FromStr;
 
 #[test]

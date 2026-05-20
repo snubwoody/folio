@@ -152,10 +152,7 @@ pub fn create_expense(
 }
 
 #[tauri::command]
-pub fn edit_transaction(
-    state: tauri::State<'_, State>,
-    data: EditBuilder,
-) -> Result<Transaction> {
+pub fn edit_transaction(state: tauri::State<'_, State>, data: EditBuilder) -> Result<Transaction> {
     data.update(&state.connection.get())
         .inspect_err(|err| warn!("{}", err.report()))
 }
@@ -302,11 +299,7 @@ pub fn create_budget(
 }
 
 #[tauri::command]
-pub fn edit_budget(
-    id: String,
-    amount: Money,
-    state: tauri::State<'_, State>,
-) -> Result<Budget> {
+pub fn edit_budget(id: String, amount: Money, state: tauri::State<'_, State>) -> Result<Budget> {
     state
         .category_service
         .edit_budget(&id, amount)

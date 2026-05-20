@@ -1,6 +1,6 @@
 use chrono::Utc;
 use folio_lib::service::{Account, AccountService, EditAccount, TransactionService};
-use folio_lib::{Money, Result, SqliteConnection, create_test_db};
+use folio_lib::{Money, Result, create_test_db};
 
 #[test]
 fn edit_account() -> Result<()> {
@@ -15,11 +15,9 @@ fn edit_account() -> Result<()> {
     let account = service.edit_account(&account.id, opts)?;
 
     let conn = connection.get();
-    let record = conn.query_row(
-        "SELECT * FROM accounts WHERE id=?",
-        [account.id],
-        |row|Account::try_from(row)
-    )?;
+    let record = conn.query_row("SELECT * FROM accounts WHERE id=?", [account.id], |row| {
+        Account::try_from(row)
+    })?;
 
     assert_eq!(record.name, account.name);
     assert_eq!(record.starting_balance, account.starting_balance);
@@ -36,11 +34,9 @@ fn edit_account_keep_defaults() -> Result<()> {
     let account = service.edit_account(&account.id, opts)?;
 
     let conn = connection.get();
-    let record = conn.query_row(
-        "SELECT * FROM accounts WHERE id=?",
-        [account.id],
-        |row|Account::try_from(row)
-    )?;
+    let record = conn.query_row("SELECT * FROM accounts WHERE id=?", [account.id], |row| {
+        Account::try_from(row)
+    })?;
 
     assert_eq!(record.name, "My account");
     assert_eq!(record.starting_balance, account.starting_balance);
@@ -55,11 +51,7 @@ fn create_account() -> folio_lib::Result<()> {
     service.create_account("My account", Money::from_unscaled(20))?;
 
     let conn = connection.get();
-    let account = conn.query_row(
-        "SELECT * FROM accounts",
-        [],
-        |row|Account::try_from(row)
-    )?;
+    let account = conn.query_row("SELECT * FROM accounts", [], |row| Account::try_from(row))?;
 
     assert!(account.created_at.unwrap().timestamp() >= now.timestamp());
     assert_eq!(account.name, "My account");
@@ -79,7 +71,7 @@ fn fetch_account() -> folio_lib::Result<()> {
         conn.query_row(
             "INSERT INTO accounts(name,starting_balance) VALUES('C3PO',?) RETURNING *",
             [amount],
-            |row|Account::try_from(row)
+            |row| Account::try_from(row),
         )?
     };
 
@@ -159,8 +151,7 @@ fn delete_account_with_expense() -> folio_lib::Result<()> {
     let records = {
         let conn = connection.get();
         let mut stmt = conn.prepare_cached("select * from accounts")?;
-        stmt
-            .query_map((), |row| Account::try_from(row))?
+        stmt.query_map((), |row| Account::try_from(row))?
             .collect::<Vec<_>>()
     };
     assert_eq!(records.len(), 1);
@@ -169,8 +160,7 @@ fn delete_account_with_expense() -> folio_lib::Result<()> {
     let records = {
         let conn = connection.get();
         let mut stmt = conn.prepare_cached("select * from accounts")?;
-        stmt
-            .query_map((), |row| Account::try_from(row))?
+        stmt.query_map((), |row| Account::try_from(row))?
             .collect::<Vec<_>>()
     };
     assert_eq!(records.len(), 0);
@@ -191,8 +181,7 @@ fn delete_account_with_income() -> folio_lib::Result<()> {
     let records = {
         let conn = connection.get();
         let mut stmt = conn.prepare_cached("select * from accounts")?;
-        stmt
-            .query_map((), |row| Account::try_from(row))?
+        stmt.query_map((), |row| Account::try_from(row))?
             .collect::<Vec<_>>()
     };
     assert_eq!(records.len(), 1);
@@ -202,8 +191,7 @@ fn delete_account_with_income() -> folio_lib::Result<()> {
     let records = {
         let conn = connection.get();
         let mut stmt = conn.prepare_cached("select * from accounts")?;
-        stmt
-            .query_map((), |row| Account::try_from(row))?
+        stmt.query_map((), |row| Account::try_from(row))?
             .collect::<Vec<_>>()
     };
     assert_eq!(records.len(), 0);

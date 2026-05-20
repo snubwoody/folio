@@ -140,8 +140,6 @@ impl<'de> Deserialize<'de> for Money {
     }
 }
 
-
-
 #[cfg(test)]
 mod test {
     use super::*;

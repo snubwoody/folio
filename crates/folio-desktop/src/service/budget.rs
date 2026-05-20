@@ -47,8 +47,7 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::{create_test_db, CategoryService, SqliteConnection};
-    use sqlx::SqlitePool;
+    use crate::{CategoryService, create_test_db};
 
     #[test]
     fn fetch_budgets() -> crate::Result<()> {
