@@ -1,7 +1,6 @@
 name: Release Folio desktop
 env:
   CARGO_TERM_COLOR: always
-  DATABASE_URL: sqlite://data.db
 on:
   workflow_dispatch:
   # Run test workflow on push for caching and to make sure it still works
@@ -32,8 +31,6 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-      - name: Install sqlx-cli
-        run: cargo install sqlx-cli
       - uses: Swatinem/rust-cache@v2
       - uses: cargo-bins/cargo-binstall@main
       - uses: actions/cache@v4
@@ -62,8 +59,6 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - run: pnpm install --frozen-lockfile
-      - name: Setup database
-        run: just db-setup
       - name: Bundle app
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{secrets.TAURI_SIGNING_PRIVATE_KEY}}
