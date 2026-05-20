@@ -13,121 +13,98 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 use crate::service::Transaction;
-use crate::{Money, db, service::Budget};
+use crate::{Money, SqliteConnection, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
+use rusqlite::params;
 use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, Row, SqlitePool};
 use tracing::{debug, info, warn};
 
 /// Service struct for managing categories and category groups.
 #[derive(Clone)]
 pub struct CategoryService {
-    pool: SqlitePool,
+    connection: SqliteConnection,
 }
 
 impl CategoryService {
     /// Creates a new category service.
-    pub fn new(pool: SqlitePool) -> Self {
-        Self { pool }
+    pub fn new(connection: SqliteConnection) -> Self {
+        Self { connection }
     }
 
     /// Create a new category, a corresponding budget pointing to this category
     /// will be created as well. To only create a category use [`create_raw`].
     ///
     /// [`create_raw`]: CategoryService::create_category_raw
-    pub async fn create_category(&self, title: &str) -> crate::Result<Category> {
-        let category = self.create_category_raw(title).await?;
+    pub fn create_category(&self, title: &str) -> crate::Result<Category> {
+        let category = self.create_category_raw(title)?;
         info!(id=?category.id,"Created new category");
-        self.create_budget(Money::ZERO, &category.id).await?;
+        self.create_budget(Money::ZERO, &category.id)?;
 
         Ok(category)
     }
 
     /// Creates a category without creating a budget.
-    pub async fn create_category_raw(&self, title: &str) -> crate::Result<Category> {
+    pub fn create_category_raw(&self, title: &str) -> crate::Result<Category> {
+        let conn = self.connection.get();
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO categories(title,created_at) VALUES(?1,?2) RETURNING *")?;
         let now = Utc::now().timestamp();
-        let record: db::Category =
-            sqlx::query_as("INSERT INTO categories(title,created_at) VALUES($1,$2) RETURNING *")
-                .bind(title)
-                .bind(now)
-                .fetch_one(&self.pool)
-                .await?;
+        let category = stmt.query_row(params![title, now], |row| Category::try_from(row))?;
 
-        self.fetch_category(&record.id).await
-    }
-
-    /// Creates a new income stream.
-    pub async fn create_income_stream(&self, title: &str) -> crate::Result<Category> {
-        let now = Utc::now().timestamp();
-        let record: db::Category =
-            sqlx::query_as("INSERT INTO categories(title,created_at,is_income_stream) VALUES($1,$2,true) RETURNING *")
-                .bind(title)
-                .bind(now)
-                .fetch_one(&self.pool)
-                .await?;
-
-        tracing::info!(id=?record.id,"Created new income stream");
-        self.fetch_category(&record.id).await
-    }
-
-    /// Fetch a [`Category`] from the database.
-    pub async fn fetch_category(&self, id: &str) -> crate::Result<Category> {
-        let record: db::Category = sqlx::query_as("SELECT * FROM categories WHERE id=$1")
-            .bind(id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        let created_at = record
-            .created_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-        let deleted_at = record
-            .deleted_at
-            .and_then(|t| DateTime::from_timestamp(t, 0));
-
-        let category = Category {
-            id: record.id,
-            title: record.title,
-            created_at,
-            deleted_at,
-            is_income_stream: record.is_income_stream,
-        };
-
+        info!(id=?category.id,"Created new category");
         Ok(category)
     }
 
-    pub async fn edit_category(&self, id: &str, title: &str) -> crate::Result<Category> {
-        sqlx::query("UPDATE categories SET title=$1 WHERE id=$2")
-            .bind(title)
-            .bind(id)
-            .execute(&self.pool)
-            .await?;
+    /// Creates a new income stream.
+    pub fn create_income_stream(&self, title: &str) -> crate::Result<Category> {
+        let conn = self.connection.get();
+        let mut stmt = conn
+            .prepare_cached("INSERT INTO categories(title,created_at,is_income_stream) VALUES(?1,?2,true) RETURNING *")?;
 
-        self.fetch_category(id).await
+        let now = Utc::now().timestamp();
+        let category = stmt.query_row(params![title, now], |row| Category::try_from(row))?;
+
+        info!(id=?category.id,"Created new income stream");
+        Ok(category)
+    }
+
+    /// Fetch a [`Category`] from the database.
+    pub fn fetch_category(&self, id: &str) -> crate::Result<Category> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("SELECT * FROM categories WHERE id=?")?;
+        let category = stmt.query_row([id], |row| Category::try_from(row))?;
+        Ok(category)
+    }
+
+    pub fn edit_category(&self, id: &str, title: &str) -> crate::Result<Category> {
+        let connection = self.connection.get();
+        let mut stmt =
+            connection.prepare_cached("UPDATE categories SET title=?1 WHERE id=?2 RETURNING *")?;
+        let category = stmt.query_row([title, id], |row| Category::try_from(row))?;
+        Ok(category)
     }
 
     /// Delete an account from the database.
-    pub async fn delete_category(&self, id: &str) -> crate::Result<()> {
+    pub fn delete_category(&self, id: &str) -> crate::Result<()> {
+        let conn = self.connection.get();
+        let mut stmt = conn.prepare_cached("UPDATE categories SET deleted_at=?2 WHERE id=?1")?;
         let now = Utc::now().timestamp();
-        sqlx::query("UPDATE categories SET deleted_at=$2 WHERE id=$1")
-            .bind(id)
-            .bind(now)
-            .execute(&self.pool)
-            .await?;
+        stmt.execute(params![id, now])?;
 
         Ok(())
     }
 
     /// Get the total amount spent in the month for the [`Category`].
-    pub async fn total_spent(&self, id: &str) -> crate::Result<Money> {
+    pub fn total_spent(&self, id: &str) -> crate::Result<Money> {
+        let connection = self.connection.get();
+        let mut stmt =
+            connection.prepare_cached("select * from transactions where category_id = ?")?;
+        let transactions = stmt.query_map([id], |row| Transaction::try_from(row))?;
+
         let now = Local::now();
         let mut total = Money::ZERO;
-        let transactions: Vec<Transaction> =
-            sqlx::query_as("SELECT * FROM transactions WHERE category_id = $1")
-                .bind(id)
-                .fetch_all(&self.pool)
-                .await?;
-
         for transaction in transactions {
+            let transaction = transaction?;
             let date = transaction.transaction_date;
             if date.year() != now.year() || date.month() != now.month() {
                 continue;
@@ -138,101 +115,75 @@ impl CategoryService {
     }
 
     /// Fetches all the categories from the database
-    pub async fn fetch_categories(&self) -> Result<Vec<Category>, crate::Error> {
-        let records: Vec<db::Category> =
-            sqlx::query_as("SELECT * FROM categories WHERE deleted_at IS NULL")
-                .fetch_all(&self.pool)
-                .await?;
+    pub fn fetch_categories(&self) -> Result<Vec<Category>, crate::Error> {
+        let connection = self.connection.get();
+        let mut stmt =
+            connection.prepare_cached("select * from categories where deleted_at is null")?;
+
+        let rows = stmt.query_map((), |row| Category::try_from(row))?;
 
         let mut categories = vec![];
-        for record in records {
-            let category = self.fetch_category(&record.id).await?;
-            categories.push(category);
+        for row in rows {
+            categories.push(row?);
         }
         Ok(categories)
     }
 
-    pub async fn fetch_categories_only(&self) -> Result<Vec<Category>, crate::Error> {
-        let records: Vec<db::Category> = sqlx::query_as(
-            "SELECT * FROM categories WHERE deleted_at IS NULL AND is_income_stream IS false",
-        )
-        .fetch_all(&self.pool)
-        .await?;
+    pub fn fetch_categories_only(&self) -> Result<Vec<Category>, crate::Error> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached(
+            "select * from categories where deleted_at is null and is_income_stream is false",
+        )?;
+
+        let rows = stmt.query_map((), |row| Category::try_from(row))?;
 
         let mut categories = vec![];
-        for record in records {
-            let category = self.fetch_category(&record.id).await?;
-            categories.push(category);
+        for row in rows {
+            categories.push(row?);
         }
         Ok(categories)
     }
 
-    pub async fn create_budget(&self, amount: Money, category_id: &str) -> crate::Result<Budget> {
-        let amount = amount.inner();
-        let record: db::Budget =
-            sqlx::query_as("INSERT INTO budgets(amount,category_id) VALUES ($1,$2) RETURNING *")
-                .bind(amount)
-                .bind(category_id)
-                .fetch_one(&self.pool)
-                .await?;
+    pub fn create_budget(&self, amount: Money, category_id: &str) -> crate::Result<Budget> {
+        let connection = self.connection.get();
+        let mut stmt = connection
+            .prepare_cached("insert into budgets(amount,category_id) values(?1,?2) returning *")?;
+        let row = stmt.query_row(params![amount.inner(), category_id], |row| {
+            Budget::try_from(row)
+        })?;
+        info!(category = ?category_id, id = ?row.id,"Created new budget");
+        Ok(row)
+    }
 
-        let budget = self.fetch_budget(&record.id).await?;
+    pub fn edit_budget(&self, id: &str, amount: Money) -> crate::Result<Budget> {
+        let connection = self.connection.get();
+        let mut stmt = connection
+            .prepare_cached("update budgets set amount = ?1 where id = ?2 returning *")?;
 
-        info!(category_id=?category_id,id=?budget.id,"Created new budget");
+        let budget = stmt.query_row(params![amount.inner(), id], |row| Budget::try_from(row))?;
+
+        info!(id = id, "Updated budget");
         Ok(budget)
     }
 
-    pub async fn edit_budget(&self, id: &str, amount: Money) -> crate::Result<Budget> {
-        let amount = amount.inner();
-        sqlx::query("UPDATE budgets SET amount = $1 WHERE id=$2")
-            .bind(amount)
-            .bind(id)
-            .execute(&self.pool)
-            .await?;
-
-        info!(id = id, "Updated budget");
-
-        self.fetch_budget(id).await
-    }
-
-    pub async fn fetch_budget(&self, id: &str) -> crate::Result<Budget> {
-        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE id=$1")
-            .bind(id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        let total = Money::new(record.amount);
-        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
-
-        Ok(Budget {
-            id: record.id,
-            amount: total,
-            category_id: record.category_id,
-            created_at,
-        })
+    pub fn fetch_budget(&self, id: &str) -> crate::Result<Budget> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from budgets where id = ?")?;
+        let budget = stmt.query_row([id], |row| Budget::try_from(row))?;
+        Ok(budget)
     }
 
     /// Fetches the budget with the corresponding `category_id`.
-    pub async fn fetch_budget_from_category(&self, category_id: &str) -> crate::Result<Budget> {
-        let record: db::Budget = sqlx::query_as("SELECT * FROM budgets WHERE category_id=$1")
-            .bind(category_id)
-            .fetch_one(&self.pool)
-            .await?;
-
-        let total = Money::new(record.amount);
-        let created_at = DateTime::from_timestamp(record.created_at, 0).unwrap_or_default();
-
-        Ok(Budget {
-            id: record.id,
-            amount: total,
-            category_id: record.category_id,
-            created_at,
-        })
+    pub fn fetch_budget_from_category(&self, category_id: &str) -> crate::Result<Budget> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from budgets where category_id = ?")?;
+        let budget = stmt.query_row([category_id], |row| Budget::try_from(row))?;
+        Ok(budget)
     }
 
-    pub async fn create_missing_budgets(&self) -> crate::Result<()> {
-        let categories = self.fetch_categories_only().await?;
-        let budgets = self.fetch_budgets().await?;
+    pub fn create_missing_budgets(&self) -> crate::Result<()> {
+        let categories = self.fetch_categories_only()?;
+        let budgets = self.fetch_budgets()?;
 
         let mut filtered = vec![];
         for c in categories {
@@ -254,7 +205,7 @@ impl CategoryService {
         }
 
         for c in filtered {
-            let result = self.create_budget(Money::ZERO, &c.id).await;
+            let result = self.create_budget(Money::ZERO, &c.id);
             if let Err(err) = result {
                 warn!("Failed to create budget: {err}")
             }
@@ -263,31 +214,63 @@ impl CategoryService {
         Ok(())
     }
 
-    pub async fn fetch_budgets(&self) -> crate::Result<Vec<Budget>> {
-        let records = sqlx::query("SELECT id,category_id FROM budgets")
-            .fetch_all(&self.pool)
-            .await?;
+    pub fn fetch_budgets(&self) -> crate::Result<Vec<Budget>> {
+        let categories = self.fetch_categories_only()?;
 
-        let categories = self.fetch_categories_only().await?;
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from budgets")?;
+        let rows = stmt.query_map((), |row| Budget::try_from(row))?;
 
         let mut budgets = vec![];
-        for record in records {
-            let id: String = record.get("id");
-            let category_id: String = record.get("category_id");
+        for row in rows {
+            let budget = row?;
+
             // Filter budgets with a deleted category
-            if !categories.iter().any(|c| c.id == category_id) {
+            if !categories.iter().any(|c| c.id == budget.category_id) {
                 continue;
             }
-            let budget = self.fetch_budget(&id).await?;
+
             budgets.push(budget);
         }
         Ok(budgets)
     }
+
+    /// Fetch a category group from the database.
+    pub fn fetch_group(&self, id: &str) -> crate::Result<CategoryGroup> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from category_groups where id = ?")?;
+        let group = stmt.query_row([id], |row| CategoryGroup::try_from(row))?;
+        Ok(group)
+    }
+
+    /// Create a new category group.
+    pub fn create_group(&self, title: &str) -> crate::Result<CategoryGroup> {
+        let connection = self.connection.get();
+        let mut stmt = connection
+            .prepare_cached("insert into category_groups(title) values(?) returning *")?;
+        let group = stmt.query_row([title], |row| CategoryGroup::try_from(row))?;
+        Ok(group)
+    }
+
+    /// Update the title of the category group.
+    pub fn set_group_title(&self, id: &str, title: &str) -> crate::Result<CategoryGroup> {
+        let connection = self.connection.get();
+        let mut stmt = connection
+            .prepare_cached("update category_groups set title=?1 where id=?2 returning *")?;
+        let group = stmt.query_row([title, id], |row| CategoryGroup::try_from(row))?;
+        Ok(group)
+    }
+
+    /// Delete a category group
+    pub fn delete_group(&self, id: &str) -> crate::Result<()> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("delete from category_groups where id = ?")?;
+        stmt.execute([id])?;
+        Ok(())
+    }
 }
 
-#[derive(
-    Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, FromRow, Eq, Ord, Hash,
-)]
+#[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq, PartialOrd, Eq, Ord, Hash)]
 #[serde(rename_all = "camelCase")]
 pub struct Category {
     pub id: String,
@@ -298,9 +281,7 @@ pub struct Category {
     pub is_income_stream: bool,
 }
 
-// TODO: test is_sorted
-// TODO: add default "No group" in UI for categories without a group
-#[derive(FromRow, Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
+#[derive(Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
 pub struct CategoryGroup {
     pub id: String,
     pub title: String,
@@ -308,48 +289,44 @@ pub struct CategoryGroup {
     pub created_at: i64,
 }
 
-// TODO: ops
-// - Add category
-// - Remove category
-// - Reorder
-impl CategoryGroup {
-    /// Fetch a category group from the database.
-    pub async fn get(id: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let group: CategoryGroup = sqlx::query_as("SELECT * FROM category_groups WHERE id = $1")
-            .bind(id)
-            .fetch_one(pool)
-            .await?;
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Category {
+    type Error = rusqlite::Error;
+
+    fn try_from(row: &rusqlite::Row) -> Result<Self, Self::Error> {
+        let created_at = match row.get("created_at") {
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
+        };
+
+        let deleted_at = match row.get("deleted_at") {
+            Ok(timestamp) => DateTime::from_timestamp(timestamp, 0),
+            Err(_) => None,
+        };
+
+        let category = Self {
+            id: row.get("id")?,
+            title: row.get("title")?,
+            created_at,
+            deleted_at,
+            is_income_stream: row.get("is_income_stream")?,
+        };
+
+        Ok(category)
+    }
+}
+
+impl<'a> TryFrom<&rusqlite::Row<'a>> for CategoryGroup {
+    type Error = rusqlite::Error;
+
+    fn try_from(row: &rusqlite::Row) -> Result<Self, Self::Error> {
+        // let created_at = DateTime::from_timestamp(row.get(3)?, 0).unwrap_or_default();
+        let group = Self {
+            id: row.get(0)?,
+            title: row.get(1)?,
+            sort_order: row.get(2)?,
+            created_at: row.get(3)?,
+        };
+
         Ok(group)
-    }
-
-    /// Create a new category group.
-    pub async fn create(title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let row: Self = sqlx::query_as("INSERT INTO category_groups(title) VALUES($1) RETURNING *")
-            .bind(title)
-            .fetch_one(pool)
-            .await?;
-
-        Ok(row)
-    }
-
-    /// Update the title of the category group.
-    pub async fn set_title(id: &str, title: &str, pool: &SqlitePool) -> crate::Result<Self> {
-        let row: Self =
-            sqlx::query_as("UPDATE category_groups SET title=$1 WHERE id=$2 RETURNING *")
-                .bind(title)
-                .bind(id)
-                .fetch_one(pool)
-                .await?;
-
-        Ok(row)
-    }
-
-    pub async fn delete(id: &str, pool: &SqlitePool) -> crate::Result<()> {
-        sqlx::query("DELETE FROM category_groups WHERE id=$1")
-            .bind(id)
-            .execute(pool)
-            .await?;
-
-        Ok(())
     }
 }

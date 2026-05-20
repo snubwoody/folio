@@ -1,3 +1,4 @@
+-- migrate:up
 PRAGMA foreign_keys = OFF;
 
 CREATE TABLE transactions_new (
@@ -32,4 +33,4 @@ ALTER TABLE transactions_new RENAME TO transactions;
 
 PRAGMA foreign_keys = ON;
 
-
+-- migrate:down

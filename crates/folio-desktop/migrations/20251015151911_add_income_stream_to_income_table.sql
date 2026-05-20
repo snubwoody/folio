@@ -1,4 +1,4 @@
--- Add migration script here
+-- migrate:up
 CREATE TABLE incomes_new(
 	id TEXT PRIMARY KEY NOT NULL DEFAULT (hex(randomBlob(8))),
 	amount INTEGER NOT NULL DEFAULT 0,
@@ -18,3 +18,5 @@ DROP TABLE incomes;
 
 -- Rename the new table to the original name
 ALTER TABLE incomes_new RENAME TO incomes;
+
+-- migrate:down

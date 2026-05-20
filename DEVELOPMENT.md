@@ -23,9 +23,6 @@ pnpm install
 cargo build
 ```
 
-Add `DATABASE_URL=sqlite://data.db` to your environment or `.env` file 
-(this is for [sqlx](https://github.com/launchbadge/sqlx?tab=readme-ov-file#compile-time-verification)).
-
 ## Run the app
 
 Run the app in dev mode:
@@ -63,8 +60,6 @@ just lint
 
 ## Testing
 
-### Frontend
-
 On the frontend there are unit tests, ending in `.test.ts`, and browser tests `.spec.ts`. Running tests in 
 browser mode will open a Chromium browser, you may need to install playwright browsers.
 
@@ -76,18 +71,4 @@ pnpm playwright install --with-deps
 just test-browser:
 # or
 pnpm -F @folio/desktop test:browser
-```
-
-### Backend
-
-The backend tests are [rust tests](https://doc.rust-lang.org/rust-by-example/testing/unit_testing.html) as usual, 
-please make sure to add tests for new functionality. Some tests may 
-need to interact with a database, for this, use the `#[sqlx::test]` attribute which creates a new database for 
-each test. For example:
-
-```rust
-#[sqlx::test]
-async fn create_category(pool: SqlitePool) -> crate::Result<()>{
-	Ok(())
-}
 ```

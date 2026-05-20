@@ -1,4 +1,4 @@
--- Add migration script here
+-- migrate:up
 INSERT INTO categories(id, title)
 VALUES
     ('DEFAULT_0001', 'Food & Dining'),
@@ -16,3 +16,5 @@ VALUES
     ('DEFAULT_0013', 'Subscriptions'),
     ('DEFAULT_0014', 'Gifts & Donations'),
     ('DEFAULT_0015', 'Other');
+
+-- migrate:down

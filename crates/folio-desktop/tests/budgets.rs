@@ -1,15 +1,15 @@
-use folio_lib::Result;
 use folio_lib::service::CategoryService;
-use sqlx::SqlitePool;
+use folio_lib::{Result, create_test_db};
 
-#[sqlx::test]
-async fn filter_deleted_budgets(pool: SqlitePool) -> Result<()> {
-    let service = CategoryService::new(pool.clone());
-    let c = service.create_category("").await?;
-    let result = service.fetch_budget_from_category(&c.id).await;
+#[test]
+fn filter_deleted_budgets() -> Result<()> {
+    let connection = create_test_db()?;
+    let service = CategoryService::new(connection);
+    let c = service.create_category("")?;
+    let result = service.fetch_budget_from_category(&c.id);
     assert!(result.is_ok());
-    service.delete_category(&c.id).await?;
-    let budgets = service.fetch_budgets().await?;
+    service.delete_category(&c.id)?;
+    let budgets = service.fetch_budgets()?;
     assert!(budgets.is_empty());
     Ok(())
 }

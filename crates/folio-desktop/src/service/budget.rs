@@ -27,50 +27,68 @@ pub struct Budget {
     pub created_at: DateTime<Utc>,
 }
 
+impl<'a> TryFrom<&rusqlite::Row<'a>> for Budget {
+    type Error = rusqlite::Error;
+
+    fn try_from(value: &rusqlite::Row) -> Result<Self, Self::Error> {
+        let created_at = DateTime::from_timestamp(value.get(3)?, 0).unwrap_or_default();
+
+        let budget = Self {
+            id: value.get(0)?,
+            category_id: value.get(1)?,
+            amount: Money::from_scaled(value.get(2)?),
+            created_at,
+        };
+
+        Ok(budget)
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::CategoryService;
-    use sqlx::SqlitePool;
+    use crate::{CategoryService, create_test_db};
 
-    #[sqlx::test]
-    async fn fetch_budgets(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
-        let len = service.fetch_budgets().await?.len();
-        service.create_category("").await?;
-        let budgets = service.fetch_budgets().await?;
+    #[test]
+    fn fetch_budgets() -> crate::Result<()> {
+        let connection = create_test_db()?;
+        let service = CategoryService::new(connection);
+        let len = service.fetch_budgets()?.len();
+        service.create_category("")?;
+        let budgets = service.fetch_budgets()?;
         assert_eq!(budgets.len(), len + 1);
         Ok(())
     }
 
-    #[sqlx::test]
-    async fn edit_budget(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
-        let category = service.create_category("MINE__").await?;
-        let budget = service.fetch_budget_from_category(&category.id).await?;
-        service
-            .edit_budget(&budget.id, Money::from_f64(244.00))
-            .await?;
-        let b = service.fetch_budget_from_category(&category.id).await?;
+    #[test]
+    fn edit_budget() -> crate::Result<()> {
+        let connection = create_test_db()?;
+        let service = CategoryService::new(connection);
+        let category = service.create_category("MINE__")?;
+        let budget = service.fetch_budget_from_category(&category.id)?;
+        service.edit_budget(&budget.id, Money::from_f64(244.00))?;
+        let b = service.fetch_budget_from_category(&category.id)?;
 
         assert_eq!(b.amount, Money::from_f64(244.00));
         Ok(())
     }
 
-    #[sqlx::test]
-    async fn get_budget(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
-        let category = service.create_category("__").await?;
-        let budget = service.fetch_budget_from_category(&category.id).await?;
+    #[test]
+    fn get_budget() -> crate::Result<()> {
+        let connection = create_test_db()?;
+        let service = CategoryService::new(connection);
+        let category = service.create_category("__")?;
+        let budget = service.fetch_budget_from_category(&category.id)?;
         assert_eq!(budget.amount, Money::ZERO);
         Ok(())
     }
 
-    #[sqlx::test]
-    async fn remaining_caps_at_zero(pool: SqlitePool) -> crate::Result<()> {
-        let service = CategoryService::new(pool.clone());
-        let category = service.create_category("__").await?;
-        let budget = service.fetch_budget_from_category(&category.id).await?;
+    #[test]
+    fn remaining_caps_at_zero() -> crate::Result<()> {
+        let connection = create_test_db()?;
+        let service = CategoryService::new(connection);
+        let category = service.create_category("__")?;
+        let budget = service.fetch_budget_from_category(&category.id)?;
         assert_eq!(budget.amount, Money::ZERO);
         Ok(())
     }

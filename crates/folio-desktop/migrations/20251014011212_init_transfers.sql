@@ -1,4 +1,4 @@
--- Add migration script here
+-- migrate:up
 CREATE TABLE expenses(
 	id TEXT PRIMARY KEY NOT NULL DEFAULT (hex(randomBlob(8))),
 	amount INTEGER NOT NULL,
@@ -23,3 +23,5 @@ CREATE TABLE transfers(
 	from_account_id TEXT NULL REFERENCES accounts(id),
 	to_account_id TEXT NULL REFERENCES accounts(id)
 );
+
+-- migrate:down

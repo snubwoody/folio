@@ -1,3 +1,4 @@
+-- migrate:up
 PRAGMA foreign_keys = OFF;
 
 CREATE TABLE budgets_new (
@@ -11,12 +12,6 @@ CREATE TABLE budgets_new (
     UNIQUE(category_id, month, year)
 );
 
--- UPDATE budgets 
--- SET year = strftime('%Y', 'now'),
---     month = CAST(strftime('%m', 'now') AS INTEGER)
--- WHERE year IS NULL OR month IS NULL;
-
-
 INSERT INTO budgets_new(id,category_id,amount,created_at) 
 SELECT id,category_id,amount,created_at FROM budgets;
 
@@ -24,3 +19,5 @@ DROP TABLE budgets;
 ALTER TABLE budgets_new RENAME TO budgets;
 
 PRAGMA foreign_keys = ON;
+
+-- migrate:down

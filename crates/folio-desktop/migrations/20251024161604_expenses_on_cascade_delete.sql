@@ -1,4 +1,4 @@
--- Add migration script here
+-- migrate:up
 PRAGMA foreign_keys = OFF;
 
 CREATE TABLE expenses_new(
@@ -16,3 +16,5 @@ DROP TABLE expenses;
 ALTER TABLE expenses_new RENAME TO expenses;
 
 PRAGMA foreign_keys = ON;
+
+-- migrate:down

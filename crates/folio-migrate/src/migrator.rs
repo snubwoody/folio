@@ -85,7 +85,6 @@ impl Migrator {
         self
     }
 
-    /// Loads a migration from a file.
     pub fn load_from_file(&mut self, path: impl AsRef<Path>) -> crate::Result<()> {
         let file_name = path
             .as_ref()
@@ -129,7 +128,11 @@ impl Migrator {
     pub fn migrate(&self, conn: &Connection) -> crate::Result<()> {
         create_migrations_table(conn)?;
         let applied_migrations = self.applied_migrations(conn)?;
-        for migration in &self.migrations {
+
+        let mut migrations = self.migrations.clone();
+        migrations.sort_by_key(|a| a.version);
+
+        for migration in &migrations {
             if applied_migrations.contains(&migration.version) {
                 continue;
             }

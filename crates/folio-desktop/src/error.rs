@@ -133,13 +133,12 @@ macro_rules! from_error {
 from_error! {
     chrono::ParseError => "Date parse error",
     std::io::Error => "IO error",
-    sqlx::Error => "Database error",
     serde_json::Error => "Serde error",
-    sqlx::migrate::MigrateError => "Migrate error",
     rust_decimal::Error => "rust_decimal error",
     reqwest::Error => "Request error",
     std::num::ParseFloatError => "Parse float error",
-    folio_migrate::MigrateError => "Migrate error"
+    folio_migrate::MigrateError => "Migrate error",
+    rusqlite::Error => "Rusqlite error"
 }
 
 impl Serialize for Error {

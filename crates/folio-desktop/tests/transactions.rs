@@ -1,34 +1,30 @@
 use chrono::NaiveDate;
-use folio_lib::Money;
 use folio_lib::service::{
     AccountService, CategoryService, Transaction, TransactionService, TransactionType,
 };
-use sqlx::{Row, SqlitePool};
+use folio_lib::{Money, create_test_db};
 use std::str::FromStr;
 
-#[sqlx::test]
-async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_inflow_for_only_one_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let transaction2 = transaction_service
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_inflow(&transaction.id, Money::from_f64(10.0))
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
-    let t2 = transaction_service.fetch(&transaction2.id).await?;
+    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0))?;
+    let t = transaction_service.fetch(&transaction.id)?;
+    let t2 = transaction_service.fetch(&transaction2.id)?;
     assert_eq!(t2.amount, Money::MAX);
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
@@ -36,29 +32,26 @@ async fn set_inflow_for_only_one_income(pool: SqlitePool) -> folio_lib::Result<(
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_outflow_for_only_one_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     let transaction2 = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_outflow(&transaction.id, Money::from_f64(10.0))
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
-    let t2 = transaction_service.fetch(&transaction2.id).await?;
+    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0))?;
+    let t = transaction_service.fetch(&transaction.id)?;
+    let t2 = transaction_service.fetch(&transaction2.id)?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(t2.amount, Money::MAX);
     assert_eq!(
@@ -69,40 +62,39 @@ async fn set_outflow_for_only_one_expense(pool: SqlitePool) -> folio_lib::Result
     Ok(())
 }
 
-#[sqlx::test]
-async fn fetch_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("", Money::ZERO).await?;
-    let row = sqlx::query(
-        "
-        INSERT INTO transactions(amount,transaction_date,from_account_id)
-        VALUES (10,'2024-12-12',$1)
-        RETURNING id",
-    )
-    .bind(&account.id)
-    .fetch_one(&pool)
-    .await?;
+#[test]
+fn fetch_transaction() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("Expense", Money::ZERO)?;
 
-    let id: String = row.get("id");
-    let transaction = transaction_service.fetch(&id).await?;
+    // Prevent mutex deadlock
+    let row = {
+        let conn = connection.get();
+        let mut stmt = conn
+            .prepare_cached("insert into transactions(amount,transaction_date,from_account_id) values(10,'2024-12-12',?) returning *")?;
+        stmt.query_row([account.id], |row| Transaction::try_from(row))?
+    };
+
+    let transaction = transaction_service.fetch(&row.id)?;
     assert_eq!(transaction.amount, Money::from_scaled(10));
     Ok(())
 }
 
-#[sqlx::test]
-async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("", Money::ZERO).await?;
+#[test]
+fn create_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("Expense", Money::ZERO)?;
     let date = NaiveDate::from_str("2024-12-12")?;
     let expense = transaction_service
         .expense()
         .account_id(&account.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -110,20 +102,20 @@ async fn create_expense(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("", Money::ZERO).await?;
-    let a2 = account_service.create_account("", Money::ZERO).await?;
-    let a3 = account_service.create_account("", Money::ZERO).await?;
+#[test]
+fn edit_transaction() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("Expense", Money::ZERO)?;
+    let a2 = account_service.create_account("Expense", Money::ZERO)?;
+    let a3 = account_service.create_account("Expense", Money::ZERO)?;
     let date = NaiveDate::from_str("2024-12-12")?;
     let expense = transaction_service
         .expense()
         .account_id(&account.id)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     let expense = transaction_service
         .edit(&expense.id)
@@ -132,8 +124,7 @@ async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
         .from_account(&a2.id)
         .to_account(&a3.id)
         .note("Note__")
-        .update(&pool)
-        .await?;
+        .update(&connection.get())?;
 
     assert_eq!(expense.amount, Money::from_f64(10.0));
     assert_eq!(expense.transaction_date, date);
@@ -143,19 +134,19 @@ async fn edit_transaction(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("", Money::ZERO).await?;
+#[test]
+fn create_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("Expense", Money::ZERO)?;
     let date = NaiveDate::from_str("2024-12-12")?;
     let expense = transaction_service
         .income()
         .account_id(&account.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -163,20 +154,20 @@ async fn create_income(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let a1 = account_service.create_account("", Money::ZERO).await?;
-    let a2 = account_service.create_account("", Money::ZERO).await?;
+#[test]
+fn create_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let a1 = account_service.create_account("Expense", Money::ZERO)?;
+    let a2 = account_service.create_account("Expense", Money::ZERO)?;
     let date = NaiveDate::from_str("2024-12-12")?;
     let expense = transaction_service
         .transfer()
         .accounts(&a1.id, &a2.id)
         .date(date)
         .amount(Money::MAX)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
     assert_eq!(expense.amount, Money::MAX);
     assert_eq!(expense.transaction_date, date);
@@ -185,70 +176,71 @@ async fn create_transfer(pool: sqlx::SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn delete_multiple_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn delete_multiple_transactions() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+
     let t1 = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
+
     let t2 = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
-    let length = transaction_service.fetch_all().await?.len();
+        .create(&connection.get())?;
+
+    let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 2);
-    transaction_service.delete_all(&[t1.id, t2.id]).await?;
-    let length = transaction_service.fetch_all().await?.len();
+    transaction_service.delete_all(&[t1.id, t2.id])?;
+    let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 0);
     Ok(())
 }
 
-#[sqlx::test]
-async fn delete_empty_slice(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn delete_empty_slice() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service.delete_all::<String>(&[]).await?;
-    let length = transaction_service.fetch_all().await?.len();
+    transaction_service.delete_all::<String>(&[])?;
+    let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 1);
     Ok(())
 }
 
-#[sqlx::test]
-async fn delete_only_affected_transactions(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn delete_only_affected_transactions() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     let t1 = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
     transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
-    let length = transaction_service.fetch_all().await?.len();
+        .create(&connection.get())?;
+    let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 2);
-    transaction_service.delete_all(&[t1.id]).await?;
-    let length = transaction_service.fetch_all().await?.len();
+    transaction_service.delete_all(&[t1.id])?;
+    let length = transaction_service.fetch_all()?.len();
     assert_eq!(length, 1);
     Ok(())
 }
@@ -274,22 +266,20 @@ fn transaction_type_expense() {
     assert_eq!(transfer.transaction_type(), TransactionType::Transfer);
 }
 
-#[sqlx::test]
-async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let transaction_service = TransactionService::new(pool.clone());
-    let account_service = AccountService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_outflow_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let transaction_service = TransactionService::new(connection.clone());
+    let account_service = AccountService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_outflow(&transaction.id, Money::from_f64(10.0))
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0))?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
         t.from_account_id.unwrap(),
@@ -299,223 +289,204 @@ async fn set_outflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_payee_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_payee(&transaction.id, &account2.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_payee(&transaction.id, &account2.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.from_account_id.unwrap(), account.id);
     assert_eq!(t.to_account_id.unwrap(), account2.id);
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_account_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_account_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .expense()
         .amount(Money::ZERO)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_account(&transaction.id, &account2.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_account(&transaction.id, &account2.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.from_account_id.unwrap(), account2.id);
     assert_eq!(t.to_account_id, None);
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_account_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_account_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .income()
         .amount(Money::ZERO)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_account(&transaction.id, &account2.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_account(&transaction.id, &account2.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.to_account_id.unwrap(), account2.id);
     assert_eq!(t.from_account_id, None);
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_account_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
-    let account3 = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_account_for_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
+    let account3 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .transfer()
         .amount(Money::ZERO)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_account(&transaction.id, &account3.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_account(&transaction.id, &account3.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.from_account_id.unwrap(), account3.id);
     assert_eq!(t.to_account_id.unwrap(), account2.id);
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
+#[test]
+fn set_payee_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
 
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_payee(&transaction.id, &account2.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_payee(&transaction.id, &account2.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.from_account_id.unwrap(), account.id);
     assert_eq!(t.to_account_id.unwrap(), account2.id);
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
-    let account3 = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_payee_for_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
+    let account3 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .transfer()
         .amount(Money::MAX)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_payee(&transaction.id, &account3.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_payee(&transaction.id, &account3.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.from_account_id.unwrap(), account.id);
     assert_eq!(t.to_account_id.unwrap(), account3.id);
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_payee_removes_category(pool: SqlitePool) -> folio_lib::Result<()> {
-    let service = CategoryService::new(pool.clone());
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
-    let category = service.create_category("").await?;
+#[test]
+fn set_payee_removes_category() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let service = CategoryService::new(connection.clone());
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
+    let category = service.create_category("")?;
     let transaction = transaction_service
         .income()
         .amount(Money::MAX)
         .category(&category.id)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_payee(&transaction.id, &account2.id)
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_payee(&transaction.id, &account2.id)?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert!(t.category_id.is_none());
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_inflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let transaction_service = TransactionService::new(pool.clone());
-    let account_service = AccountService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_inflow_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let transaction_service = TransactionService::new(connection.clone());
+    let account_service = AccountService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_inflow(&transaction.id, Money::from_f64(10.0))
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0))?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(t.to_account_id.unwrap(), transaction.to_account_id.unwrap());
     assert!(t.from_account_id.is_none());
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_inflow_for_transfer(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
-    let account2 = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_inflow_for_transfer() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let account2 = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .transfer()
         .amount(Money::MAX)
         .accounts(&account.id, &account2.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    let result = transaction_service
-        .set_inflow(&transaction.id, Money::from_f64(10.0))
-        .await;
+    let result = transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0));
     assert!(result.is_err());
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
-    let transaction_service = TransactionService::new(pool.clone());
-    let account_service = AccountService::new(pool.clone());
-    let account = account_service.create_account("__", Money::ZERO).await?;
+#[test]
+fn set_inflow_for_expense() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let transaction_service = TransactionService::new(connection.clone());
+    let account_service = AccountService::new(connection.clone());
+    let account = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .expense()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_inflow(&transaction.id, Money::from_f64(10.0))
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_inflow(&transaction.id, Money::from_f64(10.0))?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
         t.to_account_id.unwrap(),
@@ -525,28 +496,46 @@ async fn set_inflow_for_expense(pool: SqlitePool) -> folio_lib::Result<()> {
     Ok(())
 }
 
-#[sqlx::test]
-async fn set_outflow_for_income(pool: SqlitePool) -> folio_lib::Result<()> {
-    let account_service = AccountService::new(pool.clone());
-    let transaction_service = TransactionService::new(pool.clone());
+#[test]
+fn set_outflow_for_income() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+    let transaction_service = TransactionService::new(connection.clone());
     // Setting outflow on an income should turn it into an expense
-    let account = account_service.create_account("__", Money::ZERO).await?;
+    let account = account_service.create_account("__", Money::ZERO)?;
     let transaction = transaction_service
         .income()
         .amount(Money::MAX)
         .account_id(&account.id)
-        .create(&pool)
-        .await?;
+        .create(&connection.get())?;
 
-    transaction_service
-        .set_outflow(&transaction.id, Money::from_f64(10.0))
-        .await?;
-    let t = transaction_service.fetch(&transaction.id).await?;
+    transaction_service.set_outflow(&transaction.id, Money::from_f64(10.0))?;
+    let t = transaction_service.fetch(&transaction.id)?;
     assert_eq!(t.amount, Money::from_f64(10.0));
     assert_eq!(
         t.from_account_id.unwrap(),
         transaction.to_account_id.unwrap()
     );
     assert!(t.to_account_id.is_none());
+    Ok(())
+}
+
+#[test]
+fn fetch_all() -> folio_lib::Result<()> {
+    let connection = create_test_db()?;
+    let account_service = AccountService::new(connection.clone());
+
+    let transaction_service = TransactionService::new(connection.clone());
+
+    let account = account_service.create_account("__", Money::ZERO)?;
+    let transaction = transaction_service
+        .income()
+        .amount(Money::MAX)
+        .account_id(&account.id)
+        .create(&connection.get())?;
+
+    let t = transaction_service.fetch_all()?;
+    assert_eq!(t.len(), 1);
+    assert_eq!(t[0].id, transaction.id);
     Ok(())
 }
