@@ -12,7 +12,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
-pub mod analytics;
 pub mod command;
 mod currency;
 mod date;
@@ -73,7 +72,6 @@ pub async fn run() -> Result<()> {
 
 #[derive(Clone)]
 pub struct State {
-    pool: SqlitePool,
     // TODO: change to std::sync::Mutex
     settings: Arc<Mutex<Settings>>,
     account_service: AccountService,
@@ -84,7 +82,7 @@ pub struct State {
 
 impl State {
     pub async fn new() -> Result<Self> {
-        let (pool, connection) = init_database().await?;
+        let connection = init_database().await?;
         info!("Initialised database pool");
 
         let account_service = AccountService::new(connection.clone());
@@ -100,7 +98,6 @@ impl State {
 
         let settings = Settings::open(path)?;
         Ok(Self {
-            pool,
             settings: Arc::new(Mutex::new(settings)),
             account_service,
             category_service,
@@ -110,7 +107,7 @@ impl State {
     }
 }
 
-pub async fn init_database() -> Result<(SqlitePool, SqliteConnection)> {
+pub async fn init_database() -> Result<SqliteConnection> {
     #[cfg(not(debug_assertions))]
     let path = {
         let data_dir = get_data_dir().unwrap();
@@ -121,23 +118,12 @@ pub async fn init_database() -> Result<(SqlitePool, SqliteConnection)> {
     #[cfg(debug_assertions)]
     let path = PathBuf::from("./data.db");
 
-    let opts = SqliteConnectOptions::new()
-        .filename(&path)
-        .create_if_missing(true);
-
-    let pool = SqlitePool::connect_with(opts).await?;
-    info!(path=?path,"Connected to sqlite database");
-
-    sqlx::migrate!()
-        .run(&pool)
-        .await
-        .inspect_err(|err| error!("Failed to run migration: {err}"))?;
-    let conn = rusqlite::Connection::open(&path).expect("Failed to open sqlite connection");
-    conn.execute("PRAGMA foreign_keys = ON", ())?;
-
     let connection = SqliteConnection::open(&path)?;
-    let _migrator = folio_migrate::Migrator::new();
-    Ok((pool, connection))
+    let mut migrator = folio_migrate::Migrator::new();
+    migrator.load_from_dir("./m2")?;
+    migrator.migrate(&connection.get())?;
+
+    Ok(connection)
 }
 
 /// Get the platform specific data directory.

@@ -13,10 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use crate::analytics::Analytic;
 use crate::error::ErrorExt;
 use crate::settings::Settings;
-use crate::{Currency, Money, Result, State, analytics, service::*};
+use crate::{Currency, Money, Result, State, service::*};
 use chrono::NaiveDate;
 use std::str::FromStr;
 use tauri::{Builder, Wry};
@@ -50,7 +49,6 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         set_currency_code,
         settings,
         get_budget,
-        analytics,
         create_income_stream,
         fetch_categories,
         create_missing_budgets,
@@ -234,14 +232,6 @@ pub fn edit_category(
         .category_service
         .edit_category(&id, &title)
         .context("Failed to edit category")
-        .inspect_err(|err| warn!("{}", err.report()))
-}
-
-#[tauri::command]
-pub async fn analytics(state: tauri::State<'_, State>) -> Result<Vec<Analytic>> {
-    analytics::analytics(&state.pool)
-        .await
-        .context("Failed to fetch analytics")
         .inspect_err(|err| warn!("{}", err.report()))
 }
 
