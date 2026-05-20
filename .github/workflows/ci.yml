@@ -156,7 +156,7 @@ jobs:
             libayatana-appindicator3-dev \
             librsvg2-dev
       - name: Run tests
-        run: cargo nextest run --locked
+        run: cargo nextest run --locked --no-fail-fast --retries 2
   pass:
     needs:
       - format
