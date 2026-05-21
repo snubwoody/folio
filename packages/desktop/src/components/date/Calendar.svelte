@@ -19,7 +19,6 @@
         value?: DateValue
     };
 
-    // TODO: default today
     let {
         value = $bindable(today(getLocalTimeZone())),
         onDateChange
@@ -33,13 +32,6 @@
     function setToday(){
         updateDate(today(getLocalTimeZone()));
     }
-
-    // TODO: focus trap
-    // TODO: ARIA label for date field or properties
-
-    // TODO: close on enter instead of click?
-    // TODO: focus trap on date cell after changing
-    // TODO: test that date field has focus
 </script>
 
 <Calendar.Root
