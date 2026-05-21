@@ -1,12 +1,12 @@
-import {describe, test, expect, beforeEach} from "vitest";
+import { describe, test, expect, beforeEach } from "vitest";
 import TransactionTable from "./TransactionTable.svelte";
 import { render } from "vitest-browser-svelte";
 import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
-import {transactionStore} from "$lib/stores/transaction.svelte";
-import {formatMoney} from "$lib/utils/money";
+import { transactionStore } from "$lib/stores/transaction.svelte";
+import { formatMoney } from "$lib/utils/money";
 
-beforeEach(()=>{
+beforeEach(() => {
     transactionStore.clear();
 });
 
@@ -16,12 +16,12 @@ describe("TransactionTable",() => {
         const account = await accountStore.createTestAccount({ name: "Test account" });
         transactionStore.addTestTransaction({
             fromAccountId: account.id,
-            amount: "500",
+            amount: "500"
         });
         transactionStore.addTestTransaction({
             id: "T2",
             fromAccountId: "does-not-exist",
-            amount: "50",
+            amount: "50"
         });
         const screen = await render(TransactionTable, { tableStore,accountId: account.id });
         const rows = screen.getByTestId("transaction-row").all();

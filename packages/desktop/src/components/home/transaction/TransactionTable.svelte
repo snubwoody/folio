@@ -21,7 +21,7 @@
         tableStore.deselectAll();
     };
 
-    let transactions = $derived.by(()=>{
+    let transactions = $derived.by(() => {
         let transactions = transactionStore.transactions;
 
         if (accountId) {
@@ -29,7 +29,7 @@
         }
 
         return transactions;
-    })
+    });
 
 </script>
 

@@ -6,7 +6,7 @@
 
     type Props = {
         accountId?: string
-    }
+    };
 
     const tableStore = new TableStore();
 

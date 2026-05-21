@@ -6,8 +6,6 @@ import { mockIPC } from "@tauri-apps/api/mocks";
 import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
 import type { Currency } from "$lib/types";
 import { transactionStore } from "$lib/stores/transaction.svelte";
-import type { Transaction } from "$lib/api/transaction";
-import { CalendarDate } from "@internationalized/date";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
@@ -134,7 +132,7 @@ describe("Sidebar",() => {
         transactionStore.addTestTransaction({
             id: "2",
             toAccountId:a1.id,
-            amount: "1000",
+            amount: "1000"
         });
         await expect.element(screen.getByRole("listitem").getByText("K520.00")).toBeVisible();
     });

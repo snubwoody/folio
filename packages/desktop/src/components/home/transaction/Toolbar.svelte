@@ -7,9 +7,9 @@
 
     type Props = {
         accountId?: string
-    }
+    };
 
-    const {accountId}:Props = $props();
+    const { accountId }:Props = $props();
 
     async function addTransaction() {
         const account = accountId ? accountStore.accountMap.get(accountId)! : accountStore.accounts[0];

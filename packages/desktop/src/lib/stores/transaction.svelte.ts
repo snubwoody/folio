@@ -14,8 +14,8 @@ import {
     type CreateTransactionOpts,
     setAccount
 } from "$lib/api/transaction";
-import {type CalendarDate, getLocalTimeZone, today} from "@internationalized/date";
-import {randomId} from "$lib/stores/toast.svelte";
+import { type CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import { randomId } from "$lib/stores/toast.svelte";
 
 export type AddTestTransactionOps = {
     id?: string,
