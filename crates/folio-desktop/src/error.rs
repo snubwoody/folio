@@ -138,7 +138,8 @@ from_error! {
     reqwest::Error => "Request error",
     std::num::ParseFloatError => "Parse float error",
     folio_migrate::MigrateError => "Migrate error",
-    rusqlite::Error => "Rusqlite error"
+    rusqlite::Error => "Rusqlite error",
+    csv::Error => "CSV error"
 }
 
 impl Serialize for Error {
