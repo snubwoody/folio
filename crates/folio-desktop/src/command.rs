@@ -13,11 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use std::path::PathBuf;
 use crate::error::ErrorExt;
 use crate::settings::Settings;
 use crate::{Currency, Money, Result, State, service::*};
 use chrono::NaiveDate;
+use std::path::PathBuf;
 use std::str::FromStr;
 use tauri::{AppHandle, Builder, WebviewUrl, WebviewWindowBuilder, Wry};
 use tracing::{debug, error, info, warn};
@@ -88,15 +88,19 @@ pub fn parse_date(value: String) -> NaiveDate {
     super::date::parse_date(&value)
 }
 
-
 #[tauri::command]
-pub fn create_window(app: AppHandle) -> Result<()>{
-    WebviewWindowBuilder::new(&app,"Import CSV",WebviewUrl::App(PathBuf::from("/")))
+pub fn create_window(app: AppHandle) -> Result<()> {
+    WebviewWindowBuilder::new(&app, "import-csv", WebviewUrl::default())
         .resizable(true)
         .maximized(false)
         .build()
         .context("Failed to create new window")?;
 
+    Ok(())
+}
+
+#[tauri::command]
+pub fn load_csv(app: AppHandle) -> Result<()> {
     Ok(())
 }
 

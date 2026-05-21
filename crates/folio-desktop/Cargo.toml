@@ -38,7 +38,9 @@ tauri-plugin-updater.workspace = true
 tauri-plugin-prevent-default.workspace = true
 tauri-plugin-process = "2"
 rusqlite.workspace = true
-folio-migrate = { version = "2.2.0", path = "../folio-migrate" }
+folio-migrate = { version = "2.3.0", path = "../folio-migrate" }
+tauri-plugin-dialog = "2"
+csv = "1.4.0"
 
 [package.metadata.packager]
 product-name = "Folio"

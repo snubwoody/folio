@@ -4,6 +4,7 @@
     import { CirclePlus } from "@lucide/svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
+    import { open } from "@tauri-apps/plugin-dialog";
 
     type Props = {
         accountId?: string
@@ -15,10 +16,19 @@
         const account = accountId ? accountStore.accountMap.get(accountId)! : accountStore.accounts[0];
         await transactionStore.createExpense({ accountId: account.id });
     }
+
+    async function importCsv(){
+        const file = await open({
+            multiple: false,
+            directory: false,
+            filters: [{name:"csv-filter",extensions:["csv"]}]
+        });
+        console.log(file);
+    }
 </script>
 
 <Toolbar.Root class="border-t border-neutral-50">
-    <Toolbar.Group type="single">
+    <Toolbar.Group type="single" class="flex items-center">
         <Toolbar.GroupItem
             value="add-transaction"
             class="flex items-center px-2 py-1"
@@ -26,6 +36,15 @@
             <TextButton theme="primary" onclick={addTransaction}>
                 <CirclePlus />
                 Add Transaction
+            </TextButton>
+        </Toolbar.GroupItem>
+        <Toolbar.GroupItem
+            value="import-csv"
+            class="flex items-center px-2 py-1"
+        >
+            <TextButton theme="primary" onclick={importCsv}>
+                <CirclePlus />
+                Import
             </TextButton>
         </Toolbar.GroupItem>
     </Toolbar.Group>

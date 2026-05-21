@@ -14,6 +14,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 pub mod command;
 mod currency;
+mod importer;
 mod date;
 pub mod error;
 mod money;
@@ -51,6 +52,7 @@ pub fn run() -> Result<()> {
     let state = State::new().context("Failed to initialise app state")?;
 
     let app = tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_prevent_default::init())
