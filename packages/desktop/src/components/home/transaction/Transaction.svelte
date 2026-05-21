@@ -16,7 +16,7 @@
     interface Props{
         transaction: Transaction
         tableStore: TableStore,
-        showAccount: boolean
+        showAccount?: boolean
     }
 
     const { transaction,tableStore, showAccount = true }: Props = $props();
