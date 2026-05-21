@@ -6,11 +6,13 @@
     import { Checkbox } from "$components/select";
 
     interface Props {
-        tableStore: TableStore
+        tableStore: TableStore,
+        accountId?: string
     }
 
-    const { tableStore }: Props = $props();
+    const { tableStore,accountId }: Props = $props();
     let selected = $derived(tableStore.allRowsSelected);
+
     const select = (checked: boolean) => {
         if (checked){
             tableStore.selectAll();
@@ -18,29 +20,34 @@
         }
         tableStore.deselectAll();
     };
+
+    let transactions = $derived.by(() => {
+        let transactions = transactionStore.transactions;
+
+        if (accountId) {
+            transactions = transactions.filter(t => t.fromAccountId === accountId);
+        }
+
+        return transactions;
+    });
+
 </script>
-<Table>
+
+<Table length={accountId ? 7 : 8}>
     <TableHeader>
         <Checkbox bind:checked={selected} onChecked={select}/>
-<!--        <input type="checkbox" checked={selected} class="w-fit" name="selected" id="row-checkbox"-->
-<!--           onclick={(e) => {-->
-<!--               if(e.currentTarget.checked){-->
-<!--                   tableStore.toggleSelectAll();-->
-<!--                   return;-->
-<!--               }-->
-<!--               tableStore.toggleSelectAll();-->
-<!--           }}-->
-<!--        >-->
         <TableCell>Date</TableCell>
-        <TableCell>Account</TableCell>
+        {#if !accountId}
+            <TableCell>Account</TableCell>
+        {/if}
         <TableCell>Payee</TableCell>
         <TableCell>Note</TableCell>
         <TableCell>Category</TableCell>
         <TableCell>Outflow</TableCell>
         <TableCell>Inflow</TableCell>
     </TableHeader>
-    {#each transactionStore.transactions as transaction (transaction.id)}
-        <Transaction {transaction} {tableStore}/>
+    {#each transactions as transaction (transaction.id)}
+        <Transaction showAccount={accountId === undefined} {transaction} {tableStore}/>
     {/each}
 </Table>
 

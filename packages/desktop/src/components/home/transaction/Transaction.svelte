@@ -15,25 +15,20 @@
 
     interface Props{
         transaction: Transaction
-        tableStore: TableStore
+        tableStore: TableStore,
+        showAccount?: boolean
     }
 
-    const { transaction,tableStore }: Props = $props();
+    const { transaction,tableStore, showAccount = true }: Props = $props();
     const transType = $derived.by(() => {
         return transactionType(transaction);
     });
 
     const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
-    // TODO: make the row a form
     let note = $derived(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
     const currencySymbol = $derived(settingsStore.currency.symbol ?? settingsStore.currency.code);
     const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
-    // TODO: test this
-    // FIXME: popup width for select without a selected option
-    // FIXME: only update payee if the function succeeds
-    // TODO: add style for selected items
-    // FIXME: make calendar and popup fit cells
 
     const select = (checked: boolean) => {
         if (checked){
@@ -48,7 +43,9 @@
 <TableRow data-selected={selected}>
     <Checkbox bind:checked onChecked={select}/>
     <DateCell {transaction}/>
-    <AccountCell {transaction}/>
+    {#if showAccount}
+        <AccountCell {transaction}/>
+    {/if}
     {#if transType === "Transfer"}
         {@const account = accountStore.accountMap.get(transaction.toAccountId??"")}
         <SelectCell

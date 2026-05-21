@@ -15,13 +15,15 @@
 
 {#key transactionStore.transactions}
     <li>
-        <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
-        <p>{formatMoney(balance.toString())}</p>
+        <a href={`/accounts/${account.id}`}>
+            <p class="text-truncate max-w-[50%]" title={account.name}>{account.name}</p>
+            <p>{formatMoney(balance.toString())}</p>
+        </a>
     </li>
 {/key}
 
 <style>
-    li{
+    a{
         display: flex;
         justify-content: space-between;
     }

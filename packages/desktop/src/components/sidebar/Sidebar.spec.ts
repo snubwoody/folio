@@ -6,8 +6,6 @@ import { mockIPC } from "@tauri-apps/api/mocks";
 import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
 import type { Currency } from "$lib/types";
 import { transactionStore } from "$lib/stores/transaction.svelte";
-import type { Transaction } from "$lib/api/transaction";
-import { CalendarDate } from "@internationalized/date";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
@@ -123,21 +121,18 @@ describe("Sidebar",() => {
     test("reactive account balance", async () => {
         mockCreateAccount();
         const a1 = await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
-        const expense: Transaction = {
-            id: "1",
+
+        transactionStore.addTestTransaction({
             fromAccountId: a1.id,
-            amount: "500.00",
-            date: new CalendarDate(2025,1,1)
-        };
-        transactionStore.addTestTransaction(expense);
+            amount: "500"
+        });
         const screen = await render(Sidebar);
 
         await expect.element(screen.getByRole("listitem").getByText("K-480.00")).toBeVisible();
         transactionStore.addTestTransaction({
             id: "2",
             toAccountId:a1.id,
-            amount: "1000.00",
-            date: new CalendarDate(2025,1,1)
+            amount: "1000"
         });
         await expect.element(screen.getByRole("listitem").getByText("K520.00")).toBeVisible();
     });
@@ -145,13 +140,10 @@ describe("Sidebar",() => {
     test("reactive account total", async () => {
         mockCreateAccount();
         const a1 = await accountStore.createAccount({ name: "Account 1" });
-        const expense: Transaction = {
-            id: "1",
+        transactionStore.addTestTransaction({
             toAccountId: a1.id,
-            amount: "500.00",
-            date: new CalendarDate(2025,1,1)
-        };
-        transactionStore.addTestTransaction(expense);
+            amount: "500"
+        });
         const screen = await render(Sidebar);
 
         await expect.element(screen.getByTestId("account-section-header").getByText("K500.00")).toBeVisible();

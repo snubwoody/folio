@@ -1,7 +1,7 @@
 @layer components{
     .data-table{
         display: grid;
-        grid-template-columns: auto 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: auto repeat(calc(var(--length)),1fr);
     }
 
     .data-row, .data-header{

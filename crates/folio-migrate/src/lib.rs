@@ -7,8 +7,6 @@ pub use error::MigrateError;
 pub(crate) use error::Result;
 pub use migrator::Migrator;
 
-// TODO: add cli
-
 /// Opens an in memory sqlite database for testing.
 #[cfg(test)]
 pub(crate) fn test_db() -> rusqlite::Connection {

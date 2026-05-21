@@ -15,17 +15,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import type { HTMLAttributes } from "svelte/elements";
-    import type { Snippet } from "svelte";
+    import TransactionSection from "$components/home/transaction/TransactionSection.svelte";
+    import type { PageProps } from "./$types";
+    import AccountInfo from "$components/AccountInfo.svelte";
 
-    interface Props extends  HTMLAttributes<HTMLDivElement>{
-        children?: Snippet,
-        length: number
-    }
-
-    const { children,length }:Props = $props();
+    const { params }: PageProps = $props();
 </script>
 
-<div style:--length={length - 1} class="data-table">
-    {@render children?.()}
-</div>
+<main>
+    <AccountInfo accountId={params.id}/>
+    <TransactionSection accountId={params.id}/>
+</main>
+
+<style>
+    main{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        overflow-y: auto;
+    }
+</style>

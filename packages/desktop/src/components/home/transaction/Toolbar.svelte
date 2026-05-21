@@ -5,8 +5,14 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
 
+    type Props = {
+        accountId?: string
+    };
+
+    const { accountId }:Props = $props();
+
     async function addTransaction() {
-        const account = accountStore.accounts[0];
+        const account = accountId ? accountStore.accountMap.get(accountId)! : accountStore.accounts[0];
         await transactionStore.createExpense({ accountId: account.id });
     }
 </script>

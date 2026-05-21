@@ -9,7 +9,6 @@ use tracing::info;
 
 use crate::MigrateError;
 
-// TODO: change version to string
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 struct Migration {
     version: u64,
