@@ -16,7 +16,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tracing::error;
+use tracing::{error,info};
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -61,4 +61,6 @@ async fn main() {
     if let Err(err) = folio_lib::run() {
         error!("{}", err.report())
     }
+
+    info!("Exiting app");
 }

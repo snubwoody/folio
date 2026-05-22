@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use std::fs::File;
 use crate::error::ErrorExt;
 use crate::settings::Settings;
 use crate::{Currency, Money, Result, State, service::*};
@@ -45,6 +46,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         account_balance,
         create_budget,
         edit_budget,
+        load_csv,
         currencies,
         set_transaction_account,
         set_currency_code,
@@ -100,8 +102,11 @@ pub fn create_window(app: AppHandle) -> Result<()> {
 }
 
 #[tauri::command]
-pub fn load_csv(app: AppHandle) -> Result<()> {
-    Ok(())
+pub fn load_csv(path: String) -> Result<Vec<Vec<String>>> {
+    let file = File::open(path)?;
+    crate::importer::load_csv(file)
+        .context("Failed to load csv file")
+        .inspect_err(|err|warn!("{}",err.report()))
 }
 
 #[tauri::command]

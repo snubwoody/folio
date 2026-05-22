@@ -3,12 +3,14 @@ use std::io::Read;
 /// Loads a csv file.
 ///
 /// The result will be sent to the frontend for the user to configure.
-pub fn load_csv(reader: impl Read) -> crate::Result<Vec<csv::StringRecord>>{
+pub fn load_csv(reader: impl Read) -> crate::Result<Vec<Vec<String>>>{
     let mut csv_reader = csv::Reader::from_reader(reader);
     let mut records = vec![];
     for result in csv_reader.records(){
-        records.push(result?);
+        let record = result?.iter().map(|field|field.to_owned()).collect::<Vec<_>>();
+        records.push(record);
     }
+    // let records: Vec<> = records.iter().map(|field|field).collect();
     Ok(records)
 }
 
