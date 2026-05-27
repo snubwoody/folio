@@ -1,0 +1,6 @@
+[package]
+name = "folio-ui"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
