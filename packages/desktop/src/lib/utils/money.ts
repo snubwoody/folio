@@ -9,9 +9,12 @@ export interface MoneyFormatOpts {
 }
 
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
-    const currency = opts?.currency ?? settingsStore.currency.symbol ?? settingsStore.currency.code;
+    const currency =
+        opts?.currency ??
+        settingsStore.currency.symbol ??
+        settingsStore.currency.code;
 
-    const raw = formatAmountWithoutSymbol(amount,opts);
+    const raw = formatAmountWithoutSymbol(amount, opts);
 
     // The browser automatically formats RTL for certain languages
     return `${currency}${raw}`;
@@ -20,7 +23,7 @@ export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
 // FIXME: join with above
 export function formatAmountWithoutSymbol(
     amount: string,
-    opts?: MoneyFormatOpts
+    opts?: MoneyFormatOpts,
 ): string {
     const currency = opts?.currency ?? "USD";
     let notation:
@@ -36,7 +39,7 @@ export function formatAmountWithoutSymbol(
     const formatter = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency,
-        notation
+        notation,
     });
 
     const parts = formatter.formatToParts(parseFloat(amount));

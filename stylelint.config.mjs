@@ -1,13 +1,18 @@
 /** @type {import('stylelint').Config} */
 export default {
     extends: ["stylelint-config-standard"],
-    ignoreFiles: ["**/build/**", "**/target/**","**/dist/**","**/coverage/**"],
+    ignoreFiles: [
+        "**/build/**",
+        "**/target/**",
+        "**/dist/**",
+        "**/coverage/**",
+    ],
     overrides: [
         {
             // For Svelte <style> blocks
             files: ["**/*.svelte"],
-            customSyntax: "postcss-html"
-        }
+            customSyntax: "postcss-html",
+        },
     ],
     rules: {
         "color-no-invalid-hex": true,
@@ -21,8 +26,8 @@ export default {
         "selector-pseudo-class-no-unknown": [
             true,
             {
-                ignorePseudoClasses: ["global"]
-            }
-        ]
-    }
+                ignorePseudoClasses: ["global"],
+            },
+        ],
+    },
 };

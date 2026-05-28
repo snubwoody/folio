@@ -7,13 +7,13 @@ from.
 ```svelte
 <script>
     const paymentMethods = [
-        {id: 298024, title: "Apple Pay"},
-        {id: 232353, title: "Klarna"},
-        {id: 368547, title: "Bank"},
-        {id: 869822, title: "Credit card"},
-        {id: 724024, title: "Cash"},
-        {id: 239142, title: "PayPal"},
-    ]
+        { id: 298024, title: "Apple Pay" },
+        { id: 232353, title: "Klarna" },
+        { id: 368547, title: "Bank" },
+        { id: 869822, title: "Credit card" },
+        { id: 724024, title: "Cash" },
+        { id: 239142, title: "PayPal" },
+    ];
 </script>
 
 <SelectMenu

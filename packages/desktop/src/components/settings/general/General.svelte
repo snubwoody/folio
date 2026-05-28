@@ -25,14 +25,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     let currencies: Currency[] = $state([]);
     $effect(() => {
-        getCurrencies()
-            .then((c) => {
-                if (c){
-                    currencies = c;
-                }
-            });
+        getCurrencies().then((c) => {
+            if (c) {
+                currencies = c;
+            }
+        });
     });
-
 </script>
 
 <div class="space-y-2">

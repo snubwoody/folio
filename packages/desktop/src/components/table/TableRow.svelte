@@ -2,11 +2,11 @@
     import type { Snippet } from "svelte";
     import type { HTMLAttributes } from "svelte/elements";
 
-    interface Props extends HTMLAttributes<HTMLDivElement>{
-        children?: Snippet
+    interface Props extends HTMLAttributes<HTMLDivElement> {
+        children?: Snippet;
     }
 
-    const { children,...rest }:Props = $props();
+    const { children, ...rest }: Props = $props();
 </script>
 
 <div data-testid="transaction-row" class="data-row" {...rest}>

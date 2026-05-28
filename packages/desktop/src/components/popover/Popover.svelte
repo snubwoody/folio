@@ -5,7 +5,11 @@ Displays content in a portal, triggered by a button.
 # Example
 ```svelte
 <script>
-    import {Popover,PopoverTrigger,PopoverContent} from "$components/popover";
+    import {
+        Popover,
+        PopoverTrigger,
+        PopoverContent,
+    } from "$components/popover";
 </script>
 
 <Popover>

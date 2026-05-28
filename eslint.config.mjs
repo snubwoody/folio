@@ -18,7 +18,7 @@ export default defineConfig([
         "**/.vscode",
         "**/.github",
         "**/.idea",
-        "**/target/**"
+        "**/target/**",
     ]),
     js.configs.recommended,
     tseslint.configs.recommended,
@@ -29,20 +29,20 @@ export default defineConfig([
         languageOptions: {
             parser: tseslint.parser,
             parserOptions: {
-                project: "./tsconfig.json"
-            }
+                project: "./tsconfig.json",
+            },
         },
         rules: {
-            "@typescript-eslint/no-unused-vars": ["warn"]
-        }
+            "@typescript-eslint/no-unused-vars": ["warn"],
+        },
     },
     {
         files: ["**/*.js"],
         languageOptions: {
-            globals:{
-                ...globals.browser
-            }
-        }
+            globals: {
+                ...globals.browser,
+            },
+        },
     },
     {
         files: ["**/*.svelte"],
@@ -51,20 +51,20 @@ export default defineConfig([
             parserOptions: {
                 projectService: true,
                 extraFileExtensions: [".svelte"],
-                parser: tseslint.parser
-            }
+                parser: tseslint.parser,
+            },
         },
         rules: {
             "svelte/no-at-html-tags": "warn",
             "svelte/valid-compile": "warn",
-            "svelte/no-navigation-without-resolve": "off"
-        }
+            "svelte/no-navigation-without-resolve": "off",
+        },
     },
     {
         files: ["**/*.{js,mjs,cjs,ts,astro,svelte}"],
         plugins: {
             js,
-            "@stylistic":stylistic
+            "@stylistic": stylistic,
         },
         rules: {
             "no-unused-vars": "off",
@@ -81,7 +81,7 @@ export default defineConfig([
             "@stylistic/semi": ["error"],
             "@stylistic/arrow-spacing": ["warn"],
             "@stylistic/brace-style": ["warn"],
-            "@stylistic/comma-dangle": ["warn","never"]
-        }
-    }
+            "@stylistic/comma-dangle": ["warn", "never"],
+        },
+    },
 ]);

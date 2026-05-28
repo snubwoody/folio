@@ -1,7 +1,16 @@
-import { test, expect, afterEach,describe } from "vitest";
+import { test, expect, afterEach, describe } from "vitest";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
-import { createTransaction, getTransactions, type RawTransaction } from "./transaction";
-import { getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
+import {
+    createTransaction,
+    getTransactions,
+    type RawTransaction,
+} from "./transaction";
+import {
+    getLocalTimeZone,
+    now,
+    parseDate,
+    toCalendarDate,
+} from "@internationalized/date";
 
 afterEach(() => {
     clearMocks();
@@ -18,8 +27,8 @@ test("getTransactions", async () => {
                     transactionDate: "2023-12-01",
                     amount: "24.24",
                     note: "Note",
-                    categoryId: "C1"
-                }
+                    categoryId: "C1",
+                },
             ];
             return transactions;
         }
@@ -40,12 +49,16 @@ describe("createTransaction", () => {
     test("parse args", async () => {
         mockIPC((cmd, args) => {
             if (cmd === "create_expense") {
-                const payload = args as { amount: string, date: string, account: string };
+                const payload = args as {
+                    amount: string;
+                    date: string;
+                    account: string;
+                };
                 let transactions: RawTransaction = {
                     id: "1",
                     fromAccountId: payload.account,
                     transactionDate: payload.date,
-                    amount: payload.amount
+                    amount: payload.amount,
                 };
                 return transactions;
             }
@@ -54,7 +67,7 @@ describe("createTransaction", () => {
         const transaction = await createTransaction({
             accountId: "A1",
             amount: "120",
-            date: parseDate("2024-12-12")
+            date: parseDate("2024-12-12"),
         });
 
         expect(transaction.date).toStrictEqual(parseDate("2024-12-12"));
@@ -64,12 +77,16 @@ describe("createTransaction", () => {
     test("default date is today", async () => {
         mockIPC((cmd, args) => {
             if (cmd === "create_expense") {
-                const payload = args as { amount: string, date: string, account: string };
+                const payload = args as {
+                    amount: string;
+                    date: string;
+                    account: string;
+                };
                 let transactions: RawTransaction = {
                     id: "1",
                     fromAccountId: payload.account,
                     transactionDate: payload.date,
-                    amount: payload.amount
+                    amount: payload.amount,
                 };
                 return transactions;
             }
@@ -78,7 +95,7 @@ describe("createTransaction", () => {
         const today = toCalendarDate(now(getLocalTimeZone()));
         const transaction = await createTransaction({
             accountId: "A1",
-            amount: "120"
+            amount: "120",
         });
 
         expect(transaction.date).toStrictEqual(today);
@@ -86,22 +103,25 @@ describe("createTransaction", () => {
     test("default amount is 0", async () => {
         mockIPC((cmd, args) => {
             if (cmd === "create_expense") {
-                const payload = args as { amount: string, date: string, account: string };
+                const payload = args as {
+                    amount: string;
+                    date: string;
+                    account: string;
+                };
                 let transactions: RawTransaction = {
                     id: "1",
                     fromAccountId: payload.account,
                     transactionDate: payload.date,
-                    amount: payload.amount
+                    amount: payload.amount,
                 };
                 return transactions;
             }
         });
 
         const transaction = await createTransaction({
-            accountId: "A1"
+            accountId: "A1",
         });
 
         expect(transaction.amount).toBe("0.00");
     });
 });
-

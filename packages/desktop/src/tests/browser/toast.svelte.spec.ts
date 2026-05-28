@@ -2,7 +2,7 @@ import ToastGroup from "$components/alerts/ToastGroup.svelte";
 import ToastComponent from "$components/alerts/Toast.svelte";
 import { test, beforeEach, expect } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { toastStore,addToast,type Toast } from "$lib/stores/toast.svelte";
+import { toastStore, addToast, type Toast } from "$lib/stores/toast.svelte";
 
 beforeEach(() => {
     toastStore.clear();
@@ -10,8 +10,8 @@ beforeEach(() => {
 
 test("Show toasts in toast store", async () => {
     // Set a long timeout to reduce flakiness
-    addToast({ title: "New update available" },20000);
-    addToast({ title: "Something went wrong" },20000);
+    addToast({ title: "New update available" }, 20000);
+    addToast({ title: "Something went wrong" }, 20000);
     const page = render(ToastGroup);
     const toasts = page.getByRole("listitem").all();
     expect(toasts).toHaveLength(2);
@@ -23,9 +23,9 @@ test("Display toast info", async () => {
     const toast: Toast = {
         id: "",
         title: "Something went wrong",
-        body: "We don't know what it is"
+        body: "We don't know what it is",
     };
-    const page = render(ToastComponent,{ toast });
+    const page = render(ToastComponent, { toast });
     const item = page.getByRole("listitem");
     expect(item).toBeInTheDocument();
     expect(item.getByText("Something went wrong")).toBeInTheDocument();
@@ -36,20 +36,20 @@ test("Display toast buttons", async () => {
     const toast: Toast = {
         id: "",
         title: "Something went wrong",
-        primaryAction:{
+        primaryAction: {
             text: "Primary",
-            action: () => {}
+            action: () => {},
         },
-        secondaryAction:{
+        secondaryAction: {
             text: "Secondary",
-            action: () => {}
-        }
+            action: () => {},
+        },
     };
-    const page = render(ToastComponent,{ toast });
+    const page = render(ToastComponent, { toast });
     const item = page.getByRole("listitem");
     expect(item).toBeInTheDocument();
-    expect(item.getByRole("button",{ name:"Primary" })).toBeInTheDocument();
-    expect(item.getByRole("button",{ name:"Secondary" })).toBeInTheDocument();
+    expect(item.getByRole("button", { name: "Primary" })).toBeInTheDocument();
+    expect(item.getByRole("button", { name: "Secondary" })).toBeInTheDocument();
 });
 
 test("Click primary button", async () => {
@@ -57,14 +57,14 @@ test("Click primary button", async () => {
     const toast: Toast = {
         id: "",
         title: "Something went wrong",
-        primaryAction:{
+        primaryAction: {
             text: "Primary",
-            action: () => num = 10
-        }
+            action: () => (num = 10),
+        },
     };
-    const page = render(ToastComponent,{ toast });
+    const page = render(ToastComponent, { toast });
     const item = page.getByRole("listitem");
-    await item.getByRole("button",{ name:"Primary" }).click();
+    await item.getByRole("button", { name: "Primary" }).click();
     expect(num).toBe(10);
 });
 
@@ -73,14 +73,13 @@ test("Click secondary button", async () => {
     const toast: Toast = {
         id: "",
         title: "Something went wrong",
-        secondaryAction:{
+        secondaryAction: {
             text: "Secondary",
-            action: () => num = 10
-        }
+            action: () => (num = 10),
+        },
     };
-    const page = render(ToastComponent,{ toast });
+    const page = render(ToastComponent, { toast });
     const item = page.getByRole("listitem");
-    await item.getByRole("button",{ name:"Secondary" }).click();
+    await item.getByRole("button", { name: "Secondary" }).click();
     expect(num).toBe(10);
 });
-

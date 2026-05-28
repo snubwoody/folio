@@ -9,7 +9,7 @@ import { transactionStore } from "$lib/stores/transaction.svelte";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {
-        return { currencyCode: "USD",sidebarOpen: true };
+        return { currencyCode: "USD", sidebarOpen: true };
     }
     if (cmd === "set_sidebar_state") {
         return;
@@ -17,21 +17,21 @@ mockIPC((cmd) => {
     if (cmd === "currencies") {
         const currencies: Currency[] = [
             {
-                code:"AUD",
-                name: ""
+                code: "AUD",
+                name: "",
             },
             {
-                code:"ZMW",
-                name: ""
+                code: "ZMW",
+                name: "",
             },
             {
-                code:"CAD",
-                name: ""
+                code: "CAD",
+                name: "",
             },
             {
-                code:"USD",
-                name: ""
-            }
+                code: "USD",
+                name: "",
+            },
         ];
         return currencies;
     }
@@ -42,19 +42,23 @@ beforeEach(() => {
     settingsStore.reset();
 });
 
-describe("Sidebar",() => {
-    test("has navigation links",async() => {
+describe("Sidebar", () => {
+    test("has navigation links", async () => {
         const screen = await render(Sidebar);
-        const transactionsLink = screen.getByRole("link",{ name:"Transactions" });
-        const spendingLink = screen.getByRole("link",{ name:"Spending" });
-        const analyticsLink = screen.getByRole("link",{ name:"Analytics" });
+        const transactionsLink = screen.getByRole("link", {
+            name: "Transactions",
+        });
+        const spendingLink = screen.getByRole("link", { name: "Spending" });
+        const analyticsLink = screen.getByRole("link", { name: "Analytics" });
 
         await expect.element(transactionsLink).toBeVisible();
         await expect.element(spendingLink).toBeVisible();
         await expect.element(analyticsLink).toBeVisible();
-        await expect.element(transactionsLink).toHaveAttribute("href","/");
-        await expect.element(spendingLink).toHaveAttribute("href","/spending");
-        await expect.element(analyticsLink).toHaveAttribute("href","/analytics");
+        await expect.element(transactionsLink).toHaveAttribute("href", "/");
+        await expect.element(spendingLink).toHaveAttribute("href", "/spending");
+        await expect
+            .element(analyticsLink)
+            .toHaveAttribute("href", "/analytics");
     });
 
     test("open settings panel", async () => {
@@ -68,30 +72,38 @@ describe("Sidebar",() => {
 
     test("defaults to expanded", async () => {
         const screen = await render(Sidebar);
-        await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","true");
+        await expect
+            .element(screen.getByTestId("nav-panel"))
+            .toHaveAttribute("data-expanded", "true");
     });
 
     test("expand and collapse sidebar", async () => {
         const screen = await render(Sidebar);
-        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
-        await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","false");
-        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
-        await expect.element(screen.getByTestId("nav-panel")).toHaveAttribute("data-expanded","true");
+        await screen.getByRole("button", { name: "Collapse sidebar" }).click();
+        await expect
+            .element(screen.getByTestId("nav-panel"))
+            .toHaveAttribute("data-expanded", "false");
+        await screen.getByRole("button", { name: "Collapse sidebar" }).click();
+        await expect
+            .element(screen.getByTestId("nav-panel"))
+            .toHaveAttribute("data-expanded", "true");
     });
 
     test("set sidebarOpen setting", async () => {
         const screen = await render(Sidebar);
-        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
+        await screen.getByRole("button", { name: "Collapse sidebar" }).click();
         expect(settingsStore.settings.sidebarOpen).toBe(false);
-        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
+        await screen.getByRole("button", { name: "Collapse sidebar" }).click();
         expect(settingsStore.settings.sidebarOpen).toBe(true);
     });
 
     test("hide links in collapsed sidebar", async () => {
         const screen = await render(Sidebar);
-        await screen.getByRole("button",{ name: "Collapse sidebar" }).click();
-        const transactionsLink = screen.getByRole("link",{ name:"Transactions" });
-        const spendingLink = screen.getByRole("link",{ name:"Spending" });
+        await screen.getByRole("button", { name: "Collapse sidebar" }).click();
+        const transactionsLink = screen.getByRole("link", {
+            name: "Transactions",
+        });
+        const spendingLink = screen.getByRole("link", { name: "Spending" });
 
         await expect.element(transactionsLink).not.toBeInTheDocument();
         await expect.element(spendingLink).not.toBeInTheDocument();
@@ -99,8 +111,14 @@ describe("Sidebar",() => {
 
     test("account list", async () => {
         mockCreateAccount();
-        await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
-        await accountStore.createAccount({ name: "Account 2",startingBalance: "500.00" });
+        await accountStore.createAccount({
+            name: "Account 1",
+            startingBalance: "20.00",
+        });
+        await accountStore.createAccount({
+            name: "Account 2",
+            startingBalance: "500.00",
+        });
         const screen = await render(Sidebar);
 
         await expect.element(screen.getByText("Account 1")).toBeVisible();
@@ -110,8 +128,14 @@ describe("Sidebar",() => {
 
     test("show account total", async () => {
         mockCreateAccount();
-        await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
-        await accountStore.createAccount({ name: "Account 2",startingBalance: "500.00" });
+        await accountStore.createAccount({
+            name: "Account 1",
+            startingBalance: "20.00",
+        });
+        await accountStore.createAccount({
+            name: "Account 2",
+            startingBalance: "500.00",
+        });
         const screen = await render(Sidebar);
 
         await expect.element(screen.getByText("Accounts")).toBeVisible();
@@ -120,21 +144,28 @@ describe("Sidebar",() => {
 
     test("reactive account balance", async () => {
         mockCreateAccount();
-        const a1 = await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
+        const a1 = await accountStore.createAccount({
+            name: "Account 1",
+            startingBalance: "20.00",
+        });
 
         transactionStore.addTestTransaction({
             fromAccountId: a1.id,
-            amount: "500"
+            amount: "500",
         });
         const screen = await render(Sidebar);
 
-        await expect.element(screen.getByRole("listitem").getByText("K-480.00")).toBeVisible();
+        await expect
+            .element(screen.getByRole("listitem").getByText("K-480.00"))
+            .toBeVisible();
         transactionStore.addTestTransaction({
             id: "2",
-            toAccountId:a1.id,
-            amount: "1000"
+            toAccountId: a1.id,
+            amount: "1000",
         });
-        await expect.element(screen.getByRole("listitem").getByText("K520.00")).toBeVisible();
+        await expect
+            .element(screen.getByRole("listitem").getByText("K520.00"))
+            .toBeVisible();
     });
 
     test("reactive account total", async () => {
@@ -142,12 +173,27 @@ describe("Sidebar",() => {
         const a1 = await accountStore.createAccount({ name: "Account 1" });
         transactionStore.addTestTransaction({
             toAccountId: a1.id,
-            amount: "500"
+            amount: "500",
         });
         const screen = await render(Sidebar);
 
-        await expect.element(screen.getByTestId("account-section-header").getByText("K500.00")).toBeVisible();
-        await accountStore.createAccount({ name: "Account 1",startingBalance: "20.00" });
-        await expect.element(screen.getByTestId("account-section-header").getByText("K520.00")).toBeVisible();
+        await expect
+            .element(
+                screen
+                    .getByTestId("account-section-header")
+                    .getByText("K500.00"),
+            )
+            .toBeVisible();
+        await accountStore.createAccount({
+            name: "Account 1",
+            startingBalance: "20.00",
+        });
+        await expect
+            .element(
+                screen
+                    .getByTestId("account-section-header")
+                    .getByText("K520.00"),
+            )
+            .toBeVisible();
     });
 });

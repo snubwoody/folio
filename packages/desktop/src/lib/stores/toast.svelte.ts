@@ -24,12 +24,13 @@ export const createToastStore = () => {
      * Removes a {@link Toast} from the toast store.
      * @param id The id of the toast to remove.
      */
-    const removeToast = (id: string) => toasts = toasts.filter(toast => toast.id !== id);
+    const removeToast = (id: string) =>
+        (toasts = toasts.filter((toast) => toast.id !== id));
 
     /**
      * Empties the toast store.
      */
-    const clear = () => toasts.length = 0;
+    const clear = () => (toasts.length = 0);
 
     return {
         /**
@@ -37,18 +38,18 @@ export const createToastStore = () => {
          * @param toast
          * @param timeout The amount of time before removing the toast
          */
-        addToast: (toast: Toast,timeout: number = 2000) => {
+        addToast: (toast: Toast, timeout: number = 2000) => {
             // TODO: add timeout
             toasts.push(toast);
             setTimeout(() => {
                 removeToast(toast.id);
-            },timeout);
+            }, timeout);
         },
         removeToast,
         clear,
         get toasts() {
             return toasts;
-        }
+        },
     };
 };
 
@@ -73,17 +74,17 @@ export interface Toast extends ToastParams {
 /**
  * Parameters for creating a {@link Toast}.
  */
-export interface ToastParams{
+export interface ToastParams {
     /**
      * The primary header of the toast.
      */
-    title: string,
+    title: string;
     /**
      * An optional description providing more details.
      */
-    body?: string,
-    primaryAction?: ToastAction,
-    secondaryAction?: ToastAction,
+    body?: string;
+    primaryAction?: ToastAction;
+    secondaryAction?: ToastAction;
 }
 
 /**
@@ -97,15 +98,15 @@ export const toastStore = createToastStore();
  * @param params The parameters for the toast.
  * @param timeout The amount of time before removing the toast.
  */
-export const addToast = (params: ToastParams,timeout: number = 8500) => {
-    const toast: Toast = { id: randomId(),...params };
-    toastStore.addToast(toast,timeout);
+export const addToast = (params: ToastParams, timeout: number = 8500) => {
+    const toast: Toast = { id: randomId(), ...params };
+    toastStore.addToast(toast, timeout);
 };
 
 /**
  * Generates a unique random id.
  */
-export const randomId = ():string => {
+export const randomId = (): string => {
     let id = "";
     // Prevent the extremely low chance of Math.random returning 0
     // which would cause the id to be an empty string
@@ -114,4 +115,3 @@ export const randomId = ():string => {
     }
     return id;
 };
-

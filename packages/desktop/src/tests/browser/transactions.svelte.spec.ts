@@ -24,7 +24,7 @@ describe("Transaction toolbar", () => {
     test("contains add transaction button", async () => {
         const screen = render(Toolbar);
         expect(
-            screen.getByRole("button", { name: "Add Transaction" })
+            screen.getByRole("button", { name: "Add Transaction" }),
         ).toBeInTheDocument();
     });
     test("add transaction button creates a new transaction", async () => {
@@ -32,7 +32,7 @@ describe("Transaction toolbar", () => {
             const transaction: RawTransaction = {
                 id: "t1",
                 amount: "",
-                transactionDate: today(getLocalTimeZone()).toString()
+                transactionDate: today(getLocalTimeZone()).toString(),
             };
 
             if (cmd == "create_expense") {
@@ -66,14 +66,34 @@ describe("Transaction actionbar", () => {
     test("show all transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "create_expense") {
-                const t1: RawTransaction = { id: randomId(),transactionDate: today(getLocalTimeZone()).toString(),amount:"" };
+                const t1: RawTransaction = {
+                    id: randomId(),
+                    transactionDate: today(getLocalTimeZone()).toString(),
+                    amount: "",
+                };
                 return t1;
             }
         });
-        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
-        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
-        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
-        await transactionStore.createExpense({ amount: "0.00", date: today(getLocalTimeZone()), accountId: "" });
+        await transactionStore.createExpense({
+            amount: "0.00",
+            date: today(getLocalTimeZone()),
+            accountId: "",
+        });
+        await transactionStore.createExpense({
+            amount: "0.00",
+            date: today(getLocalTimeZone()),
+            accountId: "",
+        });
+        await transactionStore.createExpense({
+            amount: "0.00",
+            date: today(getLocalTimeZone()),
+            accountId: "",
+        });
+        await transactionStore.createExpense({
+            amount: "0.00",
+            date: today(getLocalTimeZone()),
+            accountId: "",
+        });
 
         const tableStore = new TableStore();
         tableStore.toggleSelectAll();
@@ -84,13 +104,13 @@ describe("Transaction actionbar", () => {
         const tableStore = new TableStore();
         tableStore.select("1");
         const screen = render(Actionbar, { tableStore });
-        expect(screen.getByRole("button",{ name:"Delete" })).toBeVisible();
+        expect(screen.getByRole("button", { name: "Delete" })).toBeVisible();
     });
     test("show close button", async () => {
         const tableStore = new TableStore();
         tableStore.select("1");
         const screen = render(Actionbar, { tableStore });
-        expect(screen.getByRole("button",{ name:"Close" })).toBeVisible();
+        expect(screen.getByRole("button", { name: "Close" })).toBeVisible();
     });
     test("close button closes action bar", async () => {
         const tableStore = new TableStore();
@@ -103,12 +123,20 @@ describe("Transaction actionbar", () => {
     test("delete button deletes transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "create_expense") {
-                const t1: RawTransaction = { id: "t1",transactionDate: today(getLocalTimeZone()).toString(),amount:"" };
+                const t1: RawTransaction = {
+                    id: "t1",
+                    transactionDate: today(getLocalTimeZone()).toString(),
+                    amount: "",
+                };
                 return t1;
             }
         });
 
-        await transactionStore.createExpense({ amount: "", date: today(getLocalTimeZone()),accountId:"" });
+        await transactionStore.createExpense({
+            amount: "",
+            date: today(getLocalTimeZone()),
+            accountId: "",
+        });
         expect(transactionStore.transactions).toHaveLength(1);
         const tableStore = new TableStore();
         tableStore.select("t1");
@@ -124,14 +152,14 @@ describe("Transaction component", async () => {
             id: "1",
             fromAccountId: "A1",
             amount: "500.0",
-            date: parseDate("2024-12-12")
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore
+            tableStore,
         });
         const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByTestId("inflow");
@@ -144,14 +172,14 @@ describe("Transaction component", async () => {
             id: "1",
             toAccountId: "A1",
             amount: "500.0",
-            date: parseDate("2024-12-12")
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore
+            tableStore,
         });
         const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByTestId("inflow");
@@ -160,42 +188,45 @@ describe("Transaction component", async () => {
         expect(inflow.getByRole("textbox")).toHaveValue("500.00");
     });
     test("shows account if expense", async () => {
-        const account = await accountStore.createTestAccount({ name: "Account 1" });
+        const account = await accountStore.createTestAccount({
+            name: "Account 1",
+        });
 
         const transaction: Transaction = {
             id: "1",
             fromAccountId: account.id,
             amount: "500.0",
-            date: parseDate("2024-12-12")
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore
+            tableStore,
         });
         const accountCell = screen.getByTestId("account");
         expect(accountCell).toHaveTextContent("Account 1");
     });
     test("shows account if income", async () => {
-        const account = await accountStore.createTestAccount({ name: "Account 1" });
+        const account = await accountStore.createTestAccount({
+            name: "Account 1",
+        });
 
         const transaction: Transaction = {
             id: "1",
             toAccountId: account.id,
             amount: "500.0",
-            date: parseDate("2024-12-12")
+            date: parseDate("2024-12-12"),
         };
 
         const tableStore = new TableStore();
 
         const screen = render(TransactionComponent, {
             transaction,
-            tableStore
+            tableStore,
         });
         const accountCell = screen.getByTestId("account");
         expect(accountCell).toHaveTextContent("Account 1");
     });
 });
-

@@ -5,12 +5,14 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
 
     type Props = {
-        account: Account
+        account: Account;
     };
 
     const { account }: Props = $props();
 
-    const balance = $derived(accountBalance(account.id,transactionStore.transactions));
+    const balance = $derived(
+        accountBalance(account.id, transactionStore.transactions),
+    );
 </script>
 
 {#key transactionStore.transactions}

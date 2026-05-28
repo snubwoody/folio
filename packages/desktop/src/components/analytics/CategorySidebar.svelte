@@ -3,12 +3,10 @@
     import { formatMoney } from "$lib/utils/money";
 
     type Props = {
-        analytics: SpendingAnalytic[]
+        analytics: SpendingAnalytic[];
     };
 
-    const {
-        analytics = $bindable([])
-    }: Props = $props();
+    const { analytics = $bindable([]) }: Props = $props();
 </script>
 
 <aside>

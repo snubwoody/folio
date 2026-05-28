@@ -7,7 +7,7 @@
     import { MessageBar } from "$components/alerts";
 
     let version = $state("");
-    onMount(async() => {
+    onMount(async () => {
         version = await getVersion();
     });
 
@@ -18,15 +18,15 @@
     const checkUpdate = async () => {
         updatePending = false;
         update = await checkForUpdate();
-        if (!update){
+        if (!update) {
             noUpdateFound = true;
             // eslint-disable-next-line no-undef
-            setTimeout(() => noUpdateFound = false,3500);
+            setTimeout(() => (noUpdateFound = false), 3500);
         }
     };
 
     const updateApp = async () => {
-        if (!update){
+        if (!update) {
             return;
         }
         updatePending = true;

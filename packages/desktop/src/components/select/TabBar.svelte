@@ -17,12 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { Tabs } from "bits-ui";
     import type { Snippet } from "svelte";
-    interface Props{
-        children: Snippet,
-        class?: string
+    interface Props {
+        children: Snippet;
+        class?: string;
     }
 
-    const { children,class:userClass }:Props = $props();
+    const { children, class: userClass }: Props = $props();
 </script>
 
 <Tabs.List class={`${userClass ?? ""}`}>

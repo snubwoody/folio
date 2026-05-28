@@ -1,24 +1,26 @@
 <script lang="ts">
-    import { TextButton,IconButton } from "$components/button";
+    import { TextButton, IconButton } from "$components/button";
     import { Trash2, X } from "@lucide/svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { TableStore } from "$lib/stores/table.svelte";
     import { fly } from "svelte/transition";
 
-    interface Props{
-        tableStore: TableStore
+    interface Props {
+        tableStore: TableStore;
     }
 
     // TODO: fix divider
-    const { tableStore }:Props = $props();
+    const { tableStore }: Props = $props();
     const visible = $derived(tableStore.selectedRows.size > 0);
 
-    async function deleteTransactions(){
-        if (tableStore.allRowsSelected){
-            const ids = transactionStore.transactions.map(t => t.id);
+    async function deleteTransactions() {
+        if (tableStore.allRowsSelected) {
+            const ids = transactionStore.transactions.map((t) => t.id);
             await transactionStore.deleteTransactions(ids);
         }
-        await transactionStore.deleteTransactions(Array.from(tableStore.selectedRows));
+        await transactionStore.deleteTransactions(
+            Array.from(tableStore.selectedRows),
+        );
         tableStore.clear();
     }
 </script>

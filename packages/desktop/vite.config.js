@@ -7,10 +7,7 @@ import tailwind from "@tailwindcss/vite";
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig({
-    plugins: [
-        sveltekit(),
-        tailwind()
-    ],
+    plugins: [sveltekit(), tailwind()],
     // Prevent Vite from obscuring rust errors
     clearScreen: false,
     server: {
@@ -19,19 +16,19 @@ export default defineConfig({
         host: host || false,
         hmr: host
             ? {
-                protocol: "ws",
-                host,
-                port: 1421
-            }
+                  protocol: "ws",
+                  host,
+                  port: 1421,
+              }
             : undefined,
         watch: {
-            ignored: ["**/src-tauri/**"]
-        }
+            ignored: ["**/src-tauri/**"],
+        },
     },
     test: {
         exclude: ["e2e", "node_modules", ".vercel", "dist"],
         // eslint-disable-next-line no-undef
-        reporters: process.env.CI ? ["verbose","github-actions"] : "verbose",
+        reporters: process.env.CI ? ["verbose", "github-actions"] : "verbose",
         // *.test.ts are for unit tests, *.spec.ts are for browser tests
         projects: [
             {
@@ -39,8 +36,8 @@ export default defineConfig({
                 test: {
                     name: "unit",
                     include: ["src/**/*.test.ts"],
-                    environment: "jsdom"
-                }
+                    environment: "jsdom",
+                },
             },
             {
                 extends: true,
@@ -54,15 +51,15 @@ export default defineConfig({
                         screenshotFailures: false,
                         api: {
                             host: "127.0.0.1",
-                            port: 4040
+                            port: 4040,
                         },
                         instances: [
                             { browser: "chromium" },
-                            { browser: "webkit" }
-                        ]
-                    }
-                }
-            }
-        ]
-    }
+                            { browser: "webkit" },
+                        ],
+                    },
+                },
+            },
+        ],
+    },
 });

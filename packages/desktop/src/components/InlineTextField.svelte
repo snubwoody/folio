@@ -16,10 +16,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     interface Props {
-        onChange?: (value:string) => void,
-        value?: string,
-        class?: string,
-    };
+        onChange?: (value: string) => void;
+        value?: string;
+        class?: string;
+    }
 
     const { onChange, value, class: userClass }: Props = $props();
 

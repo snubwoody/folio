@@ -1,19 +1,19 @@
 {
-  "version": "v2.3.0",
-  "notes": "## Changes\r\n\r\n- Improved analytics\r\n  - Added new pie chart which breaks down spending by category\r\n  - Removed old income and spending graphs\r\n- Improved checkbox UI\r\n- Added vertical borders to transaction table\r\n- Added version information in settings panel\r\n- Money is now displayed with the local currency symbol, e.g. `$` instead of `CA$`\r\n- Removed support for the following currencies:\r\n  - XPT: Platinum\r\n  - XTS: Code reserved for testing\r\n  - XSU: Unified System for Regional Compensation (SUCRE)\r\n  - XXX: No currency\r\n  - XDR: Special drawing rights\r\n  - XBB: European Composite Unit\r\n  - XBB: European Monetary Unit\r\n  - XBC: European Unit of Account 9\r\n  - XBD: European Unit of Account 17\r\n  - XUA: Africa Development Bank unit of account\r\n  - XAG: Silver\r\n  - XPD: Palladium\r\n  - XAU: Gold\r\n",
-  "pub_date": "2026-05-16T06:15:03Z",
-  "platforms": {
-    "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUwrZisrM1R6MHE3U2cxSDFsZ2d6MHE3eXpwTlJmWTE5L3FiS29HWCtlQTNjckVHZk1tczBzYXd5WmdQaEJkZmowdU4wRVZmMm8vanlpNjV5R0o5UHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMzY0CWZpbGU6Rm9saW8uYXBwLnRhci5negp6QURmWDB0SlVHUFZScFhmU0RHUnQ0T2l6dVh3RlZFRDBURkJMeHFSbkt5OWVIY2pRK3kxakU0V2psVHBRQVlNQVNTbW8waVp1ckNwVVNYWSs0cVlBQT09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio.app.tar.gz"
-    },
-    "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUluL05uSitMSW90V2hkbldBVGJyS21weTFjRnJUNHZaaGVhWVpTVUtWYkt1NEVzRnVaMk9nM3Jha3ZIcHNLT3pkR013UmVMOSt0bmFEYmMvNzFpb3dBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMzc3CWZpbGU6Rm9saW9fMi4zLjBfeDY0LXNldHVwLmV4ZQovbGhYaGl2L2dCQkxGdWhiWWR6N1NvSTM3NjRVNXNGd2plVkVHcjQ2c1N0amYzK2NhUDBPL2hTdVFteFBNQktvaEZaVkNadGdKOVc0UjdlRzBpbzdCZz09Cg==",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio_2.3.0_x64-setup.exe"
-    },
-    "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUJzQms5blR3VmdBcE5CQW1vcGhUOWdVSDhBcFVjT0R3NkpGNklFcm9KVm9pUi9qQjlyUUhXU3daREFWWjdaUWkvbnVaU2JaMExoa0pFS2hTaHJWZGdzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMjI1CWZpbGU6Rm9saW9fMi4zLjBfYW1kNjQuQXBwSW1hZ2UKVjhldnFURzlRT2lsbmN1dHVPWkZ3bFVld1JwZ0xKQ2VVNmhyUmVFRFB2MUNXaUNVRE01aDRuelNMR0tYd290NkJKQUltK1NCUWZwRWJVa1hmRmRrRGc9PQo=",
-      "url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio_2.3.0_amd64.AppImage"
-    }
-  }
+	"version": "v2.3.0",
+	"notes": "## Changes\r\n\r\n- Improved analytics\r\n  - Added new pie chart which breaks down spending by category\r\n  - Removed old income and spending graphs\r\n- Improved checkbox UI\r\n- Added vertical borders to transaction table\r\n- Added version information in settings panel\r\n- Money is now displayed with the local currency symbol, e.g. `$` instead of `CA$`\r\n- Removed support for the following currencies:\r\n  - XPT: Platinum\r\n  - XTS: Code reserved for testing\r\n  - XSU: Unified System for Regional Compensation (SUCRE)\r\n  - XXX: No currency\r\n  - XDR: Special drawing rights\r\n  - XBB: European Composite Unit\r\n  - XBB: European Monetary Unit\r\n  - XBC: European Unit of Account 9\r\n  - XBD: European Unit of Account 17\r\n  - XUA: Africa Development Bank unit of account\r\n  - XAG: Silver\r\n  - XPD: Palladium\r\n  - XAU: Gold\r\n",
+	"pub_date": "2026-05-16T06:15:03Z",
+	"platforms": {
+		"darwin-aarch64": {
+			"signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUwrZisrM1R6MHE3U2cxSDFsZ2d6MHE3eXpwTlJmWTE5L3FiS29HWCtlQTNjckVHZk1tczBzYXd5WmdQaEJkZmowdU4wRVZmMm8vanlpNjV5R0o5UHdnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMzY0CWZpbGU6Rm9saW8uYXBwLnRhci5negp6QURmWDB0SlVHUFZScFhmU0RHUnQ0T2l6dVh3RlZFRDBURkJMeHFSbkt5OWVIY2pRK3kxakU0V2psVHBRQVlNQVNTbW8waVp1ckNwVVNYWSs0cVlBQT09Cg==",
+			"url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio.app.tar.gz"
+		},
+		"windows-x86_64": {
+			"signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUluL05uSitMSW90V2hkbldBVGJyS21weTFjRnJUNHZaaGVhWVpTVUtWYkt1NEVzRnVaMk9nM3Jha3ZIcHNLT3pkR013UmVMOSt0bmFEYmMvNzFpb3dBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMzc3CWZpbGU6Rm9saW9fMi4zLjBfeDY0LXNldHVwLmV4ZQovbGhYaGl2L2dCQkxGdWhiWWR6N1NvSTM3NjRVNXNGd2plVkVHcjQ2c1N0amYzK2NhUDBPL2hTdVFteFBNQktvaEZaVkNadGdKOVc0UjdlRzBpbzdCZz09Cg==",
+			"url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio_2.3.0_x64-setup.exe"
+		},
+		"linux-x86_64": {
+			"signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUbUNmNUtZdDdZTUJzQms5blR3VmdBcE5CQW1vcGhUOWdVSDhBcFVjT0R3NkpGNklFcm9KVm9pUi9qQjlyUUhXU3daREFWWjdaUWkvbnVaU2JaMExoa0pFS2hTaHJWZGdzPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc4OTExMjI1CWZpbGU6Rm9saW9fMi4zLjBfYW1kNjQuQXBwSW1hZ2UKVjhldnFURzlRT2lsbmN1dHVPWkZ3bFVld1JwZ0xKQ2VVNmhyUmVFRFB2MUNXaUNVRE01aDRuelNMR0tYd290NkJKQUltK1NCUWZwRWJVa1hmRmRrRGc9PQo=",
+			"url": "https://github.com/snubwoody/folio/releases/download/v2.3.0/Folio_2.3.0_amd64.AppImage"
+		}
+	}
 }

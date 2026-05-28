@@ -4,27 +4,28 @@
     import type { HTMLAttributes } from "svelte/elements";
 
     type SelectItem = {
-        value: string,
-        label: string,
-        disabled?:boolean
+        value: string;
+        label: string;
+        disabled?: boolean;
     };
 
-    interface Props extends HTMLAttributes<HTMLDivElement>{
-        items: SelectItem[],
-        value?: string,
+    interface Props extends HTMLAttributes<HTMLDivElement> {
+        items: SelectItem[];
+        value?: string;
         /**
          * Callback that runs when the selected value changes.
          * @param value
          */
-        onChange?: (value: string) => void
+        onChange?: (value: string) => void;
     }
 
-    const { items,value,onChange,...rest }: Props = $props();
+    const { items, value, onChange, ...rest }: Props = $props();
 
-    let selectedItem = $derived(items.find(item => item.value === value));
+    let selectedItem = $derived(items.find((item) => item.value === value));
 
     const onValueChange = (value: string) => {
-        selectedItem = items.find(item => item.value === value) ?? selectedItem;
+        selectedItem =
+            items.find((item) => item.value === value) ?? selectedItem;
         onChange?.(value);
     };
     // TODO: add UI for selected and disabled select menu items

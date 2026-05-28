@@ -6,15 +6,15 @@
     import { Checkbox } from "$components/select";
 
     interface Props {
-        tableStore: TableStore,
-        accountId?: string
+        tableStore: TableStore;
+        accountId?: string;
     }
 
-    const { tableStore,accountId }: Props = $props();
+    const { tableStore, accountId }: Props = $props();
     let selected = $derived(tableStore.allRowsSelected);
 
     const select = (checked: boolean) => {
-        if (checked){
+        if (checked) {
             tableStore.selectAll();
             return;
         }
@@ -25,12 +25,13 @@
         let transactions = transactionStore.transactions;
 
         if (accountId) {
-            transactions = transactions.filter(t => t.fromAccountId === accountId);
+            transactions = transactions.filter(
+                (t) => t.fromAccountId === accountId,
+            );
         }
 
         return transactions;
     });
-
 </script>
 
 <Table length={accountId ? 7 : 8}>

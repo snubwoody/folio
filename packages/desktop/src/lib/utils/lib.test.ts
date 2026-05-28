@@ -11,22 +11,28 @@ beforeEach(() => {
     settingsStore.reset();
 });
 
-describe("AccountStore",() => {
-    test("create a new account",async() => {
-        mockIPC((cmd,args) => {
-            if (cmd === "create_account"){
-                const payload = args as {name: string,startingBalance: string};
+describe("AccountStore", () => {
+    test("create a new account", async () => {
+        mockIPC((cmd, args) => {
+            if (cmd === "create_account") {
+                const payload = args as {
+                    name: string;
+                    startingBalance: string;
+                };
                 const account: Account = {
-                    id:"1",
+                    id: "1",
                     name: payload.name,
                     balance: "0.00",
-                    startingBalance:payload.startingBalance
+                    startingBalance: payload.startingBalance,
                 };
                 return account;
             }
         });
         const accountStore = new AccountStore();
-        const account = await accountStore.createAccount({ name:"Account 10",startingBalance:"10.00" });
+        const account = await accountStore.createAccount({
+            name: "Account 10",
+            startingBalance: "10.00",
+        });
         expect(accountStore.accounts).toHaveLength(1);
         expect(accountStore.accounts[0].id).toBe(account.id);
         expect(accountStore.accounts[0].name).toBe("Account 10");
@@ -34,35 +40,35 @@ describe("AccountStore",() => {
     });
 });
 
-test("Account balance",() => {
+test("Account balance", () => {
     const expense: Transaction = {
-        id:"",
+        id: "",
         fromAccountId: "A1",
         amount: "5.00",
-        date: today(getLocalTimeZone())
+        date: today(getLocalTimeZone()),
     };
     const income: Transaction = {
-        id:"",
+        id: "",
         toAccountId: "A1",
         amount: "25.00",
-        date: today(getLocalTimeZone())
+        date: today(getLocalTimeZone()),
     };
 
-    const balance = accountBalance("A1",[expense,income]);
+    const balance = accountBalance("A1", [expense, income]);
     expect(balance).toBe(20);
 });
 
-test("Format money using local symbol",async () => {
+test("Format money using local symbol", async () => {
     mockIPC((cmd) => {
-        if (cmd === "settings"){
+        if (cmd === "settings") {
             return { currencyCode: "ZMW", sidebarOpen: true };
         }
-        if (cmd === "active_currency"){
+        if (cmd === "active_currency") {
             const currency: Currency = {
                 name: "",
                 code: "",
                 symbol: "R",
-                precision: 2
+                precision: 2,
             };
             return currency;
         }
@@ -75,37 +81,37 @@ test("Format money using local symbol",async () => {
 });
 
 describe("Parse money", () => {
-    test("plain number",() => {
+    test("plain number", () => {
         const money = parseMoney("224");
         expect(money).toBe("224");
     });
 
-    test("with decimal",() => {
+    test("with decimal", () => {
         const money = parseMoney("224.2442");
         expect(money).toBe("224.2442");
     });
 
-    test("with comma",() => {
+    test("with comma", () => {
         const money = parseMoney("2,2424.24");
         expect(money).toBe("22424.24");
     });
 
-    test("multiple commas",() => {
+    test("multiple commas", () => {
         const money = parseMoney("2,24,24.24");
         expect(money).toBe("22424.24");
     });
 
-    test("multiple decimal points",() => {
+    test("multiple decimal points", () => {
         const money = parseMoney("2.24.24.24");
         expect(money).toBe("2.24");
     });
 
-    test("with characters",() => {
+    test("with characters", () => {
         const money = parseMoney("2,24wr.24");
         expect(money).toBe("224");
     });
 
-    test("random characters",() => {
+    test("random characters", () => {
         const money = parseMoney("wkkrwr");
         expect(money).not.toBeDefined();
     });

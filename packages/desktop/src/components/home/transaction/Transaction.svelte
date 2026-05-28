@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { SelectCell }  from "$components/table";
+    import { SelectCell } from "$components/table";
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import type { TableStore } from "$lib/stores/table.svelte.js";
@@ -13,25 +13,35 @@
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
     import { Checkbox } from "$components/select";
 
-    interface Props{
-        transaction: Transaction
-        tableStore: TableStore,
-        showAccount?: boolean
+    interface Props {
+        transaction: Transaction;
+        tableStore: TableStore;
+        showAccount?: boolean;
     }
 
-    const { transaction,tableStore, showAccount = true }: Props = $props();
+    const { transaction, tableStore, showAccount = true }: Props = $props();
     const transType = $derived.by(() => {
         return transactionType(transaction);
     });
 
-    const category = $derived(categoryStore.categoryMap.get(transaction.categoryId??""));
+    const category = $derived(
+        categoryStore.categoryMap.get(transaction.categoryId ?? ""),
+    );
     let note = $derived(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
-    const currencySymbol = $derived(settingsStore.currency.symbol ?? settingsStore.currency.code);
-    const payeeOptions = $derived(accountStore.accounts.filter(a => a.id !== transaction.fromAccountId && a.id !== transaction.toAccountId));
+    const currencySymbol = $derived(
+        settingsStore.currency.symbol ?? settingsStore.currency.code,
+    );
+    const payeeOptions = $derived(
+        accountStore.accounts.filter(
+            (a) =>
+                a.id !== transaction.fromAccountId &&
+                a.id !== transaction.toAccountId,
+        ),
+    );
 
     const select = (checked: boolean) => {
-        if (checked){
+        if (checked) {
             tableStore.select(transaction.id);
             return;
         }

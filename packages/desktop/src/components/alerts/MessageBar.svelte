@@ -4,16 +4,12 @@
     import type { Snippet } from "svelte";
 
     type Props = {
-        message: string,
-        children?:Snippet,
-        open?: boolean
+        message: string;
+        children?: Snippet;
+        open?: boolean;
     };
 
-    let {
-        message,
-        children,
-        open = $bindable(false)
-    }: Props = $props();
+    let { message, children, open = $bindable(false) }: Props = $props();
 </script>
 
 <div class="message-bar">

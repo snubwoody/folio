@@ -2,7 +2,13 @@
 <script>
     import IconButton from "$components/button/IconButton.svelte";
     import SettingsButton from "$components/settings/SettingsButton.svelte";
-    import { Landmark, ChartNoAxesCombined, PanelRightOpen, PanelRightClose, Wallet } from "@lucide/svelte";
+    import {
+        Landmark,
+        ChartNoAxesCombined,
+        PanelRightOpen,
+        PanelRightClose,
+        Wallet,
+    } from "@lucide/svelte";
     import { page } from "$app/state";
     import AccountSection from "./AccountSection.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";

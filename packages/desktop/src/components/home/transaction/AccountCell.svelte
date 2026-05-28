@@ -5,7 +5,7 @@
     import { transactionType, type Transaction } from "$lib/api/transaction";
 
     interface Props {
-        transaction: Transaction
+        transaction: Transaction;
     }
 
     const { transaction }: Props = $props();
@@ -14,8 +14,12 @@
         return transactionType(transaction);
     });
 
-    const fromAccount = $derived(accountStore.accountMap.get(transaction.fromAccountId??""));
-    const toAccount = $derived(accountStore.accountMap.get(transaction.toAccountId??""));
+    const fromAccount = $derived(
+        accountStore.accountMap.get(transaction.fromAccountId ?? ""),
+    );
+    const toAccount = $derived(
+        accountStore.accountMap.get(transaction.toAccountId ?? ""),
+    );
     // TODO: add custom UI for disabled payee items
 </script>
 

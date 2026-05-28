@@ -12,19 +12,23 @@ import {
     setPayee,
     createTransaction,
     type CreateTransactionOpts,
-    setAccount
+    setAccount,
 } from "$lib/api/transaction";
-import { type CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
+import {
+    type CalendarDate,
+    getLocalTimeZone,
+    today,
+} from "@internationalized/date";
 import { randomId } from "$lib/stores/toast.svelte";
 
 export type AddTestTransactionOps = {
-    id?: string,
-    fromAccountId?: string,
-    toAccountId?: string,
-    date?: CalendarDate,
-    amount?: string,
-    categoryId?: string,
-    note?: string,
+    id?: string;
+    fromAccountId?: string;
+    toAccountId?: string;
+    date?: CalendarDate;
+    amount?: string;
+    categoryId?: string;
+    note?: string;
 };
 
 export class TransactionStore {
@@ -34,7 +38,7 @@ export class TransactionStore {
         return this.#transactions;
     }
 
-    addTestTransaction(opts: AddTestTransactionOps){
+    addTestTransaction(opts: AddTestTransactionOps) {
         const id = opts.id ?? randomId();
         const transaction: Transaction = {
             id,
@@ -43,7 +47,7 @@ export class TransactionStore {
             fromAccountId: opts.fromAccountId,
             toAccountId: opts.toAccountId,
             date: today(getLocalTimeZone()),
-            amount: opts.amount ?? "0"
+            amount: opts.amount ?? "0",
         };
         this.#transactions.push(transaction);
     }
@@ -52,9 +56,11 @@ export class TransactionStore {
      * Deletes a list of transactions.
      * @param ids The ids of the transactions to delete.
      */
-    async deleteTransactions(ids: string[]){
+    async deleteTransactions(ids: string[]) {
         await deleteTransactions(ids);
-        this.#transactions = this.#transactions.filter(t => !ids.includes(t.id));
+        this.#transactions = this.#transactions.filter(
+            (t) => !ids.includes(t.id),
+        );
     }
 
     /**
@@ -74,9 +80,9 @@ export class TransactionStore {
      * @param amount The amount to set as the outflow
      */
     async setOutflow(id: string, amount: string) {
-        const transaction = await setOutflow(id,amount);
+        const transaction = await setOutflow(id, amount);
         const index = this.#transactions.findIndex(
-            (t) => t.id === transaction.id
+            (t) => t.id === transaction.id,
         );
         this.#transactions[index] = transaction;
     }
@@ -87,22 +93,22 @@ export class TransactionStore {
      * @param account The id of the account
      */
     async setAccount(id: string, account: string) {
-        const transaction = await setAccount(id,account);
+        const transaction = await setAccount(id, account);
         const index = this.#transactions.findIndex(
-            (t) => t.id === transaction.id
+            (t) => t.id === transaction.id,
         );
         this.#transactions[index] = transaction;
     }
 
     /**
      * Sets the payee of a transaction.
-    * @param id The id of the transaction
-    * @param accountId The id of the payee account
-    */
-    async setPayee(id:string, accountId:string) {
-        const transaction = await setPayee(id,accountId);
+     * @param id The id of the transaction
+     * @param accountId The id of the payee account
+     */
+    async setPayee(id: string, accountId: string) {
+        const transaction = await setPayee(id, accountId);
         const index = this.#transactions.findIndex(
-            (t) => t.id === transaction.id
+            (t) => t.id === transaction.id,
         );
         this.#transactions[index] = transaction;
     }
@@ -112,26 +118,27 @@ export class TransactionStore {
      * @param id The id of the transaction
      * @param amount The amount to set as the outflow
      */
-    async setInflow(id:string,amount:string) {
-        const transaction = await setInflow(id,amount);
-        const index = this.#transactions.findIndex((t) => t.id === transaction.id);
+    async setInflow(id: string, amount: string) {
+        const transaction = await setInflow(id, amount);
+        const index = this.#transactions.findIndex(
+            (t) => t.id === transaction.id,
+        );
         this.#transactions[index] = transaction;
     }
 
     async editTransaction(opts: EditTransactionOpts) {
         const transaction = await editTransaction(opts);
-        const index = this.#transactions.findIndex((t) => t.id === transaction.id);
+        const index = this.#transactions.findIndex(
+            (t) => t.id === transaction.id,
+        );
         this.#transactions[index] = transaction;
-
     }
 
     /**
      * Sorts the transactions in place.
      */
-    sort(){
-        this.#transactions
-            .sort((a, b) => a.date.compare(b.date))
-            .reverse();
+    sort() {
+        this.#transactions.sort((a, b) => a.date.compare(b.date)).reverse();
     }
 
     /**
@@ -146,9 +153,7 @@ export class TransactionStore {
      */
     async load() {
         let transactions = await getTransactions();
-        transactions
-            .sort((a, b) => a.date.compare(b.date))
-            .reverse();
+        transactions.sort((a, b) => a.date.compare(b.date)).reverse();
         this.#transactions = transactions;
         logger.debug("Loaded transactions from backend");
     }

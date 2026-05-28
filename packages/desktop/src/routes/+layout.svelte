@@ -31,18 +31,17 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
     const { children } = $props();
 
-    async function updateApp(){
+    async function updateApp() {
         const update = await checkForUpdate();
-        if (update){
+        if (update) {
             addToast({
                 title: "A new update is available",
-                primaryAction:{
+                primaryAction: {
                     text: "Download and install",
-                    action: () => installUpdate(update)
-                }
+                    action: () => installUpdate(update),
+                },
             });
         }
-
     }
 
     onMount(async () => {
@@ -53,7 +52,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             accountStore.load(),
             categoryStore.load(),
             settingsStore.load(),
-            updateApp()
+            updateApp(),
         ]);
         transactionStore.sort();
     });

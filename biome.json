@@ -21,15 +21,20 @@
 	"javascript": {
 		"formatter": {
 			"quoteStyle": "double",
-            "indentStyle": "space",
-            "indentWidth": 4
+			"indentStyle": "space",
+			"indentWidth": 4
 		}
 	},
-    "html": { 
-        "formatter": { 
-            "indentScriptAndStyle": true 
-        } 
-    },
+	"html": {
+		"formatter": {
+			"indentScriptAndStyle": true
+		}
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 	"assist": {
 		"enabled": true,
 		"actions": {

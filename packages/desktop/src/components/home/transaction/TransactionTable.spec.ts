@@ -10,20 +10,25 @@ beforeEach(() => {
     transactionStore.clear();
 });
 
-describe("TransactionTable",() => {
+describe("TransactionTable", () => {
     test("filter transactions by account id", async () => {
         const tableStore = new TableStore();
-        const account = await accountStore.createTestAccount({ name: "Test account" });
+        const account = await accountStore.createTestAccount({
+            name: "Test account",
+        });
         transactionStore.addTestTransaction({
             fromAccountId: account.id,
-            amount: "500"
+            amount: "500",
         });
         transactionStore.addTestTransaction({
             id: "T2",
             fromAccountId: "does-not-exist",
-            amount: "50"
+            amount: "50",
         });
-        const screen = await render(TransactionTable, { tableStore,accountId: account.id });
+        const screen = await render(TransactionTable, {
+            tableStore,
+            accountId: account.id,
+        });
         const rows = screen.getByTestId("transaction-row").all();
 
         expect(rows).toHaveLength(1);

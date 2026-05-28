@@ -26,7 +26,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             .toSorted(
                 (a, b) =>
                     new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime()
+                    new Date(b.createdAt).getTime(),
             )
             .reverse();
     });

@@ -16,7 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-    import { type DateValue, getLocalTimeZone, toCalendarDate, today } from "@internationalized/date";
+    import {
+        type DateValue,
+        getLocalTimeZone,
+        toCalendarDate,
+        today,
+    } from "@internationalized/date";
     import { formatDate, parseDate } from "$lib/utils/date";
 
     type DateFn = (date: DateValue) => void;
@@ -27,20 +32,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
          * the date field loses focus or when the user presses the Enter key.
          */
         onDateChange?: DateFn;
-        value?: DateValue
+        value?: DateValue;
     };
 
-    let {
-        onDateChange,
-        value = $bindable(today(getLocalTimeZone()))
-    }: Props = $props();
+    let { onDateChange, value = $bindable(today(getLocalTimeZone())) }: Props =
+        $props();
 
     let dateString = $state(formatDate(toCalendarDate(value)));
 
     // TODO: add accessible, aria-invalid?
     // TODO: focus trap
     // TODO: if i update value it might cause a circular dependency
-    const updateDate = async(val:string) => {
+    const updateDate = async (val: string) => {
         const date = await parseDate(val);
         dateString = formatDate(toCalendarDate(date));
         value = date;

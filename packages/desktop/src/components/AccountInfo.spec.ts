@@ -8,9 +8,12 @@ beforeEach(() => {
     accountStore.clear();
 });
 
-describe("AccountInfo",() => {
+describe("AccountInfo", () => {
     test("displays account info", async () => {
-        const account = await accountStore.createTestAccount({ name: "My account",startingBalance: "500.00" });
+        const account = await accountStore.createTestAccount({
+            name: "My account",
+            startingBalance: "500.00",
+        });
         const screen = await render(AccountInfo, { accountId: account.id });
 
         expect(screen.getByText("My account")).toBeVisible();

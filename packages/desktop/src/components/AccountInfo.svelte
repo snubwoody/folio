@@ -4,13 +4,15 @@
     import { formatMoney } from "$lib/utils/money";
 
     type Props = {
-        accountId: string
+        accountId: string;
     };
 
     const { accountId }: Props = $props();
 
     const account = $derived(accountStore.accountMap.get(accountId)!);
-    const balance = $derived(accountBalance(account.id,transactionStore.transactions));
+    const balance = $derived(
+        accountBalance(account.id, transactionStore.transactions),
+    );
 </script>
 
 <section>
