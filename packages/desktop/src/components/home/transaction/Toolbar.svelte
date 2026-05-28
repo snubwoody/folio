@@ -5,6 +5,8 @@
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
     import { open } from "@tauri-apps/plugin-dialog";
+    import {invoke} from "@tauri-apps/api/core";
+    import ImportCsv from "$components/home/ImportCsv.svelte";
 
     type Props = {
         accountId?: string
@@ -23,7 +25,8 @@
             directory: false,
             filters: [{name:"csv-filter",extensions:["csv"]}]
         });
-        console.log(file);
+        const csv = await invoke("load_csv", {path: file});
+        console.log(csv);
     }
 </script>
 
@@ -42,10 +45,7 @@
             value="import-csv"
             class="flex items-center px-2 py-1"
         >
-            <TextButton theme="primary" onclick={importCsv}>
-                <CirclePlus />
-                Import
-            </TextButton>
+            <ImportCsv/>
         </Toolbar.GroupItem>
     </Toolbar.Group>
 </Toolbar.Root>
