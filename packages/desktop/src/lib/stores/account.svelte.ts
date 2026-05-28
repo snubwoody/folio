@@ -126,10 +126,14 @@ export function accountBalance(
     );
     transactions
         .filter((t) => t.toAccountId === accountId)
-        .forEach((t) => (total += parseFloat(t.amount)));
+        .forEach((t) => {
+            total += parseFloat(t.amount);
+        });
     transactions
         .filter((t) => t.fromAccountId === accountId)
-        .forEach((t) => (total -= parseFloat(t.amount)));
+        .forEach((t) => {
+            total -= parseFloat(t.amount);
+        });
     return total;
 }
 

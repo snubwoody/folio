@@ -35,7 +35,7 @@ describe("Transaction toolbar", () => {
                 transactionDate: today(getLocalTimeZone()).toString(),
             };
 
-            if (cmd == "create_expense") {
+            if (cmd === "create_expense") {
                 return transaction;
             }
         });

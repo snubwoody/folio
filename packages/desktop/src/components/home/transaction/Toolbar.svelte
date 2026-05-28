@@ -13,9 +13,11 @@
 
     async function addTransaction() {
         const account = accountId
-            ? accountStore.accountMap.get(accountId)!
+            ? accountStore.accountMap.get(accountId)
             : accountStore.accounts[0];
-        await transactionStore.createExpense({ accountId: account.id });
+        if (account) {
+            await transactionStore.createExpense({ accountId: account.id });
+        }
     }
 </script>
 

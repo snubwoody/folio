@@ -13,7 +13,7 @@ describe("TransactionStore", () => {
     test("loads transactions from IPC", async () => {
         mockIPC((cmd) => {
             if (cmd === "fetch_transactions") {
-                let transactions: RawTransaction[] = [
+                const transactions: RawTransaction[] = [
                     {
                         id: "1",
                         fromAccountId: "A1",
@@ -45,7 +45,7 @@ describe("TransactionStore", () => {
     test("delete transactions", async () => {
         mockIPC((cmd) => {
             if (cmd === "fetch_transactions") {
-                let transactions: RawTransaction[] = [
+                const transactions: RawTransaction[] = [
                     {
                         id: "1",
                         fromAccountId: "A1",

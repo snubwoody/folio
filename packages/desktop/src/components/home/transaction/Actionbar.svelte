@@ -2,7 +2,7 @@
     import { TextButton, IconButton } from "$components/button";
     import { Trash2, X } from "@lucide/svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { TableStore } from "$lib/stores/table.svelte";
+    import type { TableStore } from "$lib/stores/table.svelte";
     import { fly } from "svelte/transition";
 
     interface Props {

@@ -1,6 +1,6 @@
 import type { Transaction } from "$lib/api/transaction";
 import {
-    CalendarDate,
+    type CalendarDate,
     getLocalTimeZone,
     isSameMonth,
     today,

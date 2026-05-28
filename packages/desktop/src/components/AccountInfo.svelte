@@ -9,14 +9,14 @@
 
     const { accountId }: Props = $props();
 
-    const account = $derived(accountStore.accountMap.get(accountId)!);
+    const account = $derived(accountStore.accountMap.get(accountId));
     const balance = $derived(
-        accountBalance(account.id, transactionStore.transactions),
+        accountBalance(account?.id ?? "", transactionStore.transactions),
     );
 </script>
 
 <section>
-    <h5>{account.name}</h5>
+    <h5>{account?.name}</h5>
     <p>{formatMoney(balance.toString())}</p>
 </section>
 

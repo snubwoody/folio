@@ -52,7 +52,7 @@ export function spendingAnalytics(
     opts: SpendingAnalyticsOptions,
 ): SpendingAnalytic[] {
     const month = opts.month ?? today(getLocalTimeZone());
-    let map = new SvelteMap<string, number>();
+    const map = new SvelteMap<string, number>();
     const filteredTransactions = transactions
         .filter((t) => t.categoryId !== undefined)
         .filter((t) => !t.toAccountId && t.fromAccountId) // Exclude incomes and transfers
@@ -68,7 +68,7 @@ export function spendingAnalytics(
         const categoryId = categoryMap.get(t.categoryId)?.id;
         if (!categoryId) continue;
 
-        let value = map.get(categoryId);
+        const value = map.get(categoryId);
         if (value === undefined) {
             map.set(categoryId, parseFloat(t.amount));
             continue;
@@ -79,7 +79,7 @@ export function spendingAnalytics(
     const analytics: SpendingAnalytic[] = [];
     let index = 0;
     for (const [categoryId, total] of map.entries()) {
-        let category = categoryMap.get(categoryId);
+        const category = categoryMap.get(categoryId);
         if (!category) continue;
 
         // Prevent division by 0

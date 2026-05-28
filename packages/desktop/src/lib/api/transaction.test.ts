@@ -19,7 +19,7 @@ afterEach(() => {
 test("getTransactions", async () => {
     mockIPC((cmd) => {
         if (cmd === "fetch_transactions") {
-            let transactions: RawTransaction[] = [
+            const transactions: RawTransaction[] = [
                 {
                     id: "1",
                     fromAccountId: "A1",
@@ -54,7 +54,7 @@ describe("createTransaction", () => {
                     date: string;
                     account: string;
                 };
-                let transactions: RawTransaction = {
+                const transactions: RawTransaction = {
                     id: "1",
                     fromAccountId: payload.account,
                     transactionDate: payload.date,
@@ -82,7 +82,7 @@ describe("createTransaction", () => {
                     date: string;
                     account: string;
                 };
-                let transactions: RawTransaction = {
+                const transactions: RawTransaction = {
                     id: "1",
                     fromAccountId: payload.account,
                     transactionDate: payload.date,
@@ -108,7 +108,7 @@ describe("createTransaction", () => {
                     date: string;
                     account: string;
                 };
-                let transactions: RawTransaction = {
+                const transactions: RawTransaction = {
                     id: "1",
                     fromAccountId: payload.account,
                     transactionDate: payload.date,

@@ -3,7 +3,7 @@
 
 // Wrappers for interacting with transactions from the backend.
 import {
-    CalendarDate,
+    type CalendarDate,
     getLocalTimeZone,
     now,
     parseDate,

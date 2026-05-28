@@ -110,7 +110,7 @@ test("Close calendar after selecting date", async () => {
         if (cmd === "parse_date") {
             return "2023-12-12";
         }
-        if (cmd == "edit_transaction") {
+        if (cmd === "edit_transaction") {
             const transaction: RawTransaction = {
                 id: "1",
                 amount: "20.00",

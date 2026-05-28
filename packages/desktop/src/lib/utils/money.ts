@@ -56,7 +56,7 @@ export function formatAmountWithoutSymbol(
 export function parseMoney(value: string): string | undefined {
     value = value.replaceAll(",", "");
     const amount = parseFloat(value);
-    if (!isNaN(amount)) return amount.toString();
+    if (!Number.isNaN(amount)) return amount.toString();
     return undefined;
 }
 

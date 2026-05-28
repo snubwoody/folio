@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { TableStore } from "$lib/stores/table.svelte";
+    import type { TableStore } from "$lib/stores/table.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte";
     import Transaction from "./Transaction.svelte";
     import { Table, TableCell, TableHeader } from "$components/table";

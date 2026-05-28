@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Popover } from "bits-ui";
+    import type { Popover } from "bits-ui";
     import type { Snippet } from "svelte";
 
     interface Props extends Popover.TriggerProps {
