@@ -22,12 +22,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import { CirclePlus, ChevronsUpDown } from "@lucide/svelte";
     import { IconButton, TextButton } from "$components/button";
     import { Table, TableCell, TableHeader, TableRow } from "$components/table";
+    import {CsvLoader} from "$lib/utils/loader.svelte";
 
     let rows =  $state([]);
 
     // TODO:
     // - Add dropdowns in the column headers
     // - Allow discarding rows and columns
+
+    const csvLoader = new CsvLoader([]);
 
     async function importCsv(){
         const file = await open({
@@ -36,6 +39,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
             filters: [{name:"csv-filter",extensions:["csv"]}]
         });
         rows = await invoke("load_csv", {path: file});
+        csvLoader.load(rows);
         console.log(rows);
     }
     // TODO: handle headers
@@ -69,7 +73,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
                     <TableCell>Outflow</TableCell>
                     <TableCell>Inflow</TableCell>
                 </TableHeader>
-                {#each rows as row}
+                {#each csvLoader.rows as row}
                     <TableRow>
                         {#each row as cell}
                             <TableCell>{cell}</TableCell>
