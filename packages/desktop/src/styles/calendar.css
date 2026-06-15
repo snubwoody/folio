@@ -1,32 +1,33 @@
 @keyframes animate-scale {
-    from {
-        scale: 0.8;
-    }
+	from {
+		scale: 0.8;
+	}
 
-    to {
-        scale: 1.0;
-    }
+	to {
+		scale: 1;
+	}
 }
 
- .calendar{
-     background: var(--color-white);
-     padding: 20px;
-     border: 1px solid var(--color-neutral-100);
-     border-radius: var(--radius-xl);
-     box-shadow: var(--shadow-md);
-     display: flex;
-     flex-direction: column;
-     gap: 16px;
-    /* animation: animate-scale 20ms linear; */
+.calendar {
+	background: var(--color-white);
+	padding: 20px;
+	border: 1px solid var(--color-neutral-100);
+	border-radius: var(--radius-xl);
+	box-shadow: var(--shadow-md);
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	/* animation: animate-scale 20ms linear; */
 }
 
 .calendar-weekday {
 	color: var(--color-text-muted);
 }
 
- .calendar-weekday, .calendar-day {
-     width: 36px;
-     height: 36px;
+.calendar-weekday,
+.calendar-day {
+	width: 36px;
+	height: 36px;
 }
 
 .calendar-day {

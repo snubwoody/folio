@@ -22,10 +22,12 @@ test("Has date field", async () => {
     await expect.element(screen.getByRole("textbox")).toBeInTheDocument();
 });
 
-test("Date field inherits value",async() => {
-     const date =  new CalendarDate(2022,12,2);
-     const screen = await render(Calendar,{ value:date });
-     await expect.element(screen.getByRole("textbox")).toHaveValue(formatDate(date));
+test("Date field inherits value", async () => {
+    const date = new CalendarDate(2022, 12, 2);
+    const screen = await render(Calendar, { value: date });
+    await expect
+        .element(screen.getByRole("textbox"))
+        .toHaveValue(formatDate(date));
 });
 
 test("Value updates with date field", async () => {
