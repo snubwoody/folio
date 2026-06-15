@@ -27,6 +27,7 @@
         "@sveltejs/kit": "^2.55.0",
         "@sveltejs/vite-plugin-svelte": "^7.0.0",
         "@tailwindcss/vite": "^4.2.2",
+        "@tauri-apps/cli": "^2.11.2",
         "@types/node": "^25.5.0",
         "@vitest/browser": "^4.1.2",
         "@vitest/browser-playwright": "^4.1.2",
