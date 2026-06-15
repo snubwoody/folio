@@ -7,6 +7,8 @@ export interface MoneyFormatOpts {
     compact?: true;
     /** The ISO currency code. */
     currency?: string;
+    /** Strip the currency symbol from the final value */
+    stripSymbol?: boolean;
 }
 
 /**
@@ -18,20 +20,51 @@ export interface MoneyFormatOpts {
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
     const currency =
         opts?.currency ??
+        settingsStore.currency.code;
+
+    let notation:
+        | "compact"
+        | "standard"
+        | "scientific"
+        | "engineering"
+        | undefined;
+
+    if (opts?.compact) {
+        notation = "compact";
+    }
+
+    const formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency,
+        notation,
+    });
+
+    const parts = formatter.formatToParts(parseFloat(amount));
+
+    const stripped = parts
+        .filter((part) => part.type !== "currency")
+        .map((part) => part.value)
+        .join("")
+        .trim();
+
+    const symbol =
+        opts?.currency ??
         settingsStore.currency.symbol ??
         settingsStore.currency.code;
 
-    const raw = formatAmountWithoutSymbol(amount, opts);
+    if (opts?.stripSymbol === true) {
+        return stripped;
+    }
 
-    // The browser automatically formats RTL for certain languages
-    return `${currency}${raw}`;
+    // The browser automatically converts to RTL for certain languages
+    return `${symbol}${stripped}`;
 }
 
-// FIXME: join with above
 /**
  * Formats a monetary value without the currency symbol.
  * @param amount
  * @param opts
+ * @deprecated use formatMoney instead
  * @returns
  */
 export function formatAmountWithoutSymbol(
