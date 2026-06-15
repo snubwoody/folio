@@ -41,7 +41,7 @@
 		"jsdom": "^27.4.0",
 		"melt": "^0.44.0",
 		"phosphor-icons-svelte": "^2.1.0",
-		"playwright": "^1.58.2",
+		"playwright": "^1.60.0",
 		"postcss-html": "^1.8.1",
 		"stylelint": "^16.26.1",
 		"stylelint-config-recommended-scss": "^16.0.2",
