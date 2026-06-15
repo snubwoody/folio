@@ -32,7 +32,7 @@
 
 <TableCell {...rest}>
     <Popover.Root bind:open={popupOpen}>
-        <Popover.Trigger class="text-left data-cell-padding">
+        <Popover.Trigger class="text-left data-cell-padding w-full">
             {#if value}
                 <p>{formatMoney(value)}</p>
             {:else}
