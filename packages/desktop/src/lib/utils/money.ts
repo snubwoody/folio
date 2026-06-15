@@ -3,11 +3,18 @@ import { settingsStore } from "$lib/stores/settings.svelte";
 import type { Currency } from "$lib/types";
 
 export interface MoneyFormatOpts {
-    /** Truncate large values */
+    /** Truncate large values. */
     compact?: true;
+    /** The ISO currency code. */
     currency?: string;
 }
 
+/**
+ * Formats a monetary value.
+ * @param amount
+ * @param opts
+ * @returns
+ */
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
     const currency =
         opts?.currency ??
@@ -21,6 +28,12 @@ export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
 }
 
 // FIXME: join with above
+/**
+ * Formats a monetary value without the currency symbol.
+ * @param amount
+ * @param opts
+ * @returns
+ */
 export function formatAmountWithoutSymbol(
     amount: string,
     opts?: MoneyFormatOpts,
