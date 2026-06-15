@@ -25,7 +25,7 @@ db-setup:
 
 # Run the app in dev mode
 dev:
-    cargo tauri dev
+    pnpm tauri dev
 
 # Test all the crates (rust code)
 test-backend:
