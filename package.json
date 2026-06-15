@@ -3,14 +3,15 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"lint": "eslint . --max-warnings 0 && stylelint **/*.{css,svelte} --max-warnings 0",
 		"dev:desktop": "cargo tauri dev",
 		"dev:web": "pnpm -F web dev",
 		"db:create": "cargo sqlx database create",
 		"db:migrate": "cargo sqlx migrate run --source crates/folio-desktop/migrations",
 		"db:setup": "cargo sqlx database drop -y && pnpm db:create && pnpm db:migrate",
-		"lint:fix": "eslint . --max-warnings 0 --fix && stylelint **/*.{css,svelte} --max-warnings 0 --fix",
-		"lint:styles": "stylelint **/*.{css,svelte} --max-warnings 0"
+		"fmt": "pnpm biome format --write",
+		"fmt:check": "pnpm biome format",
+		"lint": "pnpm biome lint --write",
+		"lint:check": "pnpm biome lint"
 	},
 	"dependencies": {
 		"@lucide/svelte": "^1.0.0",
