@@ -17,7 +17,6 @@ test("Has date field",async() => {
     await expect.element(screen.getByRole("textbox")).toBeInTheDocument();
 });
 
-// TODO: test calendar value changes with date field
 test("Date field inherits value",async() => {
     const date =  new CalendarDate(2022,12,2);
     const screen = await render(Calendar,{ value:date });

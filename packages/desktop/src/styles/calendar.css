@@ -1,3 +1,13 @@
+@keyframes animate-scale {
+    from {
+        scale: 0.8;
+    }
+
+    to {
+        scale: 1.0;
+    }
+}
+
 .calendar{
     background: var(--color-white);
     padding: 20px;
@@ -7,6 +17,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    /*animation: animate-scale 20ms linear;*/
 }
 
 .calendar-weekday{
@@ -14,8 +25,8 @@
 }
 
 .calendar-weekday, .calendar-day {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
 }
 
 .calendar-day{
