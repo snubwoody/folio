@@ -13,7 +13,7 @@
 
     const { transaction, value,onSubmit, ...rest }: Props = $props();
 
-    // TODO: submit on enter
+    let popupOpen = $state(false);
     let amount = $derived(formatMoney(value ?? "0", {stripSymbol: true}));
 
     const submit = () => {
@@ -22,6 +22,7 @@
             if (Number.isFinite(num)){
                 onSubmit(amount);
             }
+            popupOpen = false;
             return;
         } catch {
 
@@ -30,7 +31,7 @@
 </script>
 
 <TableCell {...rest}>
-    <Popover.Root>
+    <Popover.Root bind:open={popupOpen}>
         <Popover.Trigger class="text-left data-cell-padding">
             {#if value}
                 <p>{formatMoney(value)}</p>
@@ -43,11 +44,14 @@
                 class="popup-overlay rounded-sm"
                 onCloseAutoFocus={(e) => e.preventDefault()}
                 onInteractOutside={() => submit()}>
-                    <input
-                        type="text"
-                        bind:value={amount}
-                        class="outline-none"
-                    >
+                    <form onsubmit={submit}>
+                        <input
+                            type="text"
+                            bind:value={amount}
+                            class="outline-none"
+                        >
+                        <input type="submit" hidden>
+                    </form>
             </Popover.Content>
         </Popover.Portal>
     </Popover.Root>

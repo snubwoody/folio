@@ -7,7 +7,6 @@
     import { settingsStore } from "$lib/stores/settings.svelte";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { formatAmountWithoutSymbol } from "$lib/utils/money";
     import AccountCell from "./AccountCell.svelte";
     import DateCell from "./DateCell.svelte";
     import MoneyCell from "./MoneyCell.svelte";
@@ -28,9 +27,6 @@
     );
     let note = $derived(transaction.note);
     let selected = $derived(tableStore.isSelected(transaction.id));
-    const currencySymbol = $derived(
-        settingsStore.currency.symbol ?? settingsStore.currency.code,
-    );
     const payeeOptions = $derived(
         accountStore.accounts.filter(
             (a) =>
