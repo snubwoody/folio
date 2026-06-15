@@ -23,7 +23,7 @@ a specific tab content.
 # Example
 ```svelte
 <script>
-    import { SegmentedTabs,TabContent,TabButton } from "$components/select";
+    import { SegmentedTabs, TabContent, TabButton } from "$components/select";
     let value = "Tab 1";
 </script>
 

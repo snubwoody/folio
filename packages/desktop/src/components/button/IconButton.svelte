@@ -24,14 +24,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     type Size = "small" | "medium";
 
     type Props = {
-        children: Snippet
+        children: Snippet;
         /**
          * Sets the button style.
          */
-        variant?: Style
-        size?: Size
-        href?: string
-        class?: string
+        variant?: Style;
+        size?: Size;
+        href?: string;
+        class?: string;
     } & HTMLButtonAttributes;
 
     const {
@@ -39,7 +39,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         size = "medium",
         variant = "primary",
         href,
-        class:userClass,
+        class: userClass,
         ...rest
     }: Props = $props();
 </script>

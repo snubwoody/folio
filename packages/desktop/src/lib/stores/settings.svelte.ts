@@ -13,65 +13,73 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import type {
-    Settings
-} from "../types";
+import type { Settings } from "../types";
 import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import type { Currency } from "$lib/types";
 
-export class SettingsStore{
+export class SettingsStore {
     #settings: Settings = $state({ currencyCode: "ZMW", sidebarOpen: true });
-    #currency: Currency = $state({ name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW" });
+    #currency: Currency = $state({
+        name: "Zambian Kwacha",
+        precision: 2,
+        symbol: "K",
+        code: "ZMW",
+    });
 
-    get settings():Settings {
+    get settings(): Settings {
         return this.#settings;
     }
 
-    get currency():Currency {
+    get currency(): Currency {
         return this.#currency;
     }
 
-    get currencySymbol():string{
+    get currencySymbol(): string {
         return this.#currency.symbol ?? this.#currency.code;
     }
 
     /**
      * Resets to default settings.
      */
-    reset(){
+    reset() {
         this.#settings = { currencyCode: "ZMW", sidebarOpen: true };
-        this.#currency = { name:"Zambian Kwacha",precision: 2,symbol:"K",code:"ZMW" };
+        this.#currency = {
+            name: "Zambian Kwacha",
+            precision: 2,
+            symbol: "K",
+            code: "ZMW",
+        };
     }
 
     async setCurrencyCode(currency: string) {
-        try{
+        try {
             // TODO: test this
             await invoke("set_currency_code", { currencyCode: currency });
             this.#settings.currencyCode = currency;
             this.#currency = await invoke<Currency>("active_currency");
-        }catch (e) {
+        } catch (e) {
             console.error(e);
         }
     }
 
     async setSidebarState(open: boolean) {
-        try{
+        try {
             await invoke("set_sidebar_state", { open });
             this.#settings.sidebarOpen = open;
-        }catch (e) {
+        } catch (e) {
             console.error(e);
         }
     }
 
-    async load(){
+    async load() {
         this.#settings = await invoke<Settings>("settings");
         this.#currency = await invoke<Currency>("active_currency");
         logger.debug("Loaded settings from backend");
     }
 }
 
-export function mockSettings(){
+export function mockSettings() {
     mockIPC((cmd) => {
         if (cmd === "settings") {
             return { currencyCode: "ZMW" };
@@ -79,21 +87,21 @@ export function mockSettings(){
         if (cmd === "currencies") {
             const currencies: Currency[] = [
                 {
-                    code:"AUD",
-                    name: ""
+                    code: "AUD",
+                    name: "",
                 },
                 {
-                    code:"ZMW",
-                    name: ""
+                    code: "ZMW",
+                    name: "",
                 },
                 {
-                    code:"CAD",
-                    name: ""
+                    code: "CAD",
+                    name: "",
                 },
                 {
-                    code:"USD",
-                    name: ""
-                }
+                    code: "USD",
+                    name: "",
+                },
             ];
             return currencies;
         }

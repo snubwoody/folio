@@ -1,7 +1,11 @@
 <script lang="ts">
     import { Calendar } from "bits-ui";
-    import { ChevronLeft,ChevronRight } from "@lucide/svelte";
-    import { getLocalTimeZone, today, type DateValue } from "@internationalized/date";
+    import { ChevronLeft, ChevronRight } from "@lucide/svelte";
+    import {
+        getLocalTimeZone,
+        today,
+        type DateValue,
+    } from "@internationalized/date";
     import { TextButton } from "$components/button";
     import DateField from "./DateField.svelte";
 
@@ -12,24 +16,22 @@
          * The date change event fires whenever the date is changed, which occurs when a date
          * button is clicked.
          */
-        onDateChange?: DateFn
+        onDateChange?: DateFn;
         /**
          * The bindable calendar value.
          */
-        value?: DateValue
+        value?: DateValue;
     };
 
-    let {
-        value = $bindable(today(getLocalTimeZone())),
-        onDateChange
-    }:Props = $props();
+    let { value = $bindable(today(getLocalTimeZone())), onDateChange }: Props =
+        $props();
 
-    function updateDate(date: DateValue | undefined){
+    function updateDate(date: DateValue | undefined) {
         if (!date || !onDateChange) return;
         onDateChange(date);
     }
 
-    function setToday(){
+    function setToday() {
         updateDate(today(getLocalTimeZone()));
     }
 </script>

@@ -11,7 +11,7 @@ export type Category = {
     id: string;
     title: string;
     createdAt: string;
-    isIncomeStream: boolean
+    isIncomeStream: boolean;
 };
 
 export type SelectOption = {
@@ -43,6 +43,6 @@ export type Settings = {
 };
 
 export interface Analytic {
-    category: Category,
-    total: string
+    category: Category;
+    total: string;
 }

@@ -3,14 +3,11 @@
     import { Check } from "@lucide/svelte";
 
     type Props = {
-        onChecked?: (value: boolean) => void,
-        checked?: boolean
+        onChecked?: (value: boolean) => void;
+        checked?: boolean;
     };
 
-    let {
-        onChecked,
-        checked = $bindable(false)
-    }:Props = $props();
+    let { onChecked, checked = $bindable(false) }: Props = $props();
 </script>
 
 <Checkbox.Root bind:checked onCheckedChange={onChecked} class="checkbox">

@@ -18,8 +18,8 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { Snippet } from "svelte";
     import type { HTMLAttributes } from "svelte/elements";
 
-    interface Props extends HTMLAttributes<HTMLDivElement>{
-        children: Snippet
+    interface Props extends HTMLAttributes<HTMLDivElement> {
+        children: Snippet;
     }
     const { children }: Props = $props();
 </script>

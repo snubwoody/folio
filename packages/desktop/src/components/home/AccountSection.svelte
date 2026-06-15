@@ -4,16 +4,20 @@
     import { Button } from "$components/button";
     import { Plus } from "@lucide/svelte";
     import Account from "./Account.svelte";
-    import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
+    import {
+        Popover,
+        PopoverContent,
+        PopoverTrigger,
+    } from "$components/popover";
 
-	let name = $state("My account");
+    let name = $state("My account");
     let popoverOpen = $state(false);
-	let startingBalance = $state("0.00");
+    let startingBalance = $state("0.00");
 
-	async function createAccount() {
-	    popoverOpen = false;
-	    await accountStore.createAccount({ name,startingBalance });
-	}
+    async function createAccount() {
+        popoverOpen = false;
+        await accountStore.createAccount({ name, startingBalance });
+    }
 </script>
 
 <section>

@@ -7,8 +7,8 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("SettingsStore",() => {
-    test("set currency code",async () => {
+describe("SettingsStore", () => {
+    test("set currency code", async () => {
         mockIPC((cmd) => {
             if (cmd !== "set_currency_code") {
                 throw "Invalid command";
@@ -20,4 +20,3 @@ describe("SettingsStore",() => {
         expect(settingsStore.settings.currencyCode).toBe("ZAR");
     });
 });
-

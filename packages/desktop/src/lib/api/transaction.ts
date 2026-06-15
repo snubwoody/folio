@@ -2,7 +2,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // Wrappers for interacting with transactions from the backend.
-import { CalendarDate, getLocalTimeZone, now, parseDate, toCalendarDate } from "@internationalized/date";
+import {
+    type CalendarDate,
+    getLocalTimeZone,
+    now,
+    parseDate,
+    toCalendarDate,
+} from "@internationalized/date";
 import { invoke } from "@tauri-apps/api/core";
 
 export type TransactionType = "Expense" | "Income" | "Transfer";
@@ -20,25 +26,25 @@ export interface RawTransaction {
     note?: string;
 }
 
-export interface Transaction{
-    id: string,
-    amount: string,
-    fromAccountId?: string,
-    toAccountId?: string,
+export interface Transaction {
+    id: string;
+    amount: string;
+    fromAccountId?: string;
+    toAccountId?: string;
     /** The date this transaction occurred. */
-    date: CalendarDate,
-    categoryId?: string,
+    date: CalendarDate;
+    categoryId?: string;
     /** Optional context for the transaction */
-    note?: string,
+    note?: string;
 }
 
-export interface CreateTransactionOpts{
+export interface CreateTransactionOpts {
     /** The account id. */
-    accountId: string
+    accountId: string;
     /** The amount exchanged, defaults to 0. */
-    amount?: string,
+    amount?: string;
     /** The date the transaction occurred. */
-    date?: CalendarDate,
+    date?: CalendarDate;
 }
 
 export interface EditTransactionOpts {
@@ -65,15 +71,16 @@ function parseTransaction(value: RawTransaction): Transaction {
         toAccountId: value.toAccountId,
         note: value.note,
         categoryId: value.categoryId,
-        date: parseDate(value.transactionDate)
+        date: parseDate(value.transactionDate),
     };
 }
 
 /**
  * Fetches all the transactions from the database.
  */
-export async function getTransactions(): Promise<Transaction[]>{
-    const rawTransactions = await invoke<RawTransaction[]>("fetch_transactions");
+export async function getTransactions(): Promise<Transaction[]> {
+    const rawTransactions =
+        await invoke<RawTransaction[]>("fetch_transactions");
     return rawTransactions.map((value) => parseTransaction(value));
 }
 
@@ -83,12 +90,12 @@ export async function getTransactions(): Promise<Transaction[]>{
 export async function createTransaction({
     accountId,
     amount = "0.00",
-    date = toCalendarDate(now(getLocalTimeZone()))
-}:CreateTransactionOpts): Promise<Transaction>{
+    date = toCalendarDate(now(getLocalTimeZone())),
+}: CreateTransactionOpts): Promise<Transaction> {
     const response = await invoke<RawTransaction>("create_expense", {
         amount,
         date: date.toString(),
-        account: accountId
+        account: accountId,
     });
 
     return parseTransaction(response);
@@ -101,10 +108,13 @@ export async function createTransaction({
  * @param id The id of the transaction
  * @param amount The amount to set as the outflow
  */
-export async function setOutflow(id:string,amount:string): Promise<Transaction> {
+export async function setOutflow(
+    id: string,
+    amount: string,
+): Promise<Transaction> {
     const transaction = await invoke<RawTransaction>(
         "set_transaction_outflow",
-        { id, amount }
+        { id, amount },
     );
     return parseTransaction(transaction);
 }
@@ -115,10 +125,13 @@ export async function setOutflow(id:string,amount:string): Promise<Transaction> 
  * @param id The id of the transaction
  * @param account The id of the account
  */
-export async function setAccount(id:string,account:string): Promise<Transaction> {
+export async function setAccount(
+    id: string,
+    account: string,
+): Promise<Transaction> {
     const transaction = await invoke<RawTransaction>(
         "set_transaction_account",
-        { id, account }
+        { id, account },
     );
     return parseTransaction(transaction);
 }
@@ -129,11 +142,14 @@ export async function setAccount(id:string,account:string): Promise<Transaction>
  * @param id The id of the transaction
  * @param amount The amount to set as the outflow
  */
-export async function setInflow(id:string,amount:string): Promise<Transaction> {
-    const transaction = await invoke<RawTransaction>(
-        "set_transaction_inflow",
-        { id, amount }
-    );
+export async function setInflow(
+    id: string,
+    amount: string,
+): Promise<Transaction> {
+    const transaction = await invoke<RawTransaction>("set_transaction_inflow", {
+        id,
+        amount,
+    });
     return parseTransaction(transaction);
 }
 
@@ -142,17 +158,20 @@ export async function setInflow(id:string,amount:string): Promise<Transaction> {
  * @param id The id of the transaction
  * @param accountId The id of the payee account
  */
-export async function setPayee(id:string,accountId:string): Promise<Transaction> {
-    const transaction = await invoke<RawTransaction>(
-        "set_transaction_payee",
-        { id, accountId }
-    );
+export async function setPayee(
+    id: string,
+    accountId: string,
+): Promise<Transaction> {
+    const transaction = await invoke<RawTransaction>("set_transaction_payee", {
+        id,
+        accountId,
+    });
     return parseTransaction(transaction);
 }
 
 export async function editTransaction(opts: EditTransactionOpts) {
     const transaction = await invoke<RawTransaction>("edit_transaction", {
-        data: opts
+        data: opts,
     });
 
     return parseTransaction(transaction);

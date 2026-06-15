@@ -4,17 +4,17 @@ import { invoke } from "@tauri-apps/api/core";
  * Global logger
  */
 export const logger = {
-    info(message: string){
+    info(message: string) {
         // TODO: forward console
-        invoke("log_info",{ message });
+        invoke("log_info", { message });
     },
-    error(message: string){
-        invoke("log_error",{ message });
+    error(message: string) {
+        invoke("log_error", { message });
     },
-    warn(message: string){
-        invoke("log_warn",{ message });
+    warn(message: string) {
+        invoke("log_warn", { message });
     },
-    debug(message: string){
-        invoke("log_debug",{ message });
-    }
+    debug(message: string) {
+        invoke("log_debug", { message });
+    },
 };

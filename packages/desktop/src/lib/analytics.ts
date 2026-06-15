@@ -1,5 +1,10 @@
 import { SvelteMap } from "svelte/reactivity";
-import { type CalendarDate, getLocalTimeZone, isSameMonth, today } from "@internationalized/date";
+import {
+    type CalendarDate,
+    getLocalTimeZone,
+    isSameMonth,
+    today,
+} from "@internationalized/date";
 import type { Category } from "$lib/types";
 import type { Transaction } from "$lib/api/transaction";
 
@@ -22,7 +27,7 @@ const colors = [
     "#E0DCFB", // Purple 100
     "#31137A", // Purple 800
     "#1D084F", // Purple 900
-    "#110434" // Purple 950
+    "#110434", // Purple 950
 ];
 
 export type SpendingAnalyticsOptions = {
@@ -44,17 +49,17 @@ export type SpendingAnalytic = {
 export function spendingAnalytics(
     transactions: Transaction[],
     categoryMap: SvelteMap<string, Category>,
-    opts: SpendingAnalyticsOptions
+    opts: SpendingAnalyticsOptions,
 ): SpendingAnalytic[] {
     const month = opts.month ?? today(getLocalTimeZone());
-    let map = new SvelteMap<string,number>();
+    const map = new SvelteMap<string, number>();
     const filteredTransactions = transactions
-        .filter(t => t.categoryId !== undefined)
-        .filter(t => !t.toAccountId && t.fromAccountId) // Exclude incomes and transfers
-        .filter(t => isSameMonth(t.date,month));
+        .filter((t) => t.categoryId !== undefined)
+        .filter((t) => !t.toAccountId && t.fromAccountId) // Exclude incomes and transfers
+        .filter((t) => isSameMonth(t.date, month));
 
     const totalSpent = filteredTransactions
-        .map(t => parseFloat(t.amount))
+        .map((t) => parseFloat(t.amount))
         .reduce((prev, curr) => prev + curr, 0);
 
     for (const t of filteredTransactions) {
@@ -63,9 +68,9 @@ export function spendingAnalytics(
         const categoryId = categoryMap.get(t.categoryId)?.id;
         if (!categoryId) continue;
 
-        let value = map.get(categoryId);
-        if (value === undefined){
-            map.set(categoryId,parseFloat(t.amount));
+        const value = map.get(categoryId);
+        if (value === undefined) {
+            map.set(categoryId, parseFloat(t.amount));
             continue;
         }
         map.set(categoryId, parseFloat(t.amount) + value);
@@ -73,8 +78,8 @@ export function spendingAnalytics(
 
     const analytics: SpendingAnalytic[] = [];
     let index = 0;
-    for (const [categoryId,total] of map.entries()) {
-        let category = categoryMap.get(categoryId);
+    for (const [categoryId, total] of map.entries()) {
+        const category = categoryMap.get(categoryId);
         if (!category) continue;
 
         // Prevent division by 0
@@ -83,7 +88,7 @@ export function spendingAnalytics(
             category,
             total,
             percentage,
-            color: colors[index % colors.length]
+            color: colors[index % colors.length],
         };
 
         analytics.push(analytic);

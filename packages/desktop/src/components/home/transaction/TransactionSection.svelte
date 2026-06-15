@@ -5,12 +5,12 @@
     import { TableStore } from "$lib/stores/table.svelte";
 
     type Props = {
-        accountId?: string
+        accountId?: string;
     };
 
     const tableStore = new TableStore();
 
-    const { accountId }:Props = $props();
+    const { accountId }: Props = $props();
 </script>
 
 <section>

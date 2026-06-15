@@ -1,6 +1,6 @@
 import { SvelteSet } from "svelte/reactivity";
 
-export class TableStore{
+export class TableStore {
     #selectedRows: SvelteSet<string> = $state(new SvelteSet());
     #allRowsSelected: boolean = $state(false);
 
@@ -11,11 +11,11 @@ export class TableStore{
     /**
      * Returns true if all the table rows are selected.
      */
-    get allRowsSelected():  boolean{
+    get allRowsSelected(): boolean {
         return this.#allRowsSelected;
     }
 
-    isSelected(id: string): boolean{
+    isSelected(id: string): boolean {
         return this.#selectedRows.has(id) || this.#allRowsSelected;
     }
 
@@ -23,8 +23,8 @@ export class TableStore{
      * Toggle selects a row
      * @param id - The row of the id to select
      */
-    toggleSelect(id: string){
-        if (this.#selectedRows.has(id)){
+    toggleSelect(id: string) {
+        if (this.#selectedRows.has(id)) {
             this.deselect(id);
             return;
         }
@@ -35,26 +35,26 @@ export class TableStore{
      * Select a row.
      * @param id The id of the table row to select.
      */
-    select(id: string){
+    select(id: string) {
         this.#selectedRows.add(id);
     }
 
-    deselect(id: string){
+    deselect(id: string) {
         this.#selectedRows.delete(id);
     }
 
-    toggleSelectAll(){
+    toggleSelectAll() {
         this.#allRowsSelected = !this.#allRowsSelected;
-        if(!this.#allRowsSelected){
+        if (!this.#allRowsSelected) {
             this.#selectedRows.clear();
         }
     }
 
-    selectAll(){
+    selectAll() {
         this.#allRowsSelected = true;
     }
 
-    deselectAll(){
+    deselectAll() {
         this.#allRowsSelected = false;
         this.#selectedRows.clear();
     }

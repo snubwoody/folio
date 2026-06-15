@@ -22,12 +22,14 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import InlineTextField from "$components/InlineTextField.svelte";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
 
-    interface Props{
-        account: Account
+    interface Props {
+        account: Account;
     }
 
-    const { account }:Props = $props();
-    const amount = $derived.by(() => formatAmountWithoutSymbol(account.startingBalance));
+    const { account }: Props = $props();
+    const amount = $derived.by(() =>
+        formatAmountWithoutSymbol(account.startingBalance),
+    );
 </script>
 
 <li class="flex items-center justify-between">

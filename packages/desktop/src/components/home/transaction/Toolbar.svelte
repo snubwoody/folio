@@ -6,14 +6,18 @@
     import { accountStore } from "$lib/stores/account.svelte";
 
     type Props = {
-        accountId?: string
+        accountId?: string;
     };
 
-    const { accountId }:Props = $props();
+    const { accountId }: Props = $props();
 
     async function addTransaction() {
-        const account = accountId ? accountStore.accountMap.get(accountId)! : accountStore.accounts[0];
-        await transactionStore.createExpense({ accountId: account.id });
+        const account = accountId
+            ? accountStore.accountMap.get(accountId)
+            : accountStore.accounts[0];
+        if (account) {
+            await transactionStore.createExpense({ accountId: account.id });
+        }
     }
 </script>
 

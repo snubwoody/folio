@@ -17,12 +17,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import { Tabs } from "bits-ui";
     import type { Snippet } from "svelte";
-    interface Props{
-        value: string,
-        children: Snippet
+    interface Props {
+        value: string;
+        children: Snippet;
     }
 
-    const { value,children }:Props = $props();
+    const { value, children }: Props = $props();
 </script>
 
 <Tabs.Trigger {value}>

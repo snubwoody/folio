@@ -6,32 +6,36 @@ import type { Category } from "$lib/types";
 export class CategoryStore {
     #categories: Category[] = $state([]);
 
-    #categoryMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.categories.map(a => [a.id,a])));
-    #incomeStreamMap: SvelteMap<string,Category> = $derived(new SvelteMap(this.incomeStreams.map(a => [a.id,a])));
+    #categoryMap: SvelteMap<string, Category> = $derived(
+        new SvelteMap(this.categories.map((a) => [a.id, a])),
+    );
+    #incomeStreamMap: SvelteMap<string, Category> = $derived(
+        new SvelteMap(this.incomeStreams.map((a) => [a.id, a])),
+    );
 
     /**
      * Returns a list of all the categories.
      */
-    get categories(): Category[]{
-        return this.#categories.filter(c => !c.isIncomeStream);
+    get categories(): Category[] {
+        return this.#categories.filter((c) => !c.isIncomeStream);
     }
 
-    get allCategories(): Category[]{
+    get allCategories(): Category[] {
         return this.#categories;
     }
 
     /**
      * Returns a list of all the income streams
      */
-    get incomeStreams(): Category[]{
-        return this.#categories.filter(c => c.isIncomeStream);
+    get incomeStreams(): Category[] {
+        return this.#categories.filter((c) => c.isIncomeStream);
     }
 
-    get categoryMap(){
+    get categoryMap() {
         return this.#categoryMap;
     }
 
-    get incomeStreamMap(){
+    get incomeStreamMap() {
         return this.#incomeStreamMap;
     }
 
@@ -60,9 +64,9 @@ export class CategoryStore {
      * @param title The title of the category
      * @returns The new category
      */
-    async createCategory(title: string = "New category"):Promise<Category> {
+    async createCategory(title: string = "New category"): Promise<Category> {
         const category = await invoke<Category>("create_category", {
-            title
+            title,
         });
         this.#categories.push(category);
         return category;
@@ -74,9 +78,11 @@ export class CategoryStore {
      * @param title The title of the category
      * @returns The new category
      */
-    async createIncomeStream(title: string = "New income stream"):Promise<Category> {
+    async createIncomeStream(
+        title: string = "New income stream",
+    ): Promise<Category> {
         const category = await invoke<Category>("create_income_stream", {
-            title
+            title,
         });
         this.#categories.push(category);
         return category;
@@ -93,4 +99,3 @@ export class CategoryStore {
 }
 
 export const categoryStore = new CategoryStore();
-

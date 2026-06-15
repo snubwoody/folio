@@ -6,18 +6,22 @@ import type { SpendingAnalytic } from "$lib/analytics";
 import { formatMoney } from "$lib/utils/money";
 
 describe("Category Sidebar", () => {
-    test("heading", async() => {
+    test("heading", async () => {
         const screen = await render(CategorySidebar);
 
-        await expect.element(screen.getByRole("heading",{ name: "Categories" })).toBeVisible();
-        await expect.element(screen.getByRole("heading",{ name: "Total spent" })).toBeVisible();
+        await expect
+            .element(screen.getByRole("heading", { name: "Categories" }))
+            .toBeVisible();
+        await expect
+            .element(screen.getByRole("heading", { name: "Total spent" }))
+            .toBeVisible();
     });
-    test("show analytic info", async() => {
+    test("show analytic info", async () => {
         const category: Category = {
             id: "1",
             title: "Groceries",
             createdAt: "",
-            isIncomeStream: false
+            isIncomeStream: false,
         };
 
         const analytics: SpendingAnalytic[] = [
@@ -25,12 +29,14 @@ describe("Category Sidebar", () => {
                 category,
                 total: 100,
                 percentage: 0.1,
-                color: "#000"
-            }
+                color: "#000",
+            },
         ];
         const screen = await render(CategorySidebar, { analytics });
 
-        await expect.element(screen.getByText(formatMoney("100"))).toBeVisible();
+        await expect
+            .element(screen.getByText(formatMoney("100")))
+            .toBeVisible();
         await expect.element(screen.getByText("Groceries")).toBeVisible();
     });
 });

@@ -1,6 +1,6 @@
 <script lang="ts">
     import * as echarts from "echarts/core";
-    import  { PieChart, type PieSeriesOption } from "echarts/charts";
+    import { PieChart, type PieSeriesOption } from "echarts/charts";
     import { SVGRenderer } from "echarts/renderers";
     import { LabelLayout, UniversalTransition } from "echarts/features";
     import {
@@ -8,7 +8,7 @@
         TooltipComponent,
         GridComponent,
         DatasetComponent,
-        TransformComponent
+        TransformComponent,
     } from "echarts/components";
     import {
         AriaComponent,
@@ -18,7 +18,7 @@
         type GridComponentOption,
         type LegendComponentOption,
         type DatasetComponentOption,
-        type AriaComponentOption
+        type AriaComponentOption,
     } from "echarts/components";
     import type { ComposeOption } from "echarts/core";
     import { transactionStore } from "$lib/stores/transaction.svelte";
@@ -27,7 +27,7 @@
     import { spendingAnalytics } from "$lib/analytics";
     import CategorySidebar from "$components/analytics/CategorySidebar.svelte";
     import { IconButton } from "$components/button";
-    import { ChevronLeft,ChevronRight } from "@lucide/svelte";
+    import { ChevronLeft, ChevronRight } from "@lucide/svelte";
 
     type ECOption = ComposeOption<
         | PieSeriesOption
@@ -51,31 +51,37 @@
         GridComponent,
         AriaComponent,
         DatasetComponent,
-        TransformComponent
+        TransformComponent,
     ]);
 
     let month = $state(today(getLocalTimeZone()));
-    let analytics = $derived.by(() => spendingAnalytics(transactionStore.transactions,categoryStore.categoryMap,{ month }));
+    let analytics = $derived.by(() =>
+        spendingAnalytics(
+            transactionStore.transactions,
+            categoryStore.categoryMap,
+            { month },
+        ),
+    );
 
     // TODO: disable start animation
     // TODO: use filled pie chart
 
     let seriesData = $derived(
-        analytics.map(a => {
+        analytics.map((a) => {
             const itemStyle = {
                 borderRadius: 12,
-                color: a.color
+                color: a.color,
             };
             return { name: a.category.title, value: a.total, itemStyle };
-        })
+        }),
     );
 
     const option: ECOption = $derived({
         aria: {
-            enabled: true
+            enabled: true,
         },
         legend: {
-            show: false
+            show: false,
         },
         series: [
             {
@@ -85,7 +91,7 @@
                 avoidLabelOverlap: false,
                 labelLine: {
                     show: true,
-                    position: "center"
+                    position: "center",
                 },
                 // emphasis: {
                 //     label: {
@@ -94,17 +100,17 @@
                 //         fontWeight: 'bold'
                 //     }
                 // },
-                data: seriesData
-            }
-        ]
+                data: seriesData,
+            },
+        ],
     });
 
     // TODO: show category on hover
     // TODO: check empty chart
 
-    const formatter = new Intl.DateTimeFormat("en-GB",{
+    const formatter = new Intl.DateTimeFormat("en-GB", {
         month: "short",
-        year:"numeric"
+        year: "numeric",
     });
 
     $effect(() => {

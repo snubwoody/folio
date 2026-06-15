@@ -9,31 +9,37 @@ import { BundleType, getBundleType } from "@tauri-apps/api/app";
  *
  * @param update The new update.
  */
-export async function installUpdate(update: Update){
+export async function installUpdate(update: Update) {
     logger.info(`Installing new update (${update.version})...`);
-    await update.downloadAndInstall()
-        .catch(err => logger.error(`Failed to install new update: ${err.message}`));
+    await update
+        .downloadAndInstall()
+        .catch((err) =>
+            logger.error(`Failed to install new update: ${err.message}`),
+        );
     await relaunch();
 }
 
-export async function checkForUpdate(): Promise<Update | null>{
+export async function checkForUpdate(): Promise<Update | null> {
     logger.info("Checking for update...");
     // FIXME: check if it was distributed via the store, IS_EXTERNAL_DIST
     // TODO: save distribution information
     // FIXME: save DIST_UPDATE_MESSAGE
     const bundleType = await getBundleType();
-    const updatableBundles = [BundleType.AppImage,BundleType.Nsis,BundleType.App];
-    if (!updatableBundles.includes(bundleType)){
+    const updatableBundles = [
+        BundleType.AppImage,
+        BundleType.Nsis,
+        BundleType.App,
+    ];
+    if (!updatableBundles.includes(bundleType)) {
         logger.info(`Bundle ${bundleType} not updatable`);
         return null;
     }
 
     const update = await check();
-    if(update) {
+    if (update) {
         logger.info(`Found update, version ${update.version}`);
-    } else{
+    } else {
         logger.info("No update found");
     }
     return update;
 }
-

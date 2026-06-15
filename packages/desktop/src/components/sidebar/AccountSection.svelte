@@ -3,7 +3,11 @@
     import { Plus } from "@lucide/svelte";
     import { Button } from "$components/button";
     import { accountBalance, accountStore } from "$lib/stores/account.svelte";
-    import { Popover, PopoverContent,PopoverTrigger } from "$components/popover";
+    import {
+        Popover,
+        PopoverContent,
+        PopoverTrigger,
+    } from "$components/popover";
     import TextField from "$components/TextField.svelte";
     import Account from "./Account.svelte";
     import { formatMoney } from "$lib/utils/money";
@@ -11,21 +15,20 @@
 
     const total = $derived.by(() => {
         const transactions = transactionStore.transactions;
-        const t = accountStore
-            .accounts
-            .map(a => accountBalance(a.id,transactions))
-            .reduce((prev, current) => current + prev,0);
+        const t = accountStore.accounts
+            .map((a) => accountBalance(a.id, transactions))
+            .reduce((prev, current) => current + prev, 0);
         return t.toString();
     });
 
     let name = $state("My account");
     let popoverOpen = $state(false);
-	let startingBalance = $state("0.00");
+    let startingBalance = $state("0.00");
 
-	async function createAccount() {
-	    popoverOpen = false;
-	    await accountStore.createAccount({ name,startingBalance });
-	}
+    async function createAccount() {
+        popoverOpen = false;
+        await accountStore.createAccount({ name, startingBalance });
+    }
 </script>
 
 <section class="account-section">

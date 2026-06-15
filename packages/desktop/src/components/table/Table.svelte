@@ -18,12 +18,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { HTMLAttributes } from "svelte/elements";
     import type { Snippet } from "svelte";
 
-    interface Props extends  HTMLAttributes<HTMLDivElement>{
-        children?: Snippet,
-        length: number
+    interface Props extends HTMLAttributes<HTMLDivElement> {
+        children?: Snippet;
+        length: number;
     }
 
-    const { children,length }:Props = $props();
+    const { children, length }: Props = $props();
 </script>
 
 <div style:--length={length - 1} class="data-table">

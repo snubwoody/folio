@@ -11,14 +11,14 @@ const config = {
 
     kit: {
         adapter: adapter({
-            fallback: "index.html"
+            fallback: "index.html",
         }),
         alias: {
             "$styles/*": "./src/styles/*",
             "$components/*": "./src/components/*",
-            "$assets/*": "./src/assets/*"
-        }
-    }
+            "$assets/*": "./src/assets/*",
+        },
+    },
 };
 
 export default config;

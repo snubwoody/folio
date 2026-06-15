@@ -7,8 +7,8 @@
     import { TableCell } from "$components/table";
     import { formatDate } from "$lib/utils/date";
 
-    interface Props{
-        transaction: Transaction
+    interface Props {
+        transaction: Transaction;
     }
 
     const { transaction }: Props = $props();
@@ -18,7 +18,10 @@
     const updateDate = async (date: DateValue) => {
         calendarOpen = false;
 
-        await transactionStore.editTransaction({ id: transaction.id,transactionDate: date.toString() });
+        await transactionStore.editTransaction({
+            id: transaction.id,
+            transactionDate: date.toString(),
+        });
         displayDate = formatDate(toCalendarDate(date));
     };
     let date = $derived(transaction.date);

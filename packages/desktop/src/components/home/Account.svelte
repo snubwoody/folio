@@ -5,11 +5,13 @@
     import { formatMoney } from "$lib/utils/money";
 
     interface Props {
-        account: Account
+        account: Account;
     }
 
-    const { account }:Props = $props();
-    const balance = $derived(accountBalance(account.id,transactionStore.transactions));
+    const { account }: Props = $props();
+    const balance = $derived(
+        accountBalance(account.id, transactionStore.transactions),
+    );
 </script>
 
 <li class="shadow-purple-sm p-2 rounded-md">

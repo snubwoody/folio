@@ -20,23 +20,23 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     type Variant = "primary" | "secondary" | "neutral" | "bordered" | "ghost";
     type Size = "small" | "medium";
 
-    interface Props extends HTMLButtonAttributes{
+    interface Props extends HTMLButtonAttributes {
         /**
          * Sets the button style.
          */
-        variant?: Variant,
+        variant?: Variant;
         /**
          * Sets size of the button.
          */
-        size?: Size,
-        children: Snippet
+        size?: Size;
+        children: Snippet;
     }
 
     const {
         variant = "primary",
         size = "medium",
         children,
-        class:userClass,
+        class: userClass,
         ...rest
     }: Props = $props();
 </script>

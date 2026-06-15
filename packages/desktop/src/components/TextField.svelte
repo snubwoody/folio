@@ -16,21 +16,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	type Props = {
-	    label?: string,
-	    name?: string,
-	    id?: string,
-	    value: string,
-	    placeholder?: string
-	};
+    type Props = {
+        label?: string;
+        name?: string;
+        id?: string;
+        value: string;
+        placeholder?: string;
+    };
 
-	let {
-	    label,
-	    name,
-	    id,
-	    placeholder,
-	    value = $bindable()
-	}: Props = $props();
+    let { label, name, id, placeholder, value = $bindable() }: Props = $props();
 
     const inputName = $derived(name ?? label);
     const inputId = $derived(id ?? inputName);

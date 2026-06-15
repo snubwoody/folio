@@ -18,16 +18,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import type { Snippet } from "svelte";
 
     type Props = {
-        children: Snippet,
-        index: number,
-        selectedIndex:number
+        children: Snippet;
+        index: number;
+        selectedIndex: number;
     };
 
-    let {
-        children,
-        index,
-        selectedIndex = $bindable()
-    }:Props = $props();
+    let { children, index, selectedIndex = $bindable() }: Props = $props();
 
     const selected = $derived(index === selectedIndex);
 </script>

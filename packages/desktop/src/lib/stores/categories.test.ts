@@ -8,19 +8,19 @@ afterEach(() => {
     clearMocks();
 });
 
-describe("CategoryStore",() => {
+describe("CategoryStore", () => {
     test("delete category", async () => {
-        mockIPC((cmd,args) => {
+        mockIPC((cmd, args) => {
             if (cmd === "delete_category") {
                 return;
             }
             if (cmd === "create_category") {
-                const payload = args as {title:string};
+                const payload = args as { title: string };
                 const category: Category = {
                     id: Math.random().toString(),
                     title: payload.title,
                     createdAt: "",
-                    isIncomeStream: false
+                    isIncomeStream: false,
                 };
                 return category;
             }
@@ -32,4 +32,3 @@ describe("CategoryStore",() => {
         expect(categoryStore.categories.length).toBe(0);
     });
 });
-

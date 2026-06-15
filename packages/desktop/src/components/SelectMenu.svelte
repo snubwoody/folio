@@ -1,30 +1,4 @@
 <!--
-@component
-A select menu that displays a popup with options for the user to choose
-from.
-
-# Example
-```svelte
-<script>
-    const paymentMethods = [
-        {id: 298024, title: "Apple Pay"},
-        {id: 232353, title: "Klarna"},
-        {id: 368547, title: "Bank"},
-        {id: 869822, title: "Credit card"},
-        {id: 724024, title: "Cash"},
-        {id: 239142, title: "PayPal"},
-    ]
-</script>
-
-<SelectMenu
-    label = "Payment method"
-    items={paymentMethods}
-    toOption = {(item) => {value: item.id, label: item.title}}
-    onChange = {(item) => console.log(item)}
-/>
-```
--->
-<!--
 Copyright (C) 2025 Wakunguma Kalimukwa
 
 This program is free software: you can redistribute it and/or modify
@@ -52,7 +26,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         toOption: (item: T) => SelectOption;
         defaultValue?: T;
         onChange?: (item: T) => void;
-        class?: string
+        class?: string;
     };
 
     const {
@@ -61,11 +35,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         toOption,
         onChange,
         class: className,
-        defaultValue
+        defaultValue,
     }: Props = $props();
 
     let selectedOption: SelectOption | undefined = $derived(
-        defaultValue ? toOption(defaultValue) : undefined
+        defaultValue ? toOption(defaultValue) : undefined,
     );
 
     const options = $derived(items.map((i) => toOption(i)));
@@ -80,10 +54,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         onChange?.(item);
     };
 
-    const select = $derived(new Select<SelectOption>({
-        value: defaultValue ? toOption(defaultValue) : undefined,
-        onValueChange: onValueChange
-    }));
+    const select = $derived(
+        new Select<SelectOption>({
+            value: defaultValue ? toOption(defaultValue) : undefined,
+            onValueChange: onValueChange,
+        }),
+    );
 </script>
 
 <div class={`space-y-1 ${className} select-none`}>

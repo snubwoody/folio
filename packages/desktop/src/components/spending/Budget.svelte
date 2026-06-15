@@ -19,16 +19,24 @@ Copyright (C) 2025 Wakunguma Kalimukwa
 
     const { budget }: Props = $props();
 
-    const total = $derived(totalSpent(budget.categoryId,transactionStore.transactions,today(getLocalTimeZone())));
+    const total = $derived(
+        totalSpent(
+            budget.categoryId,
+            transactionStore.transactions,
+            today(getLocalTimeZone()),
+        ),
+    );
     let amount = $derived(parseFloat(budget.amount));
-    let leftToSpend = $derived(Math.max(amount-total,0));
+    let leftToSpend = $derived(Math.max(amount - total, 0));
     const category = $derived(categoryStore.categoryMap.get(budget.categoryId));
 
     /// Max 1 to prevent NaN which messes with the bar width
-    let percentage = $derived(Math.min(Math.round((total / Math.max(amount,1)) * 100),100));
+    let percentage = $derived(
+        Math.min(Math.round((total / Math.max(amount, 1)) * 100), 100),
+    );
 
     const formattedAmount = $derived.by(() =>
-        formatAmountWithoutSymbol(budget.amount)
+        formatAmountWithoutSymbol(budget.amount),
     );
 
     async function updateAmount(newAmount: string) {

@@ -19,20 +19,22 @@ import { logger } from "../utils/logger";
 import type { Transaction } from "$lib/api/transaction";
 import { mockIPC } from "@tauri-apps/api/mocks";
 
-interface EditAccount{
-    name?: string
-    startingBalance?: string
+interface EditAccount {
+    name?: string;
+    startingBalance?: string;
 }
 
-export class AccountStore{
+export class AccountStore {
     #accounts: Account[] = $state([]);
-    #accountMap: SvelteMap<string,Account> = $derived(new SvelteMap(this.accounts.map(a => [a.id,a])));
+    #accountMap: SvelteMap<string, Account> = $derived(
+        new SvelteMap(this.accounts.map((a) => [a.id, a])),
+    );
 
-    get accounts(): Account[]{
+    get accounts(): Account[] {
         return this.#accounts;
     }
 
-    get accountMap(){
+    get accountMap() {
         return this.#accountMap;
     }
 
@@ -40,7 +42,7 @@ export class AccountStore{
      * Returns the account balance
      * @param id The id of the account
      */
-    async accountBalance(id:string):Promise<string>{
+    async accountBalance(id: string): Promise<string> {
         const balance = await invoke<string>("account_balance", { id });
         return balance;
     }
@@ -50,44 +52,57 @@ export class AccountStore{
      * @param name The name of the account
      * @param startingBalance The starting balance
      */
-    async createAccount({ name,startingBalance }:{name: string, startingBalance?: string}): Promise<Account> {
+    async createAccount({
+        name,
+        startingBalance,
+    }: {
+        name: string;
+        startingBalance?: string;
+    }): Promise<Account> {
         const balance = startingBalance ?? "0";
-        const account = await invoke<Account>("create_account", { name, startingBalance: balance });
+        const account = await invoke<Account>("create_account", {
+            name,
+            startingBalance: balance,
+        });
         this.#accounts.push(account);
         return account;
     }
 
     async editAccount(id: string, opts: EditAccount) {
         const account = await invoke<Account>("edit_account", { id, opts });
-        const index = this.#accounts.findIndex(
-            (a) => a.id === account.id
-        );
+        const index = this.#accounts.findIndex((a) => a.id === account.id);
         this.#accounts[index] = account;
     }
 
     async deleteAccount(id: string) {
-        await invoke("delete_account",{ id });
-        this.#accounts = this.#accounts.filter(a => a.id !== id);
+        await invoke("delete_account", { id });
+        this.#accounts = this.#accounts.filter((a) => a.id !== id);
     }
 
-    async createTestAccount({ name,startingBalance = "0.00" }:{name:string,startingBalance?:string}):Promise<Account>{
+    async createTestAccount({
+        name,
+        startingBalance = "0.00",
+    }: {
+        name: string;
+        startingBalance?: string;
+    }): Promise<Account> {
         const id = Math.random().toString(36).slice(2);
         const account: Account = {
             id,
             name,
             startingBalance,
-            balance: "0.0"
+            balance: "0.0",
         };
         this.#accounts.push(account);
         return account;
     }
 
-    clear(){
+    clear() {
         this.#accounts = [];
     }
 
     /// Loads the accounts from the backend
-    async load(){
+    async load() {
         this.#accounts = await invoke("fetch_accounts");
         logger.debug("Loaded accounts from backend");
     }
@@ -102,29 +117,38 @@ export const accountStore = new AccountStore();
  * @param transactions The list of transactions
  * @returns The account balance
  */
-export function accountBalance(accountId:string,transactions: Transaction[]): number{
-    let total = parseFloat(accountStore.accountMap.get(accountId)?.startingBalance ?? "0.00");
+export function accountBalance(
+    accountId: string,
+    transactions: Transaction[],
+): number {
+    let total = parseFloat(
+        accountStore.accountMap.get(accountId)?.startingBalance ?? "0.00",
+    );
     transactions
-        .filter(t => t.toAccountId === accountId)
-        .forEach(t => total += parseFloat(t.amount));
+        .filter((t) => t.toAccountId === accountId)
+        .forEach((t) => {
+            total += parseFloat(t.amount);
+        });
     transactions
-        .filter(t => t.fromAccountId === accountId)
-        .forEach(t => total -= parseFloat(t.amount));
+        .filter((t) => t.fromAccountId === accountId)
+        .forEach((t) => {
+            total -= parseFloat(t.amount);
+        });
     return total;
 }
 
 /**
  * Mocks the `create_account` command.
  */
-export function mockCreateAccount(){
-    mockIPC((cmd,payload) => {
-        if (cmd === "create_account"){
-            let args = payload as {name:string,startingBalance: string};
+export function mockCreateAccount() {
+    mockIPC((cmd, payload) => {
+        if (cmd === "create_account") {
+            let args = payload as { name: string; startingBalance: string };
             const account: Account = {
                 id: Math.random().toString(),
                 name: args.name,
                 startingBalance: args.startingBalance,
-                balance: args.startingBalance
+                balance: args.startingBalance,
             };
 
             return account;

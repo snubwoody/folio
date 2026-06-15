@@ -1,29 +1,29 @@
 {
-    "name": "@folio/desktop",
-    "version": "2.3.0",
-    "type": "module",
-    "private": true,
-    "scripts": {
-        "dev": "vite dev",
-        "build": "vite build",
-        "preview": "vite preview",
-        "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-        "sync": "svelte-kit sync",
-        "tauri": "tauri",
-        "test": "vitest --browser=chromium",
-        "test:browser": "vitest --browser=chromium",
-        "test:headless": "vitest --browser.headless run",
-        "test:headless:watch": "vitest --browser.headless",
-        "coverage": "vitest run --coverage --browser.headless",
-        "test:unit": "vitest --project unit"
-    },
-    "dependencies": {
-        "@internationalized/date": "^3.10.0",
-        "@tauri-apps/api": "^2.10.1",
-        "@tauri-apps/plugin-opener": "^2.5.3",
-        "@tauri-apps/plugin-os": "^2.3.2"
-    },
-    "devDependencies": {
-        "@tauri-apps/cli": "^2.10.1"
-    }
+	"name": "@folio/desktop",
+	"version": "2.3.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"sync": "svelte-kit sync",
+		"tauri": "tauri",
+		"test": "vitest --browser=chromium",
+		"test:browser": "vitest --browser=chromium",
+		"test:headless": "vitest --browser.headless run",
+		"test:headless:watch": "vitest --browser.headless",
+		"coverage": "vitest run --coverage --browser.headless",
+		"test:unit": "vitest --project unit"
+	},
+	"dependencies": {
+		"@internationalized/date": "^3.10.0",
+		"@tauri-apps/api": "^2.10.1",
+		"@tauri-apps/plugin-opener": "^2.5.3",
+		"@tauri-apps/plugin-os": "^2.3.2"
+	},
+	"devDependencies": {
+		"@tauri-apps/cli": "^2.10.1"
+	}
 }
