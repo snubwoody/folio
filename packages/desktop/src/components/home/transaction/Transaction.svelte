@@ -10,6 +10,7 @@
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
     import AccountCell from "./AccountCell.svelte";
     import DateCell from "./DateCell.svelte";
+    import MoneyCell from "./MoneyCell.svelte";
 
     interface Props {
         transaction: Transaction;
@@ -83,43 +84,12 @@
         onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
         items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
     />
-    <TableCell data-testid="outflow" class="flex gap-1 items-center data-cell-padding">
-        <!--TODO: kind of unnecessary-->
-        {#if transType !== "Income"}
-            <p>
-                {currencySymbol}
-            </p>
-            <input
-                type="text"
-                value={formatAmountWithoutSymbol(transaction.amount)}
-                class="outline-none"
-                onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
-            >
-        {:else}
-            <input
-                type="text"
-                class="outline-none"
-                onblur={(e) => transactionStore.setOutflow(transaction.id,e.currentTarget.value)}
-            >
-        {/if}
-    </TableCell>
-    <TableCell data-testid="inflow" class="flex gap-1 items-center data-cell-padding">
-        {#if transType === "Income" }
-            <p>
-                {currencySymbol}
-            </p>
-            <input
-                type="text"
-                value={formatAmountWithoutSymbol(transaction.amount)}
-                class="outline-none"
-                onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
-            >
-        {:else}
-            <input
-                type="text"
-                class="outline-none"
-                onblur={(e) => transactionStore.setInflow(transaction.id,e.currentTarget.value)}
-            >
-        {/if}
-    </TableCell>
+    <MoneyCell data-testid="outflow"
+        transaction={transaction}
+        value={transType !== "Income" ? transaction.amount : undefined}
+        onSubmit={(value) => transactionStore.setOutflow(transaction.id,value)}/>
+    <MoneyCell data-testid="inflow"
+        transaction={transaction}
+        value={transType === "Income" ? transaction.amount : undefined}
+        onSubmit={(value) => transactionStore.setInflow(transaction.id,value)}/>
 </TableRow>
