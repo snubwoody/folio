@@ -1,15 +1,15 @@
-import { expect, test } from "vitest";
-import { render } from "vitest-browser-svelte";
-import Calendar from "./Calendar.svelte";
 import {
     CalendarDate,
+    type DateValue,
     getLocalTimeZone,
     today,
-    type DateValue,
 } from "@internationalized/date";
 import { mockIPC } from "@tauri-apps/api/mocks";
-import { formatDate } from "$lib/utils/date";
+import { expect, test } from "vitest";
 import { userEvent } from "vitest/browser";
+import { render } from "vitest-browser-svelte";
+import { formatDate } from "$lib/utils/date";
+import Calendar from "./Calendar.svelte";
 
 mockIPC((cmd) => {
     if (cmd === "parse_date") {

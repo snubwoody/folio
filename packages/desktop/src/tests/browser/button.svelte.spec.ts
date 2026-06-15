@@ -1,4 +1,4 @@
-import { expect, test, describe } from "vitest";
+import { describe, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { TextButton } from "$components/button";
 

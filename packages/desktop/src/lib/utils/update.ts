@@ -1,7 +1,7 @@
-import { check, type Update } from "@tauri-apps/plugin-updater";
-import { relaunch } from "@tauri-apps/plugin-process";
-import { logger } from "$lib/utils/logger";
 import { BundleType, getBundleType } from "@tauri-apps/api/app";
+import { relaunch } from "@tauri-apps/plugin-process";
+import { check, type Update } from "@tauri-apps/plugin-updater";
+import { logger } from "$lib/utils/logger";
 
 /**
  * Downloads and installs the latest update. The app will be closed and relaunched after the update has been

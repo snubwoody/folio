@@ -1,8 +1,8 @@
-import { describe, expect, test } from "vitest";
-import type { Category } from "$lib/types";
-import type { Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { SvelteMap } from "svelte/reactivity";
+import { describe, expect, test } from "vitest";
+import type { Transaction } from "$lib/api/transaction";
+import type { Category } from "$lib/types";
 import { spendingAnalytics } from "./analytics";
 
 describe("spendingAnalytics", () => {

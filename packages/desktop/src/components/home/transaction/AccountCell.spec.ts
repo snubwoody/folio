@@ -1,9 +1,9 @@
-import { test, beforeEach, expect } from "vitest";
-import AccountCell from "./AccountCell.svelte";
+import { CalendarDate, parseDate } from "@internationalized/date";
+import { beforeEach, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
 import type { Transaction } from "$lib/api/transaction";
-import { CalendarDate, parseDate } from "@internationalized/date";
 import { accountStore } from "$lib/stores/account.svelte";
+import AccountCell from "./AccountCell.svelte";
 
 beforeEach(() => {
     accountStore.clear();

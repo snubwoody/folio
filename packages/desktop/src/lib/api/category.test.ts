@@ -1,7 +1,7 @@
-import { test, expect, describe } from "vitest";
-import type { Transaction } from "./transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { describe, expect, test } from "vitest";
 import { totalSpent } from "./category";
+import type { Transaction } from "./transaction";
 
 describe("totalSpent", () => {
     test("total in current month", () => {

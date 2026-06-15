@@ -1,4 +1,4 @@
-import { test, expect, beforeEach, vi } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import { addToast, createToastStore, toastStore } from "./toast.svelte";
 
 beforeEach(() => {

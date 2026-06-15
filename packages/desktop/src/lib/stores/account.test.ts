@@ -1,8 +1,8 @@
-import { test, expect } from "vitest";
+import { expect, test } from "vitest";
 import {
-    mockCreateAccount,
     accountBalance,
     accountStore,
+    mockCreateAccount,
 } from "$lib/stores/account.svelte";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 

@@ -1,8 +1,8 @@
-import { describe, test, expect, beforeEach } from "vitest";
-import AccountInfo from "./AccountInfo.svelte";
+import { beforeEach, describe, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { accountStore } from "$lib/stores/account.svelte";
 import { formatMoney } from "$lib/utils/money";
+import AccountInfo from "./AccountInfo.svelte";
 
 beforeEach(() => {
     accountStore.clear();

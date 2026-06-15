@@ -1,14 +1,14 @@
 <script lang="ts">
-    import TextField from "../TextField.svelte";
-    import { accountStore } from "$lib/stores/account.svelte";
-    import { Button } from "$components/button";
     import { Plus } from "@lucide/svelte";
-    import Account from "./Account.svelte";
+    import { Button } from "$components/button";
     import {
         Popover,
         PopoverContent,
         PopoverTrigger,
     } from "$components/popover";
+    import { accountStore } from "$lib/stores/account.svelte";
+    import TextField from "../TextField.svelte";
+    import Account from "./Account.svelte";
 
     let name = $state("My account");
     let popoverOpen = $state(false);

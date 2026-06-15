@@ -1,17 +1,15 @@
 <script lang="ts">
-    import { SelectCell } from "$components/table";
+    import { Checkbox } from "$components/select";
+    import { SelectCell, TableCell, TableRow } from "$components/table";
+    import { type Transaction, transactionType } from "$lib/api/transaction";
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
     import type { TableStore } from "$lib/stores/table.svelte.js";
     import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { type Transaction, transactionType } from "$lib/api/transaction";
-    import DateCell from "./DateCell.svelte";
-    import { TableCell } from "$components/table";
-    import AccountCell from "./AccountCell.svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
-    import { TableRow } from "$components/table";
     import { formatAmountWithoutSymbol } from "$lib/utils/money";
-    import { Checkbox } from "$components/select";
+    import AccountCell from "./AccountCell.svelte";
+    import DateCell from "./DateCell.svelte";
 
     interface Props {
         transaction: Transaction;

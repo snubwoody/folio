@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import { toastStore } from "$lib/stores/toast.svelte";
     import Toast from "$components/alerts/Toast.svelte";
+    import { toastStore } from "$lib/stores/toast.svelte";
     // TODO: close toast on esc
 </script>
 

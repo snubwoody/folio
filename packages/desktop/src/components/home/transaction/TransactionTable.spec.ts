@@ -1,10 +1,10 @@
-import { describe, test, expect, beforeEach } from "vitest";
-import TransactionTable from "./TransactionTable.svelte";
+import { beforeEach, describe, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
-import { TableStore } from "$lib/stores/table.svelte";
 import { accountStore } from "$lib/stores/account.svelte";
+import { TableStore } from "$lib/stores/table.svelte";
 import { transactionStore } from "$lib/stores/transaction.svelte";
 import { formatMoney } from "$lib/utils/money";
+import TransactionTable from "./TransactionTable.svelte";
 
 beforeEach(() => {
     transactionStore.clear();

@@ -15,19 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
+    import ToastGroup from "$components/alerts/ToastGroup.svelte";
     import Sidebar from "$components/sidebar/Sidebar.svelte";
     import Titlebar from "$components/Titlebar.svelte";
-    import ToastGroup from "$components/alerts/ToastGroup.svelte";
     import "$styles/global.css";
+    import { invoke } from "@tauri-apps/api/core";
     import { onMount } from "svelte";
     import { appStore } from "$lib/state.svelte";
-    import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { invoke } from "@tauri-apps/api/core";
     import { accountStore } from "$lib/stores/account.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
     import { settingsStore } from "$lib/stores/settings.svelte";
-    import { checkForUpdate, installUpdate } from "$lib/utils/update";
     import { addToast } from "$lib/stores/toast.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
+    import { checkForUpdate, installUpdate } from "$lib/utils/update";
 
     const { children } = $props();
 

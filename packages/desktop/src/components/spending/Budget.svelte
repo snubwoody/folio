@@ -3,15 +3,15 @@ SPDX-License-Identifier: GPL-3.0-or-later
 Copyright (C) 2025 Wakunguma Kalimukwa
 -->
 <script lang="ts">
-    import MoneyCell from "$components/MoneyCell.svelte";
-    import type { Budget } from "$lib/types";
-    import { appStore } from "$lib/state.svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
-    import { formatAmountWithoutSymbol, formatMoney } from "$lib/utils/money";
-    import { totalSpent } from "$lib/api/category";
-    import { transactionStore } from "$lib/stores/transaction.svelte";
     import { getLocalTimeZone, today } from "@internationalized/date";
+    import MoneyCell from "$components/MoneyCell.svelte";
+    import { totalSpent } from "$lib/api/category";
+    import { appStore } from "$lib/state.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
+    import type { Budget } from "$lib/types";
+    import { formatAmountWithoutSymbol, formatMoney } from "$lib/utils/money";
 
     type Props = {
         budget: Budget;

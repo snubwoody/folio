@@ -16,11 +16,12 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import { getCurrentWindow } from "@tauri-apps/api/window";
-    import square from "$assets/fluent_square.svg";
-    import dismiss from "$assets/fluent_dismiss.svg";
-    import subtract from "$assets/fluent_subtract.svg";
-    import squareMultiple from "$assets/fluent_square_multiple.svg";
     import { platform } from "@tauri-apps/plugin-os";
+    import dismiss from "$assets/fluent_dismiss.svg";
+    import square from "$assets/fluent_square.svg";
+    import squareMultiple from "$assets/fluent_square_multiple.svg";
+    import subtract from "$assets/fluent_subtract.svg";
+
     const window = getCurrentWindow();
     let maximised = $state(true);
     const currentPlatform = platform();

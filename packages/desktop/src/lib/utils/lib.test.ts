@@ -1,11 +1,11 @@
-import type { Account, Currency } from "$lib/types";
-import { beforeEach, describe, expect, test } from "vitest";
-import { accountBalance, AccountStore } from "$lib/stores/account.svelte";
-import { mockIPC } from "@tauri-apps/api/mocks";
-import type { Transaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { formatMoney, parseMoney } from "$lib/utils/money";
+import { mockIPC } from "@tauri-apps/api/mocks";
+import { beforeEach, describe, expect, test } from "vitest";
+import type { Transaction } from "$lib/api/transaction";
+import { AccountStore, accountBalance } from "$lib/stores/account.svelte";
 import { settingsStore } from "$lib/stores/settings.svelte";
+import type { Account, Currency } from "$lib/types";
+import { formatMoney, parseMoney } from "$lib/utils/money";
 
 beforeEach(() => {
     settingsStore.reset();

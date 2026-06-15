@@ -15,10 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import IncomeStreams from "./IncomeStreams.svelte";
-    import General from "./general/General.svelte";
     import Categories from "./Categories.svelte";
+    import General from "./general/General.svelte";
+    import IncomeStreams from "./IncomeStreams.svelte";
     import MenuItem from "./MenuItem.svelte";
+
     let selectedIndex = $state(0);
 </script>
 

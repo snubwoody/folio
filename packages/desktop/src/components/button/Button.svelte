@@ -15,8 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import type { HTMLButtonAttributes } from "svelte/elements";
     import type { Snippet } from "svelte";
+    import type { HTMLButtonAttributes } from "svelte/elements";
+
     type Variant = "primary" | "secondary" | "neutral" | "bordered" | "ghost";
     type Size = "small" | "medium";
 

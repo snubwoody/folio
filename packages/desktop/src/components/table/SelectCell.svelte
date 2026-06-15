@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Select } from "bits-ui";
-    import { TableCell } from "$components/table";
     import type { HTMLAttributes } from "svelte/elements";
+    import { TableCell } from "$components/table";
 
     type SelectItem = {
         value: string;

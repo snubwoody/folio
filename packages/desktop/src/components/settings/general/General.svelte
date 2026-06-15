@@ -17,11 +17,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
     import SelectMenu from "$components/SelectMenu.svelte";
     import { accountStore } from "$lib/stores/account.svelte";
+    import { settingsStore } from "$lib/stores/settings.svelte";
+    import type { Currency } from "$lib/types";
+    import { getCurrencies } from "$lib/utils/money";
     import Account from "./Account.svelte";
     import VersionInfo from "./VersionInfo.svelte";
-    import { settingsStore } from "$lib/stores/settings.svelte";
-    import { getCurrencies } from "$lib/utils/money";
-    import type { Currency } from "$lib/types";
 
     let currencies: Currency[] = $state([]);
     $effect(() => {
