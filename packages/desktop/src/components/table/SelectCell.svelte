@@ -33,7 +33,7 @@
 
 <TableCell {...rest}>
     <Select.Root {onValueChange} type="single" name="Combobox">
-        <Select.Trigger>
+        <Select.Trigger class="select-cell-trigger data-cell-padding">
             {#if selectedItem}
                 <p>{selectedItem.label}</p>
             {:else}
@@ -56,6 +56,11 @@
 <style>
     :global([data-select-content]){
         background: white;
+    }
+
+    :global(.select-cell-trigger) {
+        width: 100%;
+        text-align: left;
     }
 
     :global(.select-content){

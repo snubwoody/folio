@@ -37,18 +37,17 @@
 <Table length={accountId ? 7 : 8}>
     <TableHeader>
         <Checkbox bind:checked={selected} onChecked={select}/>
-        <TableCell>Date</TableCell>
+        <TableCell class="data-cell-padding">Date</TableCell>
         {#if !accountId}
-            <TableCell>Account</TableCell>
+            <TableCell class="data-cell-padding">Account</TableCell>
         {/if}
-        <TableCell>Payee</TableCell>
-        <TableCell>Note</TableCell>
-        <TableCell>Category</TableCell>
-        <TableCell>Outflow</TableCell>
-        <TableCell>Inflow</TableCell>
+        <TableCell class="data-cell-padding">Payee</TableCell>
+        <TableCell class="data-cell-padding">Note</TableCell>
+        <TableCell class="data-cell-padding">Category</TableCell>
+        <TableCell class="data-cell-padding">Outflow</TableCell>
+        <TableCell class="data-cell-padding">Inflow</TableCell>
     </TableHeader>
     {#each transactions as transaction (transaction.id)}
         <Transaction showAccount={accountId === undefined} {transaction} {tableStore}/>
     {/each}
 </Table>
-
