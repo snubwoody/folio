@@ -1,10 +1,10 @@
-import { test, expect, beforeEach } from "vitest";
-import SettingsPanel from "./SettingsPanel.svelte";
-import { render } from "vitest-browser-svelte";
 import { mockIPC } from "@tauri-apps/api/mocks";
+import { beforeEach, expect, test } from "vitest";
+import { render } from "vitest-browser-svelte";
 import { accountStore } from "$lib/stores/account.svelte";
 import { categoryStore } from "$lib/stores/categories.svelte";
 import type { Category, Currency } from "$lib/types";
+import SettingsPanel from "./SettingsPanel.svelte";
 
 beforeEach(() => {
     categoryStore.clear();

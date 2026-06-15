@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Checkbox } from "bits-ui";
     import { Check } from "@lucide/svelte";
+    import { Checkbox } from "bits-ui";
 
     type Props = {
         onChecked?: (value: boolean) => void;

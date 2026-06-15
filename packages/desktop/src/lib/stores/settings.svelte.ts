@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 import { invoke } from "@tauri-apps/api/core";
-import type { Settings } from "../types";
-import { logger } from "../utils/logger";
 import { mockIPC } from "@tauri-apps/api/mocks";
 import type { Currency } from "$lib/types";
+import type { Settings } from "../types";
+import { logger } from "../utils/logger";
 
 export class SettingsStore {
     #settings: Settings = $state({ currencyCode: "ZMW", sidebarOpen: true });

@@ -1,11 +1,11 @@
-import { expect, test, describe, beforeEach } from "vitest";
+import { mockIPC } from "@tauri-apps/api/mocks";
+import { beforeEach, describe, expect, test } from "vitest";
 import { render } from "vitest-browser-svelte";
 import { accountStore, mockCreateAccount } from "$lib/stores/account.svelte";
-import Sidebar from "./Sidebar.svelte";
-import { mockIPC } from "@tauri-apps/api/mocks";
 import { mockSettings, settingsStore } from "$lib/stores/settings.svelte";
-import type { Currency } from "$lib/types";
 import { transactionStore } from "$lib/stores/transaction.svelte";
+import type { Currency } from "$lib/types";
+import Sidebar from "./Sidebar.svelte";
 
 mockIPC((cmd) => {
     if (cmd === "settings") {

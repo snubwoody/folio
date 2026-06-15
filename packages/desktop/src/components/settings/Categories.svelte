@@ -15,10 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-    import IconButton from "$components/button/IconButton.svelte";
     import Plus from "@lucide/svelte/icons/plus";
-    import Category from "./Category.svelte";
+    import IconButton from "$components/button/IconButton.svelte";
     import { categoryStore } from "$lib/stores/categories.svelte";
+    import Category from "./Category.svelte";
 
     // FIXME: use categoriesStore
     const categories = $derived.by(() => {

@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { TextButton, IconButton } from "$components/button";
     import { Trash2, X } from "@lucide/svelte";
-    import { transactionStore } from "$lib/stores/transaction.svelte";
-    import type { TableStore } from "$lib/stores/table.svelte";
     import { fly } from "svelte/transition";
+    import { IconButton, TextButton } from "$components/button";
+    import type { TableStore } from "$lib/stores/table.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
 
     interface Props {
         tableStore: TableStore;

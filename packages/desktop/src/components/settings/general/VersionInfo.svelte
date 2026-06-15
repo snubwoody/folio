@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { getVersion } from "@tauri-apps/api/app";
+    import type { Update } from "@tauri-apps/plugin-updater";
+    import { onMount } from "svelte";
+    import { MessageBar } from "$components/alerts";
     import { Button, TextButton } from "$components/button";
     import { checkForUpdate, installUpdate } from "$lib/utils/update";
-    import type { Update } from "@tauri-apps/plugin-updater";
-    import { MessageBar } from "$components/alerts";
 
     let version = $state("");
     onMount(async () => {

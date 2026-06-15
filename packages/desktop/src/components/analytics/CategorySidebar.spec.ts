@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
-import CategorySidebar from "./CategorySidebar.svelte";
 import { render } from "vitest-browser-svelte";
-import type { Category } from "$lib/types";
 import type { SpendingAnalytic } from "$lib/analytics";
+import type { Category } from "$lib/types";
 import { formatMoney } from "$lib/utils/money";
+import CategorySidebar from "./CategorySidebar.svelte";
 
 describe("Category Sidebar", () => {
     test("heading", async () => {

@@ -1,6 +1,6 @@
-import { test, expect, afterEach } from "vitest";
-import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { afterEach, expect, test } from "vitest";
 import { CategoryStore } from "$lib/stores/categories.svelte";
 import type { Category } from "$lib/types";
 

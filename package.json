@@ -8,10 +8,8 @@
 		"db:create": "cargo sqlx database create",
 		"db:migrate": "cargo sqlx migrate run --source crates/folio-desktop/migrations",
 		"db:setup": "cargo sqlx database drop -y && pnpm db:create && pnpm db:migrate",
-		"fmt": "pnpm biome format --write",
-		"fmt:check": "pnpm biome format",
-		"lint": "pnpm biome lint --write",
-		"lint:check": "pnpm biome lint"
+		"check": "pnpm biome check",
+		"check:fix": "pnpm biome check --write"
 	},
 	"dependencies": {
 		"@lucide/svelte": "^1.0.0",
@@ -22,6 +20,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.16",
+		"@tauri-apps/cli": "^2.11.2",
 		"@changesets/cli": "^2.30.0",
 		"@eslint/js": "^9.39.4",
 		"@stylistic/eslint-plugin": "^5.10.0",

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Info, X } from "@lucide/svelte";
-    import { IconButton } from "$components/button";
     import type { Snippet } from "svelte";
+    import { IconButton } from "$components/button";
 
     type Props = {
         message: string;

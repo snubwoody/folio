@@ -1,7 +1,7 @@
-import { defineConfig } from "vitest/config";
 import { sveltekit } from "@sveltejs/kit/vite";
-import { playwright } from "@vitest/browser-playwright";
 import tailwind from "@tailwindcss/vite";
+import { playwright } from "@vitest/browser-playwright";
+import { defineConfig } from "vitest/config";
 
 // eslint-disable-next-line
 const host = process.env.TAURI_DEV_HOST;

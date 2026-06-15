@@ -1,12 +1,12 @@
-import { SvelteMap } from "svelte/reactivity";
 import {
     type CalendarDate,
     getLocalTimeZone,
     isSameMonth,
     today,
 } from "@internationalized/date";
-import type { Category } from "$lib/types";
+import { SvelteMap } from "svelte/reactivity";
 import type { Transaction } from "$lib/api/transaction";
+import type { Category } from "$lib/types";
 
 // const colors = [
 //     "#7ccf00", // Lime green 500

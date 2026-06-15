@@ -1,9 +1,9 @@
-import { test, expect, afterEach } from "vitest";
-import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
-import { TransactionStore } from "$lib/stores/transaction.svelte";
-import type { RawTransaction } from "$lib/api/transaction";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { afterEach, expect, test } from "vitest";
+import type { RawTransaction } from "$lib/api/transaction";
+import { TransactionStore } from "$lib/stores/transaction.svelte";
 
 afterEach(() => {
     clearMocks();

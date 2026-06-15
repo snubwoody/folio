@@ -1,6 +1,6 @@
-import { test, expect, afterEach } from "vitest";
-import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { describe } from "node:test";
+import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
+import { afterEach, expect, test } from "vitest";
 import { SettingsStore } from "$lib/stores/settings.svelte";
 
 afterEach(() => {

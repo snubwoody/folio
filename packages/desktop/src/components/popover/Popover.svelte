@@ -7,8 +7,8 @@ Displays content in a portal, triggered by a button.
 <script>
     import {
         Popover,
-        PopoverTrigger,
         PopoverContent,
+        PopoverTrigger,
     } from "$components/popover";
 </script>
 

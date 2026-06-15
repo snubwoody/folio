@@ -1,33 +1,31 @@
 <script lang="ts">
-    import * as echarts from "echarts/core";
+    import { getLocalTimeZone, today } from "@internationalized/date";
+    import { ChevronLeft, ChevronRight } from "@lucide/svelte";
     import { PieChart, type PieSeriesOption } from "echarts/charts";
-    import { SVGRenderer } from "echarts/renderers";
-    import { LabelLayout, UniversalTransition } from "echarts/features";
-    import {
-        TitleComponent,
-        TooltipComponent,
-        GridComponent,
-        DatasetComponent,
-        TransformComponent,
-    } from "echarts/components";
     import {
         AriaComponent,
-        LegendComponent,
-        type TitleComponentOption,
-        type TooltipComponentOption,
-        type GridComponentOption,
-        type LegendComponentOption,
-        type DatasetComponentOption,
         type AriaComponentOption,
+        DatasetComponent,
+        type DatasetComponentOption,
+        GridComponent,
+        type GridComponentOption,
+        LegendComponent,
+        type LegendComponentOption,
+        TitleComponent,
+        type TitleComponentOption,
+        TooltipComponent,
+        type TooltipComponentOption,
+        TransformComponent,
     } from "echarts/components";
     import type { ComposeOption } from "echarts/core";
-    import { transactionStore } from "$lib/stores/transaction.svelte";
-    import { getLocalTimeZone, today } from "@internationalized/date";
-    import { categoryStore } from "$lib/stores/categories.svelte";
-    import { spendingAnalytics } from "$lib/analytics";
+    import * as echarts from "echarts/core";
+    import { LabelLayout, UniversalTransition } from "echarts/features";
+    import { SVGRenderer } from "echarts/renderers";
     import CategorySidebar from "$components/analytics/CategorySidebar.svelte";
     import { IconButton } from "$components/button";
-    import { ChevronLeft, ChevronRight } from "@lucide/svelte";
+    import { spendingAnalytics } from "$lib/analytics";
+    import { categoryStore } from "$lib/stores/categories.svelte";
+    import { transactionStore } from "$lib/stores/transaction.svelte";
 
     type ECOption = ComposeOption<
         | PieSeriesOption

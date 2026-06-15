@@ -2,16 +2,16 @@
 <script>
     import { Plus } from "@lucide/svelte";
     import { Button } from "$components/button";
-    import { accountBalance, accountStore } from "$lib/stores/account.svelte";
     import {
         Popover,
         PopoverContent,
         PopoverTrigger,
     } from "$components/popover";
     import TextField from "$components/TextField.svelte";
-    import Account from "./Account.svelte";
-    import { formatMoney } from "$lib/utils/money";
+    import { accountBalance, accountStore } from "$lib/stores/account.svelte";
     import { transactionStore } from "$lib/stores/transaction.svelte.js";
+    import { formatMoney } from "$lib/utils/money";
+    import Account from "./Account.svelte";
 
     const total = $derived.by(() => {
         const transactions = transactionStore.transactions;

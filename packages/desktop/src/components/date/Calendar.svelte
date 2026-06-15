@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { Calendar } from "bits-ui";
-    import { ChevronLeft, ChevronRight } from "@lucide/svelte";
     import {
+        type DateValue,
         getLocalTimeZone,
         today,
-        type DateValue,
     } from "@internationalized/date";
+    import { ChevronLeft, ChevronRight } from "@lucide/svelte";
+    import { Calendar } from "bits-ui";
     import { TextButton } from "$components/button";
     import DateField from "./DateField.svelte";
 
@@ -90,4 +90,3 @@
             {/each}
     {/snippet}
 </Calendar.Root>
-
