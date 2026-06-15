@@ -17,7 +17,8 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    /*animation: animate-scale 20ms linear;*/
+
+    /* animation: animate-scale 20ms linear; */
 }
 
 .calendar-weekday{
