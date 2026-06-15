@@ -1,33 +1,31 @@
 <script lang="ts">
     import { Popover } from "bits-ui";
+    import type { HTMLAttributes } from "svelte/elements";
     import { TableCell } from "$components/table";
     import type { Transaction } from "$lib/api/transaction";
     import { formatMoney, parseMoney } from "$lib/utils/money";
-    import type { HTMLAttributes } from "svelte/elements";
 
-    interface Props extends HTMLAttributes<HTMLDivElement>  {
+    interface Props extends HTMLAttributes<HTMLDivElement> {
         transaction: Transaction;
         value?: string;
         onSubmit: (amount: string) => void;
     }
 
-    const { transaction, value,onSubmit, ...rest }: Props = $props();
+    const { transaction, value, onSubmit, ...rest }: Props = $props();
 
     let popupOpen = $state(false);
-    let amount = $derived(formatMoney(value ?? "0", {stripSymbol: true}));
+    let amount = $derived(formatMoney(value ?? "0", { stripSymbol: true }));
 
     const submit = () => {
         try {
             const num = parseFloat(amount);
-            if (Number.isFinite(num)){
+            if (Number.isFinite(num)) {
                 onSubmit(amount);
             }
             popupOpen = false;
             return;
-        } catch {
-
-        }
-    }
+        } catch {}
+    };
 </script>
 
 <TableCell {...rest}>

@@ -18,9 +18,7 @@ export interface MoneyFormatOpts {
  * @returns
  */
 export function formatMoney(amount: string, opts?: MoneyFormatOpts): string {
-    const currency =
-        opts?.currency ??
-        settingsStore.currency.code;
+    const currency = opts?.currency ?? settingsStore.currency.code;
 
     let notation:
         | "compact"

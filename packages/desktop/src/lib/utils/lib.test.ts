@@ -60,7 +60,10 @@ test("Account balance", () => {
 
 describe("formatMoney", () => {
     test("strip symbol", () => {
-        const amount = formatMoney("200", { stripSymbol: true, currency: "CAD" });
+        const amount = formatMoney("200", {
+            stripSymbol: true,
+            currency: "CAD",
+        });
         expect(amount).toStrictEqual("200.00");
     });
     test("format using local symbol", async () => {
