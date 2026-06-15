@@ -69,7 +69,7 @@
             items={payeeOptions.map(a => ({ value: a.id, label: a.name }))}
         />
     {/if}
-    <TableCell>
+    <TableCell class="data-cell-padding">
         <input
             class="note-input outline-none"
             type="text"
@@ -83,7 +83,7 @@
         onChange={(id) => transactionStore.editTransaction({ id: transaction.id,categoryId: id })}
         items={categoryStore.allCategories.map(a => ({ value: a.id, label: a.title }))}
     />
-    <TableCell data-testid="outflow" class="flex gap-1 items-center">
+    <TableCell data-testid="outflow" class="flex gap-1 items-center data-cell-padding">
         <!--TODO: kind of unnecessary-->
         {#if transType !== "Income"}
             <p>
@@ -103,7 +103,7 @@
             >
         {/if}
     </TableCell>
-    <TableCell data-testid="inflow" class="flex gap-1 items-center">
+    <TableCell data-testid="inflow" class="flex gap-1 items-center data-cell-padding">
         {#if transType === "Income" }
             <p>
                 {currencySymbol}

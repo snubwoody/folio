@@ -30,7 +30,7 @@
 
 <TableCell>
     <Popover.Root bind:open={calendarOpen}>
-        <Popover.Trigger class="text-left">
+        <Popover.Trigger class="text-left w-full data-cell-padding">
             <time datetime={date.toString()}>
                 {displayDate}
             </time>
