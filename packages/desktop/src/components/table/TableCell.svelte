@@ -25,7 +25,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
         children: Snippet;
     }
     const { children, class: userClass, ...rest }: Props = $props();
-    // TODO: exit on enter or esc
 </script>
 
 <div class={`data-cell ${userClass ?? ""}`} {...rest}>

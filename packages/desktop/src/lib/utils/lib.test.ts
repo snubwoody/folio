@@ -58,26 +58,35 @@ test("Account balance", () => {
     expect(balance).toBe(20);
 });
 
-test("Format money using local symbol", async () => {
-    mockIPC((cmd) => {
-        if (cmd === "settings") {
-            return { currencyCode: "ZMW", sidebarOpen: true };
-        }
-        if (cmd === "active_currency") {
-            const currency: Currency = {
-                name: "",
-                code: "",
-                symbol: "R",
-                precision: 2,
-            };
-            return currency;
-        }
+describe("formatMoney", () => {
+    test("strip symbol", () => {
+        const amount = formatMoney("200", {
+            stripSymbol: true,
+            currency: "CAD",
+        });
+        expect(amount).toStrictEqual("200.00");
     });
+    test("format using local symbol", async () => {
+        mockIPC((cmd) => {
+            if (cmd === "settings") {
+                return { currencyCode: "ZAR", sidebarOpen: true };
+            }
+            if (cmd === "active_currency") {
+                const currency: Currency = {
+                    name: "",
+                    code: "ZAR",
+                    symbol: "R",
+                    precision: 2,
+                };
+                return currency;
+            }
+        });
 
-    await settingsStore.load();
+        await settingsStore.load();
 
-    const display = formatMoney("20.00");
-    expect(display).toBe("R20.00");
+        const display = formatMoney("20.00");
+        expect(display).toBe("R20.00");
+    });
 });
 
 describe("Parse money", () => {
