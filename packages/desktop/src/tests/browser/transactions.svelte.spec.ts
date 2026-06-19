@@ -146,6 +146,7 @@ describe("Transaction actionbar", () => {
     });
 });
 
+// TODO: test popover
 describe("Transaction component", async () => {
     test("shows outflow if transaction is an expense", async () => {
         const transaction: Transaction = {
@@ -163,9 +164,8 @@ describe("Transaction component", async () => {
         });
         const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByTestId("inflow");
-        expect(outflow.getByRole("paragraph")).toHaveTextContent("K");
-        expect(outflow.getByRole("textbox")).toHaveValue("500.00");
-        expect(inflow.getByRole("textbox")).toHaveValue("");
+        expect(outflow).toHaveTextContent("K500.00");
+        expect(inflow).toHaveTextContent("Select an item");
     });
     test("shows inflow if transaction is an income", async () => {
         const transaction: Transaction = {
@@ -183,9 +183,8 @@ describe("Transaction component", async () => {
         });
         const outflow = screen.getByTestId("outflow");
         const inflow = screen.getByTestId("inflow");
-        expect(outflow.getByRole("textbox")).toHaveValue("");
-        expect(inflow).toHaveTextContent("K");
-        expect(inflow.getByRole("textbox")).toHaveValue("500.00");
+        expect(outflow).toHaveTextContent("Select an item");
+        expect(inflow).toHaveTextContent("K500.00");
     });
     test("shows account if expense", async () => {
         const account = await accountStore.createTestAccount({

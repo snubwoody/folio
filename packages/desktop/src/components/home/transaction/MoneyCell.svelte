@@ -16,6 +16,7 @@
     let popupOpen = $state(false);
     let amount = $derived(formatMoney(value ?? "0", { stripSymbol: true }));
 
+    // FIXME: might be resetting to 0.
     const submit = () => {
         try {
             const num = parseFloat(amount);
