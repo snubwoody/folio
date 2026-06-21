@@ -27,6 +27,7 @@ pub fn handlers(app: Builder<Wry>) -> Builder<Wry> {
         create_expense,
         set_transaction_payee,
         set_transaction_inflow,
+        fetch_category_groups,
         create_account,
         delete_category,
         set_sidebar_state,
@@ -266,6 +267,14 @@ pub fn fetch_categories(state: tauri::State<'_, State>) -> Result<Vec<Category>>
     state
         .category_service
         .fetch_categories()
+        .inspect_err(|err| warn!("{}", err.report()))
+}
+
+#[tauri::command]
+pub fn fetch_category_groups(state: tauri::State<'_, State>) -> Result<Vec<CategoryGroup>> {
+    state
+        .category_service
+        .fetch_category_groups()
         .inspect_err(|err| warn!("{}", err.report()))
 }
 

@@ -1,10 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
 import { SvelteMap } from "svelte/reactivity";
-import type { Category } from "$lib/types";
+import type { Category, CategoryGroup } from "$lib/types";
 import { logger } from "../utils/logger";
 
 export class CategoryStore {
     #categories: Category[] = $state([]);
+    #categoryGroups: CategoryGroup[] = $state([]);
 
     #categoryMap: SvelteMap<string, Category> = $derived(
         new SvelteMap(this.categories.map((a) => [a.id, a])),

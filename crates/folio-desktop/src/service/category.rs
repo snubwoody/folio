@@ -12,8 +12,9 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
+use crate::SqliteConnection;
 use crate::service::Transaction;
-use crate::{Money, SqliteConnection, service::Budget};
+use crate::{Money, service::Budget};
 use chrono::{DateTime, Datelike, Local, Utc};
 use rusqlite::params;
 use serde::{Deserialize, Serialize};
@@ -127,6 +128,20 @@ impl CategoryService {
             categories.push(row?);
         }
         Ok(categories)
+    }
+
+    /// Fetches all the categoriy groups from the database
+    pub fn fetch_category_groups(&self) -> Result<Vec<CategoryGroup>, crate::Error> {
+        let connection = self.connection.get();
+        let mut stmt = connection.prepare_cached("select * from category_groups")?;
+
+        let rows = stmt.query_map((), |row| CategoryGroup::try_from(row))?;
+
+        let mut group = vec![];
+        for row in rows {
+            group.push(row?);
+        }
+        Ok(group)
     }
 
     pub fn fetch_categories_only(&self) -> Result<Vec<Category>, crate::Error> {
@@ -279,9 +294,11 @@ pub struct Category {
     pub deleted_at: Option<DateTime<Utc>>,
     /// `true` if the category is used for incomes, false otherwise
     pub is_income_stream: bool,
+    pub category_group_id: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialOrd, PartialEq, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct CategoryGroup {
     pub id: String,
     pub title: String,
@@ -309,6 +326,7 @@ impl<'a> TryFrom<&rusqlite::Row<'a>> for Category {
             created_at,
             deleted_at,
             is_income_stream: row.get("is_income_stream")?,
+            category_group_id: row.get("category_group_id")?,
         };
 
         Ok(category)

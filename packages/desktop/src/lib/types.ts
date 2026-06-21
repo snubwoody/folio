@@ -12,6 +12,14 @@ export type Category = {
     title: string;
     createdAt: string;
     isIncomeStream: boolean;
+    categoryGroupId?: string;
+};
+
+export type CategoryGroup = {
+    id: string;
+    title: string;
+    sortOrder: number;
+    createdAt: number;
 };
 
 export type SelectOption = {
