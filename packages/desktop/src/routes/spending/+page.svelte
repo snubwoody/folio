@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
     import BudgetSection from "$components/spending/BudgetSection.svelte";
+    import "$styles/spending.css";
 </script>
 
 <main class="overflow-y-auto w-full">
