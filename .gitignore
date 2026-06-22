@@ -8,9 +8,9 @@ logs/
 *.canvas
 
 # Build output
-.svelte-kit
+.svelte-kit/
 *.msix
-build
+build/
 target/
 node_modules/
 
@@ -23,6 +23,8 @@ node_modules/
 # IDE settings
 .idea/
 .vs/
+.zed/
+.vscode/
 
 # Vite output
 vite.config.js.timestamp-*
