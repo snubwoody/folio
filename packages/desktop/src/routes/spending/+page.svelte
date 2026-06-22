@@ -18,7 +18,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
     import BudgetSection from "$components/spending/BudgetSection.svelte";
 </script>
 
-<main class="space-y-5 p-4 overflow-y-auto w-full">
-    <BudgetSection/>
+<main class="overflow-y-auto w-full">
+    <BudgetSection />
 </main>
-

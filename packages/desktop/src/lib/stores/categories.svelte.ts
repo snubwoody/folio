@@ -21,6 +21,10 @@ export class CategoryStore {
         return this.#categories.filter((c) => !c.isIncomeStream);
     }
 
+    get categoryGroups(): CategoryGroup[] {
+        return this.#categoryGroups;
+    }
+
     get allCategories(): Category[] {
         return this.#categories;
     }
@@ -41,7 +45,7 @@ export class CategoryStore {
     }
 
     /**
-     * Delete a category from the user store. Any transactions
+     * Deletes a category from the category store. Any transactions
      * referencing this category will have their category field
      * set to `null`.
      *
@@ -91,11 +95,15 @@ export class CategoryStore {
 
     async load() {
         this.#categories = await invoke<Category[]>("fetch_categories");
+        this.#categoryGroups = await invoke<CategoryGroup[]>(
+            "fetch_category_groups",
+        );
         logger.debug("Loaded categories from backend");
     }
 
     clear() {
         this.#categories = [];
+        this.#categoryGroups = [];
     }
 }
 
