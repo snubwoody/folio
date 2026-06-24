@@ -8,11 +8,9 @@ logs/
 *.canvas
 
 # Build output
-.svelte-kit
+.xmake/
+build/
 *.msix
-build
-target/
-node_modules/
 
 # Env variables and secrets
 .env
@@ -25,9 +23,3 @@ node_modules/
 .vs/
 .zed/
 .vscode/
-
-# Vite output
-vite.config.js.timestamp-*
-coverage/
-vite.config.ts.timestamp-*
-__screenshots__
