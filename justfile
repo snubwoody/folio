@@ -23,21 +23,16 @@ db-setup:
     just db-create
     just db-migrate
 
+# Generate a CMakeLists.txt file for IDE support
+gen-cmake:
+    xmake project -k cmakelists
+
+# Generate a compile_commands.json file for IDE support
+gen-compile-commands:
+    xmake project -k compile_commands
 # Run the app in dev mode
 dev:
-    pnpm tauri dev
-
-# Test all the crates (rust code)
-test-backend:
-    cargo nextest run --no-fail-fast --all-targets --all-features
-
-# Test the frontend code (headless)
-test-frontend:
-    pnpm -F @folio/desktop test:headless
-
-# Test the frontend in browser mode
-test-browser:
-    pnpm -F @folio/desktop test:browser
+    xmake run
 
 # Format and lint all the code
 lint:
@@ -45,6 +40,3 @@ lint:
     cargo fmt
     pnpm lint:fix
 
-# Format and lint the frontend
-lint-frontend:
-    pnpm lint:fix
