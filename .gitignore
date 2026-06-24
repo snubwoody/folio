@@ -6,11 +6,15 @@
 logs/
 .obsidian/
 *.canvas
+/compile_commands.json
+CMakeLists.txt
 
 # Build output
 .xmake/
 build/
 *.msix
+.cache/
+cmake-build-*
 
 # Env variables and secrets
 .env
