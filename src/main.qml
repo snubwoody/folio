@@ -1,46 +1,62 @@
-import QtQuick 2.15
-import QtQuick.Window 2.2
-import QtQuick.Controls 2.15
-import Qt.labs.qmlmodels 1.0
+import QtQuick
+import QtQuick.Window
+import QtQuick.Controls
+import QtQuick.Layouts
 
 Window {
     id: root
+
     height: 480
-    title: qsTr("Folio")
+    title: "Folio"
     visible: true
     width: 640
 
-    Rectangle {
+    RowLayout {
         anchors.fill: parent
+        Column {
+            id: sidebar
+            Layout.preferredWidth: 250
+            Layout.fillHeight: true
 
-        HorizontalHeaderView{
-            id: horizontalHeader
-            syncView: tableView
-            anchors.left: tableView.left
-            anchors.top: parent.top
-            anchors.right: parent.right
-            clip: true
+            Text {
+                text: "Spending"
+            }
+            Text {
+                text: "Analytics"
+            }
         }
 
-        TableView {
-            id: tableView
-            anchors.top: horizontalHeader.bottom
-            anchors.left: horizontalHeader.left
-            anchors.bottom: parent.bottom
-            anchors.right: parent.right
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
-            clip: true
-            columnSpacing: 1
-            model: transactionTableModel
-            rowSpacing: 1
+            HorizontalHeaderView {
+                id: horizontalHeader
 
-            delegate: Rectangle {
-                implicitHeight: 50
-                implicitWidth: 100
-                color: palette.base
+                anchors.left: tableView.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                clip: true
+                syncView: tableView
+            }
 
-                Text {
-                    text: display
+            TableView {
+                id: tableView
+                anchors.bottom: parent.bottom
+                anchors.left: horizontalHeader.left
+                anchors.right: parent.right
+                anchors.top: horizontalHeader.bottom
+                clip: true
+                model: transactionTableModel
+
+                delegate: Rectangle {
+                    color: palette.base
+                    implicitHeight: 50
+                    implicitWidth: 100
+
+                    Text {
+                        text: display
+                    }
                 }
             }
         }
