@@ -5,24 +5,43 @@ import Qt.labs.qmlmodels 1.0
 
 Window {
     id: root
-    visible: true
-    width: 640
     height: 480
     title: qsTr("Folio")
+    visible: true
+    width: 640
 
-    TableView {
+    Rectangle {
         anchors.fill: parent
-        columnSpacing: 1
-        rowSpacing: 1
-        clip: true
 
-        model: transactionTableModel
+        HorizontalHeaderView{
+            id: horizontalHeader
+            syncView: tableView
+            anchors.left: tableView.left
+            anchors.top: parent.top
+            anchors.right: parent.right
+            clip: true
+        }
 
-        delegate: Rectangle {
-            implicitWidth: 100
-            implicitHeight: 50
-            Text {
-                text: display
+        TableView {
+            id: tableView
+            anchors.top: horizontalHeader.bottom
+            anchors.left: horizontalHeader.left
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+
+            clip: true
+            columnSpacing: 1
+            model: transactionTableModel
+            rowSpacing: 1
+
+            delegate: Rectangle {
+                implicitHeight: 50
+                implicitWidth: 100
+                color: palette.base
+
+                Text {
+                    text: display
+                }
             }
         }
     }

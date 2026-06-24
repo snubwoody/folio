@@ -1,3 +1,4 @@
+#include <ostream>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <string>
@@ -6,8 +7,13 @@
 #include <vector>
 #include "transaction.h"
 #include "category.h"
+#include <print>
 
 int main(int argc, char *argv[]) {
+
+    qDebug() << "Running app";
+    std::println("Running app");
+    std::fflush(stdout);
 
     QCoreApplication::setApplicationName("Folio");
     QCoreApplication::setApplicationVersion("3.0.0");
