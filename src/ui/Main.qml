@@ -40,7 +40,6 @@ Window {
                 model: transactionTableModel
 
                 delegate: Rectangle {
-                    color: palette.base
                     implicitHeight: 50
                     implicitWidth: 100
 

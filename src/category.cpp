@@ -18,7 +18,7 @@ void CategoryModel::loadCategories(std::span<Category> categories){
 }
 
 int CategoryModel::rowCount(const QModelIndex &index ) const {
-    return categories.capacity();
+    return categories.size();
 }
 
 std::optional<Category> CategoryModel::getCategory(std::string_view id) const{

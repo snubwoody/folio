@@ -1,7 +1,5 @@
 #include "transaction.h"
 
-#include <print>
-
 
 QVariant TransactionTableModel::data(const QModelIndex &index, int role) const {
     if (role != Qt::DisplayRole){
@@ -45,7 +43,7 @@ void TransactionTableModel::loadTransactions(std::span<Transaction> transactions
 }
 
 int TransactionTableModel::rowCount(const QModelIndex &index ) const {
-    return transactions.capacity();
+    return transactions.size();
 }
 
 int TransactionTableModel::columnCount(const QModelIndex &index ) const {

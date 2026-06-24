@@ -18,6 +18,8 @@ class AccountModel : public QAbstractListModel {
     std::vector<Account> accounts;
 public:
 
+    Q_INVOKABLE void addAccount(QString name,float startingBalance);
+
     void loadAccounts(std::span<Account> accounts);
 
     // Returns the account with the provided id, if it exists.
