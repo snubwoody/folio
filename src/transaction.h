@@ -1,12 +1,16 @@
+#pragma once
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <string>
 #include <QAbstractTableModel>
 #include <vector>
+#include "category.h"
 
 struct Transaction {
     std::string id;
     std::string date;
+    std::optional<std::string> categoryId;
     float amount;
 };
 
@@ -17,9 +21,13 @@ class TransactionTableModel : public QAbstractTableModel
     QML_ELEMENT
 
     std::vector<Transaction> transactions;
+    CategoryModel* categoryModel;
 
 public:
-    void loadTransactions(const std::vector<Transaction> &transactions);
+
+    TransactionTableModel(CategoryModel* categoryModel): categoryModel(categoryModel){}
+
+    void loadTransactions(std::span<Transaction> transactions);
 
     int rowCount(const QModelIndex &index = QModelIndex()) const override;
 

@@ -5,6 +5,7 @@
 #include <QQmlContext>
 #include <vector>
 #include "transaction.h"
+#include "category.h"
 
 int main(int argc, char *argv[]) {
 
@@ -12,9 +13,10 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationVersion("3.0.0");
     QGuiApplication app(argc, argv);
 
-    TransactionTableModel transactionModel{};
+    CategoryModel categoryModel{};
+    TransactionTableModel transactionModel{&categoryModel};
 
-    const std::vector<Transaction> transactions{
+    std::vector<Transaction> transactions{
         Transaction{
             .id = "T1",
             .date = "01/01/2026",
@@ -23,18 +25,41 @@ int main(int argc, char *argv[]) {
         Transaction{
             .id = "T2",
             .date = "01/01/2026",
+            .categoryId = "C2",
             .amount = 22400,
         },
         Transaction{
             .id = "T3",
             .date = "01/01/2026",
+            .categoryId = "C1",
             .amount = 2002,
         },
     };
     transactionModel.loadTransactions(transactions);
 
+    std::vector<Category> categories{
+        Category{
+            .id = "C1",
+            .title = "Groceries"
+        },
+        Category{
+            .id = "C2",
+            .title = "Transport"
+        },
+        Category{
+            .id = "C3",
+            .title = "Rent"
+        },
+        Category{
+            .id = "C4",
+            .title = "Entertainment"
+        },
+    };
+    categoryModel.loadCategories(categories);
+
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("transactionTableModel",&transactionModel);
+    engine.rootContext()->setContextProperty("categoryModel",&categoryModel);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

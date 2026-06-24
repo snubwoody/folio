@@ -18,7 +18,13 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const {
         case 3:
             return QString("Note");
         case 4:
-            return QString("Category");
+            if (!transaction.categoryId) {
+                return QVariant();
+            }
+            if (const auto category = categoryModel->getCategory(transaction.categoryId.value())) {
+                return QString::fromStdString(category.value().title);
+            }
+            return QVariant();
         case 5:
             return QString("Outflow");
         case 6:
@@ -26,10 +32,11 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const {
         default:
             break;
     }
-    return QString("%1, %2").arg(index.column()).arg(index.row());
+
+    return QVariant();
 }
 
-void TransactionTableModel::loadTransactions(const std::vector<Transaction> &transactions){
+void TransactionTableModel::loadTransactions(std::span<Transaction> transactions){
     for (const auto &transaction : transactions) {
         this->transactions.push_back(transaction);
     }
