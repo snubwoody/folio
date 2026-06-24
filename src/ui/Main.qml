@@ -23,7 +23,7 @@ Window {
             HorizontalHeaderView {
                 id: horizontalHeader
 
-                anchors.left: tableView.left
+                anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
                 clip: true
@@ -32,10 +32,10 @@ Window {
 
             TableView {
                 id: tableView
-                anchors.bottom: parent.bottom
-                anchors.left: horizontalHeader.left
-                anchors.right: parent.right
                 anchors.top: horizontalHeader.bottom
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.right: parent.right
                 clip: true
                 model: transactionTableModel
 

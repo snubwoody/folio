@@ -9,6 +9,8 @@
 #include "category.h"
 #include <print>
 
+#include "account.h"
+
 int main(int argc, char *argv[]) {
 
     qDebug() << "Running app";
@@ -19,6 +21,7 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationVersion("3.0.0");
     QGuiApplication app(argc, argv);
 
+    AccountModel accountModel{};
     CategoryModel categoryModel{};
     TransactionTableModel transactionModel{&categoryModel};
 
@@ -63,9 +66,26 @@ int main(int argc, char *argv[]) {
     };
     categoryModel.loadCategories(categories);
 
+    std::vector<Account>  accounts{
+        Account{
+            .id = "A1",
+            .name = "RBC Credit Card"
+        },
+        Account{
+            .id = "A2",
+            .name = "Absa Chequing"
+        },
+        Account{
+            .id = "A3",
+            .name = "FNB Savings"
+        },
+    };
+    accountModel.loadAccounts(accounts);
+
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("transactionTableModel",&transactionModel);
     engine.rootContext()->setContextProperty("categoryModel",&categoryModel);
+    engine.rootContext()->setContextProperty("accountModel",&accountModel);
     engine.load(QUrl(QStringLiteral("qrc:/Main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
