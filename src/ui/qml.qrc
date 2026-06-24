@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>Main.qml</file>
+        <file>Sidebar.qml</file>
     </qresource>
 </RCC>

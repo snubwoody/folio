@@ -3,7 +3,7 @@
 #include <optional>
 #include <span>
 #include <string>
-#include <qqml.h>
+#include <QQmlEngine>
 #include <QAbstractTableModel>
 #include <vector>
 

@@ -5,26 +5,16 @@ import QtQuick.Layouts
 
 Window {
     id: root
-
-    height: 480
     title: "Folio"
     visible: true
-    width: 640
+
+    height: 750
+    width: 750
 
     RowLayout {
         anchors.fill: parent
-        Column {
-            id: sidebar
-            Layout.preferredWidth: 250
-            Layout.fillHeight: true
 
-            Text {
-                text: "Spending"
-            }
-            Text {
-                text: "Analytics"
-            }
-        }
+        Sidebar {}
 
         Rectangle {
             Layout.fillWidth: true
