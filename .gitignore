@@ -23,6 +23,8 @@ node_modules/
 # IDE settings
 .idea/
 .vs/
+.zed/
+.vscode/
 
 # Vite output
 vite.config.js.timestamp-*
