@@ -7,37 +7,41 @@
 #include <vector>
 #include "category.h"
 
-struct Transaction {
-    std::string id;
-    std::string date;
-    std::optional<std::string> categoryId;
-    float amount;
-};
+namespace folio{
+    struct Transaction {
+        std::string id;
+        std::string date;
+        std::optional<std::string> categoryId;
+        float amount;
+    };
 
 
-class TransactionTableModel : public QAbstractTableModel
-{
-    Q_OBJECT
-    QML_ELEMENT
+    class TransactionTableModel : public QAbstractTableModel
+    {
+        Q_OBJECT
+        QML_ELEMENT
 
-    std::vector<Transaction> transactions;
-    CategoryModel* categoryModel;
+        std::vector<Transaction> transactions;
+        CategoryModel* categoryModel;
 
-public:
+    public:
 
-    TransactionTableModel(CategoryModel* categoryModel): categoryModel(categoryModel){}
+        TransactionTableModel(CategoryModel* categoryModel): categoryModel(categoryModel){}
 
-    void loadTransactions(std::span<Transaction> transactions);
+        void loadTransactions(std::span<Transaction> transactions);
 
-    int rowCount(const QModelIndex &index = QModelIndex()) const override;
+        int rowCount(const QModelIndex &index = QModelIndex()) const override;
 
-    int columnCount(const QModelIndex &index = QModelIndex()) const override;
+        int columnCount(const QModelIndex &index = QModelIndex()) const override;
 
-    QVariant data(const QModelIndex &index, int role) const override;
+        QVariant data(const QModelIndex &index, int role) const override;
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+        QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-    QHash<int, QByteArray> roleNames() const override {
-        return { {Qt::DisplayRole, "display"} };
-    }
-};
+        QHash<int, QByteArray> roleNames() const override {
+            return { {Qt::DisplayRole, "display"} };
+        }
+    };
+
+}
+

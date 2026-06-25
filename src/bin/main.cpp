@@ -11,6 +11,8 @@
 
 #include "../account.h"
 
+using namespace folio;
+
 int main(int argc, char *argv[]) {
 
     qDebug() << "Running app";

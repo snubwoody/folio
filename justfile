@@ -32,7 +32,7 @@ gen-compile-commands:
     xmake project -k compile_commands
 # Run the app in dev mode
 dev:
-    xmake run
+    xmake run folio
 # Run all the tests
 test:
     xmake run test
