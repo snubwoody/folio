@@ -35,7 +35,7 @@ dev:
     xmake run
 # Run all the tests
 test:
-    xmake test
+    xmake run test
 
 # Format and lint all the code
 lint:
