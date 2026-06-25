@@ -33,6 +33,9 @@ gen-compile-commands:
 # Run the app in dev mode
 dev:
     xmake run
+# Run all the tests
+test:
+    xmake test
 
 # Format and lint all the code
 lint:

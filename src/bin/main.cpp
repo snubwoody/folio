@@ -5,11 +5,11 @@
 #include <qqml.h>
 #include <QQmlContext>
 #include <vector>
-#include "transaction.h"
-#include "category.h"
+#include "../transaction.h"
+#include "../category.h"
 #include <print>
 
-#include "account.h"
+#include "../account.h"
 
 int main(int argc, char *argv[]) {
 
