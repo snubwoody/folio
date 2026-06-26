@@ -16,38 +16,6 @@ Window {
 
         Sidebar {}
 
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            HorizontalHeaderView {
-                id: horizontalHeader
-
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                clip: true
-                syncView: tableView
-            }
-
-            TableView {
-                id: tableView
-                anchors.top: horizontalHeader.bottom
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                anchors.right: parent.right
-                clip: true
-                model: transactionTableModel
-
-                delegate: Rectangle {
-                    implicitHeight: 50
-                    implicitWidth: 100
-
-                    Text {
-                        text: display
-                    }
-                }
-            }
-        }
+        TransactionTable {}
     }
 }
