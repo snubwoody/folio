@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>Main.qml</file>
         <file>Sidebar.qml</file>
+        <file>Colors.qml</file>
+        <file>qmldir</file>
     </qresource>
 </RCC>

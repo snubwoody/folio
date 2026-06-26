@@ -20,8 +20,7 @@ target("folio")
     add_files("src/ui/qml.qrc")
     add_defines("DOCTEST_CONFIG_DISABLE") -- Remove testing code
     if is_mode("debug") then
-        add_ldflags("/SUBSYSTEM:CONSOLE", {force = true})
-        add_ldflags("/ENTRY:mainCRTStartup", {force = true})
+        set_values("windows.subsystem", "console")
     end
 
 target("test")

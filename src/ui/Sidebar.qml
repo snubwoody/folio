@@ -57,30 +57,28 @@ ColumnLayout {
         text: qsTr("Add account")
 
         background: Rectangle {
-            color: "#FFFFFF"
+            color: Colors.neutral50
             radius: 2
         }
         contentItem: Text {
-            color: "#000000"
+            color: Colors.textBody
             horizontalAlignment: Text.AlignHCenter
             text: control.text
         }
 
         onClicked: popup.open()
     }
-
-
     Popup {
         id: popup
 
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+        dim: false
         focus: true
         implicitHeight: 200
-        modal: true
         implicitWidth: parent.width
+        modal: true
         x: control.x
         y: control.y + control.height
-        dim: false
 
         ColumnLayout {
             anchors.fill: parent
@@ -88,37 +86,37 @@ ColumnLayout {
 
             TextField {
                 id: accountName
+
                 placeholderText: qsTr("Account name")
             }
-
             TextField {
                 id: startingBalance
+
                 placeholderText: qsTr("Starting balance")
             }
             Button {
-
-                width: parent.width
                 text: qsTr("Confirm")
+                width: parent.width
 
                 background: Rectangle {
-                    color: "#FFFFFF"
+                    // color: "#FFFFFF"
+                    color: Colors.neutral50
                     radius: 2
                 }
                 contentItem: Text {
-                    color: "#000000"
+                    color: Colors.textBody
                     horizontalAlignment: Text.AlignHCenter
                     text: control.text
                 }
 
                 onClicked: {
-                    accountModel.addAccount(accountName.text,parseFloat(startingBalance.text) || 0)
+                    accountModel.addAccount(accountName.text, parseFloat(startingBalance.text) || 0);
 
-                    accountName.clear()
-                    startingBalance.clear()
+                    accountName.clear();
+                    startingBalance.clear();
 
-                    popup.close()
+                    popup.close();
                 }
-
             }
         }
     }
