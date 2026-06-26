@@ -6,11 +6,11 @@ namespace folio {
     std::string randomString(size_t length = 10);
 
     class TempDir {
-    public:
+      public:
         const std::filesystem::path path;
 
-        TempDir(std::filesystem::path const&dir = randomString());
+        TempDir(std::filesystem::path const& dir = randomString());
         // Closes the
         ~TempDir();
     };
-}
+} // namespace folio

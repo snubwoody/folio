@@ -1,0 +1,30 @@
+---
+Language: Cpp
+Standard: Latest
+BasedOnStyle: LLVM
+IndentWidth: 4
+DerivePointerAlignment: false
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: Empty
+# Format Qt properties like regular methods
+AllowBreakBeforeQtProperty: true
+ColumnLimit: 100
+AllowShortEnumsOnASingleLine: false
+AllowAllArgumentsOnNextLine: false
+# Put each param on a single line if it exceeds the max length
+AllowAllParametersOfDeclarationOnNextLine: false
+AlignAfterOpenBracket: false
+# Permit lines like this
+# if (a) return;
+AllowShortIfStatementsOnASingleLine: WithoutElse
+BinPackLongBracedList: false
+BreakBeforeCloseBracketFunction: true
+BinPackParameters: OnePerLine
+BinPackArguments: false
+BreakAfterAttributes: Always
+BreakAfterOpenBracketFunction: true
+IndentAccessModifiers: false
+AccessModifierOffset: -2
+NamespaceIndentation: All
+...
+

@@ -10,6 +10,16 @@ concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
 jobs:
+  format:
+    name: Check format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: extractions/setup-just@v3
+        with:
+          just-version: ${{env.JUST_VERSION}}
+      - run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+      - run: just check-format
   build:
     strategy:
       fail-fast: false

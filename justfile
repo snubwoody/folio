@@ -37,6 +37,12 @@ dev:
 test:
     xmake run test
 
+format:
+    clang-format ./src/*.cpp ./src/*.h ./src/bin/*.cpp ./tests/*.cpp -i
+
+check-format:
+    clang-format ./src/*.cpp ./src/*.h ./src/bin/*.cpp ./tests/*.cpp --Werror --dry-run
+
 # Format and lint all the code
 lint:
     cargo clippy --all-targets --all-features --allow-dirty --fix
