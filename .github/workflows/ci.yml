@@ -1,6 +1,5 @@
 name: CI/CD
 env:
-  CARGO_TERM_COLOR: always
   JUST_VERSION: '1.46.0'
 on:
   pull_request:
@@ -22,6 +21,15 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v2
+        if: ${{runner.os == 'Linux'}}
+        with:
+          version: latest
+          platform: x64
+      - name: Set xmake to use Clang
+        if: ${{runner.os == 'Linux'}}
+        run: xmake f --toolchain=clang
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
 #        with:
@@ -50,19 +58,6 @@ jobs:
 #          version: 6.11.1
       - name: Run tests
         run: xmake run -y test
-#      - name: Install system dependencies
-#        if: ${{runner.os == 'Linux'}}
-#        run: |
-#          sudo apt update
-#          sudo apt install libwebkit2gtk-4.1-dev \
-#            build-essential \
-#            curl \
-#            wget \
-#            file \
-#            libxdo-dev \
-#            libssl-dev \
-#            libayatana-appindicator3-dev \
-#            librsvg2-dev
   pass:
     needs:
       - test
