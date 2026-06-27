@@ -1,7 +1,7 @@
 add_rules("mode.debug", "mode.release")
 set_languages("cxx23")
 
-add_requires("sqlitecpp 3.3.3","doctest")
+add_requires("doctest")
 
 target("folio_lib")
     add_rules("qt.static")

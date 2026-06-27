@@ -1,115 +1,50 @@
 name: CI/CD
 env:
-  CARGO_TERM_COLOR: always
   JUST_VERSION: '1.46.0'
 on:
   pull_request:
-    branches: ["main","v**"]
+    branches: ["main","v**","qt"]
   push:
-    branches: ["main"]
+    branches: ["main","qt"]
 concurrency:
   group: ci-${{github.ref}}-${{github.workflow}}
   cancel-in-progress: true
 jobs:
-  check:
+  format:
+    name: Check format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Run pnpm biome check
-        run: pnpm check
-  check-svelte:
-    runs-on: ubuntu-latest
-    env:
-      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Run pnpm check
-        run: pnpm -r check
-  clippy:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: Swatinem/rust-cache@v2
+      - uses: actions/checkout@v6
       - uses: extractions/setup-just@v3
         with:
           just-version: ${{env.JUST_VERSION}}
-      - name: Setup nu
-        uses: hustcer/setup-nu@v3
-        with:
-          version: 0.110.0
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: nextest
-      - name: Run cargo clippy
-        run: cargo clippy --all-features --all-targets -- -D warnings
-  format:
-    runs-on: ubuntu-latest
+      - run: sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+      - run: just check-format
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{matrix.os}}
     steps:
-      - uses: actions/checkout@v4
-      - name: Check formatting
-        run: cargo fmt --check
-  test-frontend:
-    permissions:
-      pull-requests: write
-      checks: write
-    env:
-      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v6
+      - uses: xmake-io/github-action-setup-xmake@v1
         with:
-          version: 10
-          run_install: false
-      - uses: actions/setup-node@v6
+          xmake-version: latest
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v2
+        if: ${{runner.os == 'Linux'}}
         with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Install playwright browsers
-        run: pnpm playwright install --with-deps
-      - run: pnpm -F desktop sync
-      - name: Run tests
-        run: pnpm -r test:headless
-  build-frontend:
-    runs-on: macos-latest
-    env:
-      PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Build frontend
-        run: pnpm -r build
+          version: latest
+          platform: x64
+      - name: Set xmake to use Clang
+        if: ${{runner.os == 'Linux'}}
+        run: xmake f --toolchain=clang
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+#        with:
+#          version: 6.11.1
+      - run: xmake build -y folio
   test:
     strategy:
       fail-fast: false
@@ -121,42 +56,22 @@ jobs:
       - uses: extractions/setup-just@v3
         with:
           just-version: ${{env.JUST_VERSION}}
-      - name: Setup nu
-        uses: hustcer/setup-nu@v3
+      - uses: xmake-io/github-action-setup-xmake@v1
         with:
-          version: 0.110.0
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
-      - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: nextest
+          xmake-version: latest
       - name: Install system dependencies
         if: ${{runner.os == 'Linux'}}
-        run: |
-          sudo apt update
-          sudo apt install libwebkit2gtk-4.1-dev \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libxdo-dev \
-            libssl-dev \
-            libayatana-appindicator3-dev \
-            librsvg2-dev
+        run: sudo apt update
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+#        with:
+#          version: 6.11.1
       - name: Run tests
-        run: cargo nextest run --locked --no-fail-fast --retries 1
+        run: xmake run -y test
   pass:
     needs:
-      - format
-      - clippy
-      - check
-      - check-svelte
       - test
-      - test-frontend
-      - build-frontend
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Complete
