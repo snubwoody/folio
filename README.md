@@ -10,6 +10,9 @@
     </a>
 </div>
 
+> [!warning]
+> This app is no longer being developed and has been succeeded by a similar app: [Mukwa](https://github.com/snubwoody/mukwa).
+
 ## Overview
 
 Folio is a free and open source, personal finance app. It is designed to be simple to use and get out of your way. Folio is local-first, meaning all your sensitive financial data is stored locally on your device. It is a Tauri application, with the frontend written in Svelte and the backend in Rust.  
